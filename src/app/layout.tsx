@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { PrelineScript } from "@/components/PrelineScript";
 import "./globals.css";
 
 const font = Open_Sans({ subsets: ["latin"] });
@@ -24,6 +25,7 @@ export default function RootLayout({
         )}
       >
         {children}
+        <PrelineScript />
       </body>
     </html>
   );

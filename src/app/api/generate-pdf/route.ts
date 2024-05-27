@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import puppeteer from "puppeteer";
 
-export async function GET(req: NextRequest) {
+export const GET = async (req: NextRequest) => {
   // Launch a new browser instance
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -34,4 +34,4 @@ export async function GET(req: NextRequest) {
       "Content-Disposition": "attachment; filename=resume.pdf",
     },
   });
-}
+};
