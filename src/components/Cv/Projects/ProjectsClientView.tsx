@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { CvProject } from "@/server/notion/getCvProjects";
 import { FilterSqlConsole } from "./Filter/FilterSqlConsole";
 import { ProjectCard } from "./ProjectCard";
@@ -42,8 +42,10 @@ export function ProjectsClientView({ projects }: { projects: CvProject[] }) {
 
   return (
     <>
-      <FiltersUrlSync />
-      <ProjectFocusUrlSync />
+      <Suspense fallback={null}>
+        <FiltersUrlSync />
+        <ProjectFocusUrlSync />
+      </Suspense>
       <ProjectDetailDialog projects={projects} />
       <div className="pl-1 pr-1 lg:pl-4 lg:pr-4">
         <div className="mb-8">

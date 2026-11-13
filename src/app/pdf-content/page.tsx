@@ -14,6 +14,11 @@ import { FaLinkedin } from "@react-icons/all-files/fa/FaLinkedin";
 import { FaMap } from "@react-icons/all-files/fa/FaMap";
 import { FaEnvelope } from "@react-icons/all-files/fa/FaEnvelope";
 
+export const metadata = {
+  title: "Print CV — Alexander Fuerst",
+  robots: { index: false, follow: true },
+};
+
 export default async function PDFContent({
   searchParams,
 }: {

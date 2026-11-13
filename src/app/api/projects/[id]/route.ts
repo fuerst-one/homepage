@@ -6,6 +6,7 @@ import {
 } from "@/server/api/rateLimit";
 import { buildApiHeaders } from "@/server/api/responseHeaders";
 import { API_BASE_URL } from "@/server/api/baseUrl";
+import { projectPath, SITE_URL } from "@/lib/seo";
 
 export const runtime = "nodejs";
 
@@ -36,6 +37,7 @@ export const GET = async (
 
   const absoluteProject = {
     ...project,
+    webUrl: `${SITE_URL}${projectPath(project)}`,
     logo: absolutizeImagePaths(project.logo),
     screenshots: absolutizeImagePaths(project.screenshots),
   };

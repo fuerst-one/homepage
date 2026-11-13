@@ -83,7 +83,8 @@ export const getCvProjects = async () => {
     return embedProjectsTo3D(merged);
   } catch (error) {
     console.error(error);
-    return [];
+    // Never cache an upstream failure as an empty public portfolio or sitemap.
+    throw error;
   }
 };
 

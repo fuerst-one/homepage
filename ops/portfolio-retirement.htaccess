@@ -1,0 +1,33 @@
+# Install ONLY in the document root for portfolio.fuerst.one, before its SPA fallback.
+# Activate after https://fuerst.one serves the new site directly, without redirecting to cv.
+# Preserve the original configuration separately for rollback.
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^(?:index\.html)?$ https://fuerst.one/ [R=301,L,NE,QSD]
+
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^(?:learn-more|cv)/?$ https://fuerst.one/cv [R=301,L,NE,QSD]
+
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^projects/?$ https://fuerst.one/projects [R=301,L,NE,QSD]
+
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^(?:contact|team-up|hire-me)/?$ https://fuerst.one/contact [R=301,L,NE,QSD]
+
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^(?:privacy-policy|privacy)/?$ https://fuerst.one/privacy [R=301,L,NE,QSD]
+
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^(impressum|datenschutz|legal-notice)/?$ https://fuerst.one/$1 [R=301,L,NE,QSD]
+
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^sitemap\.xml$ https://fuerst.one/sitemap.xml [R=301,L,NE,QSD]
+
+# Keep crawler access so Google can observe the redirects and 410 responses.
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^robots\.txt$ - [L]
+
+# Old experiments and unknown pages have no replacement. Do not serve the SPA with 200.
+RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
+RewriteRule ^ - [G,L]

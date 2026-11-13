@@ -2,17 +2,19 @@
 
 import { isDev } from "@/utils/env";
 import { Client } from "@notionhq/client";
+import { createNotionFetch } from "../createNotionFetch";
 
 export const fetchNotionDatabase = async (databaseId: string) => {
   const notion = new Client({
     auth: process.env.NEXT_NOTION_TOKEN,
-    fetch: (url, options) =>
+    fetch: createNotionFetch((url, options) =>
       fetch(url, {
         ...options,
         next: {
           revalidate: isDev() ? 600 : false,
         },
       }),
+    ),
   });
 
   const database = await notion.databases.query({

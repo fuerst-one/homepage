@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
+import { SITE_DESCRIPTION, SITE_URL } from "@/lib/seo";
 
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -10,9 +11,22 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fuerst.one — Alexander Fuerst",
-  description:
-    "Alexander Fuerst — creative technology, accessible aesthetics, converting interfaces.",
+  metadataBase: new URL(SITE_URL),
+  title: "Alexander Fuerst — UX+AI Engineer | Fuerst.one",
+  description: SITE_DESCRIPTION,
+  applicationName: "Fuerst.one",
+  authors: [{ name: "Alexander Fuerst", url: SITE_URL }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default function RootLayout({

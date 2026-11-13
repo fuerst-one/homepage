@@ -16,9 +16,12 @@ export async function Layout({
     <div className="relative z-10 min-h-screen max-w-full">
       <div className="relative mx-auto flex w-full max-w-6xl flex-col px-2 py-12 sm:px-4 lg:px-6">
         <header className="mb-12 flex flex-col gap-6 text-sm text-neutral-300">
-          <div className="flex flex-wrap items-center justify-between gap-6">
-            <Link href="/" className="flex items-center gap-4">
-              <div className="relative h-24 w-24 border border-white/30 bg-black p-1">
+          <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+            <Link
+              href="/"
+              className="grid min-w-0 grid-cols-[4rem_minmax(0,1fr)] items-center gap-4 sm:grid-cols-[6rem_minmax(0,1fr)]"
+            >
+              <div className="relative aspect-square w-full border border-white/30 bg-black p-1">
                 {owner.avatarUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -30,30 +33,32 @@ export async function Layout({
                   />
                 )}
               </div>
-              <div className="flex flex-col gap-0">
+              <div className="flex min-w-0 flex-col gap-1">
                 <span className="text-[0.65rem] uppercase tracking-[0.3em] text-neutral-400">
                   fuerst.one
                 </span>
                 <div className="flex flex-col gap-1 text-white">
-                  <span className="text-2xl font-semibold">
+                  <span className="text-xl font-semibold sm:text-2xl">
                     Alexander Fuerst
                   </span>
-                  <span className="flex flex-col text-xs uppercase tracking-[0.2em] text-neutral-400 sm:block">
-                    <span>creative technology</span>
-                    <span className="hidden sm:inline"> · </span>
-                    <span>cogent interfaces</span>
-                    <span className="hidden sm:inline"> · </span>
-                    <span>effective automation</span>
+                  <span className="flex flex-wrap gap-x-3 gap-y-1 text-[0.65rem] uppercase leading-relaxed tracking-[0.16em] text-neutral-400 sm:text-xs">
+                    <span className="whitespace-nowrap">
+                      creative technology
+                    </span>
+                    <span className="whitespace-nowrap">cogent interfaces</span>
+                    <span className="whitespace-nowrap">
+                      effective automation
+                    </span>
                   </span>
                 </div>
               </div>
             </Link>
-            <div className="flex flex-row items-center gap-4 sm:flex-col sm:items-end sm:gap-2">
-              <div className="border border-white/30 bg-black px-4 py-2 text-[0.7rem] uppercase tracking-[0.25em] text-neutral-200">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 md:flex-col md:items-end">
+              <div className="shrink-0 whitespace-nowrap border border-white/30 bg-black px-4 py-2 text-[0.7rem] uppercase tracking-[0.25em] text-neutral-200">
                 UX+AI Engineer
               </div>
               {owner.available && (
-                <span className="inline-flex items-center gap-1.5 text-[0.7rem] uppercase tracking-[0.2em] text-emerald-300">
+                <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[0.7rem] uppercase tracking-[0.2em] text-emerald-300">
                   <span
                     aria-hidden
                     className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_currentColor]"
@@ -63,6 +68,20 @@ export async function Layout({
               )}
             </div>
           </div>
+          <nav
+            aria-label="Main navigation"
+            className="flex flex-wrap gap-6 text-xs uppercase tracking-[0.2em]"
+          >
+            <Link href="/projects" className="hover:text-white">
+              Projects
+            </Link>
+            <Link href="/cv" className="hover:text-white">
+              CV
+            </Link>
+            <Link href="/contact" className="hover:text-white">
+              Contact
+            </Link>
+          </nav>
           <div className="h-px w-full bg-white/20" />
         </header>
 

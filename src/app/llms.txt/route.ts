@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { API_BASE_URL } from "@/server/api/baseUrl";
+import { SITE_URL as API_BASE_URL } from "@/lib/seo";
 import {
   buildRateLimitedResponse,
   checkRateLimit,
@@ -12,14 +12,29 @@ export const GET = async (request: NextRequest) => {
   const rateLimit = checkRateLimit(request);
   if (!rateLimit.allowed) return buildRateLimitedResponse(rateLimit);
 
-  const body = `# Fuerst.one — CV Projects API
+  const body = `# Fuerst.one — Alexander Fuerst
 
-> Read-only public API for querying Alexander Fuerst's CV projects (Notion-backed, cached indefinitely). Rate-limited to ${RATE_LIMIT_PER_MINUTE} requests/minute per IP. No auth required.
+> Alexander Fuerst (Alexander Fürst) is a UX+AI Engineer based in Würzburg, Germany. His work covers frontend development, UX design, AI engineering and automation, data visualization, e-commerce, and conversion rate optimization.
+
+## Website
+
+- [Home](${API_BASE_URL}/) — introduction and links to work and contact information.
+- [Project portfolio](${API_BASE_URL}/projects) — full directory with stable, descriptive HTML URLs for each project, including descriptions, technologies, collaborators, and results. Use the API's webUrl for the canonical page to read and cite.
+- [CV and experience](${API_BASE_URL}/cv) — public profile and interactive project filtering by specialty.
+- [Contact and CV download](${API_BASE_URL}/contact) — project inquiries, team opportunities, and tailored PDF CV downloads.
+- [Plasma playground](${API_BASE_URL}/plasma) — interactive creative coding experiment.
+- [GitHub](https://github.com/fuerst-one) — public code profile.
+- [LinkedIn](https://www.linkedin.com/in/fuerst-one/) — professional profile.
+
+## Public data API
+
+Read-only, Notion-backed API for the same public profile and projects shown on the website. Rate-limited to ${RATE_LIMIT_PER_MINUTE} requests/minute per IP. No auth required. Content is cached; availability, project counts, and results may change. Use the linked pages and current API responses for factual claims.
 
 The dataset is small (a few dozen projects). Start with /api/facets to discover valid filter values, then narrow with /api/projects, then zoom on a single record via /api/projects/{id}.
 
 ## Endpoints
 
+- [GET /api/profile](${API_BASE_URL}/api/profile) — public name, position, location, education, languages, availability, and avatar. Private contact details and rates are excluded.
 - [OpenAPI 3.1 spec](${API_BASE_URL}/api/openapi.json) — complete machine-readable schema for all endpoints.
 - [GET /api/projects](${API_BASE_URL}/api/projects) — slim list of projects with filters (tools, industries, experiences, languages, projectType, workplace, featured, clientId, from, to, q, sort).
 - [GET /api/projects/{id}](${API_BASE_URL}/api/projects) — full project record including rich-text description, KPIs, screenshots, logos, and clients.

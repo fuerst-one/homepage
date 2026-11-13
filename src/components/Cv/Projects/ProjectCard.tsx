@@ -14,6 +14,7 @@ import { getProjectLogoSources } from "./getProjectLogoSources";
 import { colors } from "./colors";
 import { useProjectFocusStore } from "./projectFocusStore";
 import { cn } from "@/lib/utils";
+import { projectPath } from "@/lib/seo";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -118,7 +119,14 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
               </div>
             )}
           </div>
-          <h3 className="text-2xl font-semibold text-white">{name}</h3>
+          <h3 className="text-2xl font-semibold text-white">
+            <Link
+              href={projectPath(project)}
+              className="pointer-events-auto hover:underline"
+            >
+              {name}
+            </Link>
+          </h3>
           <p className="text-xs text-neutral-400">
             <DateRange startDate={startDate} endDate={endDate} />
           </p>

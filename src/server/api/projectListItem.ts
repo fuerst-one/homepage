@@ -1,6 +1,7 @@
 import { CvProject } from "../notion/getCvProjects";
 import { RichTextField } from "../notion/types";
 import { API_BASE_URL } from "./baseUrl";
+import { projectPath, SITE_URL } from "@/lib/seo";
 
 export type ProjectListItem = {
   id: string;
@@ -18,6 +19,7 @@ export type ProjectListItem = {
   featured: boolean;
   clientNames: string[];
   url: string;
+  webUrl: string;
 };
 
 const SUMMARY_MAX_CHARS = 200;
@@ -38,6 +40,7 @@ export const toProjectListItem = (project: CvProject): ProjectListItem => ({
   featured: project.featured,
   clientNames: project.clients.map((client) => client.name),
   url: `${API_BASE_URL}/api/projects/${project.id}`,
+  webUrl: `${SITE_URL}${projectPath(project)}`,
 });
 
 const deriveOneLineSummary = (description: RichTextField): string => {

@@ -183,6 +183,7 @@ export const buildOpenApiSpec = () => ({
           "featured",
           "clientNames",
           "url",
+          "webUrl",
         ],
         properties: {
           id: { type: "string" },
@@ -200,6 +201,12 @@ export const buildOpenApiSpec = () => ({
           featured: { type: "boolean" },
           clientNames: { type: "array", items: { type: "string" } },
           url: { type: "string", format: "uri" },
+          webUrl: {
+            type: "string",
+            format: "uri",
+            description:
+              "Canonical HTML project page for reading and citations.",
+          },
         },
       },
       CvProject: {

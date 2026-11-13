@@ -9,7 +9,13 @@ const ROW_LABELS: Partial<Record<keyof CvProject, string>> = {
   languages: "Languages",
 };
 
-export const ProjectMetaTable = ({ project }: { project: CvProject }) => {
+export const ProjectMetaTable = ({
+  project,
+  filterable = true,
+}: {
+  project: CvProject;
+  filterable?: boolean;
+}) => {
   const filteredFields = Object.entries(ROW_LABELS)
     .filter(([projectKey]) => {
       const value = project[projectKey as keyof CvProject];
@@ -53,7 +59,11 @@ export const ProjectMetaTable = ({ project }: { project: CvProject }) => {
               </span>
             </summary>
             <div className="mt-3 border-t border-white/10 pt-3 text-[0.75rem] tracking-normal text-neutral-200">
-              <Property projectKey={projectKey} value={value} />
+              <Property
+                projectKey={projectKey}
+                value={value}
+                filterable={filterable}
+              />
             </div>
           </details>
         );
@@ -65,9 +75,11 @@ export const ProjectMetaTable = ({ project }: { project: CvProject }) => {
 const Property = <TKey extends keyof CvProject>({
   projectKey,
   value,
+  filterable,
 }: {
   projectKey: TKey;
   value: CvProject[TKey];
+  filterable: boolean;
 }) => {
   if (projectKey === "clients") {
     return (
@@ -84,7 +96,11 @@ const Property = <TKey extends keyof CvProject>({
     return (
       <div className="flex flex-wrap gap-2">
         {(value as string[]).map((i, idx) => (
-          <Tag key={idx} searchParamKey={projectKey} value={i}>
+          <Tag
+            key={idx}
+            searchParamKey={filterable ? projectKey : undefined}
+            value={i}
+          >
             {i}
           </Tag>
         ))}

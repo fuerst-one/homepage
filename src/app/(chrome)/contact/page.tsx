@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Layout } from "@/components/Layout";
 import { PresetPicker, PresetOption } from "@/components/Cv/PresetPicker";
 import { IconLink } from "@/components/IconLink";
@@ -11,12 +11,11 @@ import { CV_PRESET_ORDER, CV_PRESETS } from "@/components/Cv/cvPresets";
 
 export const revalidate = false;
 
-export const metadata: Metadata = {
-  title: "Contact | Alexander Fuerst",
-  description:
-    "Get in touch and download a tailored PDF CV — Highlights, Frontend Engineer, Data Visualization, or E-Commerce & CRO presets.",
-  alternates: { canonical: "https://fuerst.one/contact" },
-};
+export const metadata = pageMetadata(
+  "/contact",
+  "Contact & CV Download — Alexander Fuerst | Fuerst.one",
+  "Contact Alexander Fuerst for UX, frontend, and AI engineering projects or team opportunities. Download a CV tailored to the experience you're looking for.",
+);
 
 export default async function ContactPage() {
   const projects = await getCachedCvProjects();
