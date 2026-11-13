@@ -1,3 +1,10 @@
+import {
+  localizedPath,
+  languageAlternates,
+  localeFromPath,
+  type Locale,
+} from "./i18n";
+import { hasGermanTranslation } from "./localizeContent";
 import type { Metadata } from "next";
 import projectSlugs from "@/data/project-slugs.json";
 import type { CvOwnerPublic } from "@/server/notion/getCvOwner";
@@ -22,16 +29,22 @@ export function pageMetadata(
   path: string,
   title: string,
   description: string,
+  options: { locale?: Locale; availableLocales?: Locale[] } = {},
 ): Metadata {
-  const url = `${SITE_URL}${path}`;
+  const locale = options.locale ?? localeFromPath(path);
+  const url = `${SITE_URL}${localizedPath(path, locale)}`;
+  const languages = languageAlternates(path);
+  if (options.availableLocales && !options.availableLocales.includes("de"))
+    delete (languages as Partial<typeof languages>).de;
   return {
     title,
     description,
-    alternates: { canonical: url },
+    alternates: { canonical: url, languages },
     openGraph: {
       type: "website",
       siteName: SITE_NAME,
-      locale: "en_US",
+      locale: locale === "de" ? "de_DE" : "en_US",
+      alternateLocale: locale === "de" ? "en_US" : "de_DE",
       url,
       title,
       description,
@@ -53,15 +66,18 @@ export function pageMetadata(
   };
 }
 
-export function personSchema(owner?: CvOwnerPublic) {
+export function personSchema(owner?: CvOwnerPublic, locale: Locale = "en") {
   return {
     "@type": "Person",
     "@id": PERSON_ID,
     name: owner?.name || "Alexander Fuerst",
     alternateName: ["Alexander Fuerst", "Alexander Fürst"],
-    url: `${SITE_URL}/`,
+    url: `${SITE_URL}${localizedPath("/", locale)}`,
     jobTitle: owner?.position || "UX+AI Engineer",
-    description: SITE_DESCRIPTION,
+    description:
+      locale === "de"
+        ? "Alexander Fuerst entwickelt UX-Interfaces, KI-Automatisierung, Datenvisualisierungen und E-Commerce-Erlebnisse in Würzburg."
+        : SITE_DESCRIPTION,
     sameAs: PROFILE_LINKS,
     ...(owner?.city && {
       homeLocation: { "@type": "Place", name: owner.city },
@@ -83,8 +99,19 @@ export function projectSlug(project: Pick<CvProject, "id" | "name">) {
   return `${name || "project"}-${project.id}`;
 }
 
-export function projectPath(project: Pick<CvProject, "id" | "name">) {
-  return `/projects/${projectSlug(project)}`;
+export function projectPath(
+  project: Pick<CvProject, "id" | "name"> & Partial<CvProject>,
+  locale: Locale = project.contentLocale ?? "en",
+) {
+  const publishedLocale =
+    locale === "de" &&
+    (project.contentLocale === "de" ||
+      (project.description &&
+        project.kpis &&
+        hasGermanTranslation(project as CvProject)))
+      ? "de"
+      : "en";
+  return `/${publishedLocale}/projects/${projectSlug(project)}`;
 }
 
 export function projectDescription(project: CvProject) {
@@ -101,6 +128,7 @@ export function projectSchema(project: CvProject) {
     "@id": `${SITE_URL}${projectPath(project)}#project`,
     url: `${SITE_URL}${projectPath(project)}`,
     name: project.name,
+    inLanguage: project.contentLocale ?? "en",
     description:
       flattenRichText(project.description) || projectDescription(project),
     creator: { "@id": PERSON_ID },

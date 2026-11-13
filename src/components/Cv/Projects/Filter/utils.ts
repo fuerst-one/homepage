@@ -2,7 +2,16 @@ import { CvProject } from "@/server/notion/getCvProjects";
 import countBy from "lodash/countBy";
 import { colors } from "../colors";
 
-type FilterKey = keyof Omit<CvProject, "description" | "kpis" | "clients">;
+type FilterKey = keyof Omit<
+  CvProject,
+  | "description"
+  | "kpis"
+  | "clients"
+  | "descriptionDe"
+  | "kpisDe"
+  | "germanReady"
+  | "contentLocale"
+>;
 export type FilterParams = Partial<Record<FilterKey, string[]>>;
 
 export const getFilterOptionCounts = (

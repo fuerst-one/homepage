@@ -3,55 +3,54 @@
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFiltersStore } from "./filtersStore";
-import { parseProjectSearchParams } from "./parseSearchParams";
-import { FilterParams } from "./Filter/utils";
-
-const filtersToSearchString = (filters: FilterParams) => {
-  const params = new URLSearchParams();
-  Object.entries(filters)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .forEach(([key, values]) => {
-      if (values?.length) params.set(key, values.join(","));
-    });
-  return params.toString();
-};
+import { reconcileProjectUrl } from "./parseSearchParams";
+import { useProjectFocusStore } from "./projectFocusStore";
 
 export const FiltersUrlSync = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const filters = useFiltersStore((s) => s.filters);
-  const setFilters = useFiltersStore((s) => s.setFilters);
-
-  const lastSyncedSearchRef = useRef<string | null>(null);
-
+  const filters = useFiltersStore((state) => state.filters);
+  const setFilters = useFiltersStore((state) => state.setFilters);
+  const focusedProjectId = useProjectFocusStore(
+    (state) => state.focusedProjectId,
+  );
+  const setFocusedProjectId = useProjectFocusStore(
+    (state) => state.setFocusedProjectId,
+  );
+  const sync = useRef<{ lastUrl: string | null; pendingUrl: string | null }>({
+    lastUrl: null,
+    pendingUrl: null,
+  });
   useEffect(() => {
     const urlSearch = searchParams.toString();
-    const filtersSearch = filtersToSearchString(filters);
-
-    if (urlSearch === filtersSearch) {
-      lastSyncedSearchRef.current = urlSearch;
-      return;
-    }
-
-    // First run, or URL changed externally (back/forward, link nav) — URL wins.
-    if (
-      lastSyncedSearchRef.current === null ||
-      urlSearch !== lastSyncedSearchRef.current
-    ) {
-      lastSyncedSearchRef.current = urlSearch;
-      setFilters(
-        parseProjectSearchParams(Object.fromEntries(searchParams.entries())),
-      );
-      return;
-    }
-
-    // URL is in sync with the last reconciliation, so the store changed — push to URL.
-    lastSyncedSearchRef.current = filtersSearch;
-    router.replace(filtersSearch ? `${pathname}?${filtersSearch}` : pathname, {
-      scroll: false,
+    // A single writer keeps filter and dialog changes from cancelling each other.
+    const action = reconcileProjectUrl({
+      urlSearch,
+      filters,
+      focusedProjectId,
+      ...sync.current,
     });
-  }, [searchParams, filters, setFilters, pathname, router]);
-
+    if (action.type === "read") {
+      sync.current = { lastUrl: urlSearch, pendingUrl: null };
+      setFilters(action.filters);
+      setFocusedProjectId(action.focusedProjectId);
+    } else if (action.type === "write") {
+      sync.current = { lastUrl: urlSearch, pendingUrl: action.search };
+      router.replace(`${pathname}${action.search ? `?${action.search}` : ""}`, {
+        scroll: false,
+      });
+    } else if (action.type === "accept") {
+      sync.current = { lastUrl: urlSearch, pendingUrl: null };
+    }
+  }, [
+    searchParams,
+    filters,
+    focusedProjectId,
+    setFilters,
+    setFocusedProjectId,
+    pathname,
+    router,
+  ]);
   return null;
 };

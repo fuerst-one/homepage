@@ -3,6 +3,8 @@ import { fetchNotionPage } from "./utils/fetchNotionPage";
 import { flattenNotionObject } from "./utils/flattenNotionObject";
 import { buildNotionImageProxyPath } from "./notionImageProxy";
 
+import type { Locale } from "@/lib/i18n";
+
 const AVATAR_PROPERTY_NAME = "Avatar";
 
 export type CvAddress = {
@@ -28,6 +30,9 @@ export type CvOwner = CvOwnerPublic & {
   phone: string;
   address: CvAddress;
   dailyRate: number;
+  german?: Partial<
+    Pick<CvOwnerPublic, "position" | "status" | "languages" | "education">
+  >;
 };
 
 type NotionOwnerRow = {
@@ -36,6 +41,10 @@ type NotionOwnerRow = {
   Vorname?: string;
   Nachname?: string;
   Position?: string;
+  "Position DE"?: string;
+  "Status DE"?: string;
+  "Languages DE"?: string;
+  "Education DE"?: string;
   Status?: string | null;
   Languages?: string;
   Education?: string;
@@ -81,6 +90,12 @@ export const getCvOwner = async (): Promise<CvOwner> => {
       row["Name 1"] ||
       [row.Vorname, row.Nachname].filter(Boolean).join(" ") ||
       "",
+    german: {
+      position: row["Position DE"],
+      status: row["Status DE"],
+      languages: row["Languages DE"],
+      education: row["Education DE"],
+    },
     position: row.Position ?? "",
     status: row.Status ?? "",
     languages: row.Languages ?? "",
@@ -107,3 +122,11 @@ export const toPublicOwner = (owner: CvOwner): CvOwnerPublic => ({
   available: owner.available,
   avatarUrl: owner.avatarUrl,
 });
+
+export const localizeOwner = (owner: CvOwner, locale: Locale): CvOwner => {
+  if (locale === "en") return owner;
+  const translated = Object.fromEntries(
+    Object.entries(owner.german ?? {}).filter(([, value]) => value?.trim()),
+  );
+  return { ...owner, ...translated };
+};

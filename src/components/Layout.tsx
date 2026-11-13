@@ -1,5 +1,7 @@
 import { ReactNode, Suspense } from "react";
-import Link from "next/link";
+import Link from "./i18n/LocalizedLink";
+import { LanguageSwitcher } from "./i18n/LanguageSwitcher";
+import type { Locale } from "@/lib/i18n";
 import { SiteFooter } from "./SiteFooter";
 import { BackToTopButton } from "./BackToTopButton";
 import { getCachedCvOwnerPublic } from "@/server/notion/getCachedCvOwner";
@@ -7,11 +9,15 @@ import { getCachedCvOwnerPublic } from "@/server/notion/getCachedCvOwner";
 export async function Layout({
   sidebarContent,
   children,
+  locale = "en",
+  availableLocales,
 }: {
   sidebarContent?: ReactNode;
+  locale?: Locale;
+  availableLocales?: Locale[];
   children: ReactNode;
 }) {
-  const owner = await getCachedCvOwnerPublic();
+  const owner = await getCachedCvOwnerPublic(locale);
   return (
     <div className="relative z-10 min-h-screen max-w-full">
       <div className="relative mx-auto flex w-full max-w-6xl flex-col px-2 py-12 sm:px-4 lg:px-6">
@@ -43,11 +49,19 @@ export async function Layout({
                   </span>
                   <span className="flex flex-wrap gap-x-3 gap-y-1 text-[0.65rem] uppercase leading-relaxed tracking-[0.16em] text-neutral-400 sm:text-xs">
                     <span className="whitespace-nowrap">
-                      creative technology
+                      {locale === "de"
+                        ? "kreative Technologie"
+                        : "creative technology"}
                     </span>
-                    <span className="whitespace-nowrap">cogent interfaces</span>
                     <span className="whitespace-nowrap">
-                      effective automation
+                      {locale === "de"
+                        ? "klare Interfaces"
+                        : "cogent interfaces"}
+                    </span>
+                    <span className="whitespace-nowrap">
+                      {locale === "de"
+                        ? "wirksame Automatisierung"
+                        : "effective automation"}
                     </span>
                   </span>
                 </div>
@@ -63,24 +77,34 @@ export async function Layout({
                     aria-hidden
                     className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_currentColor]"
                   />
-                  Available
+                  {locale === "de" ? "Verfügbar" : "Available"}
                 </span>
               )}
             </div>
           </div>
           <nav
-            aria-label="Main navigation"
+            aria-label={locale === "de" ? "Hauptnavigation" : "Main navigation"}
             className="flex flex-wrap gap-6 text-xs uppercase tracking-[0.2em]"
           >
             <Link href="/cv" className="hover:text-white">
               CV
             </Link>
             <Link href="/contact" className="hover:text-white">
-              Contact
+              {locale === "de" ? "Kontakt" : "Contact"}
             </Link>
             <Link href="/hire" className="hover:text-white">
-              Work with me
+              {locale === "de" ? "Zusammenarbeiten" : "Work with me"}
             </Link>
+            <Link
+              href="/services/product-interfaces"
+              className="hover:text-white"
+            >
+              {locale === "de" ? "Produktinterfaces" : "Product interfaces"}
+            </Link>
+            <Link href="/services/ai-automation" className="hover:text-white">
+              {locale === "de" ? "KI & Automatisierung" : "AI & automation"}
+            </Link>
+            <LanguageSwitcher availableLocales={availableLocales} />
           </nav>
           <div className="h-px w-full bg-white/20" />
         </header>
@@ -91,7 +115,7 @@ export async function Layout({
               <div className="relative space-y-6 border border-white/30 bg-black/85 p-8">
                 {sidebarContent}
                 <div className="border-t border-white/20 pt-6 text-xs text-neutral-500">
-                  <SiteFooter />
+                  <SiteFooter locale={locale} />
                 </div>
               </div>
               <div className="hidden flex-1 lg:flex">
@@ -114,7 +138,7 @@ export async function Layout({
               </div>
             </main>
             <footer className="mt-12 border-t border-white/20 pt-6 text-xs text-neutral-500">
-              <SiteFooter />
+              <SiteFooter locale={locale} />
             </footer>
           </>
         )}

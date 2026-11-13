@@ -1,0 +1,286 @@
+{
+  "41786514-f736-8003-86e9-fb3a9fd4248a": {
+    "description": [
+      "Entwurf und Bau eines kameragesteuerten Schwenk-/Neige-Prototyps zur schonenden Taubenabwehr. Das System verbindet ESP32-Firmware, einen Raspberry-Pi-Dienst, Vogelerkennung, ein Web-Dashboard und eigene 3D-gedruckte Bauteile. Zu den Funktionen gehören Kamera-Streaming, geplante Aufnahmen, Vogelerkennung, manuelles Zielen und Auslösen, Telemetrie und OTA-Updates."
+    ],
+    "kpis": []
+  },
+  "41786514-f736-80ab-bead-e2ccd429b958": {
+    "description": [
+      "Ein einbettbarer KI-Website-Assistent, der Fragen anhand von Website-Inhalten, Dokumenten und ausgewähltem Notion-Wissen beantwortet und Besucher anschließend beim Navigieren und Ausfüllen von Formularen unterstützt. Ein sichtbarer Mauszeiger und Tipp-Feedback zeigen jede Aktion; vor dem Absenden ist eine Freigabe erforderlich, Aktionen können unterbrochen werden. React-/TypeScript-Widget, Laravel-Workspace, PostgreSQL/pgvector und OpenRouter. Organisationen mit Zugang auf Einladung verwalten Websites, Wissen, Teamzugriffe und verschlüsselte KI-Zugangsdaten. In aktiver Entwicklung; echter Chat und Projektnavigation wurden auf der lokalen Fuerst.one-Homepage geprüft."
+    ],
+    "kpis": []
+  },
+  "41786514-f736-8074-8dcb-dd79f906d12a": {
+    "description": [
+      "Ein persönlicher Arbeitsbereich, um Projekte und den Geschäftsalltag im Blick zu behalten. Business Hub bündelt Nachrichten, Termine, Aufgaben, Dokumente, erfasste Arbeitszeit und Finanzen in einer Übersicht und ordnet den passenden Kontext nach Projekten. Ziel ist, weniger Zeit mit Suchen und App-Wechseln zu verbringen, wichtige Themen früher zu erkennen und Routineaufgaben wie das Finden und Prüfen von Rechnungen leichter zu verwalten."
+    ],
+    "kpis": []
+  },
+  "35686514-f736-8019-921c-e5d8d77e7f23": {
+    "description": [
+      "Vollständig LLM-gestütztes lokales E2E-Testwerkzeug für Web-Apps. Nutzerabläufe lassen sich in natürlicher Sprache beschreiben und von Agenten in MCP-gesteuerten Browsern ausführen."
+    ],
+    "kpis": [
+      "Aufwand für manuelle Qualitätssicherung, E2E-Tests und Verfügbarkeitsüberwachung halbiert"
+    ]
+  },
+  "35486514-f736-803d-ae01-dc666a99d11c": {
+    "description": [
+      "Ich mag Kartenvisualisierung, Automatisierung und Roadtrips – warum also nicht alles verbinden? Diese App entwirft anhand deines gewünschten Reiseprofils vollständige Reisen einschließlich Tagesausflügen an den Zielorten. Anschließend lässt sich die gesamte Route in einer übersichtlichen Kartenoberfläche mit Live-Zusammenarbeit anpassen."
+    ],
+    "kpis": ["Vollständige Reiseideen in Sekunden statt Stunden"]
+  },
+  "35486514-f736-8020-bde8-e0f741a1a77a": {
+    "description": [
+      "Integrierte, dateibasierte lokale Multi-Agenten-Umgebung mit Web-Oberfläche. Sie steuert einen fünfstufigen Build-Prozess nach den Prinzipien der spezifikations- und testgetriebenen Entwicklung, einschließlich Live-Status, Steuerung, Roadmap und Controlling-Dashboards."
+    ],
+    "kpis": [
+      "12 Agenten arbeiten gleichzeitig an Spezifikationen, Code und Reviews"
+    ]
+  },
+  "35486514-f736-8087-86dd-f41b80c8b0ad": {
+    "description": [
+      "Ausgehend vom mem0-v4-Projekt entstand ein Gedächtnissystem für Agenten, das ähnlich wie ein Gehirn lernen und „denken“ soll. Entitätsauflösung, emotionale Aktivierung, Aktualitätsgewichtung und ein einfaches Hierarchiesystem verbinden Graph- und Vektordatenbanken mit spezialisierten LLMs, um das Speichern und Abrufen von Wissen intelligent und selbstverstärkend zu gestalten."
+    ],
+    "kpis": ["Automatisches Speichern und Abrufen relevanter Fakten"]
+  },
+  "21886514-f736-80c5-88f4-c37e60968f21": {
+    "description": [
+      "Für meine Marken-Startseite habe ich eine vollständig generative Plasma-Animation entworfen, die ausschließlich aus ASCII-Zeichen besteht. Sie verbindet die Ästhetik früher Computer mit modernen Creative-Coding-Techniken zu einer lebendigen digitalen Leinwand, die zugleich nostalgisch und futuristisch wirkt."
+    ],
+    "kpis": []
+  },
+  "1eb86514-f736-80bf-87ae-e4e5ec9e9424": {
+    "description": [
+      "BuchstaBiene ist ein Spiel, bei dem alle deutschen Wörter aus einem Pflichtbuchstaben und sechs optionalen Buchstaben gefunden werden sollen."
+    ],
+    "kpis": [
+      "30 Minuten Doomscrolling durch Denksport und Wortschatztraining ersetzt"
+    ]
+  },
+  "15b86514-f736-803e-b9b7-e47ebc2406d1": {
+    "description": [
+      "Mit diesem modernen Designwerkzeug hebt Arider die Individualisierung von Motorrädern auf eine neue Stufe. Ähnlich wie Adobe Illustrator, speziell für Motorradgrafiken, können Nutzer ihre Dekore von Grund auf gestalten oder fertige Kits einfach über Farbvariablen anpassen und ihre eigene Vorstellung auf dem Motorrad umsetzen."
+    ],
+    "kpis": [
+      ">10.000 von Nutzern erstellte Designs in 3 Monaten, +50 % wiederkehrende Nutzer im Bereich für individuelle Dekore, +1,5 Wochen durchschnittliches Wiederkehrintervall"
+    ]
+  },
+  "11d86514-f736-80ed-935c-e6fe30b59d42": {
+    "description": [
+      "Conversion Y bietet einen einfachen und kostengünstigen Weg, Umfragen zu erstellen, in Websites einzubinden und automatisch auszuwerten. So erhalten Unternehmen schnell wertvolle Informationen, aus denen sich konkrete Maßnahmen ableiten lassen."
+    ],
+    "kpis": [
+      "Gesamtzeit für Erstellung und Auswertung von Umfragen um >50 % reduziert"
+    ]
+  },
+  "d33ded3a-755e-47bc-87ff-6fd496774a18": {
+    "description": [
+      "In diesem Projekt haben wir Schiffscontainer mit GPS-Trackern ausgestattet, um ihren Status und ihre Bewegungen im Hafen zu erfassen. Durch die Abbildung des gesamten Lebenszyklus von der Ankunft bis zur Verladung wurden Positionen und Umschlag in Echtzeit sichtbar. Die Daten halfen dabei, Abläufe zu vereinfachen, Standzeiten zu reduzieren und die Ladeeffizienz deutlich zu verbessern. Das System schuf mehr Transparenz und zugleich die Grundlage für vorausschauende Logistik und intelligenteres Hafenmanagement."
+    ],
+    "kpis": [
+      ">3 Möglichkeiten zur Effizienzsteigerung in den ersten 2 Monaten der Erfassung identifiziert"
+    ]
+  },
+  "47579682-9325-4e9a-b014-e4fb424bb0bb": {
+    "description": [
+      "Als studentischer Berater bei KonversionsKRAFT gehörte dieses Projekt zu meinen liebsten: Es zeigte besonders deutlich, wie viel kleine Veränderungen bewirken können. An dieser Stelle lohnt sich auch ein Blick auf den Kunden World Vision. Dessen Patenschaftsansatz ist besonders und macht die eigene Hilfe unmittelbarer erlebbar als eine reine Geldspende."
+    ],
+    "kpis": [
+      "+20 % bei der Patenschafts-Conversion-Rate (statistisch signifikant)"
+    ]
+  },
+  "6a549850-e00b-47fa-9fda-d2609c40431d": {
+    "description": [
+      "Eines der ungewöhnlicheren Projekte meiner Laufbahn: Produktverpackungen einfach über eine Chat-Oberfläche konfigurieren. Mit Typeform in der Version von 2018, die deutlich weniger Funktionen als heute bot, entwickelte ich einen umfangreichen Entscheidungsbaum. Leider wurde das Unternehmen später verkauft und das Produkt eingestellt."
+    ],
+    "kpis": []
+  },
+  "6bce7ee2-3d3b-4f7d-8c31-a7159b49a301": {
+    "description": [
+      "Das ist die Website, die du gerade siehst. Weil ich Daten mag, habe ich eine Möglichkeit entwickelt, meinen Lebenslauf und mein Portfolio einfach zu speichern, darzustellen und an unterschiedliche Kunden und Arbeitgeber anzupassen. Projekte und Erfahrungen lassen sich vordefiniert oder nach eigener Auswahl anzeigen, um den Nutzen und die Benutzerfreundlichkeit deutlich zu erhöhen."
+    ],
+    "kpis": [
+      "2 Stunden weniger Aufwand pro Lebenslauf für die Auswahl passender Inhalte"
+    ]
+  },
+  "b6b27ca7-bf93-4162-966f-635187376722": {
+    "description": [
+      "Objekterkennung auf Satellitenbildern wollte ich schon länger ausprobieren. Leider sind die Modelle nicht sehr zuverlässig und beschriftete Satellitenbilder schwer verfügbar. Das Ergebnis lässt sich selbst ansehen: Die App erkennt Strukturen live auf einer Karte."
+    ],
+    "kpis": []
+  },
+  "d5bd0050-2efd-4aba-a168-3ce1a1e539c6": {
+    "description": [
+      "Die für die Branche naheliegende Erweiterung des Werkzeugs „Public Searoutes“. Nach einigen Jahren in der maritimen Industrie war klar: Excel ist für nahezu jede Planung und Berechnung das Werkzeug der Wahl. Diese Gelegenheit haben wir genutzt und das Plugin entwickelt."
+    ],
+    "kpis": [
+      "10 Sekunden weniger Aufwand, um eine Route zu berechnen und nach Excel zu übertragen"
+    ]
+  },
+  "c6a3f4a3-9387-475b-a3af-bb5512846d9e": {
+    "description": [
+      "Ein Projekt, das aus Langeweile entstand. Durch die Corona-Beschränkungen wurde es schwieriger, Freunde zu sehen oder überhaupt auszugehen. Da war es hilfreich, Neuigkeiten zu Lockdowns direkt aufs Handy zu bekommen, statt unübersichtliche Behörden-Websites im Stil der 90er durchsuchen zu müssen."
+    ],
+    "kpis": [
+      "60 Sekunden weniger Aufwand beim Nachschlagen aktueller Corona-Meldungen"
+    ]
+  },
+  "d1420991-70e5-4b5a-a1f7-06d27b902cde": {
+    "description": [
+      "Die Oberfläche der Apple Watch im Browser? Das wollte ich ausprobieren. Deshalb habe ich die blasenartige Oberfläche in einer kleinen React-App nachgebaut."
+    ],
+    "kpis": []
+  },
+  "e3884152-6e82-4d93-a596-ddce91e6bfd0": {
+    "description": [
+      "Diese App begann als Hobbyprojekt, löste aber schnell ein relevantes Problem. Anbieter wie „Kitchen Stories“ und „Capt’n Cook“ haben inzwischen eigene Lösungen und Geschäftsmodelle rund um diese Idee entwickelt. Für mich blieben eine wertvolle Erfahrung und ein gelungenes Ergebnis."
+    ],
+    "kpis": []
+  },
+  "153487a4-4b86-48b2-998c-3675a85bfd8e": {
+    "description": [
+      "Dieses Projekt ist eigentlich eine geheime Beta. Also bitte nicht besuchen und kein Konto erstellen. Du wirst dort ganz bestimmt nicht deine gesamte Website steuern, auslesen und verwalten können. Und auf keinen Fall etwas über Conversion-Rate-Optimierung lernen …"
+    ],
+    "kpis": [
+      "Ideenfindung, Konzeption, Priorisierung und A/B-Test-Controlling vereinfacht"
+    ]
+  },
+  "129bf87c-e0d6-4217-9c16-c320eeb0e29b": {
+    "description": [
+      "Im Rahmen einer Hochschulkooperation mit Zooplus haben wir zu fünft ein startupähnliches Projekt für eine E-Food-Onlineshop-App konzipiert und geleitet – vergleichbar mit Amazon Fresh für Haustiere.\nWir hatten kaum Einschränkungen, organisierten uns mit aktuellen Werkzeugen und entwickelten mit Axure, Eye-Tracking und weiteren Usability-Tests schnell Prototypen."
+    ],
+    "kpis": []
+  },
+  "afd09462-172e-40a9-8011-d2f6af5f5859": {
+    "description": [
+      "Diese Zusammenarbeit an Interface-Design, CRM-API-Anbindung und Auslieferungsprozessen war mein erstes größeres Projekt als Angestellter.\nZiel war, die Konfiguration von Verpackungsprodukten neu zu gestalten, zu vereinfachen und dadurch die Conversion zu erhöhen.\nAls Frontend- und E-Commerce-Spezialist des Teams bestand meine Hauptaufgabe darin, Interface-Design und Funktionalität auf einem vorhandenen Shopware-Theme aufzubauen."
+    ],
+    "kpis": ["+35 % Conversion-Rate im Verpackungskonfigurator"]
+  },
+  "30f6e7c0-b762-4f33-adf0-2f433ec05090": {
+    "description": [
+      "Diese Zahnarzt-Website war mein erstes bezahltes Nebenprojekt während des Studiums. Es war eine einfache Markenwebsite, bei der ich bereits viele Erkenntnisse zu Benutzerfreundlichkeit und Konsumentenpsychologie anwenden konnte."
+    ],
+    "kpis": ["+60 % mehr Besucher / +10 % mehr Anrufe"]
+  },
+  "10bcfe51-e86d-44dc-a247-0c542f9996be": {
+    "description": [
+      "Kleiner als Raute war mein erster unternehmerischer Versuch. Aus einem Spaßprojekt, bei dem ich Kleidung für Freunde gestaltete, entstand mehr Nachfrage als erwartet. Gemeinsam mit zwei Freunden entwickelten wir das Projekt mit verschiedenen Marketing- und Vertriebskanälen sowie Produktionsabläufen weiter. Wir waren jung und entschieden irgendwann, dass das Projekt zu viel Zeit beanspruchte und wir neue Richtungen einschlagen wollten."
+    ],
+    "kpis": []
+  },
+  "23b40e8e-626f-4fcf-9c04-83684b404adb": {
+    "description": [
+      "Bei KonversionsKRAFT war ",
+      "mobile.de",
+      " meine eindrucksvollste Erfahrung. Ich durfte den über 90-köpfigen Finanzierungsbereich zu Conversion-Rate-Optimierung, A/B-Testing und Konsumentenpsychologie beraten und mit meinem Agenturteam Testprozesse umsetzen. Unsere Tests steigerten die Conversion-Rate für Autofinanzierungsanfragen insgesamt um über 150 %."
+    ],
+    "kpis": [
+      "+90 % Conversion-Rate bei Autofinanzierungsanfragen in einem Test (statistisch signifikant) / insgesamt über +150 %"
+    ]
+  },
+  "b6ea7e71-2e97-42f2-8644-a57545c20d59": {
+    "description": [
+      "Dieser Workshop, Thinktank und Hackathon für die Bundeswehr sollte neue digitale Produkte für die Logistik hervorbringen. In enger Zusammenarbeit mit den Soldaten gehörten wir zu den Preisträgern. Die Idee unseres Teams wurde für die Umsetzung in der gesamten Bundeswehr ausgewählt."
+    ],
+    "kpis": [
+      "1. Platz bei der jährlichen Logistics Innovation Challenge der Bundeswehr"
+    ]
+  },
+  "d53554cf-ec81-4e1c-a46a-6da27179ba7c": {
+    "description": [
+      "Dieses Studienprojekt mit vier Kollegen sollte durch Innovation mehr Nachhaltigkeit ermöglichen. Wir entwarfen ein fiktives Produkt, mit dem Verbraucher ihre Solarstromerträge und das Laden von Elektroautos mit unterschiedlichen Profilen verfolgen, planen und steuern können. Ein eigenes Produktdesign und eine mobile Oberfläche machten die Idee für eine fiktive Jury greifbar."
+    ],
+    "kpis": []
+  },
+  "9d4999cb-5ee7-4fc3-a99e-9ee7fbadce5d": {
+    "description": [
+      "Burger Loop war ein Tutoriumsprojekt für unsere Hochschule, das ich gemeinsam mit einem Kollegen entwickelte, um Programmiergrundlagen zu erklären. Ein Burger machte das Thema unterhaltsamer. Dafür mussten wir einen Schritt zurücktreten und bereits gelerntes Wissen noch einmal aus der Perspektive von Anfängern betrachten."
+    ],
+    "kpis": [
+      "30 % höhere Erfolgsquote bei Einstiegsfragen zur Programmierung nach Abschluss"
+    ]
+  },
+  "f139765e-8589-4978-b7fd-86f8bfefc376": {
+    "description": [
+      "Die Markenentwicklung für unsere Open-Source-Arbeit war Teil der Strategie, ein Softwareentwicklungsteam für die maritime Branche nach dem Vorbild „A-Team trifft Rocket Internet“ aufzubauen. Bislang fehlt noch die Finanzierung, um dieses Vorhaben weiterzuverfolgen."
+    ],
+    "kpis": []
+  },
+  "94b5c46b-abd4-4eec-9a4a-19a07654db84": {
+    "description": [
+      "Public Searoutes entstand als Open-Source-Projekt mit dem Ziel, eine kostenlose und nachhaltige Alternative zu kommerziellen Routing-Diensten anzubieten. Im Mittelpunkt steht die Suche nach innovativen Lösungen. Globale Logistik prägt unseren Alltag in einer eng vernetzten Welt. Als zwei Entwickler aus der maritimen Branche wollen wir dazu beitragen, die Schifffahrt effizienter und klimafreundlicher zu machen."
+    ],
+    "kpis": [">1.000 kostenlose Routenberechnungen pro Monat"]
+  },
+  "b77109b3-803c-4132-a07b-44b9b9ccc5df": {
+    "description": [
+      "NuMobility entstand als Reaktion auf die vielen neuen Elektroautos, nachdem Tesla seine günstigeren Modelle vorgestellt hatte. Später haben wir den Fokus auf Mobilität insgesamt erweitert – einerseits wegen des starken Wettbewerbs im E-Auto-Marketing, andererseits, weil wir Menschen dabei helfen möchten, die für sie passende Balance zwischen Flexibilität und Nachhaltigkeit zu finden."
+    ],
+    "kpis": [
+      ">1.000 Nutzer pro Monat mit einer Verweildauer von mehr als 3 Minuten"
+    ]
+  },
+  "7c7ab543-4c3c-4744-b070-bf3c030d5d6a": {
+    "description": [
+      "Mit Gemeinde-App können Kommunen sowohl Touristen als auch Einheimischen einfach erstellbare Freizeit- und Informationstouren durch die Region anbieten. Leicht bedienbare Schnittstellen zu den App-Nutzern helfen den Gemeinden, ihr Tourismusangebot zu verbessern und gleichzeitig Papierverbrauch und Arbeitsaufwand zu reduzieren."
+    ],
+    "kpis": []
+  },
+  "765dfa64-20ea-431b-a507-fd90cf18a015": {
+    "description": [
+      "PortCheck beziehungsweise PierCheck waren Arbeitstitel eines Projekts, das Hafenprozesse mit datenbasierten Empfehlungen zu Liegeplätzen und Planung neu denken sollte. Wir bündelten und verglichen verschiedene Datenquellen – von AIS bis zu öffentlich verfügbaren Fahrplänen –, um unter anderem CO₂-Emissionen und verspätete oder verfrühte Ankünfte abzuschätzen."
+    ],
+    "kpis": ["Mehr als 15 unterschiedliche, sofort verfügbare Diagramme"]
+  },
+  "e315ebfb-d36f-4b62-8f7c-f58eaacf7806": {
+    "description": [
+      "Mit Playlist-Stats findest du interessante Fakten über die Musik in deinen Spotify-Playlists.",
+      "\n",
+      "Mit der Spotify-API und passenden Diagrammen kannst du deinen Musikgeschmack genauer erkunden. Die App analysiert ausgewählte Playlists automatisch nach häufigsten Künstlern, der Verteilung von Veröffentlichungsdaten und weiteren Merkmalen."
+    ],
+    "kpis": []
+  },
+  "f9cc2539-c940-4864-8ff0-8424ed0d9fb9": {
+    "description": [
+      "Mit Playlist-Canvas gestaltest du Collagen aus den Albumcovern deiner Spotify-Playlists nach deinen Vorstellungen.\nWähle eine Playlist und konfiguriere, verschiebe, drehe und ordne die Cover – oder lass sie zufällig platzieren. Statt jedes Cover einzeln zu suchen und herunterzuladen, bearbeitest du alles direkt im Werkzeug und lädst die fertige Collage herunter."
+    ],
+    "kpis": []
+  },
+  "153f6668-f4d6-490a-8345-0b999b35305a": {
+    "description": [
+      "Mit seabo macht die internationale maritime Branche einen weiteren Schritt in Richtung Digitalisierung.",
+      "\n",
+      "Die App bietet Funktionen für Reiseberechnung, Wettbewerbsanalyse, Routenüberwachung und Verhandlungen.\nEine umfangreiche und intuitive Oberfläche für diese spezialisierte Branche hilft Chartermaklern, effizienter zu arbeiten und verlässlich vorauszuplanen."
+    ],
+    "kpis": [
+      ">50 übernommene Usability-Probleme behoben und ein Designsystem eingeführt\n7 Nutzerabläufe von Grund auf neu oder überarbeitet gestaltet"
+    ]
+  },
+  "510f3492-1e77-4788-8ef5-73754af2d2e2": {
+    "description": [
+      "Sophisticates bietet digitale Transformation durch die Planung und Umsetzung individueller Unternehmenssoftware. Ich habe der Website des Unternehmens eine digitale Transformation ermöglicht."
+    ],
+    "kpis": []
+  },
+  "cdd10e91-b9ef-4232-8378-14db1a67bc15": {
+    "description": [
+      "Diese Website war mein erstes größeres Projekt. Sie entstand während meines Studiums an der THWS und sollte zunächst nur grundlegende Informationen enthalten. Mit dem Studium und meinem wachsenden Wissen über professionelle Online-Geschäfte kamen immer mehr Möglichkeiten hinzu, dieses Wissen im eigenen Hobbyprojekt anzuwenden. Am Ende war die Website deutlich umfangreicher als erwartet. Die dort gezeigten Grundprinzipien gelten für mich bis heute."
+    ],
+    "kpis": []
+  },
+  "482c21e0-0e0d-436b-8858-a338875ee4bd": {
+    "description": [
+      "Die Arbeit für FAAREN, das wenige Wochen zuvor von Studienkollegen gegründet worden war, war eine inspirierende Erfahrung.\nIn einem innovativen und fokussierten Team während der frühen Phase konnte ich eine offene Lernhaltung erleben, neue Prozesse und Priorisierungen mitgestalten und neue Werkzeuge kennenlernen. Schnelles Prototyping und Design Thinking halfen uns, in kurzer Zeit ans Ziel zu kommen."
+    ],
+    "kpis": ["250 Stunden für das vollständige Web-Frontend"]
+  },
+  "a2e00fd0-11cd-4128-ad63-76c98bae2010": {
+    "description": [
+      "Ein Studienprojekt zum Thema Nachhaltigkeit im Viererteam. Als Shopware-Plugin entwickelten wir einen Ablauf, mit dem Online-Käufer zusätzlich zu ihrem Druckprodukt ein CO₂-Zertifikat erwerben können. Der Schwerpunkt lag auf Technik und Projektmanagement. Mit dem Ergebnis erreichten wir den zweiten Platz."
+    ],
+    "kpis": []
+  }
+}

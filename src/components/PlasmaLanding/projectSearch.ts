@@ -1,5 +1,7 @@
+import type { Locale } from "../../lib/i18n";
 import type { ProjectListItem } from "@/server/api/projectListItem";
 import { getKeywordIconShape, getProjectIconShape } from "./iconCatalog";
+
 const FILTER_GROUPS = [
   { field: "tools", label: "Tool", shape: 4 },
   { field: "experiences", label: "Expertise", shape: 2 },
@@ -10,11 +12,62 @@ const FILTER_GROUPS = [
   { field: "clients", label: "Client", shape: 1 },
   { field: "featured", label: "Selection", shape: 0 },
 ] as const;
+
 type SearchField = (typeof FILTER_GROUPS)[number]["field"];
-export type SearchFilter = {
-  field: SearchField;
-  value: string;
+const GERMAN_FACETS: Partial<Record<SearchField, Record<string, string[]>>> = {
+  experiences: {
+    "Frontend-Development": ["Frontend-Entwicklung", "Frontend Entwicklung"],
+    "Backend-Development": ["Backend-Entwicklung", "Backend Entwicklung"],
+    "Fullstack-Development": ["Fullstack-Entwicklung", "Fullstack Entwicklung"],
+    "UI-Design": ["UI-Design", "Oberflächendesign"],
+    "UX-Design": ["UX-Design", "Nutzererfahrung"],
+    "AI Engineering": [
+      "KI-Engineering",
+      "KI",
+      "Künstliche Intelligenz",
+      "Kuenstliche Intelligenz",
+    ],
+  },
+  industries: {
+    "Artificial Intelligence": [
+      "Künstliche Intelligenz",
+      "Kuenstliche Intelligenz",
+      "KI",
+    ],
+    "E-Commerce": ["E-Commerce", "Onlinehandel", "Online Handel"],
+    Retail: ["Einzelhandel"],
+    Healthcare: ["Gesundheitswesen"],
+    Education: ["Bildung"],
+    Finance: ["Finanzen"],
+    Tourism: ["Tourismus"],
+  },
+  projectType: {
+    Freelance: [
+      "Freiberuflich",
+      "Freiberufler",
+      "Selbstständig",
+      "Selbstaendig",
+    ],
+    Employed: ["Angestellt", "Festanstellung"],
+    Hobby: ["Hobby", "Privatprojekt"],
+    Student: ["Studium", "Studienprojekt"],
+    "Pro Bono": ["Pro Bono", "Ehrenamtlich"],
+  },
+  workplace: {
+    Remote: ["Remote", "Homeoffice", "Heimarbeit"],
+    Hybrid: ["Hybrid"],
+    "On-Premise": ["Vor Ort", "Büro", "Buero"],
+  },
+  featured: {
+    Featured: ["Hervorgehoben", "Highlights"],
+    "Not featured": ["Nicht hervorgehoben"],
+  },
 };
+const facetAliases = (field: SearchField, value: string) => [
+  value,
+  ...(GERMAN_FACETS[field]?.[value] ?? []),
+];
+export type SearchFilter = { field: SearchField; value: string };
 export type SearchProject = {
   id: string;
   name: string;
@@ -33,11 +86,14 @@ export type SearchSuggestion = {
   caption: string;
   filter?: SearchFilter;
   href?: string;
+  aliases?: string[];
 };
 export type ProjectSearchIndex = {
   projects: SearchProject[];
   keywords: SearchSuggestion[];
+  locale: Locale;
 };
+
 const normalize = (value: string) =>
   value
     .normalize("NFKD")
@@ -58,7 +114,21 @@ const STOP_WORDS = new Set([
   "in",
   "for",
   "the",
+  "zeig",
+  "zeige",
+  "mir",
+  "deine",
+  "deinen",
+  "dein",
+  "projekte",
+  "projekten",
+  "projekt",
+  "mit",
+  "und",
+  "fur",
+  "bitte",
 ]);
+
 const matchRank = (value: string, term: string) => {
   const normalized = normalize(value);
   const words = normalized.split(" ");
@@ -70,13 +140,17 @@ const matchRank = (value: string, term: string) => {
   if (term.length >= 3 && normalized.includes(term)) return 3;
   return Infinity;
 };
+
 /** Uses the existing public project API; private Notion fields never enter this index. */
 export const buildProjectSearchIndex = (
   items: ProjectListItem[],
+  locale: Locale = "en",
 ): ProjectSearchIndex => {
   const projects: SearchProject[] = items.map((item) => {
     const pathname = new URL(item.webUrl, "https://fuerst.one").pathname;
-    const href = /^\/projects\//.test(pathname) ? pathname : "/cv";
+    const href = /^\/(?:en\/|de\/)?projects\//.test(pathname)
+      ? pathname
+      : "/en/cv";
     return {
       id: item.id,
       name: item.name,
@@ -88,8 +162,8 @@ export const buildProjectSearchIndex = (
         experiences: item.experiences,
         industries: item.industries,
         languages: item.languages,
-        projectType: [item.projectType],
-        workplace: [item.workplace],
+        projectType: item.projectType ? [item.projectType] : [],
+        workplace: item.workplace ? [item.workplace] : [],
         clients: item.clientNames,
         featured: [item.featured ? "Featured" : "Not featured"],
       },
@@ -97,7 +171,21 @@ export const buildProjectSearchIndex = (
   });
   const keywords: SearchSuggestion[] = [];
   for (const group of FILTER_GROUPS) {
-    const label = group.label;
+    const label =
+      locale === "de"
+        ? (
+            {
+              tools: "Tool",
+              experiences: "Erfahrung",
+              industries: "Branche",
+              languages: "Sprache",
+              projectType: "Projekttyp",
+              workplace: "Arbeitsort",
+              clients: "Kunde",
+              featured: "Auswahl",
+            } as Record<string, string>
+          )[group.field]
+        : group.label;
     const counts = new Map<string, number>();
     for (const project of projects) {
       for (const value of new Set(
@@ -107,20 +195,26 @@ export const buildProjectSearchIndex = (
       }
     }
     for (const [value, count] of counts) {
+      const displayValue =
+        locale === "de"
+          ? (GERMAN_FACETS[group.field]?.[value]?.[0] ?? value)
+          : value;
       keywords.push({
         id: `${group.field}:${value}`,
         kind: "keyword",
-        label: value,
+        label: displayValue,
+        aliases: facetAliases(group.field, value),
         category: label,
         count,
         shape: getKeywordIconShape(group.field, value, group.shape),
-        caption: `${count} ${count === 1 ? "project" : "projects"} · ${label.toLowerCase()}: ${value}`,
+        caption: `${count} ${locale === "de" ? (count === 1 ? "Projekt" : "Projekte") : count === 1 ? "project" : "projects"} · ${label.toLowerCase()}: ${displayValue}`,
         filter: { field: group.field, value },
       });
     }
   }
-  return { projects, keywords };
+  return { projects, keywords, locale };
 };
+
 export const searchProjectIndex = (
   index: ProjectSearchIndex,
   query: string,
@@ -140,7 +234,9 @@ export const searchProjectIndex = (
     index.keywords.find(
       (keyword) =>
         keyword.filter?.field === "featured" &&
-        normalize(keyword.label) === normalized,
+        (keyword.aliases ?? [keyword.label]).some(
+          (alias) => normalize(alias) === normalized,
+        ),
     )?.filter;
   const projects = index.projects
     .filter((project) => {
@@ -151,7 +247,9 @@ export const searchProjectIndex = (
       const values = [
         project.name,
         project.summary,
-        ...Object.values(project.facets).flat(),
+        ...FILTER_GROUPS.flatMap(({ field }) =>
+          project.facets[field].flatMap((value) => facetAliases(field, value)),
+        ),
       ];
       return terms.every((term) =>
         values.some((value) => Number.isFinite(matchRank(value, term))),
@@ -168,7 +266,13 @@ export const searchProjectIndex = (
     .map((keyword) => ({
       keyword,
       rank: terms.reduce(
-        (rank, term) => rank + matchRank(keyword.label, term),
+        (rank, term) =>
+          rank +
+          Math.min(
+            ...(keyword.aliases ?? [keyword.label]).map((alias) =>
+              matchRank(alias, term),
+            ),
+          ),
         0,
       ),
     }))
@@ -187,7 +291,7 @@ export const searchProjectIndex = (
       id: `project:${project.id}`,
       kind: "project",
       label: project.name,
-      category: "Project",
+      category: index.locale === "de" ? "Projekt" : "Project",
       count: 1,
       shape: project.shape,
       caption: project.summary || project.name,

@@ -1,3 +1,4 @@
+import type { Locale } from "@/lib/i18n";
 import { CvProject } from "../notion/getCvProjects";
 import { RichTextField } from "../notion/types";
 import { API_BASE_URL } from "./baseUrl";
@@ -25,7 +26,10 @@ export type ProjectListItem = {
 
 const SUMMARY_MAX_CHARS = 200;
 
-export const toProjectListItem = (project: CvProject): ProjectListItem => ({
+export const toProjectListItem = (
+  project: CvProject,
+  locale: Locale = project.contentLocale ?? "en",
+): ProjectListItem => ({
   id: project.id,
   name: project.name,
   icon: project.icon ?? null,
@@ -41,7 +45,7 @@ export const toProjectListItem = (project: CvProject): ProjectListItem => ({
   wowFactor: project.wowFactor,
   featured: project.featured,
   clientNames: project.clients.map((client) => client.name),
-  url: `${API_BASE_URL}/api/projects/${project.id}`,
+  url: `${API_BASE_URL}/api/projects/${project.id}${locale === "de" ? "?locale=de" : ""}`,
   webUrl: `${SITE_URL}${projectPath(project)}`,
 });
 

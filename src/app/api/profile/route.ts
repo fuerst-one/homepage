@@ -1,3 +1,4 @@
+import { isLocale } from "@/lib/i18n";
 import { NextRequest, NextResponse } from "next/server";
 import { getCachedCvOwnerPublic } from "@/server/notion/getCachedCvOwner";
 import {
@@ -12,8 +13,14 @@ export const runtime = "nodejs";
 export const GET = async (request: NextRequest) => {
   const rateLimit = checkRateLimit(request);
   if (!rateLimit.allowed) return buildRateLimitedResponse(rateLimit);
+  const locale = request.nextUrl.searchParams.get("locale") ?? "en";
+  if (!isLocale(locale))
+    return NextResponse.json(
+      { error: "Invalid locale", expected: "en|de" },
+      { status: 400, headers: buildApiHeaders(rateLimit) },
+    );
 
-  const profile = await getCachedCvOwnerPublic();
+  const profile = await getCachedCvOwnerPublic(locale);
   const absoluteProfile = {
     ...profile,
     avatarUrl: profile.avatarUrl ? `${API_BASE_URL}${profile.avatarUrl}` : null,

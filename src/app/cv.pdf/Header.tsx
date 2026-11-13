@@ -7,20 +7,28 @@ const formatHeaderLocation = (owner: CvOwner): string => {
   return [city, country].filter(Boolean).join(", ");
 };
 
-export const Header = ({ owner }: { owner: CvOwner }) => (
+export const Header = ({
+  owner,
+  locale = "en",
+  summary,
+}: {
+  owner: CvOwner;
+  locale?: "en" | "de";
+  summary?: string;
+}) => (
   <View>
     <Text style={styles.name}>{owner.name}</Text>
     <Text style={styles.roleLine}>
-      UX+AI Engineer · {formatHeaderLocation(owner)} · 8+ years
+      UX+AI Engineer · {formatHeaderLocation(owner)} ·{" "}
+      {locale === "de" ? "8+ Jahre" : "8+ years"}
     </Text>
     <Text style={styles.contactLine}>
       {owner.email} · linkedin.com/in/fuerst-one · github.com/fuerst-one
     </Text>
     <View style={styles.divider} />
     <Text style={styles.summary}>
-      From idea to app to automation to production. Engineering intuitive
-      interfaces for complex, tailor-fit tools — backed by full-stack AI
-      development, behavioral psychology, user research, and CRO.
+      {summary ??
+        "From idea to app to automation to production. Engineering intuitive interfaces for complex, tailor-fit tools — backed by full-stack AI development, behavioral psychology, user research, and CRO."}
     </Text>
   </View>
 );

@@ -34,6 +34,10 @@ export type CvProject = {
   screenshots: string[] | null;
   description: RichTextField;
   kpis: RichTextField;
+  descriptionDe?: RichTextField;
+  kpisDe?: RichTextField;
+  germanReady?: boolean;
+  contentLocale?: "en" | "de";
   wowFactor: number;
   status: string;
   featured: boolean;

@@ -2,10 +2,11 @@ import { ReactNode } from "react";
 import { FaExternalLinkAlt } from "@react-icons/all-files/fa/FaExternalLinkAlt";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 import { FaChartLine } from "@react-icons/all-files/fa/FaChartLine";
-import Link from "next/link";
+import Link from "@/components/i18n/LocalizedLink";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/de";
 import { CvProject } from "@/server/notion/getCvProjects";
 import { ProjectScreenshots } from "./ProjectScreenshots";
 import { ProjectMetaTable } from "./ProjectMetaTable";
@@ -21,10 +22,12 @@ export const ProjectDetails = ({
   project,
   heading,
   inDialog = false,
+  locale = "en",
 }: {
   project: CvProject;
   heading?: ReactNode;
   inDialog?: boolean;
+  locale?: "en" | "de";
 }) => {
   const {
     name,
@@ -89,7 +92,11 @@ export const ProjectDetails = ({
         )}
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs text-neutral-400">
-            <DateRange startDate={startDate} endDate={endDate} />
+            <DateRange
+              startDate={startDate}
+              endDate={endDate}
+              locale={locale}
+            />
           </span>
           {websiteUrl && (
             <Link
@@ -123,7 +130,11 @@ export const ProjectDetails = ({
             {description}
           </div>
         )}
-        <ProjectMetaTable project={project} filterable={inDialog} />
+        <ProjectMetaTable
+          project={project}
+          filterable={inDialog}
+          locale={locale}
+        />
       </div>
     </div>
   );
@@ -132,9 +143,11 @@ export const ProjectDetails = ({
 const DateRange = ({
   startDate,
   endDate,
+  locale,
 }: {
   startDate: string;
   endDate: string | null;
+  locale: "en" | "de";
 }) => {
   const startDateObj = dayjs(startDate);
   let endDateObj = endDate ? dayjs(endDate) : dayjs();
@@ -143,6 +156,7 @@ const DateRange = ({
   }
   const durationLabel = dayjs
     .duration(endDateObj.diff(startDateObj))
+    .locale(locale)
     .humanize();
   const startDateFormatted = startDateObj.format("YYYY/MM");
   const endDateFormatted = endDateObj.format("YYYY/MM");

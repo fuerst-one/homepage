@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localizedPath } from "@/lib/i18n";
 import { useId, useState } from "react";
 import clsx from "clsx";
 import { Button } from "../Button";
@@ -7,6 +9,7 @@ import { addEmailToNotion } from "@/server/notion/addEmailToNotion";
 import { FaHourglass } from "@react-icons/all-files/fa/FaHourglass";
 import {
   CV_PRESET_ORDER,
+  localizePreset,
   CvPreset,
   CvPresetId,
   DEFAULT_PRESET_ID,
@@ -15,12 +18,13 @@ import {
 export type PresetOption = CvPreset & { matchedCount: number };
 
 export function PresetPicker({ presets }: { presets: PresetOption[] }) {
+  const locale = useLocale();
   const emailId = useId();
   const [selectedId, setSelectedId] = useState<CvPresetId>(DEFAULT_PRESET_ID);
   const [isLoading, setIsLoading] = useState(false);
 
-  const orderedPresets = CV_PRESET_ORDER.map(
-    (id) => presets.find((preset) => preset.id === id)!,
+  const orderedPresets = CV_PRESET_ORDER.map((id) =>
+    localizePreset(presets.find((preset) => preset.id === id)!, locale),
   );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -32,7 +36,9 @@ export function PresetPicker({ presets }: { presets: PresetOption[] }) {
       const email = formData.get("email") as string;
       await addEmailToNotion(email);
 
-      const response = await fetch(`/cv.pdf?preset=${selectedId}`);
+      const response = await fetch(
+        localizedPath(`/cv.pdf?preset=${selectedId}`, locale),
+      );
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const anchor = document.createElement("a");
@@ -51,7 +57,7 @@ export function PresetPicker({ presets }: { presets: PresetOption[] }) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <fieldset className="space-y-3">
         <legend className="text-xs uppercase tracking-[0.3em] text-neutral-400">
-          Pick a CV preset
+          {locale === "de" ? "Schwerpunkt wählen" : "Pick a CV preset"}
         </legend>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {orderedPresets.map((preset) => {
@@ -79,8 +85,14 @@ export function PresetPicker({ presets }: { presets: PresetOption[] }) {
                     {preset.label}
                   </span>
                   <span className="border border-white/30 bg-black px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.2em] text-neutral-300">
-                    {preset.matchedCount} project
-                    {preset.matchedCount === 1 ? "" : "s"}
+                    {preset.matchedCount}{" "}
+                    {locale === "de"
+                      ? preset.matchedCount === 1
+                        ? "Projekt"
+                        : "Projekte"
+                      : preset.matchedCount === 1
+                        ? "project"
+                        : "projects"}
                   </span>
                 </div>
                 <p className="text-xs leading-relaxed text-neutral-400">
@@ -94,7 +106,7 @@ export function PresetPicker({ presets }: { presets: PresetOption[] }) {
 
       <div className="relative flex items-center gap-2 border border-white/30 bg-black/60 px-3 py-2 transition focus-within:border-white">
         <label htmlFor={emailId} className="sr-only">
-          Email address
+          {locale === "de" ? "E-Mail-Adresse" : "Email address"}
         </label>
         <input
           required
@@ -106,7 +118,13 @@ export function PresetPicker({ presets }: { presets: PresetOption[] }) {
           className="peer w-0 flex-auto bg-transparent px-2 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none"
         />
         <Button type="submit" arrow={!isLoading}>
-          {isLoading ? <FaHourglass className="inline" /> : "Get PDF CV"}
+          {isLoading ? (
+            <FaHourglass className="inline" />
+          ) : locale === "de" ? (
+            "Lebenslauf als PDF"
+          ) : (
+            "Get PDF CV"
+          )}
         </Button>
       </div>
     </form>

@@ -1,0 +1,438 @@
+.page {
+  --line: rgba(255, 255, 255, 0.22);
+  --muted: #b8b8b8;
+  min-width: 0;
+  color: #f5f5f5;
+  background: rgba(0, 0, 0, 0.94);
+  border: 1px solid var(--line);
+  padding: clamp(1.1rem, 4vw, 3rem);
+}
+.page a:focus-visible,
+.page summary:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 6px;
+}
+.language {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1.25rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.language > div {
+  display: flex;
+  gap: 1.25rem;
+}
+.language a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-block: 0.5rem;
+}
+.language a[aria-current] {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 0.5rem;
+}
+.hero {
+  padding-block: 3.5rem 2.5rem;
+}
+.eyebrow {
+  font-size: 0.65rem;
+  line-height: 1.7;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+.hero h1 {
+  margin-top: 1.25rem;
+  font-size: clamp(2.25rem, 5.2vw, 3.65rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.065em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.intro {
+  margin-top: 1.75rem;
+  max-width: 37rem;
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: #d4d4d4;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.primary {
+  min-height: 3rem;
+  max-width: 100%;
+  text-align: left;
+}
+.primary > span {
+  padding: 0.85rem 1rem;
+}
+.primary > span > span:first-child {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+}
+.micro {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.8;
+}
+.signature {
+  margin-top: 1.75rem;
+  color: #b0b0b0;
+  font-size: 0.65rem;
+}
+.textLink {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-block: 0.65rem;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  text-decoration: underline;
+  text-decoration-color: #737373;
+  text-underline-offset: 0.35rem;
+}
+.textLink:hover {
+  text-decoration-color: #fff;
+}
+.heroVisual {
+  border: 1px solid var(--line);
+  background: #0a0a0a;
+}
+.windowBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--line);
+  color: #a3a3a3;
+  font-size: 0.55rem;
+}
+.windowBar > span:nth-child(2) {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.heroVisual a {
+  display: block;
+}
+.heroImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  background: #101010;
+}
+.heroVisual figcaption {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.6rem;
+  line-height: 1.6;
+}
+.section {
+  margin-top: 5.5rem;
+  scroll-margin-top: 2rem;
+}
+.section h2,
+.closing h2 {
+  margin-top: 1rem;
+  max-width: 35rem;
+  font-size: clamp(1.65rem, 3.5vw, 2.3rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.sectionIntro {
+  margin-top: 1.25rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.9;
+}
+.deliverables {
+  margin-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+.deliverable {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 2rem;
+  border-bottom: 1px solid var(--line);
+}
+.number {
+  padding-top: 0.3rem;
+  color: #a3a3a3;
+  font-size: 0.65rem;
+}
+.page h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: -0.02em;
+}
+.deliverable p,
+.case > p,
+.process p,
+.fit p,
+.faq p {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+.deliverable .output {
+  margin-top: 1.25rem;
+  color: #dedede;
+  font-size: 0.62rem;
+}
+.case {
+  margin-top: 2.25rem;
+  border: 1px solid var(--line);
+  padding: clamp(1rem, 3vw, 1.75rem);
+  background: #080808;
+}
+.caseHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.case h3 {
+  font-size: 1.3rem;
+  line-height: 1.45;
+}
+.case h3 a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+.caseContext {
+  margin-block: 1.25rem;
+  font-size: 0.62rem;
+  line-height: 1.9;
+}
+.caseContext dt {
+  color: #a3a3a3;
+}
+.caseContext dd {
+  margin-top: 0.2rem;
+  color: #dedede;
+}
+.caseImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 26rem;
+  object-fit: contain;
+  background: #111;
+  border: 1px solid var(--line);
+}
+.results {
+  margin-top: 1.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid #eee;
+}
+.metric {
+  margin-top: 0.75rem;
+  color: #f5f5f5;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin-block: 1.25rem;
+}
+.tools li {
+  border: 1px solid var(--line);
+  padding: 0.3rem 0.5rem;
+  font-size: 0.55rem;
+  color: #c7c7c7;
+}
+.process {
+  counter-reset: none;
+  list-style: none;
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.75rem;
+}
+.process li {
+  position: relative;
+  padding-left: 3rem;
+  border-left: 1px solid var(--line);
+}
+.process li > span {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.3rem;
+  font-size: 0.65rem;
+  color: #aaa;
+}
+.fit {
+  margin-top: 2.5rem;
+  background: #141414;
+  border-left: 2px solid #ddd;
+  padding: 1.5rem;
+}
+.faq {
+  margin-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+.faq details {
+  border-bottom: 1px solid var(--line);
+}
+.faq summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1.5rem;
+  cursor: pointer;
+  list-style: none;
+  padding-block: 1.25rem;
+  font-size: 0.82rem;
+  line-height: 1.8;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary > span {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+}
+.faq details[open] summary > span {
+  transform: rotate(45deg);
+}
+.faq p {
+  margin-top: 0;
+  padding-bottom: 1.5rem;
+  max-width: 34rem;
+}
+.closing {
+  margin-top: 5.5rem;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  color: #0a0a0a;
+  background: #efefeb;
+}
+.closing .eyebrow {
+  color: #555;
+}
+.closing > p:not(.eyebrow) {
+  margin-top: 1.25rem;
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+.closingButton {
+  margin-top: 1.75rem;
+  max-width: 100%;
+  border-color: #111;
+  background: #111;
+  color: #fff;
+  text-align: left;
+}
+.closingButton:hover {
+  background: #333;
+}
+.closingButton > span {
+  padding: 0.85rem 1rem;
+}
+.closingButton > span > span:first-child {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+}
+.closing a:focus-visible {
+  outline-color: #111;
+}
+.directEmail {
+  margin-top: 1.75rem;
+  border-top: 1px solid #bbb;
+  padding-top: 1.25rem;
+  font-size: 0.65rem;
+  line-height: 1.8;
+}
+.directEmail > span {
+  display: block;
+}
+.directEmail > a {
+  min-height: 44px;
+  display: inline-block;
+  padding-block: 0.5rem;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+.directEmail > p {
+  color: #555;
+}
+.other {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  font-size: 0.65rem;
+  line-height: 1.8;
+}
+.other > span {
+  color: var(--muted);
+}
+.other a {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 2.5rem;
+  }
+  .hero h1 {
+    font-size: 2.3rem;
+  }
+  .intro {
+    font-size: 0.85rem;
+  }
+  .section,
+  .closing {
+    margin-top: 4rem;
+  }
+  .deliverable {
+    grid-template-columns: 1.2rem minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+  .case h3 {
+    font-size: 1.1rem;
+  }
+  .metric {
+    font-size: 0.9rem;
+  }
+}

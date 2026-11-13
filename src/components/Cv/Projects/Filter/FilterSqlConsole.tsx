@@ -1,13 +1,14 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useFiltersStore } from "../filtersStore";
 import clsx from "clsx";
 import { CvProject } from "@/server/notion/getCvProjects";
 import { FilterParams, filterProjects } from "./utils";
 import {
   CV_PRESETS,
+  localizePreset,
   CV_PRESET_ORDER,
   CvPreset,
   findActivePreset,
@@ -68,6 +69,15 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
   },
 ];
 
+const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
+  featured: "Ausgewählt",
+  experiences: "Fachgebiete",
+  industries: "Branchen",
+  projectType: "Projekttypen",
+  tools: "Tools",
+  languages: "Sprachen",
+};
+
 const CLI_FILTER_LABEL_LOOKUP = Object.fromEntries(
   CLI_FILTER_GROUPS.map(({ key, label }) => [key, label]),
 ) as Record<CliFilterKey, string>;
@@ -79,7 +89,8 @@ export const FilterSqlConsole = ({
   filterParams: FilterParams;
   projects: CvProject[];
 }) => {
-  const router = useRouter();
+  const locale = useLocale();
+  const de = locale === "de";
   const setFilters = useFiltersStore((s) => s.setFilters);
   const resetFilters = useFiltersStore((s) => s.reset);
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,8 +108,12 @@ export const FilterSqlConsole = ({
   );
 
   const cliFilterGroups = useMemo(
-    () => buildCliFilterGroups(projects),
-    [projects],
+    () =>
+      buildCliFilterGroups(projects).map((group) => ({
+        ...group,
+        label: de ? GROUP_LABELS_DE[group.key] : group.label,
+      })),
+    [projects, de],
   );
 
   const resultsCount = useMemo(
@@ -128,31 +143,11 @@ export const FilterSqlConsole = ({
       ).sort((a, b) => a.localeCompare(b));
     }
 
-    const params = new URLSearchParams();
-
-    Object.entries(nextFilters).forEach(([paramKey, values]) => {
-      if (!values.length) {
-        return;
-      }
-      params.set(paramKey, values.join(","));
-    });
-
-    const search = params.toString();
-    setFilters(nextFilters as unknown as FilterParams);
-    router.replace(search ? `?${search}` : "/", { scroll: false });
+    setFilters(nextFilters as FilterParams);
   };
 
   const handleApplyPreset = (preset: CvPreset) => {
-    const params = new URLSearchParams();
-    Object.entries(preset.filter).forEach(([paramKey, values]) => {
-      if (!values?.length) {
-        return;
-      }
-      params.set(paramKey, values.join(","));
-    });
-    const search = params.toString();
     setFilters(preset.filter);
-    router.replace(search ? `?${search}` : "/", { scroll: false });
   };
 
   const activePresetId = useMemo(
@@ -165,12 +160,14 @@ export const FilterSqlConsole = ({
       values.map((value) => ({
         key,
         label:
-          CLI_FILTER_LABEL_LOOKUP[key as CliFilterKey] ??
+          (de
+            ? GROUP_LABELS_DE[key as CliFilterKey]
+            : CLI_FILTER_LABEL_LOOKUP[key as CliFilterKey]) ??
           key.replace(/([a-z0-9])([A-Z])/g, "$1 $2"),
         value,
       })),
     );
-  }, [normalizedFilters]);
+  }, [normalizedFilters, de]);
 
   const loweredQuery = searchQuery.toLowerCase();
 
@@ -178,7 +175,7 @@ export const FilterSqlConsole = ({
     <div className="border border-white/20 bg-black/85 p-5">
       <div className="flex flex-wrap items-center gap-2">
         {CV_PRESET_ORDER.map((id) => {
-          const preset = CV_PRESETS[id];
+          const preset = localizePreset(CV_PRESETS[id], locale);
           const isActive = activePresetId === id;
           return (
             <button
@@ -205,7 +202,7 @@ export const FilterSqlConsole = ({
           aria-expanded={isExpanded}
           aria-controls={panelId}
         >
-          {isExpanded ? "Close" : "Filter"}
+          {isExpanded ? (de ? "Schließen" : "Close") : "Filter"}
           <span
             className={clsx(
               "transition-transform",
@@ -229,21 +226,20 @@ export const FilterSqlConsole = ({
           <>
             <div className="flex items-center justify-between gap-4">
               <h3 className="text-xs uppercase tracking-[0.2em] text-neutral-300">
-                Project query console
+                {de ? "Projekte filtern" : "Project query console"}
               </h3>
               <div className="flex items-center gap-2">
                 <span className="bg-black px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200">
-                  {resultsCount} results
+                  {resultsCount} {de ? "Ergebnisse" : "results"}
                 </span>
                 <button
                   type="button"
                   className="inline-flex items-center gap-2 border border-white/30 bg-black px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white"
                   onClick={() => {
                     resetFilters();
-                    router.replace("/", { scroll: false });
                   }}
                 >
-                  Reset filters
+                  {de ? "Filter zurücksetzen" : "Reset filters"}
                 </button>
               </div>
             </div>
@@ -254,7 +250,7 @@ export const FilterSqlConsole = ({
               </pre>
             </div>
             <div className="my-3 flex flex-wrap items-center gap-2 text-[0.7rem] uppercase tracking-[0.25em] text-neutral-400">
-              <span>Active filters</span>
+              <span>{de ? "Aktive Filter" : "Active filters"}</span>
               <div className="flex flex-wrap gap-2">
                 {activeFilters.length ? (
                   activeFilters.map(({ key, label, value }) => (
@@ -266,17 +262,19 @@ export const FilterSqlConsole = ({
                     </span>
                   ))
                 ) : (
-                  <span className="text-neutral-500">None</span>
+                  <span className="text-neutral-500">
+                    {de ? "Keine" : "None"}
+                  </span>
                 )}
               </div>
             </div>
             <label className="block text-[0.65rem] uppercase tracking-[0.2em] text-neutral-400">
-              Search dataset
+              {de ? "Datensatz durchsuchen" : "Search dataset"}
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Filter values..."
+                placeholder={de ? "Filterwerte …" : "Filter values..."}
                 className="mt-2 w-full border border-white/20 bg-black px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-white"
               />
             </label>
@@ -302,7 +300,7 @@ export const FilterSqlConsole = ({
                       <span>{label}</span>
                       <span className="text-neutral-500">
                         {activeValues.size > 0
-                          ? `${activeValues.size} selected`
+                          ? `${activeValues.size} ${de ? "ausgewählt" : "selected"}`
                           : "--"}
                       </span>
                     </div>
@@ -343,7 +341,7 @@ export const FilterSqlConsole = ({
                       </ul>
                     ) : (
                       <p className="text-[0.7rem] text-neutral-500">
-                        No matches
+                        {de ? "Keine Treffer" : "No matches"}
                       </p>
                     )}
                   </div>

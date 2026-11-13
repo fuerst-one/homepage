@@ -33,10 +33,10 @@ test("the public profile and project API remain available", async () => {
 });
 
 test("the homepage exposes its identity and navigation without JavaScript", async () => {
-  const { response, body } = await get("/");
+  const { response, body } = await get("/en");
   assert.equal(response.status, 200);
   assert.match(body, /<h1\b[^>]*>[^<]*Alexander F(?:ue|ü)rst/);
-  for (const path of ["/cv", "/contact", "/plasma"]) {
+  for (const path of ["/en/cv", "/en/contact", "/en/plasma"]) {
     assert.ok(
       body.includes(`href="${path}"`),
       `Missing server-rendered ${path} link`,
@@ -48,7 +48,13 @@ test("the homepage exposes its identity and navigation without JavaScript", asyn
 
 test("public pages have unique titles and matching canonical and social URLs", async () => {
   const titles = new Set();
-  for (const path of ["/", "/cv", "/projects", "/contact", "/plasma"]) {
+  for (const path of [
+    "/en",
+    "/en/cv",
+    "/en/projects",
+    "/en/contact",
+    "/en/plasma",
+  ]) {
     const { response, body } = await get(path);
     assert.equal(response.status, 200);
     const title = body.match(/<title>(.*?)<\/title>/s)?.[1];
@@ -93,15 +99,21 @@ test("all public projects have discoverable HTML pages with real content and str
   const { response, body } = await get("/sitemap.xml");
   assert.equal(response.status, 200);
   const urls = [...body.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
-  for (const path of ["/", "/cv", "/projects", "/contact", "/plasma"]) {
+  for (const path of [
+    "/en",
+    "/en/cv",
+    "/en/projects",
+    "/en/contact",
+    "/en/plasma",
+  ]) {
     assert.ok(urls.includes(`${canonicalOrigin}${path}`));
   }
   assert.ok(
     urls.every((url) => url.startsWith(canonicalOrigin) && !url.includes("?")),
   );
   assert.ok(!urls.some((url) => /pdf-content|cv\.pdf|\/api\//.test(url)));
-  const cv = await get("/cv");
-  const directory = await get("/projects");
+  const cv = await get("/en/cv");
+  const directory = await get("/en/projects");
   assert.equal(directory.response.status, 200);
   assert.match(directory.body, /<h1\b/);
   const projectUrls = projects.results.map((project) => project.webUrl);
@@ -112,7 +124,7 @@ test("all public projects have discoverable HTML pages with real content and str
   );
   for (const project of projects.results) {
     assert.ok(
-      project.webUrl?.startsWith(`${canonicalOrigin}/projects/`),
+      project.webUrl?.startsWith(`${canonicalOrigin}/en/projects/`),
       `Missing web URL for ${project.name}`,
     );
     const path = new URL(project.webUrl).pathname;
@@ -127,7 +139,7 @@ test("all public projects have discoverable HTML pages with real content and str
     );
   }
   const path = new URL(projects.results[0].webUrl).pathname;
-  assert.match(path, /^\/projects\/[a-z0-9]+(?:-[a-z0-9]+)*$/);
+  assert.match(path, /^\/en\/projects\/[a-z0-9]+(?:-[a-z0-9]+)*$/);
   assert.ok(
     !path.includes(projects.results[0].id),
     "Existing projects use descriptive published slugs",
@@ -151,13 +163,13 @@ test("all public projects have discoverable HTML pages with real content and str
     ),
   );
   assert.equal(
-    (await get("/projects/not-a-real-project")).response.status,
+    (await get("/en/projects/not-a-real-project")).response.status,
     404,
   );
 });
 
 test("the CV describes the same public person in HTML and JSON-LD", async () => {
-  const { body } = await get("/cv");
+  const { body } = await get("/en/cv");
   assert.match(body, /<h1\b/);
   const data = structuredData(body);
   const graph = data.flatMap((item) => item["@graph"] || [item]);
@@ -176,8 +188,8 @@ test("AI discovery includes the public profile, HTML pages, and existing API", a
   const { response, body } = await get("/llms.txt");
   assert.equal(response.status, 200);
   for (const path of [
-    "/cv",
-    "/contact",
+    "/en/cv",
+    "/en/contact",
     "/api/profile",
     "/api/projects",
     "/api/facets",
@@ -190,7 +202,7 @@ test("AI discovery includes the public profile, HTML pages, and existing API", a
 });
 
 test("print-only content is excluded from indexing", async () => {
-  const { body } = await get("/pdf-content");
+  const { body } = await get("/en/pdf-content");
   assert.match(
     tagAttribute(body, "meta", "name", "robots", "content") || "",
     /noindex/,
@@ -199,11 +211,11 @@ test("print-only content is excluded from indexing", async () => {
 
 test("legacy portfolio URLs redirect to matching current content", async () => {
   for (const [path, destination] of [
-    ["/contact", "/contact"],
-    ["/team-up", "/contact"],
-    ["/learn-more", "/cv"],
-    ["/privacy-policy", "/privacy"],
-    ["/legal-notice", "/legal-notice"],
+    ["/contact", "/en/contact"],
+    ["/team-up", "/en/contact"],
+    ["/learn-more", "/en/cv"],
+    ["/privacy-policy", "/en/privacy"],
+    ["/legal-notice", "/en/legal-notice"],
   ]) {
     const response = await new Promise((resolve, reject) => {
       const request = httpRequest(

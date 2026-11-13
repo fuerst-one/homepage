@@ -1,13 +1,17 @@
+import type { Locale } from "@/lib/i18n";
 import { unstable_cache } from "next/cache";
-import { getCvOwner, toPublicOwner } from "./getCvOwner";
+import { getCvOwner, toPublicOwner, localizeOwner } from "./getCvOwner";
 
 export const CV_OWNER_CACHE_TAG = "cv-owner";
 
-export const getCachedCvOwner = unstable_cache(
+const getCachedOwnerSource = unstable_cache(
   () => getCvOwner(),
-  ["cv-owner-v4"],
-  { tags: [CV_OWNER_CACHE_TAG], revalidate: false },
+  ["cv-owner-i18n-v1"],
+  { tags: [CV_OWNER_CACHE_TAG], revalidate: 3600 },
 );
 
-export const getCachedCvOwnerPublic = async () =>
-  toPublicOwner(await getCachedCvOwner());
+export const getCachedCvOwner = async (locale: Locale = "en") =>
+  localizeOwner(await getCachedOwnerSource(), locale);
+
+export const getCachedCvOwnerPublic = async (locale: Locale = "en") =>
+  toPublicOwner(await getCachedCvOwner(locale));

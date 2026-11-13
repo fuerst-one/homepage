@@ -1,6 +1,10 @@
 "use client";
+
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { localizedPath } from "@/lib/i18n";
+import Link from "@/components/i18n/LocalizedLink";
 import {
   FormEvent,
   useCallback,
@@ -26,7 +30,8 @@ import { createHeroPreviewController } from "./createHeroPreviewController";
 import {
   LandingCommand,
   resolveExplicitCommand,
-  SUGGESTIONS,
+  getLocalizedSuggestions,
+  localizeCommand,
 } from "./commands";
 import { getRailScrollState } from "./getRailScrollState";
 import {
@@ -38,6 +43,7 @@ import {
 import { useProjectSearch } from "./useProjectSearch";
 import { ProjectSearchResults } from "./ProjectSearchResults";
 import "./landing.css";
+
 const LandingShape = dynamic(() => import("./LandingShape"), { ssr: false });
 const BRAND_PLACEMENTS = [
   {
@@ -53,19 +59,21 @@ const BRAND_PLACEMENTS = [
 ];
 const EMPTY_SEARCH = { projects: [], suggestions: [] };
 type DisplaySuggestion = LandingCommand | SearchSuggestion;
-export const PlasmaLanding = () => {
+
+export const PlasmaLanding = ({
+  headline = "A little curiosity goes a long way.",
+}: {
+  headline?: string;
+}) => {
+  const locale = useLocale();
+  const de = locale === "de";
+  const SUGGESTIONS = useMemo(() => getLocalizedSuggestions(locale), [locale]);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<PlasmaCanvasHandle>(null);
   const { cellSize, fontPx } = useResponsiveMetrics();
   const lensOriginRef = useRef({ x: 0, y: 0 });
-  const lensTargetRef = useRef<{
-    x: number;
-    y: number;
-  } | null>(null);
-  const lensPositionRef = useRef<{
-    x: number;
-    y: number;
-  } | null>(null);
+  const lensTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const lensPositionRef = useRef<{ x: number; y: number } | null>(null);
   const [showIcon, setShowIcon] = useState(false);
   const [shapeMounted, setShapeMounted] = useState(false);
   const [shapeReady, setShapeReady] = useState(false);
@@ -108,10 +116,11 @@ export const PlasmaLanding = () => {
         : EMPTY_SEARCH,
     [searchIndex, hasQuery, input, searchFilter],
   );
-  const explicitCommand = useMemo(
-    () => (hasQuery && !searchFilter ? resolveExplicitCommand(input) : null),
-    [hasQuery, input, searchFilter],
-  );
+  const explicitCommand = useMemo(() => {
+    if (!hasQuery || searchFilter) return null;
+    const command = resolveExplicitCommand(input, locale);
+    return command ? localizeCommand(command, locale) : null;
+  }, [hasQuery, input, searchFilter, locale]);
   const suggestions: DisplaySuggestion[] = useMemo(
     () =>
       !hasQuery
@@ -119,7 +128,7 @@ export const PlasmaLanding = () => {
         : explicitCommand
           ? [explicitCommand]
           : search.suggestions,
-    [hasQuery, explicitCommand, search.suggestions],
+    [hasQuery, explicitCommand, search.suggestions, SUGGESTIONS],
   );
   const currentIndex = Math.min(
     activeIndex,
@@ -157,6 +166,7 @@ export const PlasmaLanding = () => {
     () => canvasRef.current?.getGlitchIntensity() ?? 0,
     [],
   );
+
   useEffect(() => {
     const controller = createHeroPreviewController(setShowIcon);
     heroPreviewRef.current = controller;
@@ -165,6 +175,7 @@ export const PlasmaLanding = () => {
       heroPreviewRef.current = null;
     };
   }, []);
+
   useEffect(() => {
     if (showIcon) {
       setShapeMounted(true);
@@ -174,6 +185,7 @@ export const PlasmaLanding = () => {
     const timer = window.setTimeout(() => setShapeMounted(false), 650);
     return () => window.clearTimeout(timer);
   }, [showIcon]);
+
   const updateScrollState = useCallback(() => {
     const rail = railRef.current;
     if (!rail) return;
@@ -188,6 +200,7 @@ export const PlasmaLanding = () => {
         : next,
     );
   }, []);
+
   useEffect(() => {
     const rail = railRef.current;
     if (!rail) return;
@@ -197,6 +210,7 @@ export const PlasmaLanding = () => {
     updateScrollState();
     return () => observer.disconnect();
   }, [updateScrollState, suggestions]);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -250,6 +264,7 @@ export const PlasmaLanding = () => {
       document.removeEventListener("visibilitychange", updateVisibility);
     };
   }, [cellSize, interactionTarget]);
+
   useEffect(() => {
     const rail = railRef.current;
     const chip = rail?.children[currentIndex] as HTMLElement | undefined;
@@ -260,12 +275,15 @@ export const PlasmaLanding = () => {
       behavior: reducedMotion ? "instant" : "smooth",
     });
   }, [currentIndex, reducedMotion, suggestions]);
+
   useEffect(() => {
     renderBackdrop();
   }, [bounds, renderBackdrop]);
+
   useInterval(() => {
     if (visible && isPlaying && !reducedMotion) renderBackdrop();
   }, 1000 / 24);
+
   const preview = (index: number, center = true, reveal = true) => {
     if (reveal) heroPreviewRef.current?.touch();
     setPreviewProject(null);
@@ -273,12 +291,13 @@ export const PlasmaLanding = () => {
     if (center) manualScrollRef.current = false;
     setActiveIndex(index);
   };
+
   const execute = (command: LandingCommand) => {
     const index = SUGGESTIONS.findIndex((item) => item.id === command.id);
     if (index >= 0) preview(index);
     if (command.href) {
       // The typed input uses the same allowlisted destinations as the links.
-      window.location.assign(command.href);
+      window.location.assign(localizedPath(command.href, locale));
       return;
     }
     if (command.action === "pause") setIsPlaying(false);
@@ -287,6 +306,7 @@ export const PlasmaLanding = () => {
     setInput("");
     setSearchFilter(undefined);
   };
+
   const chooseSuggestion = (suggestion: DisplaySuggestion) => {
     if ("kind" in suggestion && suggestion.kind === "keyword") {
       setSearchFilter(suggestion.filter);
@@ -295,9 +315,15 @@ export const PlasmaLanding = () => {
       preview(0);
       return;
     }
-    if (suggestion.href) window.location.assign(suggestion.href);
+    if (suggestion.href)
+      window.location.assign(
+        suggestion.href.startsWith("/en/") || suggestion.href.startsWith("/de/")
+          ? suggestion.href
+          : localizedPath(suggestion.href, locale),
+      );
     else if (!("kind" in suggestion)) execute(suggestion);
   };
+
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (hasQuery && !explicitCommand && (searchLoading || searchError)) return;
@@ -306,6 +332,7 @@ export const PlasmaLanding = () => {
       return;
     }
   };
+
   const move = (direction: number) => {
     const rail = railRef.current;
     if (!rail) return;
@@ -315,6 +342,7 @@ export const PlasmaLanding = () => {
       behavior: reducedMotion ? "instant" : "smooth",
     });
   };
+
   return (
     <div
       ref={containerRef}
@@ -349,13 +377,22 @@ export const PlasmaLanding = () => {
           FUERST.ONE<span aria-hidden="true">_</span>
         </Link>
         <div className="landing-header-actions">
+          <LanguageSwitcher />
           <Link href="/plasma" prefetch={false}>
-            tinker <span aria-hidden="true">↗</span>
+            {de ? "basteln" : "tinker"} <span aria-hidden="true">↗</span>
           </Link>
           <button
             type="button"
             onClick={() => setIsPlaying((value) => !value)}
-            aria-label={isPlaying ? "Pause animation" : "Resume animation"}
+            aria-label={
+              de
+                ? isPlaying
+                  ? "Animation pausieren"
+                  : "Animation fortsetzen"
+                : isPlaying
+                  ? "Pause animation"
+                  : "Resume animation"
+            }
             aria-pressed={!isPlaying}
           >
             {isPlaying ? <Pause size={14} /> : <Play size={14} />}
@@ -364,7 +401,9 @@ export const PlasmaLanding = () => {
       </header>
       <div className="landing-content">
         <p className="landing-eyebrow">
-          UX + AI ENGINEER <span aria-hidden="true">/</span> CURIOUS BY DEFAULT
+          {de ? "UX + KI-ENGINEER" : "UX + AI ENGINEER"}{" "}
+          <span aria-hidden="true">/</span>{" "}
+          {de ? "NEUGIERIG AUS PRINZIP" : "CURIOUS BY DEFAULT"}
         </p>
         <div
           ref={setInteractionTarget}
@@ -452,12 +491,14 @@ export const PlasmaLanding = () => {
           </span>
         </div>
         <div className="landing-intro">
-          <p className="landing-title">A little curiosity goes a long way.</p>
+          <p className="landing-title">{headline}</p>
           <p key={previewProject?.id ?? active.id} className="landing-caption">
             {previewProject
               ? previewProject.summary || previewProject.name
               : hasQuery && !suggestions.length
-                ? "Find a project, a technology, or a shared interest."
+                ? de
+                  ? "Finde ein Projekt, eine Technologie oder ein gemeinsames Interesse."
+                  : "Find a project, a technology, or a shared interest."
                 : active.caption}
           </p>
         </div>
@@ -474,7 +515,9 @@ export const PlasmaLanding = () => {
               ↳
             </span>
             <label className="sr-only" htmlFor="landing-command">
-              {"Where would you like to go?"}
+              {de
+                ? "Was möchtest du entdecken?"
+                : "Where would you like to go?"}
             </label>
             <input
               id="landing-command"
@@ -515,7 +558,9 @@ export const PlasmaLanding = () => {
                   ? `${suggestionsId}-${currentIndex}`
                   : undefined
               }
-              placeholder={"Search or say hello…"}
+              placeholder={
+                de ? "Suchen oder Hallo sagen …" : "Search or say hello…"
+              }
               autoComplete="off"
               spellCheck={false}
               maxLength={240}
@@ -524,7 +569,7 @@ export const PlasmaLanding = () => {
             <button
               type="submit"
               className="landing-submit"
-              aria-label={"Go"}
+              aria-label={de ? "Los" : "Go"}
               disabled={!input.trim()}
             >
               <ArrowUp size={18} />
@@ -534,7 +579,7 @@ export const PlasmaLanding = () => {
             <button
               type="button"
               className="landing-rail-arrow"
-              aria-label={"Previous suggestion"}
+              aria-label={de ? "Vorheriger Vorschlag" : "Previous suggestion"}
               disabled={!scrollState.back}
               aria-hidden={!scrollState.back}
               onClick={() => move(-1)}
@@ -550,8 +595,12 @@ export const PlasmaLanding = () => {
               data-scroll-forward={scrollState.forward}
               aria-label={
                 hasQuery
-                  ? "Project keyword and name suggestions"
-                  : "Suggested destinations and plasma controls"
+                  ? de
+                    ? "Vorschläge für Projekte und Stichwörter"
+                    : "Project keyword and name suggestions"
+                  : de
+                    ? "Vorgeschlagene Ziele und Plasma-Steuerung"
+                    : "Suggested destinations and plasma controls"
               }
               onPointerDown={() => {
                 manualScrollRef.current = true;
@@ -631,7 +680,7 @@ export const PlasmaLanding = () => {
             <button
               type="button"
               className="landing-rail-arrow"
-              aria-label={"Next suggestion"}
+              aria-label={de ? "Nächster Vorschlag" : "Next suggestion"}
               disabled={!scrollState.forward}
               aria-hidden={!scrollState.forward}
               onClick={() => move(1)}
@@ -642,10 +691,18 @@ export const PlasmaLanding = () => {
           <div className="landing-console-meta">
             <span id="landing-input-help">
               {hasQuery
-                ? "↑ ↓ to explore · enter to select · esc to clear"
-                : "projects, tools, expertise, or a hello"}
+                ? de
+                  ? "↑ ↓ entdecken · Enter auswählen · Esc leeren"
+                  : "↑ ↓ to explore · enter to select · esc to clear"
+                : de
+                  ? "Projekte, Tools, Erfahrung oder ein Hallo"
+                  : "projects, tools, expertise, or a hello"}
             </span>
-            {!hasQuery && <span aria-hidden="true">{"type & enter ↵"}</span>}
+            {!hasQuery && (
+              <span aria-hidden="true">
+                {de ? "tippen & Enter ↵" : "type & enter ↵"}
+              </span>
+            )}
           </div>
           {showResults && (
             <ProjectSearchResults
@@ -670,7 +727,7 @@ export const PlasmaLanding = () => {
           <a href="https://github.com/fuerst-one">GitHub ↗</a>
           <a href="https://www.linkedin.com/in/fuerst-one/">LinkedIn ↗</a>
           <Link href="/contact" prefetch={false}>
-            {"Say hello ↗"}
+            {de ? "Hallo sagen ↗" : "Say hello ↗"}
           </Link>
         </nav>
         <LegalFooter />

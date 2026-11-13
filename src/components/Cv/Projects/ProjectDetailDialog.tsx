@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import * as Dialog from "@radix-ui/react-dialog";
 import { FaTimes } from "@react-icons/all-files/fa/FaTimes";
 import { CvProject } from "@/server/notion/getCvProjects";
@@ -11,6 +12,7 @@ export const ProjectDetailDialog = ({
 }: {
   projects: CvProject[];
 }) => {
+  const locale = useLocale();
   const focusedId = useProjectFocusStore((s) => s.focusedProjectId);
   const setFocused = useProjectFocusStore((s) => s.setFocusedProjectId);
   const project = focusedId
@@ -36,6 +38,7 @@ export const ProjectDetailDialog = ({
           {project ? (
             <ProjectDetails
               project={project}
+              locale={locale}
               inDialog
               heading={
                 <Dialog.Title className="text-3xl font-semibold text-white">
@@ -44,11 +47,17 @@ export const ProjectDetailDialog = ({
               }
             />
           ) : (
-            <Dialog.Title className="sr-only">Project details</Dialog.Title>
+            <Dialog.Title className="sr-only">
+              {locale === "de" ? "Projektdetails" : "Project details"}
+            </Dialog.Title>
           )}
           <Dialog.Close
             className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center border border-white/30 bg-black/60 text-neutral-200 transition hover:border-white hover:text-white focus-visible:border-white focus-visible:text-white focus-visible:outline-none"
-            aria-label="Close project details"
+            aria-label={
+              locale === "de"
+                ? "Projektdetails schließen"
+                : "Close project details"
+            }
           >
             <FaTimes className="text-base" />
           </Dialog.Close>

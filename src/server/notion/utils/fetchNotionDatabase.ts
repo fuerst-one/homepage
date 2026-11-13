@@ -1,7 +1,7 @@
 "use server";
 
 import { isDev } from "@/utils/env";
-import { Client } from "@notionhq/client";
+import { Client, collectPaginatedAPI } from "@notionhq/client";
 import { createNotionFetch } from "../createNotionFetch";
 
 export const fetchNotionDatabase = async (databaseId: string) => {
@@ -11,15 +11,15 @@ export const fetchNotionDatabase = async (databaseId: string) => {
       fetch(url, {
         ...options,
         next: {
-          revalidate: isDev() ? 600 : false,
+          revalidate: isDev() ? 600 : 3600,
         },
       }),
     ),
   });
 
-  const database = await notion.databases.query({
+  const results = await collectPaginatedAPI(notion.databases.query, {
     database_id: databaseId,
   });
 
-  return database;
+  return { results };
 };

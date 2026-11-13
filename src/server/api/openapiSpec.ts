@@ -1,6 +1,15 @@
 import { API_BASE_URL } from "./baseUrl";
 import { RATE_LIMIT_PER_MINUTE } from "./rateLimit";
 
+const LOCALE_PARAMETER = {
+  name: "locale",
+  in: "query",
+  required: false,
+  schema: { type: "string", enum: ["en", "de"], default: "en" },
+  description:
+    "Select published prose. Missing German project translations fall back to English; tag values remain shared.",
+};
+
 export const buildOpenApiSpec = () => ({
   openapi: "3.1.0",
   info: {
@@ -8,7 +17,7 @@ export const buildOpenApiSpec = () => ({
     version: "1.0.0",
     description:
       "Read-only public API for querying Alexander Fuerst's CV projects. " +
-      "Backed by a Notion database, cached indefinitely in production. " +
+      "Backed by a Notion database, with hourly source revalidation. " +
       `Rate-limited to ${RATE_LIMIT_PER_MINUTE} requests/minute per IP.`,
     contact: { name: "Alexander Fuerst", email: "alexander@fuerst.one" },
   },
@@ -20,6 +29,7 @@ export const buildOpenApiSpec = () => ({
         description:
           "Returns a slim list of projects. Categorical filters use AND across categories, OR within a category, case-insensitive exact match.",
         parameters: [
+          LOCALE_PARAMETER,
           listParam(
             "tools",
             "string",
@@ -104,6 +114,7 @@ export const buildOpenApiSpec = () => ({
       get: {
         summary: "Fetch full project detail",
         parameters: [
+          LOCALE_PARAMETER,
           {
             name: "id",
             in: "path",
@@ -129,6 +140,7 @@ export const buildOpenApiSpec = () => ({
     "/api/profile": {
       get: {
         summary: "Public CV profile (owner)",
+        parameters: [LOCALE_PARAMETER],
         description:
           "Returns Alexander Fuerst's public CV profile facts. Sensitive fields (daily rate, full address, phone) are deliberately not exposed via this endpoint.",
         responses: {
@@ -210,7 +222,7 @@ export const buildOpenApiSpec = () => ({
             type: "string",
             format: "uri",
             description:
-              "Canonical HTML project page for reading and citations.",
+              "Canonical locale-prefixed HTML project page for reading and citations.",
           },
         },
       },

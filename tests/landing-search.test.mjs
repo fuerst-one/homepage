@@ -53,6 +53,93 @@ const projects = [
 ];
 const index = buildProjectSearchIndex(projects);
 
+test("German queries find canonical facets and localized chips", () => {
+  const german = buildProjectSearchIndex(projects, "de");
+  for (const [query, ids, label, field, value] of [
+    [
+      "Zeig mir Projekte mit KI",
+      ["agent"],
+      "Künstliche Intelligenz",
+      "industries",
+      "Artificial Intelligence",
+    ],
+    [
+      "Frontend Entwicklung",
+      ["atlas"],
+      "Frontend-Entwicklung",
+      "experiences",
+      "Frontend-Development",
+    ],
+    ["freiberuflich", ["atlas"], "Freiberuflich", "projectType", "Freelance"],
+    ["vor Ort", ["shop"], "Vor Ort", "workplace", "On-Premise"],
+    ["Einzelhandel", ["shop"], "Einzelhandel", "industries", "Retail"],
+  ]) {
+    const result = searchProjectIndex(german, query);
+    assert.deepEqual(
+      result.projects.map((project) => project.id),
+      ids,
+      query,
+    );
+    const chip = result.suggestions.find((item) => item.label === label);
+    assert.ok(chip, `Missing German chip for ${query}`);
+    assert.deepEqual(chip.filter, { field, value });
+    assert.equal(
+      searchProjectIndex(german, chip.label, chip.filter).projects.length,
+      chip.count,
+    );
+  }
+});
+
+test("German aliases accept umlauts and English input without changing English chips", () => {
+  for (const locale of ["en", "de"]) {
+    const localized = buildProjectSearchIndex(projects, locale);
+    for (const query of [
+      "künstliche Intelligenz",
+      "kunstliche intelligenz",
+      "kuenstliche Intelligenz",
+      "KI",
+      "Artificial Intelligence",
+    ]) {
+      assert.deepEqual(
+        searchProjectIndex(localized, query).projects.map(
+          (project) => project.id,
+        ),
+        ["agent"],
+        query,
+      );
+    }
+  }
+  assert.ok(
+    searchProjectIndex(index, "KI").suggestions.some(
+      (item) => item.label === "Artificial Intelligence",
+    ),
+  );
+});
+
+test("German selection chips preserve exact featured status and counts", () => {
+  const german = buildProjectSearchIndex(projects, "de");
+  for (const [query, ids] of [
+    ["Hervorgehoben", ["atlas", "shop"]],
+    ["Nicht hervorgehoben", ["agent"]],
+    ["Not featured", ["agent"]],
+  ]) {
+    assert.deepEqual(
+      searchProjectIndex(german, query).projects.map((project) => project.id),
+      ids,
+    );
+  }
+  assert.equal(
+    searchProjectIndex(german, "Atlas").suggestions.find(
+      (item) => item.kind === "project",
+    )?.category,
+    "Projekt",
+  );
+  assert.deepEqual(
+    searchProjectIndex(german, "Zeig mir Projekte").projects,
+    [],
+  );
+});
+
 test("every filterable keyword and project name is indexed", () => {
   for (const value of [
     "React.js",
@@ -206,4 +293,13 @@ test("search results link locally and retain only public search fields", () => {
   assert.equal(augmented.projects[0].email, undefined);
   assert.equal(augmented.projects[0].clientAddress, undefined);
   assert.equal(augmented.projects[0].webUrl, undefined);
+});
+
+test("projects with no workplace or optional prose remain searchable", () => {
+  const sparse = buildProjectSearchIndex(
+    [{ ...projects[0], workplace: null, oneLineSummary: "" }],
+    "de",
+  );
+  assert.deepEqual(searchProjectIndex(sparse, "unmatched").projects, []);
+  assert.equal(searchProjectIndex(sparse, "Atlas").projects[0].id, "atlas");
 });

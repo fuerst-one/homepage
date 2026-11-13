@@ -1,0 +1,86 @@
+{
+  "home.eyebrow": {
+    "en": "A little curiosity goes a long way.",
+    "de": "Ein bisschen Neugier bringt viel in Bewegung."
+  },
+  "home.role": {
+    "en": "UX + AI Engineer",
+    "de": "UX + KI-Engineer"
+  },
+  "home.location": {
+    "en": "Based in Würzburg, Germany.",
+    "de": "Zuhause in Würzburg, Deutschland."
+  },
+  "home.lead": {
+    "en": "I like making complex things feel clear. Thoughtful interfaces, useful automation, and the details that make a product feel good to use.",
+    "de": "Ich mache komplexe Dinge gerne verständlich. Mit durchdachten Interfaces, hilfreicher Automatisierung und den Details, die ein Produkt angenehm bedienbar machen."
+  },
+  "home.p1": {
+    "en": "My work connects UX design, frontend development, and AI engineering. I work across interactive product configurators, data visualization, e-commerce, and conversion rate optimization, bringing the design of an experience close to the code that makes it work.",
+    "de": "Meine Arbeit verbindet UX-Design, Frontend-Entwicklung und KI-Engineering. Ich arbeite an interaktiven Produktkonfiguratoren, Datenvisualisierung, E-Commerce und Conversion-Rate-Optimierung. Dabei bringe ich die Gestaltung eines Erlebnisses nah an den Code, der es möglich macht."
+  },
+  "home.p2": {
+    "en": "I'm drawn to projects where there is something to untangle: a complicated workflow, a lot of information, or an idea that needs a first working version. Sometimes that means building an interface. Sometimes it means connecting systems or finding a better way to automate the repetitive parts.",
+    "de": "Mich interessieren Projekte, bei denen es etwas zu entwirren gibt: ein komplizierter Ablauf, viele Informationen oder eine Idee, die eine erste funktionierende Version braucht. Manchmal bedeutet das, ein Interface zu bauen. Manchmal verbinde ich Systeme oder finde einen besseren Weg, wiederkehrende Aufgaben zu automatisieren."
+  },
+  "home.p3": {
+    "en": "Explore the projects for the thinking, technologies, and collaborations behind my work. If you're planning a product or looking for someone to join your team, let's talk.",
+    "de": "In meinen Projekten findest du die Überlegungen, Technologien und Zusammenarbeit hinter meiner Arbeit. Wenn du ein Produkt planst oder Verstärkung für dein Team suchst, lass uns sprechen."
+  },
+  "home.description": {
+    "en": "Alexander Fuerst is a UX+AI engineer in Würzburg, Germany, building frontend interfaces, AI automation, data visualizations, and e-commerce experiences.",
+    "de": "Alexander Fuerst ist UX- und KI-Engineer in Würzburg. Er entwickelt Frontend-Interfaces, KI-Automatisierung, Datenvisualisierungen und E-Commerce-Erlebnisse."
+  },
+  "cv.title": {
+    "en": "Projects & Experience — Alexander Fuerst | Fuerst.one",
+    "de": "Projekte & Erfahrung — Alexander Fuerst | Fuerst.one"
+  },
+  "cv.description": {
+    "en": "Explore Alexander Fuerst's UX, frontend, AI engineering, data visualization, and e-commerce projects, with technologies, collaborators, and results.",
+    "de": "Entdecke Alexander Fuersts Projekte aus UX, Frontend, KI-Engineering, Datenvisualisierung und E-Commerce – mit Technologien, Beteiligten und Ergebnissen."
+  },
+  "cv.heading": {
+    "en": "Projects & experience",
+    "de": "Projekte & Erfahrung"
+  },
+  "cv.intro": {
+    "en": "UX design, frontend development, AI engineering, data visualization, and e-commerce — selected work by Alexander Fuerst.",
+    "de": "UX-Design, Frontend-Entwicklung, KI-Engineering, Datenvisualisierung und E-Commerce – ausgewählte Arbeiten von Alexander Fuerst."
+  },
+  "cv.sidebar": {
+    "en": "Building immersive interfaces that fuse rigorous systems with intuitive design.",
+    "de": "Ich entwickle lebendige Interfaces, die durchdachte Systeme mit intuitiver Gestaltung verbinden."
+  },
+  "contact.title": {
+    "en": "Contact & CV Download — Alexander Fuerst | Fuerst.one",
+    "de": "Kontakt & Lebenslauf — Alexander Fuerst | Fuerst.one"
+  },
+  "contact.description": {
+    "en": "Contact Alexander Fuerst for UX, frontend, and AI engineering projects or team opportunities. Download a CV tailored to the experience you're looking for.",
+    "de": "Kontaktiere Alexander Fuerst für UX-, Frontend- und KI-Projekte oder die Zusammenarbeit im Team. Lade einen Lebenslauf mit passender Projektauswahl herunter."
+  },
+  "contact.heading": {
+    "en": "Get in touch · Download my CV",
+    "de": "Kontakt aufnehmen · Lebenslauf herunterladen"
+  },
+  "contact.intro": {
+    "en": "Drop your email below and pick a preset to download a tailored PDF of my CV. The presets filter the project selection so you only see work that matches what you're hiring for. Your email lands in my inbox so I can follow up.",
+    "de": "Trage deine E-Mail-Adresse ein und wähle einen Schwerpunkt, um meinen Lebenslauf als passendes PDF herunterzuladen. Die Vorauswahl zeigt Projekte, die zu deiner Suche passen. Deine E-Mail landet bei mir, damit ich mich bei dir melden kann."
+  },
+  "hire.title": {
+    "en": "Work with me — Alexander Fuerst | Fuerst.one",
+    "de": "Zusammenarbeiten — Alexander Fuerst | Fuerst.one"
+  },
+  "hire.description": {
+    "en": "Hire Alexander Fuerst for UX, frontend development, and AI engineering. Find my profiles on Malt, freelancermap, and LinkedIn, or get in touch directly.",
+    "de": "Arbeite mit Alexander Fuerst an UX, Frontend-Entwicklung und KI-Engineering. Profile auf Malt, freelancermap und LinkedIn oder direkter Kontakt."
+  },
+  "hire.intro": {
+    "en": "Have a product to untangle, an interface to build, or an idea worth exploring? I bring UX, frontend development, and AI engineering together. Choose the way you prefer to connect.",
+    "de": "Ein Produkt, das klarer werden soll, ein Interface, das gebaut werden muss, oder eine Idee zum Ausprobieren? Ich verbinde UX, Frontend-Entwicklung und KI-Engineering. Wähle den Kontaktweg, der dir am besten passt."
+  },
+  "pdf.summary": {
+    "en": "From idea to app to automation to production. Engineering intuitive interfaces for complex, tailor-fit tools — backed by full-stack AI development, behavioral psychology, user research, and CRO.",
+    "de": "Von der Idee über die App und Automatisierung bis zum Produktivbetrieb. Ich entwickle intuitive Interfaces für komplexe, individuell passende Werkzeuge – mit Fullstack-KI-Entwicklung, Verhaltenspsychologie, Nutzerforschung und Conversion-Rate-Optimierung."
+  }
+}

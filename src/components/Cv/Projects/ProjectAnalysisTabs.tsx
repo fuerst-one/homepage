@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useId, useMemo, useState } from "react";
 import { CvProject } from "@/server/notion/getCvProjects";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,7 @@ export const ProjectAnalysisTabs = ({
 }: {
   projects: CvProject[];
 }) => {
+  const locale = useLocale();
   const [activeTab, setActiveTab] = useState<TabId>(GRAPH_TAB_ID);
   const filterParams = useFiltersStore((s) => s.filters);
   const filteredProjects = useMemo(
@@ -31,14 +33,30 @@ export const ProjectAnalysisTabs = ({
   const tabListId = useId();
   const tabs: { id: TabId; label: string }[] = [
     { id: GRAPH_TAB_ID, label: "Graph" },
-    ...filterConfigs.map((c) => ({ id: c.projectKey, label: c.label })),
+    ...filterConfigs.map((c) => ({
+      id: c.projectKey,
+      label:
+        locale === "de"
+          ? ((
+              {
+                clients: "Kunden",
+                industries: "Branchen",
+                experiences: "Erfahrungen",
+                tools: "Tools",
+                languages: "Sprachen",
+                projectType: "Projekttyp",
+                workplace: "Arbeitsort",
+              } as Record<string, string>
+            )[c.projectKey] ?? c.label)
+          : c.label,
+    })),
   ];
 
   return (
     <div>
       <div
         role="tablist"
-        aria-label="Project analysis"
+        aria-label={locale === "de" ? "Projektanalyse" : "Project analysis"}
         className="flex flex-wrap gap-1.5"
       >
         {tabs.map((tab) => {

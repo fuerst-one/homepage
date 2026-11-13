@@ -15,23 +15,37 @@ const FactRow = ({
   </div>
 );
 
-export const OwnerFacts = ({ owner }: { owner: CvOwnerPublic }) => {
+export const OwnerFacts = ({
+  owner,
+  locale = "en",
+}: {
+  owner: CvOwnerPublic;
+  locale?: "en" | "de";
+}) => {
   const statusLine = [owner.position, owner.status].filter(Boolean).join(" · ");
 
   return (
     <div className="space-y-3 print:hidden">
       <span className="text-[0.65rem] uppercase tracking-[0.3em] text-neutral-400">
-        Profile
+        {locale === "de" ? "Profil" : "Profile"}
       </span>
       <div className="space-y-3 rounded-lg border border-neutral-800/80 bg-neutral-900/40 p-3">
         {statusLine && <FactRow label="Status">{statusLine}</FactRow>}
         {owner.languages && (
-          <FactRow label="Languages">{owner.languages}</FactRow>
+          <FactRow label={locale === "de" ? "Sprachen" : "Languages"}>
+            {owner.languages}
+          </FactRow>
         )}
         {owner.education && (
-          <FactRow label="Education">{owner.education}</FactRow>
+          <FactRow label={locale === "de" ? "Ausbildung" : "Education"}>
+            {owner.education}
+          </FactRow>
         )}
-        {owner.city && <FactRow label="Location">{owner.city}</FactRow>}
+        {owner.city && (
+          <FactRow label={locale === "de" ? "Standort" : "Location"}>
+            {owner.city}
+          </FactRow>
+        )}
       </div>
     </div>
   );

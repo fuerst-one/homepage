@@ -677,3 +677,15 @@
 .landing[data-shape-mounted="true"] .landing-stage {
   mix-blend-mode: screen;
 }
+
+/* Keep the language switch and animation controls in separate hit targets on narrow screens. */
+@media (max-width: 480px) {
+  .landing-header {
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+  .landing-header-actions {
+    margin-left: auto;
+    gap: 12px;
+  }
+}

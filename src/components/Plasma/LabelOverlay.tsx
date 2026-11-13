@@ -1,7 +1,7 @@
 "use client";
 
 import { CSSProperties, ReactNode, useEffect, useRef } from "react";
-import Link from "next/link";
+import Link from "@/components/i18n/LocalizedLink";
 import { LabelPlacement } from "./getLabelGroupPlacements";
 
 type LabelOverlayProps = {

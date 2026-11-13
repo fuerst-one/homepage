@@ -1,10 +1,10 @@
-import Link from "next/link";
+import Link from "@/components/i18n/LocalizedLink";
 
 const LEGAL_LINKS = [
-  { label: "IMPRESSUM", href: "/impressum" },
-  { label: "DATENSCHUTZ", href: "/datenschutz" },
-  { label: "LEGAL NOTICE", href: "/legal-notice" },
-  { label: "PRIVACY", href: "/privacy" },
+  { label: "IMPRESSUM", href: "/de/impressum" },
+  { label: "DATENSCHUTZ", href: "/de/datenschutz" },
+  { label: "LEGAL NOTICE", href: "/en/legal-notice" },
+  { label: "PRIVACY", href: "/en/privacy" },
 ];
 
 export const LegalFooter = () => {

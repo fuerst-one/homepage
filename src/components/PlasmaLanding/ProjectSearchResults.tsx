@@ -1,6 +1,9 @@
 "use client";
-import Link from "next/link";
+
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import Link from "@/components/i18n/LocalizedLink";
 import type { SearchProject } from "./projectSearch";
+
 export const ProjectSearchResults = ({
   projects,
   loading,
@@ -16,10 +19,11 @@ export const ProjectSearchResults = ({
   retry: () => void;
   onPreview: (project: SearchProject | null) => void;
 }) => {
+  const de = useLocale() === "de";
   return (
     <section
       className="landing-search-results"
-      aria-label={"Matching projects"}
+      aria-label={de ? "Passende Projekte" : "Matching projects"}
       onPointerLeave={() => onPreview(null)}
       onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) onPreview(null);
@@ -27,13 +31,19 @@ export const ProjectSearchResults = ({
     >
       <div className="landing-search-results-header" role="status">
         {loading
-          ? "Loading project keywords…"
+          ? de
+            ? "Projektstichwörter werden geladen …"
+            : "Loading project keywords…"
           : error
-            ? "Project search is unavailable."
-            : `${projects.length} matching ${projects.length === 1 ? "project" : "projects"}`}
+            ? de
+              ? "Die Projektsuche ist gerade nicht verfügbar."
+              : "Project search is unavailable."
+            : de
+              ? `${projects.length} passende ${projects.length === 1 ? "Projekt" : "Projekte"}`
+              : `${projects.length} matching ${projects.length === 1 ? "project" : "projects"}`}
         {error && (
           <button type="button" onClick={retry}>
-            {"Try again ↻"}
+            {de ? "Erneut versuchen ↻" : "Try again ↻"}
           </button>
         )}
       </div>
@@ -64,7 +74,9 @@ export const ProjectSearchResults = ({
           </div>
         ) : (
           <p className="landing-search-empty">
-            {`No projects match “${query}”. Try a project name, tool, industry, or area of expertise.`}
+            {de
+              ? `Keine passenden Projekte für „${query}“. Probiere einen Projektnamen, ein Tool, eine Branche oder ein Fachgebiet.`
+              : `No projects match “${query}”. Try a project name, tool, industry, or area of expertise.`}
           </p>
         ))}
     </section>

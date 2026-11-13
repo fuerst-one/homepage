@@ -18,17 +18,19 @@ export const GET = async (request: NextRequest) => {
 
 ## Website
 
-- [Home](${API_BASE_URL}/) — introduction and links to work and contact information.
-- [Project portfolio](${API_BASE_URL}/projects) — full directory with stable, descriptive HTML URLs for each project, including descriptions, technologies, collaborators, and results. Use the API's webUrl for the canonical page to read and cite.
-- [CV and experience](${API_BASE_URL}/cv) — public profile and interactive project filtering by specialty.
-- [Contact and CV download](${API_BASE_URL}/contact) — project inquiries, team opportunities, and tailored PDF CV downloads.
-- [Plasma playground](${API_BASE_URL}/plasma) — interactive creative coding experiment.
+- [Home](${API_BASE_URL}/en) — introduction and links to work and contact information.
+- [Project portfolio](${API_BASE_URL}/en/projects) — full directory with stable, descriptive HTML URLs for each project, including descriptions, technologies, collaborators, and results. Use the API's webUrl for the canonical page to read and cite.
+- [CV and experience](${API_BASE_URL}/en/cv) — public profile and interactive project filtering by specialty.
+- [Contact and CV download](${API_BASE_URL}/en/contact) — project inquiries, team opportunities, and tailored PDF CV downloads.
+- [Plasma playground](${API_BASE_URL}/en/plasma) — interactive creative coding experiment.
 - [GitHub](https://github.com/fuerst-one) — public code profile.
 - [LinkedIn](https://www.linkedin.com/in/fuerst-one/) — professional profile.
 
+- [Deutsch](${API_BASE_URL}/de) — German homepage, profile, projects and contact.
+
 ## Public data API
 
-Read-only, Notion-backed API for the same public profile and projects shown on the website. Rate-limited to ${RATE_LIMIT_PER_MINUTE} requests/minute per IP. No auth required. Content is cached; availability, project counts, and results may change. Use the linked pages and current API responses for factual claims.
+Read-only, Notion-backed API for the same public profile and projects shown on the website. Rate-limited to ${RATE_LIMIT_PER_MINUTE} requests/minute per IP. No auth required. Add \`?locale=de\` to profile/project requests for published German prose; shared tags are unchanged. Content is cached; availability, project counts, and results may change. Use the linked pages and current API responses for factual claims.
 
 The dataset is small (a few dozen projects). Start with /api/facets to discover valid filter values, then narrow with /api/projects, then zoom on a single record via /api/projects/{id}.
 

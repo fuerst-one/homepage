@@ -1,9 +1,45 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
-const { resolveCommand, resolveExplicitCommand, SUGGESTIONS } = loadTs(
+const {
+  resolveCommand,
+  resolveExplicitCommand,
+  SUGGESTIONS,
+  getLocalizedSuggestions,
+} = loadTs(
   new URL("../src/components/PlasmaLanding/commands.ts", import.meta.url),
 );
+
+test("German command chips and aliases resolve to localized destinations", () => {
+  for (const chip of getLocalizedSuggestions("de")) {
+    assert.equal(resolveExplicitCommand(chip.label, "de")?.href, chip.href);
+  }
+  for (const [query, href] of [
+    ["Zeig mir deine Projekte!", "/de/cv"],
+    ["Über mich", "/de/cv"],
+    ["Wie kann ich dich kontaktieren?", "/de/contact"],
+    ["Lebenslauf downloaden", "/de/cv.pdf"],
+    ["Mit dir arbeiten", "/de/hire"],
+    ["Lass uns basteln", "/de/plasma"],
+  ])
+    assert.equal(resolveExplicitCommand(query, "de")?.href, href, query);
+  assert.equal(
+    resolveExplicitCommand("Animation pausieren", "de")?.action,
+    "pause",
+  );
+  assert.equal(
+    resolveExplicitCommand("Animation fortsetzen", "de")?.action,
+    "play",
+  );
+  for (const query of [
+    "React Projekte",
+    "KI Erfahrung",
+    "Projekte mit React",
+    "nicht pausieren",
+  ]) {
+    assert.equal(resolveExplicitCommand(query, "de"), null, query);
+  }
+});
 
 test("suggestions resolve to their advertised destinations or controls", () => {
   for (const suggestion of SUGGESTIONS) {

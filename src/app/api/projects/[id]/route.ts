@@ -1,3 +1,5 @@
+import { toPublicProject } from "@/lib/localizeContent";
+import { isLocale } from "@/lib/i18n";
 import { NextRequest, NextResponse } from "next/server";
 import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
 import {
@@ -23,9 +25,15 @@ export const GET = async (
 ) => {
   const rateLimit = checkRateLimit(request);
   if (!rateLimit.allowed) return buildRateLimitedResponse(rateLimit);
+  const locale = request.nextUrl.searchParams.get("locale") ?? "en";
+  if (!isLocale(locale))
+    return NextResponse.json(
+      { error: "Invalid locale", expected: "en|de" },
+      { status: 400, headers: buildApiHeaders(rateLimit) },
+    );
 
   const { id } = await params;
-  const projects = await getCachedCvProjects();
+  const projects = await getCachedCvProjects(locale);
   const project = projects.find((p) => p.id === id);
 
   if (!project) {
@@ -36,7 +44,7 @@ export const GET = async (
   }
 
   const absoluteProject = {
-    ...project,
+    ...toPublicProject(project),
     webUrl: `${SITE_URL}${projectPath(project)}`,
     logo: absolutizeImagePaths(project.logo),
     screenshots: absolutizeImagePaths(project.screenshots),

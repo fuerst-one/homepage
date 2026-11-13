@@ -12,9 +12,11 @@ const ROW_LABELS: Partial<Record<keyof CvProject, string>> = {
 export const ProjectMetaTable = ({
   project,
   filterable = true,
+  locale = "en",
 }: {
   project: CvProject;
   filterable?: boolean;
+  locale?: "en" | "de";
 }) => {
   const filteredFields = Object.entries(ROW_LABELS)
     .filter(([projectKey]) => {
@@ -25,7 +27,18 @@ export const ProjectMetaTable = ({
       return value !== null;
     })
     .map(([key, label]) => ({
-      label,
+      label:
+        locale === "de"
+          ? (
+              {
+                clients: "Kunden",
+                industries: "Branchen",
+                experiences: "Erfahrungen",
+                tools: "Tools",
+                languages: "Sprachen",
+              } as Record<string, string>
+            )[key]
+          : label,
       projectKey: key as keyof CvProject,
       value: project[key as keyof CvProject],
     }));

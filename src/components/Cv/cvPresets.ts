@@ -149,3 +149,47 @@ export const sortAndCapForPreset = (
   });
   return preset.topN ? sorted.slice(0, preset.topN) : sorted;
 };
+
+const PRESET_COPY_DE: Record<
+  CvPresetId,
+  { label: string; description: string; headline: string }
+> = {
+  all: {
+    label: "Alle",
+    description: "Das gesamte Archiv – alle Projekte.",
+    headline: "Alle Projekte – das vollständige Archiv.",
+  },
+  featured: {
+    label: "Ausgewählt",
+    description: "Meine wichtigsten ausgewählten Projekte.",
+    headline: "Handverlesen: die Projekte, die ich zuerst zeigen würde.",
+  },
+  fullstack: {
+    label: "Fullstack",
+    description: "Von Geschäftslogik bis Oberfläche – vollständige Produkte.",
+    headline:
+      "Fullstack-Entwicklung vom Datenmodell bis zum fertigen Interface.",
+  },
+  ai: {
+    label: "KI",
+    description: "KI-Projekte – von Daten zu Erkenntnissen.",
+    headline: "KI-Projekte – von Daten zu Erkenntnissen.",
+  },
+  dataviz: {
+    label: "Datenvisualisierung",
+    description: "Karten, Diagramme und Canvas – datenbasierte Gestaltung.",
+    headline: "Daten verständlich und nutzbar machen.",
+  },
+  conversion: {
+    label: "UX/UI",
+    description:
+      "Verhaltenspsychologie und Conversion-Optimierung in unterschiedlichen Branchen.",
+    headline: "Überzeugende, zugängliche und conversionorientierte Gestaltung.",
+  },
+};
+export function localizePreset<T extends CvPreset>(
+  preset: T,
+  locale: "en" | "de",
+): T {
+  return locale === "de" ? { ...preset, ...PRESET_COPY_DE[preset.id] } : preset;
+}

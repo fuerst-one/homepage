@@ -1,3 +1,4 @@
+import { isLocale } from "@/lib/i18n";
 import { NextRequest, NextResponse } from "next/server";
 import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
 import { getCachedProjectIcons } from "@/server/notion/getCachedProjectIcons";
@@ -15,6 +16,12 @@ export const runtime = "nodejs";
 export const GET = async (request: NextRequest) => {
   const rateLimit = checkRateLimit(request);
   if (!rateLimit.allowed) return buildRateLimitedResponse(rateLimit);
+  const locale = request.nextUrl.searchParams.get("locale") ?? "en";
+  if (!isLocale(locale))
+    return NextResponse.json(
+      { error: "Invalid locale", expected: "en|de" },
+      { status: 400, headers: buildApiHeaders(rateLimit) },
+    );
 
   const parsed = parseListParams(request.nextUrl.searchParams);
   if (!parsed.ok) {
@@ -25,15 +32,18 @@ export const GET = async (request: NextRequest) => {
   }
 
   const [allProjects, icons] = await Promise.all([
-    getCachedCvProjects(),
+    getCachedCvProjects(locale),
     getCachedProjectIcons().catch(() => null),
   ]);
   const matched = filterCvProjectsForApi(allProjects, parsed.params);
   const results = matched.map((project) =>
-    toProjectListItem({
-      ...project,
-      icon: icons ? (icons[project.id] ?? null) : (project.icon ?? null),
-    }),
+    toProjectListItem(
+      {
+        ...project,
+        icon: icons ? (icons[project.id] ?? null) : (project.icon ?? null),
+      },
+      locale,
+    ),
   );
 
   return NextResponse.json(

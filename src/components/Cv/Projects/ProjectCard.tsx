@@ -1,11 +1,13 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getJsxFormattedTextFromTextBlock } from "./getJsxFormattedTextFromTextBlock";
 import { CvProject } from "@/server/notion/getCvProjects";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
-import Link from "next/link";
+import "dayjs/locale/de";
+import Link from "@/components/i18n/LocalizedLink";
 import { FaImage } from "@react-icons/all-files/fa/FaImage";
 import { FaExternalLinkAlt } from "@react-icons/all-files/fa/FaExternalLinkAlt";
 import { FaChartLine } from "@react-icons/all-files/fa/FaChartLine";
@@ -20,6 +22,7 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 export const ProjectCard = ({ project }: { project: CvProject }) => {
+  const locale = useLocale();
   const {
     id,
     name,
@@ -46,7 +49,11 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
       <button
         type="button"
         onClick={openDialog}
-        aria-label={`View details for ${name}`}
+        aria-label={
+          locale === "de"
+            ? `Details zu ${name} anzeigen`
+            : `View details for ${name}`
+        }
         className="absolute inset-0 z-0 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white print:hidden"
       />
       <div className="pointer-events-none relative z-10 flex flex-col gap-3">
@@ -121,14 +128,18 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
           </div>
           <h3 className="text-2xl font-semibold text-white">
             <Link
-              href={projectPath(project)}
+              href={projectPath(project, locale)}
               className="pointer-events-auto hover:underline"
             >
               {name}
             </Link>
           </h3>
           <p className="text-xs text-neutral-400">
-            <DateRange startDate={startDate} endDate={endDate} />
+            <DateRange
+              startDate={startDate}
+              endDate={endDate}
+              locale={locale}
+            />
           </p>
         </header>
         {description && (
@@ -189,9 +200,11 @@ const Thumbnail = ({
 const DateRange = ({
   startDate,
   endDate,
+  locale,
 }: {
   startDate: string;
   endDate: string | null;
+  locale: "en" | "de";
 }) => {
   const startDateObj = dayjs(startDate);
   let endDateObj = endDate ? dayjs(endDate) : dayjs();
@@ -200,6 +213,7 @@ const DateRange = ({
   }
   const durationLabel = dayjs
     .duration(endDateObj.diff(startDateObj))
+    .locale(locale)
     .humanize();
   const startDateFormatted = startDateObj.format("YYYY/MM");
   const endDateFormatted = endDateObj.format("YYYY/MM");

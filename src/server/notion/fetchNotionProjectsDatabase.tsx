@@ -37,6 +37,9 @@ export type NotionProjectPropertiesRaw = {
   "Project Description": RichTextField;
   "Wow-Factor 1-10": NumberField;
   KPIs: RichTextField;
+  "Project Description DE"?: RichTextField;
+  "KPIs DE"?: RichTextField;
+  "German ready"?: CheckBoxField;
   "Project Type": SelectField;
   "Start Date": DateField;
   "End Date": DateField;
@@ -61,6 +64,9 @@ export type NotionProject = {
   screenshots: string[];
   description: RichTextField;
   kpis: RichTextField;
+  descriptionDe?: RichTextField;
+  kpisDe?: RichTextField;
+  germanReady?: boolean;
   wowFactor: number;
   status: string;
   hidden: boolean;
@@ -91,6 +97,9 @@ const rawToInternalPropertiesMap: Record<
   "Project Description": "description",
   "Wow-Factor 1-10": "wowFactor",
   KPIs: "kpis",
+  "Project Description DE": "descriptionDe",
+  "KPIs DE": "kpisDe",
+  "German ready": "germanReady",
   Status: "status",
   Hidden: "hidden",
   Featured: "featured",
@@ -125,6 +134,8 @@ export const fetchNotionProjectsDatabase = async () => {
     const {
       "Project Description": description,
       KPIs: kpis,
+      "Project Description DE": descriptionDe,
+      "KPIs DE": kpisDe,
       ...propertiesRaw
     } = projectRaw.properties;
 
@@ -134,6 +145,8 @@ export const fetchNotionProjectsDatabase = async () => {
       name: projectRaw.name,
       description,
       kpis,
+      descriptionDe,
+      kpisDe,
     } as NotionProject;
 
     // Flatten the other properties to get the actual values

@@ -37,9 +37,11 @@ const formatLocation = (owner: CvOwner): string => {
 export const Sidebar = ({
   projects,
   owner,
+  locale = "en",
 }: {
   projects: CvProject[];
   owner: CvOwner;
+  locale?: "en" | "de";
 }) => {
   const tools = rankByFrequency(projects, (p) => p.tools, 14).join(" · ");
   const industries = rankByFrequency(projects, (p) => p.industries, 5).join(
@@ -49,10 +51,18 @@ export const Sidebar = ({
   return (
     <View style={styles.sidebar}>
       <Section label="Tools">{tools}</Section>
-      <Section label="Industries">{industries}</Section>
-      <Section label="Languages">{owner.languages}</Section>
-      <Section label="Location">{formatLocation(owner)}</Section>
-      <Section label="Education">{owner.education}</Section>
+      <Section label={locale === "de" ? "Branchen" : "Industries"}>
+        {industries}
+      </Section>
+      <Section label={locale === "de" ? "Sprachen" : "Languages"}>
+        {owner.languages}
+      </Section>
+      <Section label={locale === "de" ? "Standort" : "Location"}>
+        {formatLocation(owner)}
+      </Section>
+      <Section label={locale === "de" ? "Ausbildung" : "Education"}>
+        {owner.education}
+      </Section>
     </View>
   );
 };
