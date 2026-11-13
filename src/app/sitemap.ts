@@ -3,6 +3,7 @@ import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
 import { projectPath, SITE_URL } from "@/lib/seo";
 import { servicePath, serviceSlugs } from "@/data/services";
 import { serviceAlternates } from "@/components/Services/serviceMetadata";
+import { serviceProductPath } from "@/data/serviceProducts";
 import { locales, localizedPath, languageAlternates } from "@/lib/i18n";
 import { hasGermanTranslation } from "@/lib/localizeContent";
 
@@ -28,6 +29,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       (["en", "de"] as const).map((locale) => ({
         url: `${SITE_URL}${servicePath(slug, locale)}`,
         alternates: { languages: serviceAlternates(slug) },
+      })),
+    ),
+    ...serviceSlugs.flatMap((slug) =>
+      locales.map((locale) => ({
+        url: `${SITE_URL}${serviceProductPath(slug, locale)}`,
+        alternates: {
+          languages: languageAlternates(serviceProductPath(slug, "en")),
+        },
       })),
     ),
     ...projects.flatMap((project) => {

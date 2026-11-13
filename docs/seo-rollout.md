@@ -4,7 +4,7 @@ Canonical website: **https://fuerst.one**. Audience: clients and recruiters look
 
 ## Current plan after the bilingual commits
 
-The completed hosting rollout below remains the historical baseline. Commits `27c4174`, `e66db92` and `9a2c04b` add the interactive homepage, bilingual site and service offers. They are local commits, not a deployed migration. The next canonical HTML URLs are `/en/...` and `/de/...`, including four service pages. The same apex domain, unprefixed sitemap/API/assets and existing hosting records remain in use.
+The completed hosting rollout below remains the historical baseline. Commits `27c4174`, `e66db92` and `9a2c04b` add the interactive homepage, bilingual site and service offers. These changes and SEO follow-up `6a9f4c9` are now deployed and verified, with canonical HTML under `/en/...` and `/de/...`, including four service pages. The same apex domain, unprefixed sitemap/API/assets and existing hosting records remain in use. See the [bilingual release and starting-offer receipt](deployment-2026-11-14.md) for production evidence and the subsequent product-page scope.
 
 Read the [localized SEO review and release plan](seo-localized-review-2026-11-13.md) before the next release. Deploy routes, permanent old-path redirects, metadata, internal links and sitemap together; validate actual HTTPS before asking Google to crawl the new URLs. The daily indexing monitor now determines which URL structure is live before choosing inspection targets. It must not treat not-yet-deployed localized URLs as a regression or continue treating redirected old paths as the final canonicals after release.
 

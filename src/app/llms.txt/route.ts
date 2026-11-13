@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { SITE_URL as API_BASE_URL } from "@/lib/seo";
 import { serviceCopy, servicePath, serviceSlugs } from "@/data/services";
 import { locales } from "@/lib/i18n";
+import { serviceProducts, serviceProductPath } from "@/data/serviceProducts";
 import {
   buildRateLimitedResponse,
   checkRateLimit,
@@ -43,6 +44,12 @@ ${serviceSlugs
   .join("\n")}
 
 The service pages link to selected project evidence and explain scope, deliverables and enquiry options. Project results describe individual past projects, not guarantees for future work.
+
+## Focused starting engagements / Klar begrenzte Einstiege
+
+${serviceSlugs.flatMap((slug) => locales.map((locale) => `- [${serviceProducts[slug].copy[locale].label} (${locale})](${API_BASE_URL}${serviceProductPath(slug, locale)}) — ${serviceProducts[slug].copy[locale].description}`)).join("\n")}
+
+These are scoped, paid service engagements. Scope, fee and schedule are agreed before work starts; the pages do not publish fixed prices or promise future project outcomes.
 
 ## Public data API
 

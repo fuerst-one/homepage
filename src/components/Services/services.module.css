@@ -411,6 +411,63 @@
   text-decoration: underline;
   text-underline-offset: 0.3rem;
 }
+.startingOffer {
+  margin-top: 3rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid var(--line);
+  border-left: 3px solid #eee;
+  background: #111;
+}
+.startingOffer h2 {
+  margin-top: 0.7rem;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  line-height: 1.4;
+  letter-spacing: -0.04em;
+}
+.startingOffer > p:not(.eyebrow) {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+.startingOffer > .micro {
+  font-size: 0.65rem;
+}
+.productSummary {
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  color: #111;
+  background: #efefeb;
+}
+.productSummary .eyebrow {
+  color: #555;
+}
+.productDecision {
+  margin-block: 1rem 1.75rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  line-height: 1.65;
+  letter-spacing: -0.03em;
+}
+.productSummary ol {
+  list-style: decimal-leading-zero;
+  padding-left: 1.65rem;
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+.productSummary li {
+  border-top: 1px solid #bcbcb6;
+  padding: 0.7rem 0 0.7rem 0.5rem;
+}
+.productInputs {
+  margin-top: 1.75rem;
+  padding-left: 1.25rem;
+  list-style: square;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+.productInputs li + li {
+  margin-top: 0.8rem;
+}
 @media (max-width: 480px) {
   .hero {
     padding-top: 2.5rem;

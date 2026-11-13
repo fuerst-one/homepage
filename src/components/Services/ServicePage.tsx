@@ -14,6 +14,7 @@ import {
 } from "@/data/services";
 import { selectServiceEvidence } from "./serviceEvidence";
 import { serviceSchema } from "./serviceMetadata";
+import { ServiceStartingOffer } from "./ServiceStartingOffer";
 import styles from "./services.module.css";
 
 const ui = {
@@ -203,6 +204,7 @@ export async function ServicePage({
             ))}
           </div>
         </section>
+        <ServiceStartingOffer slug={slug} locale={locale} />
         <section
           id="work"
           className={styles.section}
