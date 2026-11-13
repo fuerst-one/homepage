@@ -2,6 +2,10 @@
 
 Canonical website: **https://fuerst.one**. Audience: clients and recruiters looking for UX, frontend, AI engineering, data visualization, and e-commerce experience.
 
+**Apex is live.** After the [hosting inventory](hosting-inventory-2026-11-13.md) and website redeployment, the user authorized the [apex cutover](apex-cutover-2026-11-13.md). `https://fuerst.one` now serves the existing production deployment directly; www redirects to it. Folder subdomains and service/mail records are preserved. CV aliases remain available during the DNS cache transition. Portfolio retirement, Buchstabiene deployment and Search Console changes remain pending.
+
+Reviewed revisions: homepage SEO/header `c78f5c5366761ac2b3580aa3cfca99494cf11821`, followed by runtime fix `56d6b11e7eb5dabc037c1fb698b5279ae978705e`; Buchstabiene `bc4284726ce5cf7cd313b30f4306f128030aedcb` remains local. Earlier production upload attempts created no deployments because CLI 39.1.2 was too old. The authorized homepage redeployment used CLI 65.15.0 and a clean detached worktree. See the [deployment receipt](deployment-2026-11-13.md) for the final live revision, validation and rollback target.
+
 ## Implemented in the homepage repository
 
 - Visible, server-rendered introduction and navigation below the existing plasma landing.
@@ -14,7 +18,7 @@ Canonical website: **https://fuerst.one**. Audience: clients and recruiters look
 - Notion 429 retries respect Retry-After, failed fetches do not cache an empty dataset, and build concurrency is limited to avoid duplicate cold-cache requests.
 - Legacy navigation URLs have relevant permanent redirects instead of all pointing to the homepage.
 
-## Live state observed on 2026-11-13
+## Pre-migration state observed on 2026-11-13
 
 - Apex `fuerst.one` resolves to one.com (`46.30.213.31`) and issues a temporary 302 to `cv.fuerst.one`. Paths acquire a double slash, for example `/cv` becomes `https://cv.fuerst.one//cv`.
 - Vercel project `auto-cv` owns `cv.fuerst.one`; `auto-cv.fuerst.one` redirects there. Vercel does not currently list apex `fuerst.one` under this account.
