@@ -1,0 +1,127 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { PlasmaCanvas, PlasmaCanvasHandle } from "../Plasma/PlasmaCanvas";
+import { PLAYGROUND_CHARACTERS } from "../Plasma/constants";
+import { useShapesLuminance } from "../PlasmaPlayground/useShapesLuminance";
+import { createLandingGeometry } from "./shapeGeometries";
+import { createLandingIconGeometry } from "./iconGeometries";
+
+const emptyGeometries = () => [];
+const createGeometry = (index: number) =>
+  index < 6 ? createLandingGeometry(index) : createLandingIconGeometry(index);
+
+const RAMP = PLAYGROUND_CHARACTERS.slice(0, PLAYGROUND_CHARACTERS.length / 2);
+const WIDTH = 100;
+const HEIGHT = 56;
+
+export default function LandingShape({
+  shapeIndex,
+  paused,
+  reducedMotion,
+  active,
+  interactionTarget,
+  onReadyChange,
+}: {
+  shapeIndex: number;
+  paused: boolean;
+  reducedMotion: boolean;
+  active: boolean;
+  interactionTarget: HTMLElement | null;
+  onReadyChange?: (ready: boolean) => void;
+}) {
+  const canvasRef = useRef<PlasmaCanvasHandle>(null);
+  const [canvasReady, setCanvasReady] = useState(false);
+  const onCanvasReady = useCallback((canvas: HTMLCanvasElement | null) => {
+    setCanvasReady(Boolean(canvas));
+  }, []);
+  const { sample, ready } = useShapesLuminance(active, interactionTarget, {
+    createGeometries: emptyGeometries,
+    createGeometry,
+    shapeIndex,
+    paused,
+    reducedMotion,
+  });
+
+  useEffect(() => {
+    if (!active || !ready || !canvasReady) return;
+    let firstFrame = true;
+    let raf = 0;
+    let lastFrame = 0;
+    let lastInteractionAt = performance.now();
+    let dragging = false;
+    const render = (time: number) => {
+      if (time - lastFrame >= 1000 / 30) {
+        const result = sample({
+          width: WIDTH,
+          height: HEIGHT,
+          cellAspect: 1,
+          contrast: "medium",
+        });
+        if (result) {
+          canvasRef.current?.renderLuminance(result.luminance, WIDTH, HEIGHT);
+          if (firstFrame) {
+            firstFrame = false;
+            onReadyChange?.(true);
+          }
+        }
+        lastFrame = time;
+      }
+      raf = 0;
+      if (
+        !(paused || reducedMotion) ||
+        dragging ||
+        time - lastInteractionAt < 600
+      )
+        raf = requestAnimationFrame(render);
+    };
+    const onPointerDown = () => {
+      dragging = true;
+      lastInteractionAt = performance.now();
+      if (!raf) raf = requestAnimationFrame(render);
+    };
+    const onPointerUp = () => {
+      dragging = false;
+      lastInteractionAt = performance.now();
+    };
+    interactionTarget?.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+    raf = requestAnimationFrame(render);
+    return () => {
+      cancelAnimationFrame(raf);
+      interactionTarget?.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+    };
+  }, [
+    active,
+    ready,
+    canvasReady,
+    sample,
+    paused,
+    reducedMotion,
+    shapeIndex,
+    interactionTarget,
+    onReadyChange,
+  ]);
+
+  useEffect(() => {
+    if (!active || !ready || !canvasReady) onReadyChange?.(false);
+    return () => onReadyChange?.(false);
+  }, [active, ready, canvasReady, onReadyChange]);
+
+  return (
+    <PlasmaCanvas
+      ref={canvasRef}
+      onCanvasReady={onCanvasReady}
+      ramp={RAMP}
+      cellSize={8}
+      cellWidth={8}
+      fontPx={9}
+      gridWidth={WIDTH}
+      gridHeight={HEIGHT}
+      className="landing-shape-canvas"
+    />
+  );
+}

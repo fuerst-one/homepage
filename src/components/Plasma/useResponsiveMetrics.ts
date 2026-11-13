@@ -22,7 +22,7 @@ const compute = (): Metrics => {
 };
 
 export const useResponsiveMetrics = (): Metrics => {
-  const [metrics, setMetrics] = useState<Metrics>(compute);
+  const [metrics, setMetrics] = useState<Metrics>(DESKTOP_METRICS);
   useEffect(() => {
     const update = () => {
       const next = compute();
@@ -32,6 +32,7 @@ export const useResponsiveMetrics = (): Metrics => {
           : next,
       );
     };
+    update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);

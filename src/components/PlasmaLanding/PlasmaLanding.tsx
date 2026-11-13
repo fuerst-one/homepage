@@ -1,145 +1,680 @@
 "use client";
-
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { ArrowUp, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { FrameBounds } from "../Plasma/types";
 import { useInterval } from "../Plasma/useInterval";
-import { getIsReducedMotion } from "../Plasma/getIsReducedMotion";
-import { getLabelsGroups } from "./labelGroups";
-import { LabelPlacement } from "../Plasma/getLabelGroupPlacements";
-import { getResponsivePlacements } from "./getResponsivePlacements";
 import {
   LANDING_CHARACTERS,
-  PLASMA_FPS,
   PLASMA_LANDING_LENS_SCALE,
-  PLASMA_LANDING_LENS_X_FRAC,
-  PLASMA_LANDING_LENS_Y_FRAC,
-  PLASMA_REDUCED_FPS,
 } from "../Plasma/constants";
 import { PlasmaCanvas, PlasmaCanvasHandle } from "../Plasma/PlasmaCanvas";
-import { LabelOverlay } from "../Plasma/LabelOverlay";
 import { LegalFooter } from "../Plasma/LegalFooter";
+import { LabelOverlay } from "../Plasma/LabelOverlay";
+import { getLabelPlacementAtPoint } from "../Plasma/getLabelGroupPlacements";
 import { useResponsiveMetrics } from "../Plasma/useResponsiveMetrics";
-
-const FOOTER_RESERVED_PX = 40;
-
+import { createHeroPreviewController } from "./createHeroPreviewController";
+import {
+  LandingCommand,
+  resolveExplicitCommand,
+  SUGGESTIONS,
+} from "./commands";
+import { getRailScrollState } from "./getRailScrollState";
+import {
+  searchProjectIndex,
+  SearchFilter,
+  SearchProject,
+  SearchSuggestion,
+} from "./projectSearch";
+import { useProjectSearch } from "./useProjectSearch";
+import { ProjectSearchResults } from "./ProjectSearchResults";
+import "./landing.css";
+const LandingShape = dynamic(() => import("./LandingShape"), { ssr: false });
+const BRAND_PLACEMENTS = [
+  {
+    row: 0,
+    startCol: 0,
+    label: {
+      label: "FUERST.ONE",
+      href: "/cv",
+      glitch: true,
+      style: { fontWeight: 700 },
+    },
+  },
+];
+const EMPTY_SEARCH = { projects: [], suggestions: [] };
+type DisplaySuggestion = LandingCommand | SearchSuggestion;
 export const PlasmaLanding = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<PlasmaCanvasHandle>(null);
   const { cellSize, fontPx } = useResponsiveMetrics();
+  const lensOriginRef = useRef({ x: 0, y: 0 });
+  const lensTargetRef = useRef<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const lensPositionRef = useRef<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const [showIcon, setShowIcon] = useState(false);
+  const [shapeMounted, setShapeMounted] = useState(false);
+  const [shapeReady, setShapeReady] = useState(false);
+  const heroPreviewRef = useRef<ReturnType<
+    typeof createHeroPreviewController
+  > | null>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+  const manualScrollRef = useRef(false);
+  const centerRailRef = useRef(true);
   const [bounds, setBounds] = useState<FrameBounds | null>(null);
-
+  const [brandOffset, setBrandOffset] = useState({ x: 0, y: 0 });
+  const [interactionTarget, setInteractionTarget] =
+    useState<HTMLDivElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [scrollState, setScrollState] = useState({
+    back: false,
+    forward: false,
+  });
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [focused, setFocused] = useState(false);
+  const [input, setInput] = useState("");
+  const [searchFilter, setSearchFilter] = useState<SearchFilter>();
+  const [previewProject, setPreviewProject] = useState<SearchProject | null>(
+    null,
+  );
+  const [status, setStatus] = useState("");
+  const hasQuery = Boolean(input.trim());
+  const {
+    index: searchIndex,
+    loading: searchLoading,
+    error: searchError,
+    retry: retrySearch,
+  } = useProjectSearch(focused || hasQuery);
+  const search = useMemo(
+    () =>
+      searchIndex && hasQuery
+        ? searchProjectIndex(searchIndex, input, searchFilter)
+        : EMPTY_SEARCH,
+    [searchIndex, hasQuery, input, searchFilter],
+  );
+  const explicitCommand = useMemo(
+    () => (hasQuery && !searchFilter ? resolveExplicitCommand(input) : null),
+    [hasQuery, input, searchFilter],
+  );
+  const suggestions: DisplaySuggestion[] = useMemo(
+    () =>
+      !hasQuery
+        ? SUGGESTIONS
+        : explicitCommand
+          ? [explicitCommand]
+          : search.suggestions,
+    [hasQuery, explicitCommand, search.suggestions],
+  );
+  const currentIndex = Math.min(
+    activeIndex,
+    Math.max(0, suggestions.length - 1),
+  );
+  const active = suggestions[currentIndex] ?? SUGGESTIONS[0];
+  const shownShape = previewProject?.shape ?? active.shape;
+  const suggestionsId = useId();
+  const showResults = hasQuery && !explicitCommand;
+  const paused = !isPlaying;
+  const isShapeMode = showIcon && shapeReady;
+  const renderBackdrop = useCallback(() => {
+    const handle = canvasRef.current;
+    if (!handle) return;
+    const target = reducedMotion
+      ? lensOriginRef.current
+      : (lensTargetRef.current ?? lensOriginRef.current);
+    const position = reducedMotion
+      ? { ...target }
+      : (lensPositionRef.current ?? { ...target });
+    position.x += (target.x - position.x) * 0.16;
+    position.y += (target.y - position.y) * 0.16;
+    lensPositionRef.current = position;
+    handle.setLensScale(PLASMA_LANDING_LENS_SCALE);
+    handle.setCursor(position.x, position.y);
+    handle.renderPlasma();
+  }, [reducedMotion]);
+  const onBackdropReady = useCallback(
+    (canvas: HTMLCanvasElement | null) => {
+      if (canvas) renderBackdrop();
+    },
+    [renderBackdrop],
+  );
+  const getGlitchIntensity = useCallback(
+    () => canvasRef.current?.getGlitchIntensity() ?? 0,
+    [],
+  );
   useEffect(() => {
-    const updateBounds = () => {
-      if (!containerRef.current) {
-        return;
-      }
-      const width = Math.floor(window.innerWidth / cellSize) - 1;
-      const height =
-        Math.floor((window.innerHeight - FOOTER_RESERVED_PX) / cellSize) - 1;
-      setBounds({ width, height });
+    const controller = createHeroPreviewController(setShowIcon);
+    heroPreviewRef.current = controller;
+    return () => {
+      controller.dispose();
+      heroPreviewRef.current = null;
     };
-    updateBounds();
-    const resizeObserver = new ResizeObserver(updateBounds);
-    resizeObserver.observe(containerRef.current!);
-    return () => resizeObserver.disconnect();
-  }, [cellSize]);
-
+  }, []);
+  useEffect(() => {
+    if (showIcon) {
+      setShapeMounted(true);
+      return;
+    }
+    // Retain the final canvas frame during the return to the wordmark.
+    const timer = window.setTimeout(() => setShapeMounted(false), 650);
+    return () => window.clearTimeout(timer);
+  }, [showIcon]);
+  const updateScrollState = useCallback(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const next = getRailScrollState(
+      rail.scrollLeft,
+      rail.scrollWidth,
+      rail.clientWidth,
+    );
+    setScrollState((previous) =>
+      previous.back === next.back && previous.forward === next.forward
+        ? previous
+        : next,
+    );
+  }, []);
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const observer = new ResizeObserver(updateScrollState);
+    observer.observe(rail);
+    for (const chip of rail.children) observer.observe(chip);
+    updateScrollState();
+    return () => observer.disconnect();
+  }, [updateScrollState, suggestions]);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const update = () => {
+      const rect = container.getBoundingClientRect();
+      const stage = interactionTarget?.getBoundingClientRect();
+      lensOriginRef.current = {
+        x: stage
+          ? (stage.left + stage.width / 2 - rect.left) / cellSize
+          : container.clientWidth / cellSize / 2,
+        y: stage
+          ? (stage.top + stage.height / 2 - rect.top) / cellSize
+          : container.clientHeight / cellSize / 3,
+      };
+      if (stage) {
+        const placement = getLabelPlacementAtPoint(
+          BRAND_PLACEMENTS[0].label,
+          lensOriginRef.current,
+        );
+        // The backdrop grid starts at the landing's origin, not the stage's.
+        setBrandOffset({
+          x: placement.startCol * cellSize - (stage.left - rect.left),
+          y: placement.row * cellSize - (stage.top - rect.top),
+        });
+      }
+      setBounds({
+        width: Math.max(1, Math.floor(container.clientWidth / cellSize)),
+        height: Math.max(1, Math.floor(container.clientHeight / cellSize)),
+      });
+    };
+    const resize = new ResizeObserver(update);
+    resize.observe(container);
+    if (interactionTarget) resize.observe(interactionTarget);
+    update();
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotion = () => setReducedMotion(media.matches);
+    updateMotion();
+    media.addEventListener("change", updateMotion);
+    let intersects = true;
+    const updateVisibility = () => setVisible(intersects && !document.hidden);
+    const intersection = new IntersectionObserver(([entry]) => {
+      intersects = entry.isIntersecting;
+      updateVisibility();
+    });
+    intersection.observe(container);
+    document.addEventListener("visibilitychange", updateVisibility);
+    return () => {
+      resize.disconnect();
+      intersection.disconnect();
+      media.removeEventListener("change", updateMotion);
+      document.removeEventListener("visibilitychange", updateVisibility);
+    };
+  }, [cellSize, interactionTarget]);
+  useEffect(() => {
+    const rail = railRef.current;
+    const chip = rail?.children[currentIndex] as HTMLElement | undefined;
+    if (!rail || !chip || manualScrollRef.current || !centerRailRef.current)
+      return;
+    rail.scrollTo({
+      left: chip.offsetLeft - (rail.clientWidth - chip.clientWidth) / 2,
+      behavior: reducedMotion ? "instant" : "smooth",
+    });
+  }, [currentIndex, reducedMotion, suggestions]);
+  useEffect(() => {
+    renderBackdrop();
+  }, [bounds, renderBackdrop]);
+  useInterval(() => {
+    if (visible && isPlaying && !reducedMotion) renderBackdrop();
+  }, 1000 / 24);
+  const preview = (index: number, center = true, reveal = true) => {
+    if (reveal) heroPreviewRef.current?.touch();
+    setPreviewProject(null);
+    centerRailRef.current = center;
+    if (center) manualScrollRef.current = false;
+    setActiveIndex(index);
+  };
+  const execute = (command: LandingCommand) => {
+    const index = SUGGESTIONS.findIndex((item) => item.id === command.id);
+    if (index >= 0) preview(index);
+    if (command.href) {
+      // The typed input uses the same allowlisted destinations as the links.
+      window.location.assign(command.href);
+      return;
+    }
+    if (command.action === "pause") setIsPlaying(false);
+    if (command.action === "play") setIsPlaying(true);
+    setStatus(command.caption);
+    setInput("");
+    setSearchFilter(undefined);
+  };
+  const chooseSuggestion = (suggestion: DisplaySuggestion) => {
+    if ("kind" in suggestion && suggestion.kind === "keyword") {
+      setSearchFilter(suggestion.filter);
+      setInput(suggestion.label);
+      setStatus("");
+      preview(0);
+      return;
+    }
+    if (suggestion.href) window.location.assign(suggestion.href);
+    else if (!("kind" in suggestion)) execute(suggestion);
+  };
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    if (hasQuery && !explicitCommand && (searchLoading || searchError)) return;
+    if (hasQuery && suggestions[currentIndex]) {
+      chooseSuggestion(suggestions[currentIndex]);
+      return;
+    }
+  };
+  const move = (direction: number) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    manualScrollRef.current = true;
+    rail.scrollBy({
+      left: direction * rail.clientWidth * 0.75,
+      behavior: reducedMotion ? "instant" : "smooth",
+    });
+  };
   return (
     <div
       ref={containerRef}
-      className="flex h-screen w-screen flex-col items-center justify-center"
+      className="landing"
+      data-paused={paused || reducedMotion}
+      data-searching={showResults}
+      data-hero={isShapeMode ? "shape" : "brand"}
+      data-shape-mounted={shapeMounted}
     >
-      <Frame bounds={bounds} cellSize={cellSize} fontPx={fontPx} />
-      <LegalFooter />
-    </div>
-  );
-};
-
-type FrameProps = {
-  bounds: FrameBounds | null;
-  cellSize: number;
-  fontPx: number;
-};
-
-const Frame = ({ bounds, cellSize, fontPx }: FrameProps) => {
-  const canvasRef = useRef<PlasmaCanvasHandle | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-
-  const toggleIsPlaying = () => setIsPlaying((prev) => !prev);
-
-  const placements = useMemo<LabelPlacement[]>(() => {
-    if (!bounds) {
-      return [];
-    }
-    const groups = getLabelsGroups(
-      isPlaying,
-      toggleIsPlaying,
-      bounds.width,
-      fontPx,
-    );
-    return getResponsivePlacements(bounds, groups);
-  }, [bounds, isPlaying, fontPx]);
-
-  const getGlitchIntensity = useCallback(
-    () => (isPlaying ? (canvasRef.current?.getGlitchIntensity() ?? 0) : 0),
-    [isPlaying],
-  );
-
-  const applyStaticLens = useCallback(() => {
-    if (!bounds) {
-      return;
-    }
-    canvasRef.current?.setLensScale(PLASMA_LANDING_LENS_SCALE);
-    canvasRef.current?.setCursor(
-      bounds.width * PLASMA_LANDING_LENS_X_FRAC,
-      bounds.height * PLASMA_LANDING_LENS_Y_FRAC,
-    );
-  }, [bounds]);
-
-  useEffect(() => {
-    if (bounds) {
-      applyStaticLens();
-      canvasRef.current?.renderPlasma();
-    }
-  }, [bounds, applyStaticLens]);
-
-  useInterval(
-    () => {
-      if (bounds && isPlaying) {
-        applyStaticLens();
-        canvasRef.current?.renderPlasma();
-      }
-    },
-    1000 / (getIsReducedMotion() ? PLASMA_REDUCED_FPS : PLASMA_FPS),
-  );
-
-  if (!bounds) {
-    return null;
-  }
-
-  return (
-    <div
-      className="relative"
-      style={{
-        width: bounds.width * cellSize,
-        height: bounds.height * cellSize,
-      }}
-    >
-      <PlasmaCanvas
-        ref={canvasRef}
-        ramp={LANDING_CHARACTERS}
-        cellSize={cellSize}
-        cellWidth={cellSize}
-        fontPx={fontPx}
-        gridWidth={bounds.width}
-        gridHeight={bounds.height}
-        postProcess
-      />
-      <LabelOverlay
-        placements={placements}
-        cellSize={cellSize}
-        fontPx={fontPx}
-        getGlitchIntensity={getGlitchIntensity}
-      />
+      <div className="landing-backdrop" aria-hidden="true">
+        {bounds && (
+          <PlasmaCanvas
+            ref={canvasRef}
+            onCanvasReady={onBackdropReady}
+            ramp={LANDING_CHARACTERS}
+            cellSize={cellSize}
+            cellWidth={cellSize}
+            fontPx={fontPx}
+            gridWidth={bounds.width}
+            gridHeight={bounds.height}
+            postProcess
+          />
+        )}
+      </div>
+      <header className="landing-header">
+        <Link
+          href="/"
+          prefetch={false}
+          className="landing-wordmark"
+          aria-label="Fuerst.one home"
+        >
+          FUERST.ONE<span aria-hidden="true">_</span>
+        </Link>
+        <div className="landing-header-actions">
+          <Link href="/plasma" prefetch={false}>
+            tinker <span aria-hidden="true">↗</span>
+          </Link>
+          <button
+            type="button"
+            onClick={() => setIsPlaying((value) => !value)}
+            aria-label={isPlaying ? "Pause animation" : "Resume animation"}
+            aria-pressed={!isPlaying}
+          >
+            {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+          </button>
+        </div>
+      </header>
+      <div className="landing-content">
+        <p className="landing-eyebrow">
+          UX + AI ENGINEER <span aria-hidden="true">/</span> CURIOUS BY DEFAULT
+        </p>
+        <div
+          ref={setInteractionTarget}
+          className="landing-stage"
+          data-shape={shownShape}
+          data-project={
+            previewProject?.id ??
+            ("kind" in active && active.kind === "project"
+              ? active.id
+              : undefined)
+          }
+          onPointerMove={(event) => {
+            if (showIcon) {
+              heroPreviewRef.current?.touch();
+            } else if (!reducedMotion && containerRef.current) {
+              const rect = containerRef.current.getBoundingClientRect();
+              lensTargetRef.current = {
+                x: (event.clientX - rect.left) / cellSize,
+                y: (event.clientY - rect.top) / cellSize,
+              };
+              if (paused) renderBackdrop();
+            }
+          }}
+          onPointerLeave={() => {
+            lensTargetRef.current = null;
+          }}
+          onPointerDown={() => {
+            if (isShapeMode) heroPreviewRef.current?.hold();
+          }}
+          onPointerUp={() => {
+            if (showIcon) heroPreviewRef.current?.release();
+          }}
+          onPointerCancel={() => {
+            if (showIcon) heroPreviewRef.current?.release();
+          }}
+        >
+          <div
+            className="landing-brand"
+            aria-hidden={isShapeMode}
+            inert={isShapeMode}
+          >
+            <div
+              style={{
+                position: "absolute",
+                left: brandOffset.x,
+                top: brandOffset.y,
+                width: cellSize * BRAND_PLACEMENTS[0].label.label.length,
+                height: cellSize,
+              }}
+            >
+              <LabelOverlay
+                placements={BRAND_PLACEMENTS}
+                cellSize={cellSize}
+                fontPx={fontPx + 2}
+                getGlitchIntensity={
+                  isPlaying && visible && !reducedMotion && !isShapeMode
+                    ? getGlitchIntensity
+                    : undefined
+                }
+              />
+            </div>
+          </div>
+          <div className="landing-sculpture" aria-hidden="true">
+            {shapeMounted && (
+              <LandingShape
+                shapeIndex={shownShape}
+                paused={paused}
+                reducedMotion={reducedMotion}
+                active={visible && showIcon}
+                interactionTarget={interactionTarget}
+                onReadyChange={setShapeReady}
+              />
+            )}
+          </div>
+          <span className="landing-stage-corner landing-stage-corner-tl" />
+          <span className="landing-stage-corner landing-stage-corner-br" />
+          <span className="landing-stage-index" aria-hidden="true">
+            {String(currentIndex + 1).padStart(2, "0")}{" "}
+            <span>
+              / {String(Math.max(1, suggestions.length)).padStart(2, "0")}
+            </span>
+          </span>
+          <span className="landing-stage-hint" aria-hidden="true">
+            drag to rotate ↔
+          </span>
+        </div>
+        <div className="landing-intro">
+          <p className="landing-title">A little curiosity goes a long way.</p>
+          <p key={previewProject?.id ?? active.id} className="landing-caption">
+            {previewProject
+              ? previewProject.summary || previewProject.name
+              : hasQuery && !suggestions.length
+                ? "Find a project, a technology, or a shared interest."
+                : active.caption}
+          </p>
+        </div>
+        <div
+          className="landing-console"
+          onFocusCapture={() => setFocused(true)}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget))
+              setFocused(false);
+          }}
+        >
+          <form className="landing-input-box" onSubmit={submit}>
+            <span className="landing-prompt" aria-hidden="true">
+              ↳
+            </span>
+            <label className="sr-only" htmlFor="landing-command">
+              {"Where would you like to go?"}
+            </label>
+            <input
+              id="landing-command"
+              value={input}
+              onChange={(event) => {
+                setInput(event.target.value);
+                setSearchFilter(undefined);
+                setStatus("");
+                preview(0, true, showIcon);
+              }}
+              onKeyDown={(event) => {
+                if (event.nativeEvent.isComposing) return;
+                if (event.key === "Escape") {
+                  setInput("");
+                  setSearchFilter(undefined);
+                  setStatus("");
+                  preview(0, true, showIcon);
+                } else if (
+                  hasQuery &&
+                  suggestions.length &&
+                  (event.key === "ArrowDown" || event.key === "ArrowUp")
+                ) {
+                  event.preventDefault();
+                  preview(
+                    (currentIndex +
+                      (event.key === "ArrowDown" ? 1 : -1) +
+                      suggestions.length) %
+                      suggestions.length,
+                  );
+                }
+              }}
+              role={hasQuery ? "combobox" : undefined}
+              aria-autocomplete={hasQuery ? "list" : undefined}
+              aria-expanded={hasQuery ? suggestions.length > 0 : undefined}
+              aria-controls={hasQuery ? suggestionsId : undefined}
+              aria-activedescendant={
+                hasQuery && suggestions.length
+                  ? `${suggestionsId}-${currentIndex}`
+                  : undefined
+              }
+              placeholder={"Search or say hello…"}
+              autoComplete="off"
+              spellCheck={false}
+              maxLength={240}
+              aria-describedby="landing-input-help landing-status"
+            />
+            <button
+              type="submit"
+              className="landing-submit"
+              aria-label={"Go"}
+              disabled={!input.trim()}
+            >
+              <ArrowUp size={18} />
+            </button>
+          </form>
+          <div className="landing-suggestions">
+            <button
+              type="button"
+              className="landing-rail-arrow"
+              aria-label={"Previous suggestion"}
+              disabled={!scrollState.back}
+              aria-hidden={!scrollState.back}
+              onClick={() => move(-1)}
+            >
+              <ChevronLeft size={14} />
+            </button>
+            <div
+              ref={railRef}
+              id={suggestionsId}
+              role={hasQuery ? "listbox" : undefined}
+              className="landing-rail"
+              data-scroll-back={scrollState.back}
+              data-scroll-forward={scrollState.forward}
+              aria-label={
+                hasQuery
+                  ? "Project keyword and name suggestions"
+                  : "Suggested destinations and plasma controls"
+              }
+              onPointerDown={() => {
+                manualScrollRef.current = true;
+              }}
+              onWheel={() => {
+                manualScrollRef.current = true;
+              }}
+              onScroll={() => {
+                updateScrollState();
+                if (!manualScrollRef.current || !railRef.current) return;
+                const rail = railRef.current;
+                if (!rail.children.length) return;
+                const center =
+                  rail.getBoundingClientRect().left + rail.clientWidth / 2;
+                const distances = Array.from(rail.children).map((chip) => {
+                  const rect = chip.getBoundingClientRect();
+                  return Math.abs(rect.left + rect.width / 2 - center);
+                });
+                preview(distances.indexOf(Math.min(...distances)), false);
+              }}
+            >
+              {suggestions.map((suggestion, index) => {
+                const props = {
+                  className: "landing-chip",
+                  id: `${suggestionsId}-${index}`,
+                  role: hasQuery ? "option" : undefined,
+                  "aria-selected": hasQuery
+                    ? index === currentIndex
+                    : undefined,
+                  tabIndex: hasQuery ? -1 : undefined,
+                  "data-active": showIcon && index === currentIndex,
+                  onPointerMove: () => preview(index, false),
+                  onFocus: () => preview(index),
+                };
+                const content = (
+                  <>
+                    <span aria-hidden="true">
+                      {"kind" in suggestion && suggestion.kind === "keyword"
+                        ? "#"
+                        : "↗"}
+                    </span>
+                    {suggestion.label}
+                    {"category" in suggestion && (
+                      <span className="landing-chip-category">
+                        {suggestion.category}
+                        {suggestion.kind === "keyword"
+                          ? ` · ${suggestion.count}`
+                          : ""}
+                      </span>
+                    )}
+                  </>
+                );
+                return suggestion.href ? (
+                  <Link
+                    key={suggestion.id}
+                    href={suggestion.href}
+                    prefetch={false}
+                    {...props}
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <button
+                    key={suggestion.id}
+                    type="button"
+                    {...props}
+                    onMouseDown={(event) => {
+                      if (hasQuery) event.preventDefault();
+                    }}
+                    onClick={() => chooseSuggestion(suggestion)}
+                  >
+                    {content}
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              className="landing-rail-arrow"
+              aria-label={"Next suggestion"}
+              disabled={!scrollState.forward}
+              aria-hidden={!scrollState.forward}
+              onClick={() => move(1)}
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+          <div className="landing-console-meta">
+            <span id="landing-input-help">
+              {hasQuery
+                ? "↑ ↓ to explore · enter to select · esc to clear"
+                : "projects, tools, expertise, or a hello"}
+            </span>
+            {!hasQuery && <span aria-hidden="true">{"type & enter ↵"}</span>}
+          </div>
+          {showResults && (
+            <ProjectSearchResults
+              projects={search.projects}
+              query={input.trim()}
+              loading={searchLoading}
+              error={searchError}
+              retry={retrySearch}
+              onPreview={(project) => {
+                setPreviewProject(project);
+                if (project) heroPreviewRef.current?.touch();
+              }}
+            />
+          )}
+          <p id="landing-status" className="landing-status" role="status">
+            {status}
+          </p>
+        </div>
+      </div>
+      <div className="landing-footer">
+        <nav aria-label="Social links">
+          <a href="https://github.com/fuerst-one">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/fuerst-one/">LinkedIn ↗</a>
+          <Link href="/contact" prefetch={false}>
+            {"Say hello ↗"}
+          </Link>
+        </nav>
+        <LegalFooter />
+      </div>
     </div>
   );
 };

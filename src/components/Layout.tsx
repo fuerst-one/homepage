@@ -72,14 +72,14 @@ export async function Layout({
             aria-label="Main navigation"
             className="flex flex-wrap gap-6 text-xs uppercase tracking-[0.2em]"
           >
-            <Link href="/projects" className="hover:text-white">
-              Projects
-            </Link>
             <Link href="/cv" className="hover:text-white">
               CV
             </Link>
             <Link href="/contact" className="hover:text-white">
               Contact
+            </Link>
+            <Link href="/hire" className="hover:text-white">
+              Work with me
             </Link>
           </nav>
           <div className="h-px w-full bg-white/20" />

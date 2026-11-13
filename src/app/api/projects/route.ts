@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
+import { getCachedProjectIcons } from "@/server/notion/getCachedProjectIcons";
 import { filterCvProjectsForApi } from "@/server/api/filterCvProjects";
 import { parseListParams } from "@/server/api/parseListParams";
 import { toProjectListItem } from "@/server/api/projectListItem";
@@ -23,12 +24,25 @@ export const GET = async (request: NextRequest) => {
     );
   }
 
-  const allProjects = await getCachedCvProjects();
+  const [allProjects, icons] = await Promise.all([
+    getCachedCvProjects(),
+    getCachedProjectIcons().catch(() => null),
+  ]);
   const matched = filterCvProjectsForApi(allProjects, parsed.params);
-  const results = matched.map(toProjectListItem);
+  const results = matched.map((project) =>
+    toProjectListItem({
+      ...project,
+      icon: icons ? (icons[project.id] ?? null) : (project.icon ?? null),
+    }),
+  );
 
   return NextResponse.json(
     { count: results.length, total: allProjects.length, results },
-    { headers: buildApiHeaders(rateLimit) },
+    {
+      headers: {
+        ...buildApiHeaders(rateLimit),
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=30",
+      },
+    },
   );
 };

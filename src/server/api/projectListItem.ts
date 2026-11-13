@@ -6,6 +6,7 @@ import { projectPath, SITE_URL } from "@/lib/seo";
 export type ProjectListItem = {
   id: string;
   name: string;
+  icon: string | null;
   oneLineSummary: string;
   tools: string[];
   industries: string[];
@@ -27,6 +28,7 @@ const SUMMARY_MAX_CHARS = 200;
 export const toProjectListItem = (project: CvProject): ProjectListItem => ({
   id: project.id,
   name: project.name,
+  icon: project.icon ?? null,
   oneLineSummary: deriveOneLineSummary(project.description),
   tools: project.tools,
   industries: project.industries,

@@ -170,6 +170,7 @@ export const buildOpenApiSpec = () => ({
         required: [
           "id",
           "name",
+          "icon",
           "oneLineSummary",
           "tools",
           "industries",
@@ -188,6 +189,10 @@ export const buildOpenApiSpec = () => ({
         properties: {
           id: { type: "string" },
           name: { type: "string" },
+          icon: {
+            type: ["string", "null"],
+            description: "3D icon name chosen in the Notion project record.",
+          },
           oneLineSummary: { type: "string" },
           tools: { type: "array", items: { type: "string" } },
           industries: { type: "array", items: { type: "string" } },

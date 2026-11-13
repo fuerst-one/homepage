@@ -1,3 +1,4 @@
+import { Button } from "@/components/Button";
 import { pageMetadata } from "@/lib/seo";
 import { Layout } from "@/components/Layout";
 import { PresetPicker, PresetOption } from "@/components/Cv/PresetPicker";
@@ -73,6 +74,9 @@ export default async function ContactPage() {
             </IconLink>
           </div>
         </section>
+        <Button href="/hire" arrow>
+          Find me on hiring platforms
+        </Button>
       </div>
     </Layout>
   );

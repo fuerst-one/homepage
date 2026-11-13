@@ -30,6 +30,7 @@ export type CvProject = {
   id: string;
   name: string;
   logo: string[] | null;
+  icon: string | null;
   screenshots: string[] | null;
   description: RichTextField;
   kpis: RichTextField;

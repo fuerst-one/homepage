@@ -71,6 +71,7 @@ const GlitchLink = ({
     <Link
       ref={ref}
       href={href}
+      prefetch={false}
       aria-label={ariaLabel}
       className={className}
       style={{ ...style, ...glitchShadowStyle }}
@@ -147,6 +148,7 @@ export const LabelOverlay = ({
             <Link
               key={idx}
               href={label.href}
+              prefetch={false}
               aria-label={label.label}
               className={className}
               style={containerStyle}

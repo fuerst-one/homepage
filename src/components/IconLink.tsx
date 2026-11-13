@@ -21,7 +21,7 @@ export function IconLink({
       )}
     >
       {Icon && <Icon className="h-4 w-4 flex-none text-neutral-200" />}
-      <span className="self-baseline">{children}</span>
+      <span className="min-w-0">{children}</span>
     </Link>
   );
 }

@@ -32,6 +32,7 @@ export type NotionProjectPropertiesRaw = {
   Featured: CheckBoxField;
   Name: TitleField;
   Logo: FilesField;
+  "3D Icon"?: SelectField;
   Screenshots: FilesField;
   "Project Description": RichTextField;
   "Wow-Factor 1-10": NumberField;
@@ -56,6 +57,7 @@ export type NotionProject = {
   id: string;
   name: string;
   logo: string[];
+  icon: string | null;
   screenshots: string[];
   description: RichTextField;
   kpis: RichTextField;
@@ -84,6 +86,7 @@ const rawToInternalPropertiesMap: Record<
 > = {
   Name: "name",
   Logo: "logo",
+  "3D Icon": "icon",
   Screenshots: "screenshots",
   "Project Description": "description",
   "Wow-Factor 1-10": "wowFactor",
@@ -127,6 +130,7 @@ export const fetchNotionProjectsDatabase = async () => {
 
     const notionProject = {
       id: projectRaw.id,
+      icon: null,
       name: projectRaw.name,
       description,
       kpis,
@@ -136,7 +140,9 @@ export const fetchNotionProjectsDatabase = async () => {
     objectKeys(propertiesRaw as NotionProjectPropertiesRaw).forEach(
       <K extends keyof NotionProjectPropertiesRaw>(keyRaw: K) => {
         const key = rawToInternalPropertiesMap[keyRaw];
-        const value = flattenNotionProperty(propertiesRaw[keyRaw]);
+        const property = propertiesRaw[keyRaw];
+        if (!key || !property) return;
+        const value = flattenNotionProperty(property);
         notionProject[key] = value as NotionProject[typeof key];
       },
     );

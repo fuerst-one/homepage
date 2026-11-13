@@ -6,6 +6,8 @@ import { SITE_DESCRIPTION, SITE_URL } from "@/lib/seo";
 
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
+  // Menlo is preferred; fetch Plex only when the browser actually needs it.
+  preload: false,
   weight: ["400", "500", "600", "700"],
   variable: "--font-plex",
 });

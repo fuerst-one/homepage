@@ -12,7 +12,11 @@ export const LegalFooter = () => {
     <footer className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs tracking-wider text-muted-foreground">
       {LEGAL_LINKS.map((link, idx) => (
         <span key={link.href} className="flex items-center gap-3">
-          <Link href={link.href} className="hover:text-foreground">
+          <Link
+            prefetch={false}
+            href={link.href}
+            className="hover:text-foreground"
+          >
             {link.label}
           </Link>
           {idx < LEGAL_LINKS.length - 1 && <span aria-hidden>·</span>}

@@ -10,11 +10,8 @@ import {
   useState,
 } from "react";
 import { Glyph } from "./types";
-import {
-  PlasmaCanvasGL,
-  PlasmaCanvasGLHandle,
-  isWebGL2Supported,
-} from "./GL/PlasmaCanvasGL";
+import { PlasmaCanvasGL, PlasmaCanvasGLHandle } from "./GL/PlasmaCanvasGL";
+import { isWebGL2Supported } from "./GL/isWebGL2Supported";
 import { PlasmaCanvasJS } from "./JS/PlasmaCanvasJS";
 import { getAnimationFrame } from "./JS/getAnimationFrame";
 import { getLuminanceFrame } from "./JS/getLuminanceFrame";

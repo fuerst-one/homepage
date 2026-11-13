@@ -10,6 +10,16 @@ export type LabelPlacement = {
   startCol: number;
 };
 
+/** Place a label on whole cells nearest a target expressed in grid coordinates. */
+export const getLabelPlacementAtPoint = (
+  label: Label,
+  center: { x: number; y: number },
+): LabelPlacement => ({
+  label,
+  startCol: Math.round(center.x - label.label.length / 2),
+  row: Math.round(center.y - 0.5),
+});
+
 export const getLabelGroupPlacements = (
   bounds: FrameBounds,
   group: LabelGroup,

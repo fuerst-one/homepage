@@ -7,6 +7,7 @@ import {
   useImperativeHandle,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { Glyph } from "../types";
 import {
@@ -36,6 +37,7 @@ import {
   SINE_TABLE,
 } from "../constants";
 import { buildGlyphAtlas, GlyphAtlas, SDF_PARAMS } from "./buildGlyphAtlas";
+import { createProgram } from "./createProgram";
 import { buildRampTable, packRampToRGBA } from "./buildRampTable";
 import {
   FRAGMENT_SHADER,
@@ -89,45 +91,6 @@ export type PlasmaCanvasGLProps = {
 
 const BG_DEFAULT: [number, number, number] = [0, 0, 0];
 
-const compileShader = (
-  gl: WebGL2RenderingContext,
-  type: number,
-  source: string,
-): WebGLShader => {
-  const shader = gl.createShader(type);
-  if (!shader) throw new Error("createShader failed");
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    const log = gl.getShaderInfoLog(shader);
-    gl.deleteShader(shader);
-    throw new Error(`Shader compile failed: ${log}`);
-  }
-  return shader;
-};
-
-const createProgram = (
-  gl: WebGL2RenderingContext,
-  vertexSource: string,
-  fragmentSource: string,
-): WebGLProgram => {
-  const vs = compileShader(gl, gl.VERTEX_SHADER, vertexSource);
-  const fs = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
-  const program = gl.createProgram();
-  if (!program) throw new Error("createProgram failed");
-  gl.attachShader(program, vs);
-  gl.attachShader(program, fs);
-  gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    const log = gl.getProgramInfoLog(program);
-    gl.deleteProgram(program);
-    throw new Error(`Program link failed: ${log}`);
-  }
-  gl.deleteShader(vs);
-  gl.deleteShader(fs);
-  return program;
-};
-
 const createGlyphTexture = (
   gl: WebGL2RenderingContext,
   atlas: GlyphAtlas,
@@ -169,13 +132,14 @@ type GLState = {
   gl: WebGL2RenderingContext;
   program: WebGLProgram;
   vao: WebGLVertexArrayObject;
+  vbo: WebGLBuffer;
   glyphTex: WebGLTexture;
   rampTex: WebGLTexture;
   luminanceTex: WebGLTexture;
   atlas: GlyphAtlas;
   uniforms: Record<string, WebGLUniformLocation | null>;
-  postProgram: WebGLProgram;
-  postVao: WebGLVertexArrayObject;
+  postProgram: WebGLProgram | null;
+  postVao: WebGLVertexArrayObject | null;
   postUniforms: Record<string, WebGLUniformLocation | null>;
   sceneTex: WebGLTexture;
   sceneFbo: WebGLFramebuffer;
@@ -194,7 +158,11 @@ type GLState = {
   lensScale: number;
 };
 
-const setupGL = (canvas: HTMLCanvasElement): GLState | null => {
+const setupGL = async (
+  canvas: HTMLCanvasElement,
+  postProcess: boolean,
+  signal: AbortSignal,
+): Promise<GLState | null> => {
   const gl = canvas.getContext("webgl2", {
     antialias: false,
     premultipliedAlpha: true,
@@ -202,7 +170,23 @@ const setupGL = (canvas: HTMLCanvasElement): GLState | null => {
   });
   if (!gl) return null;
 
-  const program = createProgram(gl, VERTEX_SHADER, FRAGMENT_SHADER);
+  const results = await Promise.allSettled([
+    createProgram(gl, VERTEX_SHADER, FRAGMENT_SHADER, signal),
+    ...(postProcess
+      ? [createProgram(gl, POST_VERTEX_SHADER, POST_FRAGMENT_SHADER, signal)]
+      : []),
+  ]);
+  const failure = results.find((result) => result.status === "rejected");
+  if (signal.aborted || failure) {
+    for (const result of results)
+      if (result.status === "fulfilled") gl.deleteProgram(result.value);
+    if (signal.aborted) signal.throwIfAborted();
+    throw (failure as PromiseRejectedResult).reason;
+  }
+  const program = (results[0] as PromiseFulfilledResult<WebGLProgram>).value;
+  const postProgram = postProcess
+    ? (results[1] as PromiseFulfilledResult<WebGLProgram>).value
+    : null;
   gl.useProgram(program);
 
   const vao = gl.createVertexArray()!;
@@ -218,18 +202,16 @@ const setupGL = (canvas: HTMLCanvasElement): GLState | null => {
   gl.enableVertexAttribArray(positionLoc);
   gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
 
-  const postProgram = createProgram(
-    gl,
-    POST_VERTEX_SHADER,
-    POST_FRAGMENT_SHADER,
-  );
-  const postVao = gl.createVertexArray()!;
-  gl.bindVertexArray(postVao);
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  const postPositionLoc = gl.getAttribLocation(postProgram, "a_position");
-  gl.enableVertexAttribArray(postPositionLoc);
-  gl.vertexAttribPointer(postPositionLoc, 2, gl.FLOAT, false, 0, 0);
-  gl.bindVertexArray(vao);
+  let postVao: WebGLVertexArrayObject | null = null;
+  if (postProgram) {
+    postVao = gl.createVertexArray()!;
+    gl.bindVertexArray(postVao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    const postPositionLoc = gl.getAttribLocation(postProgram, "a_position");
+    gl.enableVertexAttribArray(postPositionLoc);
+    gl.vertexAttribPointer(postPositionLoc, 2, gl.FLOAT, false, 0, 0);
+    gl.bindVertexArray(vao);
+  }
 
   const sceneTex = gl.createTexture()!;
   gl.bindTexture(gl.TEXTURE_2D, sceneTex);
@@ -239,22 +221,26 @@ const setupGL = (canvas: HTMLCanvasElement): GLState | null => {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   const sceneFbo = gl.createFramebuffer()!;
 
-  const postUniforms = {
-    u_scene: gl.getUniformLocation(postProgram, "u_scene"),
-    u_resolution: gl.getUniformLocation(postProgram, "u_resolution"),
-    u_blurMaxPx: gl.getUniformLocation(postProgram, "u_blurMaxPx"),
-    u_blurInner: gl.getUniformLocation(postProgram, "u_blurInner"),
-    u_blurOuter: gl.getUniformLocation(postProgram, "u_blurOuter"),
-    u_glitchBands: gl.getUniformLocation(postProgram, "u_glitchBands"),
-    u_glitchTearPx: gl.getUniformLocation(postProgram, "u_glitchTearPx"),
-    u_glitchBurst: gl.getUniformLocation(postProgram, "u_glitchBurst"),
-    u_glitchSeed: gl.getUniformLocation(postProgram, "u_glitchSeed"),
-  };
-  gl.useProgram(postProgram);
-  gl.uniform1i(postUniforms.u_scene, 3);
-  gl.uniform1f(postUniforms.u_blurInner, PLASMA_BLUR_INNER_FRAC);
-  gl.uniform1f(postUniforms.u_blurOuter, PLASMA_BLUR_OUTER_FRAC);
-  gl.uniform1f(postUniforms.u_glitchBands, PLASMA_GLITCH_BANDS);
+  const postUniforms: Record<string, WebGLUniformLocation | null> = postProgram
+    ? {
+        u_scene: gl.getUniformLocation(postProgram, "u_scene"),
+        u_resolution: gl.getUniformLocation(postProgram, "u_resolution"),
+        u_blurMaxPx: gl.getUniformLocation(postProgram, "u_blurMaxPx"),
+        u_blurInner: gl.getUniformLocation(postProgram, "u_blurInner"),
+        u_blurOuter: gl.getUniformLocation(postProgram, "u_blurOuter"),
+        u_glitchBands: gl.getUniformLocation(postProgram, "u_glitchBands"),
+        u_glitchTearPx: gl.getUniformLocation(postProgram, "u_glitchTearPx"),
+        u_glitchBurst: gl.getUniformLocation(postProgram, "u_glitchBurst"),
+        u_glitchSeed: gl.getUniformLocation(postProgram, "u_glitchSeed"),
+      }
+    : {};
+  if (postProgram) {
+    gl.useProgram(postProgram);
+    gl.uniform1i(postUniforms.u_scene, 3);
+    gl.uniform1f(postUniforms.u_blurInner, PLASMA_BLUR_INNER_FRAC);
+    gl.uniform1f(postUniforms.u_blurOuter, PLASMA_BLUR_OUTER_FRAC);
+    gl.uniform1f(postUniforms.u_glitchBands, PLASMA_GLITCH_BANDS);
+  }
   gl.useProgram(program);
 
   const atlas = buildGlyphAtlas(BASE_CHARACTERS);
@@ -334,6 +320,7 @@ const setupGL = (canvas: HTMLCanvasElement): GLState | null => {
     gl,
     program,
     vao,
+    vbo,
     glyphTex,
     rampTex,
     luminanceTex,
@@ -499,7 +486,7 @@ const bindAndDraw = (
   const targetH = gl.drawingBufferHeight;
 
   // No post-process: draw the glyph field straight to the canvas.
-  if (!postProcess) {
+  if (!postProcess || !state.postProgram) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(0, 0, targetW, targetH);
     gl.bindVertexArray(state.vao);
@@ -553,6 +540,7 @@ export const PlasmaCanvasGL = forwardRef<
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stateRef = useRef<GLState | null>(null);
+  const [initialized, setInitialized] = useState(false);
 
   const widthPx = gridWidth * cellWidth;
   const heightPx = gridHeight * cellSize;
@@ -565,14 +553,9 @@ export const PlasmaCanvasGL = forwardRef<
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const state = setupGL(canvas);
-    if (!state) {
-      return;
-    }
-    stateRef.current = state;
-    return () => {
-      const s = stateRef.current;
-      if (!s) return;
+    const controller = new AbortController();
+    setInitialized(false);
+    const dispose = (s: GLState) => {
       const { gl } = s;
       gl.deleteTexture(s.glyphTex);
       gl.deleteTexture(s.rampTex);
@@ -581,25 +564,37 @@ export const PlasmaCanvasGL = forwardRef<
       gl.deleteFramebuffer(s.sceneFbo);
       gl.deleteVertexArray(s.vao);
       gl.deleteVertexArray(s.postVao);
+      gl.deleteBuffer(s.vbo);
       gl.deleteProgram(s.program);
       gl.deleteProgram(s.postProgram);
+    };
+    setupGL(canvas, postProcess, controller.signal)
+      .then((state) => {
+        if (!state) return;
+        if (controller.signal.aborted) {
+          dispose(state);
+          return;
+        }
+        stateRef.current = state;
+        setInitialized(true);
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted)
+          console.error("Plasma initialization failed", error);
+      });
+    return () => {
+      controller.abort();
+      if (stateRef.current) dispose(stateRef.current);
       stateRef.current = null;
     };
-  }, []);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !onCanvasReady) return;
-    onCanvasReady(canvas);
-    return () => onCanvasReady(null);
-  }, [onCanvasReady]);
+  }, [postProcess]);
 
   useEffect(() => {
     const state = stateRef.current;
     if (!state) return;
     state.gl.useProgram(state.program);
     uploadRamp(state, ramp);
-  }, [ramp]);
+  }, [initialized, ramp]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -613,7 +608,14 @@ export const PlasmaCanvasGL = forwardRef<
       canvas.height = targetH;
     }
     state.gl.viewport(0, 0, targetW, targetH);
-  }, [widthPx, heightPx]);
+  }, [initialized, widthPx, heightPx]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!initialized || !canvas || !onCanvasReady) return;
+    onCanvasReady(canvas);
+    return () => onCanvasReady(null);
+  }, [initialized, onCanvasReady]);
 
   useImperativeHandle(
     ref,
@@ -765,10 +767,3 @@ export const PlasmaCanvasGL = forwardRef<
     />
   );
 });
-
-export const isWebGL2Supported = (): boolean => {
-  if (typeof document === "undefined") return false;
-  const canvas = document.createElement("canvas");
-  const gl = canvas.getContext("webgl2");
-  return !!gl;
-};
