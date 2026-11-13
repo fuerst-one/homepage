@@ -116,6 +116,34 @@ test("German aliases accept umlauts and English input without changing English c
   );
 });
 
+test("German aliases cover expertise independently of industry and keep field identity", () => {
+  const expertise = buildProjectSearchIndex(
+    [
+      {
+        ...projects[0],
+        experiences: ["Artificial Intelligence", "Data Visualization"],
+        industries: ["Health"],
+      },
+    ],
+    "de",
+  );
+  for (const [query, field, value] of [
+    ["KI", "experiences", "Artificial Intelligence"],
+    ["Datenvisualisierung", "experiences", "Data Visualization"],
+    ["Gesundheit", "industries", "Health"],
+  ]) {
+    const result = searchProjectIndex(expertise, query);
+    assert.deepEqual(
+      result.projects.map((project) => project.id),
+      ["atlas"],
+    );
+    assert.deepEqual(
+      result.suggestions.find((chip) => chip.kind === "keyword")?.filter,
+      { field, value },
+    );
+  }
+});
+
 test("German selection chips preserve exact featured status and counts", () => {
   const german = buildProjectSearchIndex(projects, "de");
   for (const [query, ids] of [
