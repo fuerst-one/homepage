@@ -1,6 +1,6 @@
 # SEO rollout finalization — 2026-11-13
 
-Completed the authorized [hosting inventory](hosting-inventory-2026-11-13.md), [homepage deployment](deployment-2026-11-13.md) and [apex cutover](apex-cutover-2026-11-13.md) rollout. The follow-up heartbeat `finish-seo-rollout-after-dns-settles` is now PAUSED because the work is complete. No unrelated frontend/hiring changes in the main worktree are included.
+Completed the authorized [hosting inventory](hosting-inventory-2026-11-13.md), [homepage deployment](deployment-2026-11-13.md) and [apex cutover](apex-cutover-2026-11-13.md) rollout. The DNS/deployment heartbeat was paused when that work completed; the subsequent authorized GitHub synchronization and daily indexing monitor are recorded below. No unrelated frontend/hiring changes in the main worktree are included.
 
 ## Live routing
 
@@ -50,3 +50,13 @@ Three actual image GETs returned 200 and nonempty PNG/SVG/JPEG bytes. Seven repr
 The final authoritative DNS snapshot checked 121 name/type pairs against the validated pre-cutover inventory. No protected record changed; differences are confined to the authorized apex/www records and SOA. In particular, folder-subdomain wildcard A/AAAA, mail, verification, nameservers and service records remain intact.
 
 Private checkpoints, logs and screenshots are stored under `/Users/Alex/dev/01-fuerst-one/01-archive/hosting-inventory-2026-11-13/seo-finalization/`. The earlier full portfolio/mail archive, routing archive and DNS/service inventory remain available. Rollback of portfolio routing restores the exact saved file atomically and purges only that host's cache again. Alias rollback restores the saved domain settings; restore CV serving before restoring any incoming auto-cv redirect to it. Do not reset the DNS zone or change wildcard, mail, nameserver or DNSSEC settings.
+
+## GitHub synchronization and indexing follow-up
+
+The user subsequently authorized pushing the release commits and checking indexing after recrawling. The four homepage release/operations commits were pushed through `b8d44dfecef5508c71084c6e9884d0573f9fda5e`. Vercel's automatic deployment `dpl_3gthcmP1HvQNKrkeGuKyk71LodUt` reached READY with that exact revision. The application source is unchanged from the manual homepage release; unrelated uncommitted frontend work remains excluded.
+
+Fetching Buchstabiene revealed an upstream commit missing from the local checkout: `a7256f7a89f89437ba5c486b2fd3a883c9ae5ab2`, which fixes login by calling credential checking directly instead of fetching the application itself. The initial SEO deployment had omitted that fix. A normal merge preserved both histories as `be75b3523ae3294f98c1d370c6356fb1c69f9d40`, and was pushed without force. All four authentication files match the existing upstream fix exactly; only the eight intended SEO files differ from the upstream application. The merged source passed TypeScript checking with incremental writes disabled.
+
+The automatic Buchstabiene deployment `dpl_9ZqRhP2a2bD6cfmQctAyerTbTR9L`, `https://spelling-rmcv5vnnx-fuerstones-projects.vercel.app`, reached READY with merge revision `be75b3523ae3294f98c1d370c6356fb1c69f9d40`. Normal public HTTPS checks confirmed homepage/CV availability, permanent alias routing, the portfolio redirect, puzzle noindex and the authentication provider endpoint. A successful real-account login was not tested. The earlier `dpl_9HdVm4xL57xNxnVExDWkbhTcYWLr` checkpoint omits the upstream login fix; prefer the recorded original `dpl_BigyPWYuKTTBFNzhDgRkjPKw4g3S` if a return to the pre-SEO application becomes necessary.
+
+The existing heartbeat was repurposed, rather than duplicated, as **Check Google indexing after SEO rollout** at 09:00 Europe/Berlin daily. It checks the stored Google index for the canonical CV/project URLs, portfolio consolidation and daily-puzzle exclusions, staying quiet on unchanged or stale reports. It stops once the changes are confirmed; if still unresolved on 27 November 2026 it reports the remaining state once and pauses. It performs no further hosting changes. Evidence for this follow-up is under `/Users/Alex/dev/01-fuerst-one/01-archive/hosting-inventory-2026-11-13/git-sync-followup/`.
