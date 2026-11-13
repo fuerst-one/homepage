@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SITE_URL as API_BASE_URL } from "@/lib/seo";
+import { serviceCopy, servicePath, serviceSlugs } from "@/data/services";
+import { locales } from "@/lib/i18n";
 import {
   buildRateLimitedResponse,
   checkRateLimit,
@@ -22,11 +24,25 @@ export const GET = async (request: NextRequest) => {
 - [Project portfolio](${API_BASE_URL}/en/projects) — full directory with stable, descriptive HTML URLs for each project, including descriptions, technologies, collaborators, and results. Use the API's webUrl for the canonical page to read and cite.
 - [CV and experience](${API_BASE_URL}/en/cv) — public profile and interactive project filtering by specialty.
 - [Contact and CV download](${API_BASE_URL}/en/contact) — project inquiries, team opportunities, and tailored PDF CV downloads.
+- [Hiring platforms](${API_BASE_URL}/en/hire) — owner-confirmed professional profiles and ways to hire Alexander.
 - [Plasma playground](${API_BASE_URL}/en/plasma) — interactive creative coding experiment.
 - [GitHub](https://github.com/fuerst-one) — public code profile.
 - [LinkedIn](https://www.linkedin.com/in/fuerst-one/) — professional profile.
 
 - [Deutsch](${API_BASE_URL}/de) — German homepage, profile, projects and contact.
+
+## Services / Leistungen
+
+${serviceSlugs
+  .flatMap((slug) =>
+    locales.map(
+      (locale) =>
+        `- [${serviceCopy[slug][locale].label} (${locale})](${API_BASE_URL}${servicePath(slug, locale)}) — ${serviceCopy[slug][locale].description}`,
+    ),
+  )
+  .join("\n")}
+
+The service pages link to selected project evidence and explain scope, deliverables and enquiry options. Project results describe individual past projects, not guarantees for future work.
 
 ## Public data API
 

@@ -190,6 +190,11 @@ test("AI discovery includes the public profile, HTML pages, and existing API", a
   for (const path of [
     "/en/cv",
     "/en/contact",
+    "/en/hire",
+    "/en/services/product-interfaces",
+    "/de/services/product-interfaces",
+    "/en/services/ai-automation",
+    "/de/services/ai-automation",
     "/api/profile",
     "/api/projects",
     "/api/facets",
