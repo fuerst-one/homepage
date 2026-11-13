@@ -3,6 +3,12 @@
 # Preserve the original configuration separately for rollback.
 RewriteEngine On
 
+# Avoid retaining retirement responses in the old site's year-long cache policy.
+# one.com documents no-cache as its supported Varnish opt-out.
+<IfModule mod_headers.c>
+  Header always set Cache-Control "no-cache"
+</IfModule>
+
 RewriteCond %{HTTP_HOST} ^portfolio\.fuerst\.one$ [NC]
 RewriteRule ^(?:index\.html)?$ https://fuerst.one/ [R=301,L,NE,QSD]
 

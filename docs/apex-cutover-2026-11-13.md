@@ -60,3 +60,23 @@ The in-app browser returned `ERR_BLOCKED_BY_CLIENT` for apex preview navigation;
 `cv.fuerst.one` deliberately continues serving 200 and `auto-cv.fuerst.one` retains its existing 307 to CV during propagation. Do not immediately redirect these back to apex while cached apex DNS can still reach the old CV forwarder. Permanent alias consolidation remains pending until the old TTL/forwarding cache window has elapsed and been checked. The existing apex canonicals already identify the preferred address during this transition.
 
 No one.com webspace file, project application, archive, database, Coolify resource, Buchstabiene deployment or Search Console setting was changed by this cutover.
+
+## Follow-up: cached forwarding address returns 404
+
+At 18:37 UTC, the user reported apex was unreachable. Normal system HTTPS requests reproduced a 404 from the old forwarding IP `46.30.213.31`. The local router resolver (`192.168.0.1`) and Tailscale resolver (`100.100.100.100`) both returned that address with approximately 2300 seconds remaining. Flushing only the computer's DNS cache would not remove the router's cached answer.
+
+Both authoritative nameservers, Google DNS and Cloudflare DNS returned the new A record `216.198.79.1`. A certificate-validated HTTPS request using Cloudflare DNS returned Vercel 200, as did a request directly resolving the hostname to its published Vercel address. Vercel's production deployment and verified apex/www bindings were unchanged.
+
+The old one.com forwarding endpoint had stopped returning its previous 302 after the forwarding rule was removed. This creates an availability gap for clients retaining its old DNS address; the preceding successful Vercel checks did not establish availability for those clients. Keep CV serving directly through this window. No further DNS changes were made during this diagnosis. Portfolio remains live because its separate retirement rules have not been installed; its continued availability is unrelated to apex DNS caching. Resolve the apex transition before activating redirects to it.
+
+### Scheduled check at 20:20 Europe/Berlin
+
+The router, Tailscale resolver and ordinary `dig` now return `216.198.79.1`, but macOS `dscacheutil` still returns `46.30.213.31` and normal curl reproduces the old forwarding server's 404. Public-DNS HTTPS still returns Vercel 200. A nonprivileged `dscacheutil -flushcache` did not change this. The privileged mDNS cache refresh could not run without the user's administrator password; no password was requested or entered, and no persistent system/network setting changed. The in-app browser also continues reporting `ERR_BLOCKED_BY_CLIENT`; its cause is not established by the DNS checks.
+
+The scheduled rollout remains pending; no portfolio redirect, CV consolidation, Buchstabiene deployment or Search Console mutation was activated during this check. Preserve the existing CV fallback and recheck on the next scheduled run. The main worktree now contains additional unrelated frontend/hiring changes, which must also remain excluded from this rollout.
+
+### Recovery and finalization
+
+At approximately 20:27 Europe/Berlin, normal system HTTPS requests began resolving `216.198.79.1` and returning Vercel 200. Node's system lookup and ordinary fetch agreed, and browser navigation rendered the apex homepage successfully. No administrator password, network setting change, certificate bypass or additional DNS mutation was needed for recovery.
+
+The [finalization receipt](seo-finalization-2026-11-13.md) records the subsequent portfolio retirement, permanent alias consolidation, Buchstabiene release and Search Console changes. The final 121-query comparison against the validated original baseline found no protected record changes; only the authorized apex/www routes and SOA differ.
