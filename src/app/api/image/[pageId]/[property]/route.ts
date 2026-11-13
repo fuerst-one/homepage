@@ -3,6 +3,7 @@ import { Client } from "@notionhq/client";
 import { unstable_cache } from "next/cache";
 import { flattenNotionProperty } from "@/server/notion/utils/flattenNotionObject";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { createNotionFetch } from "@/server/notion/createNotionFetch";
 
 const URL_CACHE_TTL_SECONDS = 50 * 60;
 const BYTES_CACHE_MAX_AGE_SECONDS = 60 * 60;
@@ -18,7 +19,12 @@ const fetchNotionFileUrl = async (
   propertyName: string,
   index: number,
 ): Promise<string | null> => {
-  const notion = new Client({ auth: process.env.NEXT_NOTION_TOKEN });
+  const notion = new Client({
+    auth: process.env.NEXT_NOTION_TOKEN,
+    fetch: createNotionFetch((url, options) =>
+      fetch(url, { ...options, cache: "no-store" }),
+    ),
+  });
   const page = await notion.pages.retrieve({ page_id: pageId });
   if (!isPageObjectResponse(page)) return null;
   const property = page.properties[propertyName];
