@@ -19,238 +19,207 @@ export default function PrivacyPage() {
       <h1 className="text-2xl font-semibold tracking-tight text-white">
         Privacy Policy
       </h1>
-
-      <p>
-        This page informs you of our policies regarding the collection, use, and
-        disclosure of personal data when you use our service and the choices you
-        have associated with that data.
-      </p>
-      <p>
-        We use your data to provide and improve the service. By using the
-        service, you agree to the collection and use of information in
-        accordance with this policy.
-      </p>
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
-        Effective date: Jan 1st, 2020
+        Last updated: 14 November 2026
       </p>
       <p>
-        Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst (&ldquo;us
-        &rdquo;, &ldquo;we&rdquo;, or &ldquo;our&rdquo;) operates the website
-        https://fuerst.one (the &ldquo;Service&rdquo;).
+        This policy explains how personal data is processed when you visit
+        fuerst.one or contact us. Visiting this website does not constitute
+        consent to data processing.
       </p>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Information collection and use
+        Controller and contact
       </h2>
       <p>
-        We collect several different types of information for various purposes
-        to provide and improve our service to you.
+        Alexander Fürst
+        <br />
+        Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst
+        <br />
+        Grombühlstraße 37
+        <br />
+        97080 Würzburg, Germany
+        <br />
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="mailto:alexander@fuerst.one"
+        >
+          alexander@fuerst.one
+        </a>
       </p>
-
-      <h3 className="mt-6 text-sm font-semibold uppercase tracking-[0.15em] text-neutral-100">
-        Types of data collected
-      </h3>
-
-      <h4 className="mt-4 text-sm font-semibold text-neutral-200">
-        Personal data
-      </h4>
-      <p>
-        While using our service, we may ask you to provide us with certain
-        personally identifiable information that can be used to contact or
-        identify you (&ldquo;Personal Data&rdquo;). Personally identifiable
-        information may include, but is not limited to:
-      </p>
-      <ul className="list-disc space-y-1 pl-6">
-        <li>Email address</li>
-      </ul>
-
-      <h4 className="mt-4 text-sm font-semibold text-neutral-200">
-        Usage data
-      </h4>
-      <p>
-        We may also collect information about how the service is accessed and
-        used (&ldquo;Usage Data&rdquo;). This usage data may include information
-        such as your computer&rsquo;s Internet Protocol address (e.g. IP
-        address), browser type, browser version, the pages of our service that
-        you visit, the time and date of your visit, the time spent on those
-        pages, unique device identifiers and other diagnostic data.
-      </p>
-
-      <h4 className="mt-4 text-sm font-semibold text-neutral-200">
-        Tracking &amp; cookies data
-      </h4>
-      <p>
-        We use cookies and similar tracking technologies to track the activity
-        on our service and hold certain information.
-      </p>
-      <p>
-        Cookies are files with a small amount of data which may include an
-        anonymous unique identifier. Cookies are sent to your browser from a
-        website and stored on your device. Tracking technologies also used are
-        beacons, tags, and scripts to collect and track information and to
-        improve and analyze our service.
-      </p>
-      <p>
-        You can instruct your browser to refuse all cookies or to indicate when
-        a cookie is being sent. However, if you do not accept cookies, you may
-        not be able to use some portions of our service.
-      </p>
-      <p>Examples of cookies we use:</p>
-      <ul className="list-disc space-y-1 pl-6">
-        <li>
-          <strong className="text-neutral-200">Session cookies.</strong> We use
-          session cookies to operate our service.
-        </li>
-        <li>
-          <strong className="text-neutral-200">Preference cookies.</strong> We
-          use preference cookies to remember your preferences and various
-          settings.
-        </li>
-        <li>
-          <strong className="text-neutral-200">Security cookies.</strong> We use
-          security cookies for security purposes.
-        </li>
-      </ul>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Use of data
+        Hosting and technical access data
       </h2>
       <p>
-        Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst uses the
-        collected data for various purposes:
+        This website is hosted by Vercel Inc., USA. Delivering the website
+        involves processing your IP address, the requested URL, request time,
+        browser and operating-system information, and any referring URL sent by
+        your browser. Technical access and error logs may be processed to keep
+        the website available, diagnose faults and prevent abuse. The legal
+        basis is our legitimate interest in secure and reliable website
+        operation under Art. 6(1)(f) GDPR. These technical processes are
+        separate from visitor analytics.
       </p>
-      <ul className="list-disc space-y-1 pl-6">
-        <li>To provide and maintain the service</li>
-        <li>To notify you about changes to our service</li>
-        <li>
-          To allow you to participate in interactive features of our service
-          when you choose to do so
-        </li>
-        <li>To provide customer care and support</li>
-        <li>
-          To provide analysis or valuable information so that we can improve the
-          service
-        </li>
-        <li>To monitor the usage of the service</li>
-        <li>To detect, prevent and address technical issues</li>
-      </ul>
-
+      <p>
+        Public API requests are also limited using an IP-based request counter
+        held temporarily in server memory. The counting window is one minute;
+        expired entries are removed during periodic cleanup when further
+        requests arrive or when the server instance ends. This protects the
+        service against excessive requests under Art. 6(1)(f) GDPR.
+      </p>
+      <p>
+        Hosting may involve processing in the United States and other countries
+        where Vercel and its subprocessors operate. Vercel describes its
+        processing terms and international-transfer safeguards, including EU
+        standard contractual clauses, in its{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://vercel.com/legal/dpa"
+        >
+          Data Processing Addendum
+        </a>
+        . Further information is available in Vercel’s{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://vercel.com/legal/privacy-notice"
+        >
+          privacy notice
+        </a>
+        .
+      </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Hosting and processors
+        Cookies, analytics and browser storage
       </h2>
       <p>
-        This website is hosted by Vercel Inc. (440 N Barranca Avenue #4133,
-        Covina, CA 91723, USA). Hosting involves processing of technical access
-        data (IP address, browser type, access time) required for secure
-        operation (Art. 6(1)(f) GDPR). A data processing agreement is in place.
+        We do not use visitor analytics, advertising pixels, session replay or
+        tracking cookies. The website does not set application cookies and does
+        not create visitor profiles.
       </p>
       <p>
-        When you submit your email via the newsletter form, it is stored in our
-        Notion database (Notion Labs, Inc., 500 Sansome Street, San Francisco,
-        CA 94111, USA) for the purpose of providing the requested content and
-        follow-up contact (Art. 6(1)(b) GDPR).
+        The Plasma playground remembers your selected visual source, size and
+        contrast in your browser’s local storage so that your settings are
+        available on your next visit. These settings are not sent to us and do
+        not contain a visitor identifier. They remain until you clear this
+        website’s data in your browser. This storage supports the playground
+        settings you select; it is not used for tracking.
       </p>
-      <p>
-        Transfers to processors in the United States are based on standard
-        contractual clauses (Art. 46 GDPR).
-      </p>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Transfer of data
+        Camera, selected files and recordings
       </h2>
       <p>
-        Your information, including personal data, may be transferred to — and
-        maintained on — computers located outside of your state, province,
-        country or other governmental jurisdiction where the data protection
-        laws may differ than those from your jurisdiction.
+        If you choose the camera feature in the Plasma playground, access
+        requires your browser’s camera permission. No microphone access is
+        requested. Camera images and image or video files you select are
+        processed locally in your browser to generate the visual effect. They
+        are not uploaded to our servers. Recordings are also created locally and
+        can be downloaded to your device. You can stop the camera by switching
+        to another source or leaving the playground, and revoke camera
+        permission in your browser settings.
       </p>
-      <p>
-        If you are located outside Germany and choose to provide information to
-        us, please note that we transfer the data, including personal data, to
-        Germany and process it there. Your consent to this privacy policy
-        followed by your submission of such information represents your
-        agreement to that transfer.
-      </p>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Disclosure of data
-      </h2>
-      <h3 className="mt-6 text-sm font-semibold uppercase tracking-[0.15em] text-neutral-100">
-        Legal requirements
-      </h3>
-      <p>
-        Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst may disclose
-        your personal data in the good faith belief that such action is
-        necessary to:
-      </p>
-      <ul className="list-disc space-y-1 pl-6">
-        <li>Comply with a legal obligation</li>
-        <li>
-          Protect and defend the rights or property of Fuerst.one — Webdesign
-          &amp; E-Commerce, Alexander Fürst
-        </li>
-        <li>
-          Prevent or investigate possible wrongdoing in connection with the
-          service
-        </li>
-        <li>
-          Protect the personal safety of users of the service or the public
-        </li>
-        <li>Protect against legal liability</li>
-      </ul>
-
-      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Security of data
+        Website content, fonts and external links
       </h2>
       <p>
-        The security of your data is important to us, but remember that no
-        method of transmission over the Internet, or method of electronic
-        storage is 100% secure. While we strive to use commercially acceptable
-        means to protect your personal data, we cannot guarantee its absolute
-        security.
-      </p>
-
-      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Children&rsquo;s privacy
-      </h2>
-      <p>
-        Our service does not address anyone under the age of 18
-        (&ldquo;Children&rdquo;).
+        We use Notion as a source for published profile and project content. Our
+        server retrieves this content; your browser does not need to connect to
+        Notion to read it. The IBM Plex Mono font is served by this website,
+        without a browser request to Google Fonts.
       </p>
       <p>
-        We do not knowingly collect personally identifiable information from
-        anyone under the age of 18. If you are a parent or guardian and you are
-        aware that your children have provided us with personal data, please
-        contact us. If we become aware that we have collected personal data from
-        children without verification of parental consent, we take steps to
-        remove that information from our servers.
+        Project images are normally served through this website. Where no
+        project logo is available, a logo may be requested directly from
+        logo.clearbit.com. Such a request discloses your IP address and the
+        request information sent by your browser to the external provider. The
+        purpose is to display project logos, based on our legitimate interest in
+        presenting our work under Art. 6(1)(f) GDPR.
       </p>
-
+      <p>
+        Links to GitHub, LinkedIn and freelance platforms are ordinary links,
+        rather than embedded social plugins. If you follow a link, the
+        destination provider processes data under its own privacy policy.
+      </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Changes to this privacy policy
+        CV download form
       </h2>
       <p>
-        We may update our privacy policy from time to time. We will notify you
-        of any changes by posting the new privacy policy on this page, and
-        update the &ldquo;effective date&rdquo; at the top of this privacy
-        policy.
+        The CV download form on the contact page requires an email address. When
+        you submit it, your email address and the submission timestamp are sent
+        through our server to a database at Notion Labs, Inc., USA. The PDF is
+        then downloaded directly in your browser; it is not sent by email. We
+        use the submitted details to keep a record of CV requests and handle
+        related business enquiries. The legal basis is our legitimate interest
+        in handling and documenting these requests under Art. 6(1)(f) GDPR;
+        where an enquiry concerns a contract or steps before entering a
+        contract, Art. 6(1)(b) GDPR applies. Entering an email is voluntary, but
+        the form requires it before starting the download. Submitting the form
+        does not subscribe you to a newsletter.
       </p>
-
+      <p>
+        Notion and its subprocessors may process these data in the United States
+        and other countries. Notion describes its international-transfer
+        safeguards, including EU standard contractual clauses, in its{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://www.notion.com/help/privacy"
+        >
+          privacy practices
+        </a>
+        . CV request records are retained while needed to handle the request and
+        related correspondence, subject to the retention criteria below. You can
+        contact us to request their erasure or object to processing.
+      </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Contact us
+        Contact enquiries
       </h2>
-      <p>If you have any questions about this privacy policy, contact us:</p>
-      <ul className="list-disc space-y-1 pl-6">
-        <li>
-          By email:{" "}
-          <a
-            className="text-white underline underline-offset-4 hover:text-neutral-300"
-            href="mailto:alexander@fuerst.one"
-          >
-            alexander@fuerst.one
-          </a>
-        </li>
-      </ul>
+      <p>
+        If you contact us by email or phone, we process the contact details and
+        information you provide to respond to your enquiry. For enquiries
+        relating to a contract or steps before entering a contract, the legal
+        basis is Art. 6(1)(b) GDPR. For other enquiries, it is our legitimate
+        interest in answering correspondence under Art. 6(1)(f) GDPR. Email and
+        telecommunications providers involved in delivering your message may
+        also process it. Providing this information is voluntary, but we need a
+        way to respond if you request a reply.
+      </p>
+      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
+        Retention
+      </h2>
+      <p>
+        We retain personal data only for as long as needed for the purposes
+        described here. Enquiries are deleted when they have been resolved and
+        further retention is no longer necessary, unless statutory retention
+        obligations or the establishment, exercise or defence of legal claims
+        require longer storage. Technical hosting logs are subject to the
+        hosting provider’s applicable retention settings and security
+        requirements. Local playground settings can be deleted at any time in
+        your browser.
+      </p>
+      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
+        Your rights
+      </h2>
+      <p>
+        Subject to the applicable legal conditions, you have the right to
+        access, rectification, erasure, restriction of processing and data
+        portability under Arts. 15–20 GDPR. Where processing is based on
+        legitimate interests, you may object on grounds relating to your
+        particular situation under Art. 21 GDPR. If processing is based on
+        consent, you may withdraw it at any time with effect for the future.
+        Contact us using the details above to exercise your rights. We do not
+        use automated decision-making or profiling within the meaning of Art. 22
+        GDPR.
+      </p>
+      <p>
+        You may lodge a complaint with a data protection supervisory authority,
+        in particular in the country of your habitual residence, place of work
+        or the alleged infringement. The authority responsible for private
+        businesses in Bavaria is the{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://www.lda.bayern.de/de/beschwerde.html"
+        >
+          Bavarian State Office for Data Protection Supervision (BayLDA)
+        </a>
+        .
+      </p>
     </>
   );
 }

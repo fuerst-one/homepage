@@ -25,7 +25,7 @@ export default function LegalNoticePage() {
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Provider information{" "}
         <span className="text-xs normal-case tracking-normal text-neutral-400">
-          (per § 5 TMG)
+          (per § 5 DDG)
         </span>
       </h2>
       <p>
@@ -56,22 +56,11 @@ export default function LegalNoticePage() {
       </p>
 
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Online dispute resolution
+        Consumer dispute resolution
       </h2>
       <p>
-        The European Commission provides a platform for online dispute
-        resolution (ODR):{" "}
-        <a
-          className="text-white underline underline-offset-4 hover:text-neutral-300"
-          href="https://ec.europa.eu/consumers/odr"
-          target="_blank"
-          rel="noopener"
-        >
-          https://ec.europa.eu/consumers/odr
-        </a>
-        . Our email address is listed above. We are neither willing nor
-        obligated to participate in dispute resolution proceedings before a
-        consumer arbitration board.
+        We are neither willing nor obligated to participate in dispute
+        resolution proceedings before a consumer arbitration board.
       </p>
 
       <p className="mt-10 border-t border-white/20 pt-6 text-xs text-neutral-500">
@@ -79,7 +68,7 @@ export default function LegalNoticePage() {
         liability for links, copyright), please refer to the German{" "}
         <Link
           className="underline underline-offset-4 hover:text-neutral-300"
-          href="/impressum"
+          href="/de/impressum"
         >
           Impressum
         </Link>

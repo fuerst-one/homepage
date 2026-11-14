@@ -19,178 +19,222 @@ export default function DatenschutzPage() {
       <h1 className="text-2xl font-semibold tracking-tight text-white">
         Datenschutzerklärung
       </h1>
-
-      <p>
-        Diese Datenschutzerklärung klärt Sie über die Art, den Umfang und Zweck
-        der Verarbeitung von personenbezogenen Daten (nachfolgend kurz „Daten“)
-        im Rahmen unseres Onlineangebotes auf. Im Hinblick auf die verwendeten
-        Begrifflichkeiten verweisen wir auf die Definitionen in Art. 4 der
-        Datenschutzgrundverordnung (DSGVO).
+      <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
+        Stand: 14. November 2026
       </p>
-
+      <p>
+        Diese Erklärung beschreibt, wie personenbezogene Daten beim Besuch von
+        fuerst.one und bei der Kontaktaufnahme verarbeitet werden. Der Besuch
+        dieser Website stellt keine Einwilligung in eine Datenverarbeitung dar.
+      </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Verantwortlicher
+        Verantwortlicher und Kontakt
       </h2>
       <p>
+        Alexander Fürst
+        <br />
         Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst
         <br />
         Grombühlstraße 37
         <br />
-        97080 Würzburg
+        97080 Würzburg, Deutschland
         <br />
-        E-Mail:{" "}
         <a
           className="text-white underline underline-offset-4 hover:text-neutral-300"
           href="mailto:alexander@fuerst.one"
         >
           alexander@fuerst.one
         </a>
-        <br />
-        Inhaber: Alexander Fürst
       </p>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Arten der verarbeiteten Daten
-      </h2>
-      <ul className="list-disc space-y-1 pl-6">
-        <li>Bestandsdaten (z. B. Namen)</li>
-        <li>Kontaktdaten (z. B. E-Mail-Adressen)</li>
-        <li>
-          Nutzungsdaten (z. B. besuchte Seiten, Zugriffszeiten — anonymisiert
-          durch unseren Hosting-Provider)
-        </li>
-      </ul>
-
-      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Kategorien betroffener Personen
-      </h2>
-      <p>Besucher und Nutzer des Onlineangebotes (nachfolgend „Nutzer“).</p>
-
-      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Zweck der Verarbeitung
-      </h2>
-      <ul className="list-disc space-y-1 pl-6">
-        <li>
-          Bereitstellung des Onlineangebotes, seiner Funktionen und Inhalte
-        </li>
-        <li>Beantwortung von Kontaktanfragen</li>
-        <li>Versand von angeforderten Informationen (z. B. CV-PDF)</li>
-        <li>Sicherheitsmaßnahmen</li>
-      </ul>
-
-      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Maßgebliche Rechtsgrundlagen
+        Hosting und technische Zugriffsdaten
       </h2>
       <p>
-        Nach Maßgabe des Art. 13 DSGVO teilen wir Ihnen die Rechtsgrundlagen
-        unserer Datenverarbeitungen mit. Die Rechtsgrundlage für die Einholung
-        von Einwilligungen ist Art. 6 Abs. 1 lit. a DSGVO; für die Verarbeitung
-        zur Beantwortung von Anfragen Art. 6 Abs. 1 lit. b DSGVO; für die
-        Verarbeitung zur Wahrung berechtigter Interessen Art. 6 Abs. 1 lit. f
-        DSGVO.
+        Diese Website wird von Vercel Inc., USA, gehostet. Bei der Auslieferung
+        der Website werden Ihre IP-Adresse, die aufgerufene URL, der Zeitpunkt
+        des Abrufs, Angaben zu Browser und Betriebssystem sowie eine vom Browser
+        gegebenenfalls übermittelte verweisende URL verarbeitet. Technische
+        Zugriffs- und Fehlerprotokolle können verarbeitet werden, um die
+        Verfügbarkeit sicherzustellen, Fehler zu beheben und Missbrauch
+        abzuwehren. Rechtsgrundlage ist unser berechtigtes Interesse am sicheren
+        und zuverlässigen Betrieb der Website nach Art. 6 Abs. 1 lit. f DSGVO.
+        Diese technischen Vorgänge sind von einer Besucheranalyse zu
+        unterscheiden.
       </p>
-
+      <p>
+        Anfragen an die öffentliche API werden außerdem anhand eines
+        IP-bezogenen Anfragezählers vorübergehend im Arbeitsspeicher des Servers
+        begrenzt. Das Zählfenster beträgt eine Minute. Abgelaufene Einträge
+        werden bei regelmäßigen Bereinigungen anlässlich weiterer Anfragen oder
+        mit dem Ende der Serverinstanz entfernt. Dies dient dem Schutz vor
+        übermäßigen Anfragen nach Art. 6 Abs. 1 lit. f DSGVO.
+      </p>
+      <p>
+        Beim Hosting kann eine Verarbeitung in den USA und weiteren Ländern
+        erfolgen, in denen Vercel und seine Unterauftragsverarbeiter tätig sind.
+        Vercel beschreibt seine Verarbeitungsbedingungen und Garantien für
+        internationale Datenübermittlungen, einschließlich
+        EU-Standardvertragsklauseln, im{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://vercel.com/legal/dpa"
+        >
+          Data Processing Addendum
+        </a>
+        . Weitere Informationen enthält die{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://vercel.com/legal/privacy-notice"
+        >
+          Datenschutzerklärung von Vercel
+        </a>
+        .
+      </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Hosting und Auftragsverarbeiter
+        Cookies, Besucheranalyse und Browserspeicher
       </h2>
       <p>
-        Diese Website wird von Vercel Inc. (440 N Barranca Avenue #4133, Covina,
-        CA 91723, USA) gehostet. Im Rahmen des Hostings werden technische
-        Zugriffsdaten (z. B. IP-Adresse, Browser-Typ, Zugriffszeit) verarbeitet,
-        die für den sicheren Betrieb des Onlineangebotes erforderlich sind (Art.
-        6 Abs. 1 lit. f DSGVO). Es besteht ein Auftragsverarbeitungsvertrag.
+        Wir verwenden keine Besucheranalyse, Werbepixel, Sitzungsaufzeichnungen
+        oder Tracking-Cookies. Die Website setzt selbst keine Cookies und
+        erstellt keine Besucherprofile.
       </p>
       <p>
-        Beim Eintrag Ihrer E-Mail-Adresse über das Newsletter-Formular wird
-        diese in unserer Notion-Datenbank gespeichert (Notion Labs, Inc., 500
-        Sansome Street, San Francisco, CA 94111, USA). Die Speicherung erfolgt
-        zur Bereitstellung des angeforderten Inhalts und zur Kontaktaufnahme
-        (Art. 6 Abs. 1 lit. b DSGVO).
+        Der Plasma-Spielplatz speichert Ihre gewählte Bildquelle, Größe und
+        Kontrasteinstellung lokal in Ihrem Browser, damit Ihre Einstellungen
+        beim nächsten Besuch wieder verfügbar sind. Diese Einstellungen werden
+        nicht an uns übermittelt und enthalten keine Besucherkennung. Sie
+        bleiben gespeichert, bis Sie die Daten dieser Website in Ihrem Browser
+        löschen. Der lokale Speicher unterstützt die von Ihnen gewählten
+        Spielplatz-Einstellungen und wird nicht zum Tracking verwendet.
       </p>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Übermittlungen in Drittländer
+        Kamera, ausgewählte Dateien und Aufnahmen
       </h2>
       <p>
-        Soweit Daten an Dienstleister in den USA übermittelt werden (Vercel,
-        Notion), erfolgt dies auf Grundlage geeigneter Garantien
-        (Standardvertragsklauseln gem. Art. 46 DSGVO).
+        Wenn Sie im Plasma-Spielplatz die Kamerafunktion wählen, ist dafür die
+        Kamerafreigabe Ihres Browsers erforderlich. Ein Mikrofonzugriff wird
+        nicht angefordert. Kamerabilder sowie von Ihnen ausgewählte Bild- oder
+        Videodateien werden lokal in Ihrem Browser verarbeitet, um den
+        Bildeffekt zu erzeugen. Sie werden nicht auf unsere Server hochgeladen.
+        Auch Aufnahmen werden lokal erstellt und können auf Ihr Gerät
+        heruntergeladen werden. Sie können die Kamera durch den Wechsel zu einer
+        anderen Quelle oder das Verlassen des Spielplatzes stoppen und die
+        Kamerafreigabe in Ihren Browsereinstellungen widerrufen.
       </p>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Schriftarten
+        Inhalte, Schriftarten und externe Links
       </h2>
       <p>
-        Wir verwenden die Schriftart „IBM Plex Mono“. Diese wird über{" "}
-        <code className="text-neutral-200">next/font</code> beim Build- Prozess
-        heruntergeladen und von unserem Server selbst ausgeliefert — es findet
-        keine Verbindung zu Google-Servern beim Seitenaufruf statt.
+        Wir nutzen Notion als Quelle für veröffentlichte Profil- und
+        Projektinhalte. Unser Server ruft diese Inhalte ab; Ihr Browser muss zum
+        Lesen keine Verbindung zu Notion herstellen. Die Schriftart IBM Plex
+        Mono wird von dieser Website ausgeliefert, ohne dass Ihr Browser Google
+        Fonts aufruft.
       </p>
-
+      <p>
+        Projektbilder werden normalerweise über diese Website ausgeliefert. Ist
+        kein Projektlogo vorhanden, kann ein Logo direkt von logo.clearbit.com
+        abgerufen werden. Dabei erhält der externe Anbieter Ihre IP-Adresse und
+        die von Ihrem Browser übermittelten Anfrageinformationen. Zweck ist die
+        Anzeige von Projektlogos auf Grundlage unseres berechtigten Interesses
+        an der Darstellung unserer Arbeit nach Art. 6 Abs. 1 lit. f DSGVO.
+      </p>
+      <p>
+        Verweise auf GitHub, LinkedIn und Freelancer-Plattformen sind normale
+        Links und keine eingebetteten Social-Media-Plugins. Wenn Sie einem Link
+        folgen, verarbeitet der Zielanbieter Daten nach seiner eigenen
+        Datenschutzerklärung.
+      </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Rechte der betroffenen Personen
+        Formular zum Lebenslauf-Download
       </h2>
       <p>
-        Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob
-        betreffende Daten verarbeitet werden, sowie auf Auskunft über diese
-        Daten und Kopie der Daten. Sie haben das Recht, die Berichtigung
-        unrichtiger Daten oder die Löschung der Sie betreffenden Daten zu
-        verlangen, sowie eine Einschränkung der Verarbeitung. Sie haben das
-        Recht auf Datenübertragbarkeit und das Recht, eine Beschwerde bei der
-        zuständigen Aufsichtsbehörde einzureichen.
+        Das Formular zum Lebenslauf-Download auf der Kontaktseite erfordert eine
+        E-Mail-Adresse. Beim Absenden werden Ihre E-Mail-Adresse und der
+        Zeitpunkt der Anfrage über unseren Server in einer Datenbank bei Notion
+        Labs, Inc., USA, gespeichert. Anschließend wird die PDF-Datei direkt in
+        Ihrem Browser heruntergeladen; sie wird nicht per E-Mail versandt. Wir
+        verwenden die Angaben zur Dokumentation von Lebenslauf-Anfragen und zur
+        Bearbeitung damit verbundener geschäftlicher Anfragen. Rechtsgrundlage
+        ist unser berechtigtes Interesse an der Bearbeitung und Dokumentation
+        dieser Anfragen nach Art. 6 Abs. 1 lit. f DSGVO. Betrifft eine Anfrage
+        einen Vertrag oder vorvertragliche Maßnahmen, gilt Art. 6 Abs. 1 lit. b
+        DSGVO. Die Angabe ist freiwillig; das Formular setzt sie jedoch voraus,
+        bevor der Download startet. Durch das Absenden abonnieren Sie keinen
+        Newsletter.
       </p>
-
+      <p>
+        Notion und seine Unterauftragsverarbeiter können diese Daten in den USA
+        und weiteren Ländern verarbeiten. Notion beschreibt seine Garantien für
+        internationale Datenübermittlungen, einschließlich
+        EU-Standardvertragsklauseln, in seinen{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://www.notion.com/help/privacy"
+        >
+          Datenschutzhinweisen
+        </a>
+        . Einträge zu Lebenslauf-Anfragen werden aufbewahrt, solange sie für die
+        Bearbeitung und damit verbundene Korrespondenz benötigt werden;
+        ergänzend gelten die unten beschriebenen Speicherkriterien. Sie können
+        uns zur Löschung auffordern oder der Verarbeitung widersprechen.
+      </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Widerrufsrecht
+        Kontaktanfragen
       </h2>
       <p>
-        Sie haben das Recht, erteilte Einwilligungen mit Wirkung für die Zukunft
-        zu widerrufen.
+        Wenn Sie uns per E-Mail oder Telefon kontaktieren, verarbeiten wir Ihre
+        Kontaktdaten und die von Ihnen mitgeteilten Informationen zur
+        Bearbeitung Ihrer Anfrage. Bei Anfragen zu einem Vertrag oder
+        vorvertraglichen Maßnahmen ist die Rechtsgrundlage Art. 6 Abs. 1 lit. b
+        DSGVO. Bei anderen Anfragen ist sie unser berechtigtes Interesse an der
+        Beantwortung von Korrespondenz nach Art. 6 Abs. 1 lit. f DSGVO. An der
+        Übermittlung beteiligte E-Mail- und Telekommunikationsanbieter können
+        die Nachricht ebenfalls verarbeiten. Ihre Angaben sind freiwillig; für
+        eine gewünschte Antwort benötigen wir eine Kontaktmöglichkeit.
       </p>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Widerspruchsrecht
+        Speicherdauer
       </h2>
       <p>
-        <strong className="text-neutral-200">
-          Sie können der künftigen Verarbeitung der Sie betreffenden Daten nach
-          Maßgabe der gesetzlichen Vorgaben jederzeit widersprechen.
-        </strong>{" "}
-        Der Widerspruch kann insbesondere gegen die Verarbeitung für Zwecke der
-        Direktwerbung erfolgen.
+        Wir speichern personenbezogene Daten nur so lange, wie es für die hier
+        beschriebenen Zwecke erforderlich ist. Anfragen werden gelöscht, wenn
+        sie abgeschlossen sind und eine weitere Speicherung nicht mehr nötig
+        ist, sofern gesetzliche Aufbewahrungspflichten oder die Geltendmachung,
+        Ausübung oder Verteidigung von Rechtsansprüchen keine längere
+        Speicherung erfordern. Für technische Hosting-Protokolle gelten die
+        jeweiligen Aufbewahrungseinstellungen und Sicherheitsanforderungen des
+        Hosting-Anbieters. Lokale Spielplatz-Einstellungen können Sie jederzeit
+        in Ihrem Browser löschen.
       </p>
-
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Löschung von Daten
+        Ihre Rechte
       </h2>
       <p>
-        Die von uns verarbeiteten Daten werden nach Maßgabe der gesetzlichen
-        Vorgaben gelöscht, sobald sie für ihre Zweckbestimmung nicht mehr
-        erforderlich sind und der Löschung keine gesetzlichen
-        Aufbewahrungspflichten entgegenstehen.
+        Unter den gesetzlichen Voraussetzungen haben Sie nach Art. 15–20 DSGVO
+        das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der
+        Verarbeitung und Datenübertragbarkeit. Soweit die Verarbeitung auf
+        berechtigten Interessen beruht, können Sie aus Gründen, die sich aus
+        Ihrer besonderen Situation ergeben, nach Art. 21 DSGVO widersprechen.
+        Beruht eine Verarbeitung auf Ihrer Einwilligung, können Sie diese
+        jederzeit mit Wirkung für die Zukunft widerrufen. Zur Ausübung Ihrer
+        Rechte können Sie sich über die oben genannten Kontaktdaten an uns
+        wenden. Eine automatisierte Entscheidungsfindung einschließlich
+        Profiling im Sinne von Art. 22 DSGVO findet nicht statt.
       </p>
-
-      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Kontaktaufnahme
-      </h2>
       <p>
-        Bei der Kontaktaufnahme mit uns (z. B. per E-Mail) werden die Angaben
-        des Nutzers zur Bearbeitung der Kontaktanfrage und deren Abwicklung gem.
-        Art. 6 Abs. 1 lit. b DSGVO verarbeitet. Wir löschen die Anfragen, sofern
-        diese nicht mehr erforderlich sind.
+        Sie können sich bei einer Datenschutzaufsichtsbehörde beschweren,
+        insbesondere in dem Mitgliedstaat Ihres gewöhnlichen Aufenthaltsorts,
+        Ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes. Für
+        private Unternehmen in Bayern ist das{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://www.lda.bayern.de/de/beschwerde.html"
+        >
+          Bayerische Landesamt für Datenschutzaufsicht (BayLDA)
+        </a>{" "}
+        zuständig.
       </p>
-
-      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Änderungen dieser Datenschutzerklärung
-      </h2>
-      <p>
-        Wir bitten Sie, sich regelmäßig über den Inhalt unserer
-        Datenschutzerklärung zu informieren. Wir passen die Datenschutzerklärung
-        an, sobald die Änderungen der von uns durchgeführten Datenverarbeitungen
-        dies erforderlich machen.
-      </p>
-
-      <p className="text-xs text-neutral-500">Stand: Mai 2026.</p>
     </>
   );
 }
