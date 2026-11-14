@@ -1,7 +1,7 @@
 # Senior product engineering, AI capabilities, and enquiry funnel change plan
 
 Date: 2026-11-14
-Status: functional pass implemented; real inbox-write verification awaits approval; positioning and copy pass follows separately
+Status: functional pass implemented and real inbox-write verification passed; synthetic record archived; positioning and copy pass follows separately
 
 ## Objective and agreed direction
 
