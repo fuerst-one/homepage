@@ -1,0 +1,2079 @@
+{
+  "version": 1,
+  "databaseId": "f53d61ec-13a0-49b7-9f25-c5c98e0994cb",
+  "curatedAt": "2026-11-14",
+  "sourcePolicy": "Existing public Notion project titles, descriptions, KPI text, experience tags, status and dates support the editorial drafts. Field-level owner confirmations from 2026-11-14 cover specified contributions, delivery/use stages, outcome bases and maintenance. No private client material or underlying measurement reports were reviewed. Unknown values stay empty. Original descriptions, KPIs and tags are preserved; Seabo End Date is the sole source correction, documented separately with month-level precision. AI experience tags alone do not establish delivered AI features; Completed alone does not establish production. Owner-reported measurements and estimates are distinct from independently verified results. Case Review remains Source-backed draft until the full case is reviewed. Implemented AI features in Konfig and Conversion Y were explicitly owner-confirmed; exact feature lists and confirmation quotes are retained.",
+  "schema": {
+    "Buyer Needs": {
+      "multi_select": {
+        "options": [
+          {
+            "name": "Launch a new product"
+          },
+          {
+            "name": "Improve a complex interface"
+          },
+          {
+            "name": "Automate repetitive work"
+          },
+          {
+            "name": "Add AI capabilities"
+          },
+          {
+            "name": "Integrate business systems"
+          },
+          {
+            "name": "Make data actionable"
+          },
+          {
+            "name": "Validate a product idea"
+          },
+          {
+            "name": "Improve conversion"
+          },
+          {
+            "name": "Build internal tooling"
+          },
+          {
+            "name": "Enable collaboration"
+          },
+          {
+            "name": "Create an interactive experience"
+          },
+          {
+            "name": "Deliver an industry-specific workflow"
+          },
+          {
+            "name": "Create a public website"
+          },
+          {
+            "name": "Connect software and hardware"
+          },
+          {
+            "name": "Maintain and evolve a product"
+          },
+          {
+            "name": "Join an existing team"
+          }
+        ]
+      }
+    },
+    "Delivery Stages": {
+      "multi_select": {
+        "options": [
+          {
+            "name": "Discovery"
+          },
+          {
+            "name": "Prototype"
+          },
+          {
+            "name": "MVP"
+          },
+          {
+            "name": "Production"
+          },
+          {
+            "name": "Improvement"
+          },
+          {
+            "name": "Internal use"
+          },
+          {
+            "name": "Ongoing maintenance"
+          }
+        ]
+      }
+    },
+    "Project Domains": {
+      "multi_select": {
+        "options": [
+          {
+            "name": "Developer tooling"
+          },
+          {
+            "name": "Logistics and maritime"
+          },
+          {
+            "name": "E-commerce"
+          },
+          {
+            "name": "Marketing and research"
+          },
+          {
+            "name": "Tourism and travel"
+          },
+          {
+            "name": "Public sector"
+          },
+          {
+            "name": "Nonprofit"
+          },
+          {
+            "name": "Healthcare"
+          },
+          {
+            "name": "Education"
+          },
+          {
+            "name": "Entertainment"
+          },
+          {
+            "name": "Automotive"
+          },
+          {
+            "name": "Personal productivity"
+          },
+          {
+            "name": "Embedded systems"
+          },
+          {
+            "name": "Brand and portfolio"
+          },
+          {
+            "name": "Sustainability"
+          },
+          {
+            "name": "Geospatial analysis"
+          }
+        ]
+      }
+    },
+    "AI Usage": {
+      "multi_select": {
+        "options": [
+          {
+            "name": "AI product feature"
+          },
+          {
+            "name": "AI-powered developer tool"
+          },
+          {
+            "name": "AI-assisted implementation"
+          },
+          {
+            "name": "Computer vision"
+          }
+        ]
+      }
+    },
+    "Personal Contribution": {
+      "rich_text": {}
+    },
+    "Case Context": {
+      "rich_text": {}
+    },
+    "Delivery Evidence": {
+      "rich_text": {}
+    },
+    "Outcome Evidence": {
+      "rich_text": {}
+    },
+    "Outcome Basis": {
+      "select": {
+        "options": [
+          {
+            "name": "No outcome recorded"
+          },
+          {
+            "name": "Capability only"
+          },
+          {
+            "name": "Self-reported result"
+          },
+          {
+            "name": "Owner-reported measurement"
+          },
+          {
+            "name": "Owner estimate"
+          },
+          {
+            "name": "Source-verified measurement"
+          }
+        ]
+      }
+    },
+    "Evidence Gaps": {
+      "rich_text": {}
+    },
+    "Case Review": {
+      "select": {
+        "options": [
+          {
+            "name": "Source-backed draft"
+          },
+          {
+            "name": "Owner confirmed"
+          },
+          {
+            "name": "Evidence verified"
+          }
+        ]
+      }
+    },
+    "Ownership Model": {
+      "select": {
+        "options": [
+          {
+            "name": "Solo delivery"
+          },
+          {
+            "name": "Product engineering owner"
+          },
+          {
+            "name": "Team contributor"
+          },
+          {
+            "name": "Not established"
+          }
+        ]
+      }
+    },
+    "Contribution Basis": {
+      "select": {
+        "options": [
+          {
+            "name": "Existing portfolio account"
+          },
+          {
+            "name": "Owner confirmation"
+          }
+        ]
+      }
+    },
+    "Maintenance Mode": {
+      "select": {
+        "options": [
+          {
+            "name": "Active development"
+          },
+          {
+            "name": "Occasional maintenance"
+          },
+          {
+            "name": "Engagement ended"
+          }
+        ]
+      }
+    },
+    "AI Capabilities": {
+      "multi_select": {
+        "options": [
+          {
+            "name": "Design generation"
+          },
+          {
+            "name": "Conversational assistance"
+          },
+          {
+            "name": "Customer support"
+          },
+          {
+            "name": "Product data management"
+          },
+          {
+            "name": "Analytics interpretation"
+          },
+          {
+            "name": "Translation"
+          },
+          {
+            "name": "Survey generation"
+          },
+          {
+            "name": "Survey analysis"
+          },
+          {
+            "name": "Agent orchestration"
+          },
+          {
+            "name": "Browser automation"
+          },
+          {
+            "name": "Knowledge retrieval"
+          },
+          {
+            "name": "Agent memory"
+          },
+          {
+            "name": "Computer vision detection"
+          }
+        ]
+      }
+    }
+  },
+  "projects": [
+    {
+      "id": "41786514-f736-8003-86e9-fb3a9fd4248a",
+      "source": {
+        "name": "Pigeon Turret – Camera-Guided Bird Deterrent",
+        "description": "Designed and built a camera-guided pan/tilt prototype for humane pigeon deterrence, combining ESP32 firmware, a Raspberry Pi service, bird detection, a web dashboard, and custom 3D-printed hardware. Capabilities include camera streaming, scheduled captures, bird detection, manual aiming and firing, telemetry, and OTA updates.",
+        "kpis": "",
+        "experiences": [
+          "3D",
+          "Artificial Intelligence",
+          "Fullstack-Development",
+          "Prototyping"
+        ],
+        "status": "In Progress",
+        "startDate": "2026-10-01",
+        "endDate": "2026-11-30"
+      },
+      "fields": {
+        "Buyer Needs": ["Connect software and hardware"],
+        "Delivery Stages": ["Prototype"],
+        "Project Domains": ["Embedded systems"],
+        "AI Usage": ["Computer vision"],
+        "Personal Contribution": "",
+        "Case Context": "Camera-guided bird-deterrent prototype connecting firmware, detection, a dashboard and custom hardware.",
+        "Delivery Evidence": "The record explicitly describes a prototype and lists capabilities; it does not establish outdoor reliability or measured deterrence.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal ownership, what has been bench-tested versus field-tested, and any repeatable detection or reliability measurements.",
+        "Case Review": "Source-backed draft",
+        "AI Capabilities": ["Computer vision detection"]
+      }
+    },
+    {
+      "id": "41786514-f736-80ab-bead-e2ccd429b958",
+      "source": {
+        "name": "Page Control – AI Website Assistant",
+        "description": "An embeddable AI website assistant that answers from site content, documents and selected Notion knowledge, then helps visitors navigate pages and fill forms. Visible pointer and typing feedback show each action, with approval before submissions and interruption controls. React/TypeScript widget, Laravel workspace, PostgreSQL/pgvector and OpenRouter. Invite-only organizations manage websites, knowledge, team access and encrypted AI credentials. In active development; real chat and project navigation verified on the local Fuerst.one homepage.",
+        "kpis": "",
+        "experiences": [
+          "AI Engineering",
+          "Agent Harnesses",
+          "Artificial Intelligence",
+          "Chat Bot Design",
+          "Data Aggregation",
+          "Embeddings",
+          "Fullstack-Development",
+          "Prompt Engineering",
+          "UI-Design",
+          "UX-Design",
+          "Vector Databases",
+          "Web-Scraping"
+        ],
+        "status": "In Progress",
+        "startDate": "2026-11-13",
+        "endDate": null
+      },
+      "fields": {
+        "Buyer Needs": ["Add AI capabilities", "Automate repetitive work"],
+        "Delivery Stages": ["Prototype"],
+        "Project Domains": ["Developer tooling", "Brand and portfolio"],
+        "AI Usage": ["AI product feature"],
+        "Personal Contribution": "",
+        "Case Context": "Embeddable assistant combining grounded answers with visible, interruptible browser actions and approval before submissions.",
+        "Delivery Evidence": "The record reports local chat and project-navigation verification. This supports a working prototype; it does not establish a production client rollout.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal contribution, deployment/adoption status, retrieval and action evaluation, and which client-facing claims are approved.",
+        "Case Review": "Source-backed draft",
+        "AI Capabilities": [
+          "Knowledge retrieval",
+          "Conversational assistance",
+          "Browser automation"
+        ]
+      }
+    },
+    {
+      "id": "41786514-f736-8074-8dcb-dd79f906d12a",
+      "source": {
+        "name": "Business Hub – Your Work in One Place",
+        "description": "A personal workspace for keeping projects and everyday business under control. Business Hub brings messages, appointments, tasks, documents, tracked time, and finances into one overview, with the relevant context grouped by project. The goal is to spend less time searching and switching between apps, notice things that need attention sooner, and make routine admin, such as finding and reviewing invoices, easier to manage.",
+        "kpis": "",
+        "experiences": [
+          "Data Aggregation",
+          "Data Visualization",
+          "Fullstack-Development",
+          "Reporting"
+        ],
+        "status": "In Progress",
+        "startDate": "2026-08-25",
+        "endDate": null
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Build internal tooling",
+          "Integrate business systems",
+          "Make data actionable"
+        ],
+        "Delivery Stages": ["Internal use"],
+        "Project Domains": ["Personal productivity"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Project-oriented workspace bringing messages, appointments, tasks, documents, time and finances into one overview.",
+        "Delivery Evidence": "Owner confirmed on 2026-11-14 that Business Hub is part of his daily workflow. Its intended administrative benefits have not been quantified in the available record. Owner confirmed occasional ongoing maintenance/evolution.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm specific integrations and personal ownership, measured administrative savings.",
+        "Case Review": "Source-backed draft",
+        "Maintenance Mode": "Occasional maintenance"
+      },
+      "confirmations": {
+        "deliveryStage": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Business hub also my daily flow"
+        },
+        "maintenance": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Mainly konfig and conversion-y, others occasionally. Seabo finished 7/26"
+        }
+      }
+    },
+    {
+      "id": "35686514-f736-8019-921c-e5d8d77e7f23",
+      "source": {
+        "name": "Test Flow",
+        "description": "Fully LLM-powered local E2E test tool for web apps that allows you to define user flows in natural language for agents to complete with MCP-driven browsers.",
+        "kpis": "Dropped manual QA, e2e tests and uptime monitoring in half",
+        "experiences": [
+          "AI Engineering",
+          "Agent Harnesses",
+          "Artificial Intelligence",
+          "Backend-Development",
+          "CI/CD",
+          "Chat Bot Design",
+          "Conception",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Prompt Engineering",
+          "Reporting",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "User Testing",
+          "Web-Scraping"
+        ],
+        "status": "Completed",
+        "startDate": "2026-02-01",
+        "endDate": "2026-03-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Build internal tooling", "Automate repetitive work"],
+        "Delivery Stages": ["Internal use"],
+        "Project Domains": ["Developer tooling"],
+        "AI Usage": ["AI-powered developer tool"],
+        "Personal Contribution": "Delivered the entire project solo, covering product, design and implementation.",
+        "Case Context": "Local browser-agent testing tool that turns natural-language user flows into end-to-end checks.",
+        "Delivery Evidence": "Owner confirmed on 2026-11-14 that Test Flow is used internally on an occasional basis. This does not establish external customer adoption or continuous operation. Owner confirmed occasional ongoing maintenance/evolution.",
+        "Outcome Evidence": "Existing portfolio KPI: Dropped manual QA, e2e tests and uptime monitoring in half\nAlexander confirmed on 2026-11-14 that this improvement is estimated. The exact quantity being halved remains unclear; do not present it as a measured QA, testing or monitoring result.",
+        "Outcome Basis": "Owner estimate",
+        "Evidence Gaps": "Clarify what was halved: QA time, maintenance effort or another measure; provide baseline, timeframe, sample flows, failure rate.",
+        "Case Review": "Source-backed draft",
+        "Ownership Model": "Solo delivery",
+        "Contribution Basis": "Owner confirmation",
+        "Maintenance Mode": "Occasional maintenance",
+        "AI Capabilities": ["Browser automation"]
+      },
+      "confirmations": {
+        "personalContribution": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Build-manager and test flow: everything solo"
+        },
+        "deliveryStage": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Test-flow: internal occasionally"
+        },
+        "outcomeBasis": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Konfig measured, others are estimated"
+        },
+        "maintenance": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Mainly konfig and conversion-y, others occasionally. Seabo finished 7/26"
+        }
+      }
+    },
+    {
+      "id": "35486514-f736-803d-ae01-dc666a99d11c",
+      "source": {
+        "name": "RoadTrippin",
+        "description": "I love map viz, automation and road trips, so why not combine them? This app drafts you full trips including daytrips in destinations based on your desired trip profile and let’s you fully customize the whole drive in one nice looking map interface with live collaboration",
+        "kpis": "Full Trip Ideas in seconds instead of hours",
+        "experiences": [
+          "AI Engineering",
+          "Agent Harnesses",
+          "Artificial Intelligence",
+          "CI/CD",
+          "Conception",
+          "Data Aggregation",
+          "Embeddings",
+          "Fullstack-Development",
+          "Geospatial Visualization",
+          "Prompt Engineering",
+          "Prototyping",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "Web-Scraping"
+        ],
+        "status": "Completed",
+        "startDate": "2026-02-01",
+        "endDate": "2026-04-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Create an interactive experience",
+          "Enable collaboration",
+          "Automate repetitive work"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Tourism and travel"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Collaborative map-based trip planner with generated trip ideas, day trips and editable itineraries.",
+        "Delivery Evidence": "Live collaboration and trip drafting are described; the record does not establish adoption, production service levels or the exact role of AI.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): Full Trip Ideas in seconds instead of hours\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal role, actual users, production and maintenance responsibilities, AI use, and how trip-planning time was compared.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "35486514-f736-8020-bde8-e0f741a1a77a",
+      "source": {
+        "name": "build-manager",
+        "description": "Integrated file-based local multi-agent harness with web UI. Handles 5-staged build process in spec-driven / test-driven development style including live-status, steering, roadmap and controlling dashboards.",
+        "kpis": "12 agents running spec generation, code and review simultaneously",
+        "experiences": [
+          "AI Engineering",
+          "Agent Harnesses",
+          "Artificial Intelligence",
+          "Backend-Development",
+          "CI/CD",
+          "Chat Bot Design",
+          "Conception",
+          "Embeddings",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Native Development",
+          "Prompt Engineering",
+          "Reporting",
+          "UI-Design",
+          "UX-Design"
+        ],
+        "status": "Completed",
+        "startDate": "2026-01-01",
+        "endDate": "2026-04-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Build internal tooling", "Automate repetitive work"],
+        "Delivery Stages": ["Internal use"],
+        "Project Domains": ["Developer tooling"],
+        "AI Usage": ["AI-powered developer tool"],
+        "Personal Contribution": "Delivered the entire project solo, covering product, design and implementation.",
+        "Case Context": "Local multi-agent development harness with staged workflows, steering and status dashboards.",
+        "Delivery Evidence": "Owner confirmed on 2026-11-14 that build-manager is used in his internal daily workflow. The record also reports twelve concurrent agents; this is a capability claim, not an independently evaluated quality or productivity result. Owner confirmed occasional ongoing maintenance/evolution.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): 12 agents running spec generation, code and review simultaneously\nThis describes a capability rather than a measured buyer outcome.",
+        "Outcome Basis": "Capability only",
+        "Evidence Gaps": "Confirm quality/failure evaluation and whether any efficiency improvement was measured.",
+        "Case Review": "Source-backed draft",
+        "Ownership Model": "Solo delivery",
+        "Contribution Basis": "Owner confirmation",
+        "Maintenance Mode": "Occasional maintenance",
+        "AI Capabilities": ["Agent orchestration"]
+      },
+      "confirmations": {
+        "personalContribution": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Build-manager and test flow: everything solo"
+        },
+        "deliveryStage": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Build-manager: in my internal daily flow"
+        },
+        "maintenance": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Mainly konfig and conversion-y, others occasionally. Seabo finished 7/26"
+        }
+      }
+    },
+    {
+      "id": "35486514-f736-8087-86dd-f41b80c8b0ad",
+      "source": {
+        "name": "mem0.one",
+        "description": "Forked from the mem0 v4 project, the goal was to model a memory system for agents that learns and “thinks” like a brain. Entity resolution, emotional activation, recency bias and a crude “hierarchy” system combines graph and vector DBs with dedicated LLMs to make memorization and retrieval smart and self-reinforcing.",
+        "kpis": "Automatic memorization and retrieval of relevant facts",
+        "experiences": [
+          "A/B-Testing",
+          "AI Engineering",
+          "Agent Harnesses",
+          "Artificial Intelligence",
+          "Backend-Development",
+          "Conception",
+          "Data Aggregation",
+          "Data Analysis",
+          "Data Visualization",
+          "Embeddings",
+          "Frontend-Development",
+          "Graph Databases",
+          "Prompt Engineering",
+          "UX-Design",
+          "Vector Databases"
+        ],
+        "status": "In Progress",
+        "startDate": "2025-12-01",
+        "endDate": null
+      },
+      "fields": {
+        "Buyer Needs": ["Add AI capabilities", "Build internal tooling"],
+        "Delivery Stages": [],
+        "Project Domains": ["Developer tooling"],
+        "AI Usage": ["AI product feature"],
+        "Personal Contribution": "",
+        "Case Context": "Agent-memory system combining graph and vector storage with LLM-assisted memorization and retrieval.",
+        "Delivery Evidence": "The record explicitly attributes the starting point to a mem0 v4 fork. Retrieval goals and implementation details do not establish measured retrieval accuracy.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): Automatic memorization and retrieval of relevant facts\nThis describes a capability rather than a measured buyer outcome.",
+        "Outcome Basis": "Capability only",
+        "Evidence Gaps": "Identify original fork versus personal changes, exact contribution, operating stage and a retrieval-quality evaluation.",
+        "Case Review": "Source-backed draft",
+        "AI Capabilities": ["Knowledge retrieval", "Agent memory"]
+      }
+    },
+    {
+      "id": "21886514-f736-80c5-88f4-c37e60968f21",
+      "source": {
+        "name": "Fuerst.one ASCII Plasma",
+        "description": "For my brand landing page, I designed a fully generative plasma animation rendered entirely in ASCII characters. The piece blends retro computing aesthetics with modern creative coding techniques, creating a living digital canvas that feels both nostalgic and futuristic. ",
+        "kpis": "",
+        "experiences": [
+          "Animation",
+          "Frontend-Development",
+          "GPU Shaders",
+          "UI-Design",
+          "UX-Design",
+          "WebGL"
+        ],
+        "status": "Completed",
+        "startDate": "2024-11-01",
+        "endDate": "2024-11-30"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Create an interactive experience",
+          "Create a public website"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Brand and portfolio"],
+        "AI Usage": [],
+        "Personal Contribution": "Designed a generative ASCII plasma animation, as stated in the first-person project description.",
+        "Case Context": "Generative ASCII plasma animation for a personal brand landing page.",
+        "Delivery Evidence": "The source describes a rendered animation; it does not report performance measurements, accessibility testing or AI involvement.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm browser/device performance, accessibility considerations, implementation scope and whether there is a measured outcome.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "1eb86514-f736-80bf-87ae-e4e5ec9e9424",
+      "source": {
+        "name": "Buchstabiene - Word Puzzle",
+        "description": "BuchstaBiene is a game to find all German words with one mandatory letter and six optional letters.",
+        "kpis": "30min of doom scrolling replaced with valuable brain usage and vocabulary improvement",
+        "experiences": [
+          "Backend-Development",
+          "Conception",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Usability",
+          "Web-Scraping"
+        ],
+        "status": "Completed",
+        "startDate": "2024-04-01",
+        "endDate": "2024-05-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Create an interactive experience"],
+        "Delivery Stages": [],
+        "Project Domains": ["Entertainment", "Education"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "German word puzzle built around a mandatory letter and six optional letters.",
+        "Delivery Evidence": "The record describes a word game; its leisure-time comparison is not evidence of measured cognitive benefit.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): 30min of doom scrolling replaced with valuable brain usage and vocabulary improvement\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal contribution, launch/maintenance stage and usage; treat brain-training benefits as unverified unless studied.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "15b86514-f736-803e-b9b7-e47ebc2406d1",
+      "source": {
+        "name": "Konfig Product Design Configurator",
+        "description": "Arider takes their motorcycle customization business to the next level with this state of the art design tool. Much like Adobe Illustrator specifically catered to motorcycle art, users can now create their decals from scratch or easily adapt pre-made kits by only changing color variables and make their own vision come alive on their bikes.",
+        "kpis": ">10k Designs created by Users in 3 months, +50% Returning users in the Custom Decal Section, +1.5 Weeks avg. User Return Window",
+        "experiences": [
+          "3D",
+          "A/B-Testing",
+          "AI Engineering",
+          "Agent Harnesses",
+          "Animation",
+          "Artificial Intelligence",
+          "Backend-Development",
+          "Behaviour Psychology",
+          "CI/CD",
+          "Conception",
+          "Consulting",
+          "Conversion Rate Optimization",
+          "Data Aggregation",
+          "Data Analysis",
+          "Data Visualization",
+          "Expert Research",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "GPU Shaders",
+          "Prompt Engineering",
+          "Prototyping",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "User Research",
+          "User Testing",
+          "WebGL"
+        ],
+        "status": "In Progress",
+        "startDate": "2025-01-01",
+        "endDate": null
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Launch a new product",
+          "Improve a complex interface",
+          "Create an interactive experience",
+          "Maintain and evolve a product",
+          "Add AI capabilities",
+          "Automate repetitive work"
+        ],
+        "Delivery Stages": ["Production", "Ongoing maintenance"],
+        "Project Domains": ["E-commerce", "Automotive"],
+        "AI Usage": ["AI product feature"],
+        "Personal Contribution": "Owned product engineering across frontend and backend, UX/UI design, client communication and organization. Built the product with a business partner who focused on motorcycle-decal industry expertise and marketing.",
+        "Case Context": "Motorcycle-decal design product with user editing and an implemented AI design-generation chat, support, API-based product-data creation/maintenance, analytics evaluation and translation, according to the owner.",
+        "Delivery Evidence": "Owner confirmed on 2026-11-14 that Konfig is in production use in one shop. This supports a single-shop production case; do not generalize to multiple customer deployments. The existing user metrics still need measurement context. Owner also confirmed these are his main ongoing development/maintenance projects. Owner confirmed that the design-generation chat, support, API-based product-data maintenance/creation, analytics evaluation and translation are all built. Individual feature adoption and AI-quality evaluation were not independently reviewed.",
+        "Outcome Evidence": "Existing portfolio KPI: >10k Designs created by Users in 3 months, +50% Returning users in the Custom Decal Section, +1.5 Weeks avg. User Return Window\nAlexander confirmed on 2026-11-14 that these Konfig figures were measured. The underlying report and complete baseline/timeframe were not reviewed; this is an owner-reported measurement, not independently verified.",
+        "Outcome Basis": "Owner-reported measurement",
+        "Evidence Gaps": "Identify analytics source, measurement dates and baseline for returning-user figures, and clarify the return-window metric. Personal scope, one-shop production use and ongoing ownership were owner-confirmed. Document feature-specific AI evaluation and human review boundaries where relevant.",
+        "Case Review": "Source-backed draft",
+        "Ownership Model": "Product engineering owner",
+        "Contribution Basis": "Owner confirmation",
+        "Maintenance Mode": "Active development",
+        "AI Capabilities": [
+          "Design generation",
+          "Conversational assistance",
+          "Customer support",
+          "Product data management",
+          "Analytics interpretation",
+          "Translation"
+        ]
+      },
+      "confirmations": {
+        "personalContribution": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Konfig: basically whole product, frontend and backend, ux ui design, client comms, org, i more or less built the whole product together with the my business partner who focused on the bike decal industry details and marketing"
+        },
+        "deliveryStage": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Konfig: production use in one shop"
+        },
+        "outcomeBasis": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Konfig measured, others are estimated"
+        },
+        "maintenance": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Mainly konfig and conversion-y, others occasionally. Seabo finished 7/26"
+        },
+        "aiCapabilities": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Konfig: Design gen chat, support, API based product data maintenance and creation as well as analytics eval and translation. All built"
+        }
+      }
+    },
+    {
+      "id": "11d86514-f736-80ed-935c-e6fe30b59d42",
+      "source": {
+        "name": "Conversion Y - AI powered Surveys for B2B",
+        "description": "Conversion Y offers a simple and cost-effective way to create surveys, integrate them into websites, and automatically analyze them in order to quickly generate valuable and actionable information for businesses.",
+        "kpis": "Total survey creation and analysis time reduced by >50%",
+        "experiences": [
+          "AI Engineering",
+          "Agent Harnesses",
+          "Artificial Intelligence",
+          "Backend-Development",
+          "Business Administration",
+          "CI/CD",
+          "Conception",
+          "Data Aggregation",
+          "Data Analysis",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Prompt Engineering",
+          "UX-Design",
+          "Usability",
+          "User Research"
+        ],
+        "status": "In Progress",
+        "startDate": "2026-08-01",
+        "endDate": null
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Launch a new product",
+          "Add AI capabilities",
+          "Automate repetitive work",
+          "Make data actionable",
+          "Maintain and evolve a product"
+        ],
+        "Delivery Stages": ["MVP", "Ongoing maintenance"],
+        "Project Domains": ["Marketing and research"],
+        "AI Usage": ["AI product feature"],
+        "Personal Contribution": "Responsible for product, frontend and backend development, and design.",
+        "Case Context": "B2B survey product covering creation, website embedding and analysis, with implemented AI translation, automated survey evaluation and survey creation, according to the owner.",
+        "Delivery Evidence": "Owner confirmed on 2026-11-14 that Conversion Y is still in its MVP phase. Do not describe it as established production or enterprise adoption. Owner also confirmed these are his main ongoing development/maintenance projects. Owner confirmed that AI translation, automated survey evaluation and survey creation are all built. This does not change the owner-confirmed MVP stage.",
+        "Outcome Evidence": "Existing portfolio KPI: Total survey creation and analysis time reduced by >50%\nAlexander confirmed on 2026-11-14 that this saving is an estimate. Treat it as an approximate personal assessment, not a timed study or guaranteed client result.",
+        "Outcome Basis": "Owner estimate",
+        "Evidence Gaps": "Confirm AI analysis boundaries and evaluation, and the baseline, sample and timeframe for the greater-than-50-percent saving.",
+        "Case Review": "Source-backed draft",
+        "Ownership Model": "Product engineering owner",
+        "Contribution Basis": "Owner confirmation",
+        "Maintenance Mode": "Active development",
+        "AI Capabilities": [
+          "Translation",
+          "Survey analysis",
+          "Survey generation"
+        ]
+      },
+      "confirmations": {
+        "personalContribution": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Conversion Y: Product, dev (fe+be), design"
+        },
+        "deliveryStage": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Conversion-y: mvp phase still"
+        },
+        "outcomeBasis": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Konfig measured, others are estimated"
+        },
+        "maintenance": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Mainly konfig and conversion-y, others occasionally. Seabo finished 7/26"
+        },
+        "aiCapabilities": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Conversion-y: translation, automated survey eval and creation. All built"
+        }
+      }
+    },
+    {
+      "id": "d33ded3a-755e-47bc-87ff-6fd496774a18",
+      "source": {
+        "name": "ORA - Port Efficiency Management",
+        "description": "In this project, we equipped shipping containers with GPS trackers to monitor their status and movement within the port. By mapping each container’s lifecycle—from arrival to loading—we gained real-time visibility into positioning and handling. This data allowed us to streamline operational workflows, reduce idle times, and significantly improve loading efficiency. The system not only enhanced transparency but also laid the groundwork for predictive logistics and smarter port management.",
+        "kpis": ">3 efficiency optimization opportunities identified in the first 2 months of tracking",
+        "experiences": [
+          "Artificial Intelligence",
+          "Conception",
+          "Data Aggregation",
+          "Data Analysis",
+          "Data Visualization",
+          "Frontend-Development",
+          "Geospatial Visualization",
+          "Prototyping",
+          "UI-Design"
+        ],
+        "status": "Completed",
+        "startDate": "2024-05-27",
+        "endDate": "2025-05-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Make data actionable",
+          "Deliver an industry-specific workflow",
+          "Connect software and hardware"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Logistics and maritime"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Container GPS tracking and lifecycle visualization to identify port-efficiency opportunities.",
+        "Delivery Evidence": "The source reports tracking and identified opportunities. Its KPI does not quantify realized loading-efficiency gains or establish a predictive AI deployment.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): >3 efficiency optimization opportunities identified in the first 2 months of tracking\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Separate personal contribution from the team, identify pilot versus production scope, and distinguish opportunities identified from realized operational savings.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "47579682-9325-4e9a-b014-e4fb424bb0bb",
+      "source": {
+        "name": "World Vision Conversion Rate Optimization",
+        "description": "As a student consultant for KonversionsKRAFT, this project was probably one of my most beloved projects, as it showed very clearly, how much little things can help. At this point I’d also like you to check out the client World Vision, because their adoption approach to philanthropy is really unique and let’s you experience your help even more closely than just sending money to charity.",
+        "kpis": "+20% (sig.) on adoption conversion rate",
+        "experiences": [
+          "A/B-Testing",
+          "Behaviour Psychology",
+          "Consulting",
+          "Conversion Rate Optimization",
+          "Data Visualization",
+          "Expert Research",
+          "Prototyping",
+          "Reporting",
+          "Site Audit",
+          "Usability",
+          "User Research",
+          "Workshop"
+        ],
+        "status": "Completed",
+        "startDate": "2019-06-01",
+        "endDate": "2019-12-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Improve conversion"],
+        "Delivery Stages": ["Improvement"],
+        "Project Domains": ["Nonprofit"],
+        "AI Usage": [],
+        "Personal Contribution": "Worked as a student consultant through KonversionsKRAFT, as stated in the source.",
+        "Case Context": "Conversion-optimization consulting for World Vision.",
+        "Delivery Evidence": "The portfolio reports a statistically significant conversion increase, without an experiment report or enough methodological context to verify it.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): +20% (sig.) on adoption conversion rate\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm specific research/design/test responsibilities, experiment dates, baseline, sample size and permission to publish the result.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "6a549850-e00b-47fa-9fda-d2609c40431d",
+      "source": {
+        "name": "Bags’n Boxes Packaging Chatbot",
+        "description": "One of the more exotic projects of my career. Imagine configuring your product packaging simply by using a chat interface. Using TypeForm (the 2018 version, which was by far not as feature-rich as nowadays) I built a story-tree that I’d say would still today search for his liking. Unfortunately, the company was sold afterwards and the product discontinued.",
+        "kpis": "",
+        "experiences": [
+          "Backend-Development",
+          "Behaviour Psychology",
+          "Chat Bot Design",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "UX-Design",
+          "Usability"
+        ],
+        "status": "Completed",
+        "startDate": "2018-07-01",
+        "endDate": "2018-10-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Improve a complex interface",
+          "Automate repetitive work"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["E-commerce"],
+        "AI Usage": [],
+        "Personal Contribution": "Built the TypeForm story tree described in the first-person project account.",
+        "Case Context": "Packaging-configuration conversation implemented as a TypeForm story tree.",
+        "Delivery Evidence": "The described interaction is rule-based; a chatbot label does not establish LLM or AI use. The source says the product was discontinued after the company was sold.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm deployment and usage at the time, integration scope and any observed usability benefit; do not imply the discontinued product is currently available.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "6bce7ee2-3d3b-4f7d-8c31-a7159b49a301",
+      "source": {
+        "name": "Auto-CV - Frontend for Notion Project Database",
+        "description": "This is the website you are seeing right now. I love data, so I built a way to easily store, display and adapt my CV and portfolio to different clients and employers. With this site I am able to display projects and experiences either predefined or user-selectable to drastically increase my ROI und UX.",
+        "kpis": "-2hrs per CV for curating specific content",
+        "experiences": [
+          "Backend-Development",
+          "CI/CD",
+          "Conception",
+          "Data Aggregation",
+          "Data Analysis",
+          "Data Visualization",
+          "Frontend-Development",
+          "GPU Shaders",
+          "Prompt Engineering",
+          "Reporting",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "WebGL"
+        ],
+        "status": "Completed",
+        "startDate": "2024-03-21",
+        "endDate": "2024-03-26"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Create a public website",
+          "Automate repetitive work",
+          "Make data actionable"
+        ],
+        "Delivery Stages": ["Production"],
+        "Project Domains": ["Brand and portfolio"],
+        "AI Usage": [],
+        "Personal Contribution": "Built the Notion-backed portfolio and CV display workflow, as stated in the first-person description.",
+        "Case Context": "Notion-backed portfolio that displays and adapts professional project information.",
+        "Delivery Evidence": "The record identifies the current public website. Its CV-curation description may lag the separate enquiry-funnel work; no current PDF availability is inferred.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): -2hrs per CV for curating specific content\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm ongoing ownership, current supported outputs and the baseline for two hours saved per curated CV.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "b6b27ca7-bf93-4162-966f-635187376722",
+      "source": {
+        "name": "Satellite Image Object Recognition",
+        "description": "Object recognition on a satellite level was something I wanted to try out for a long time. Unfortunately the models are not very reliable and labelled satellite imagery not easily obtainable. But you can see the result yourself. This app recognizes structures live on a map.",
+        "kpis": "",
+        "experiences": [
+          "Artificial Intelligence",
+          "Backend-Development",
+          "Data Aggregation",
+          "Data Analysis",
+          "Data Visualization",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Geospatial Visualization"
+        ],
+        "status": "Completed",
+        "startDate": "2023-10-01",
+        "endDate": "2023-11-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Validate a product idea",
+          "Add AI capabilities",
+          "Make data actionable"
+        ],
+        "Delivery Stages": ["Prototype"],
+        "Project Domains": ["Geospatial analysis"],
+        "AI Usage": ["Computer vision"],
+        "Personal Contribution": "",
+        "Case Context": "Experimental satellite-imagery object detection presented on a live map.",
+        "Delivery Evidence": "The source explicitly notes unreliable models and limited labelled data. Treat this as exploratory computer vision rather than proven operational recognition.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal model/integration work and evaluation data; identify accuracy and dataset limits before using as a reliability case.",
+        "Case Review": "Source-backed draft",
+        "AI Capabilities": ["Computer vision detection"]
+      }
+    },
+    {
+      "id": "d5bd0050-2efd-4aba-a168-3ce1a1e539c6",
+      "source": {
+        "name": "Public Searoutes Excel Plugin",
+        "description": "The industry-logical expansion of the “Public Searoutes” tool. Having worked for y few years in the maritime industry it became clear that Excel is the tool of choice for almost any kind of planning and / or calculation. So we took the chance and created this plugin.",
+        "kpis": "-10s to calculate a route and transfer it to excel",
+        "experiences": [
+          "Data Aggregation",
+          "Data Analysis",
+          "Frontend-Development",
+          "UI-Design",
+          "Usability"
+        ],
+        "status": "Completed",
+        "startDate": "2023-09-01",
+        "endDate": "2023-10-15"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Integrate business systems",
+          "Automate repetitive work",
+          "Deliver an industry-specific workflow"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Logistics and maritime"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Excel plugin extending maritime route calculation into a familiar planning workflow.",
+        "Delivery Evidence": "A plugin and route-to-Excel workflow are described. Deployment scale, personal scope and the timing comparison are not documented.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): -10s to calculate a route and transfer it to excel\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal contribution, plugin availability at the time, actual users and how the ten-second saving was measured.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "c6a3f4a3-9387-475b-a3af-bb5512846d9e",
+      "source": {
+        "name": "Covid Lockdown Telegram Chatbot",
+        "description": "A fun project that was born out of boredom. Covid restrictions made it harder to see friends, or to go out even, so it was nice to have an alert when news regarding lockdowns were directly streamed to your phone instead of having to skim poorly designed, 90s-style government web-pages.",
+        "kpis": "-60s to look up current covid news",
+        "experiences": [
+          "Backend-Development",
+          "Chat Bot Design",
+          "Data Aggregation",
+          "UX-Design",
+          "Web-Scraping"
+        ],
+        "status": "Completed",
+        "startDate": "2020-06-01",
+        "endDate": "2020-06-15"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Automate repetitive work",
+          "Integrate business systems"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Personal productivity", "Public sector"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Telegram notifications reducing the need to check government lockdown-news pages manually.",
+        "Delivery Evidence": "The source describes scraping/notification automation; a chatbot label is not evidence of AI. Historical news delivery does not imply an active current service.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): -60s to look up current covid news\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal contribution, historical users and operation, and whether the sixty-second comparison was observed or estimated.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "d1420991-70e5-4b5a-a1f7-06d27b902cde",
+      "source": {
+        "name": "Bubble-UI - Apple Watch UI Web Clone",
+        "description": "Ever wanted the UI from your Apple Watch in a browser? I did. So I tried to clone the bubbly interface in a small react app.",
+        "kpis": "",
+        "experiences": ["Frontend-Development", "UI-Design"],
+        "status": "Completed",
+        "startDate": "2023-04-01",
+        "endDate": "2023-04-20"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Create an interactive experience",
+          "Validate a product idea"
+        ],
+        "Delivery Stages": ["Prototype"],
+        "Project Domains": ["Brand and portfolio"],
+        "AI Usage": [],
+        "Personal Contribution": "Tried to clone the bubble-style watch interface in a React app, as stated in the first-person record.",
+        "Case Context": "Small React experiment recreating the Apple Watch bubble interface.",
+        "Delivery Evidence": "The source describes an interface experiment, not a commissioned product or measured UX improvement.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm implementation scope, performance constraints and any user testing if used beyond a creative frontend example.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "e3884152-6e82-4d93-a596-ddce91e6bfd0",
+      "source": {
+        "name": "Kinoa Lists - Recipe & Grocery Shopping Web-App",
+        "description": "This app started as a hobby project but quickly turned out to solve a meaningful problem. The likes of “Kitchen Stories” and “Capt’n Cook” have since invented their own solutions and businesses around this idea. But it was still a precious experience and cool end result.",
+        "kpis": "",
+        "experiences": [
+          "Backend-Development",
+          "Conception",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "UI-Design",
+          "Usability"
+        ],
+        "status": "On Hold",
+        "startDate": "2018-05-01",
+        "endDate": "2018-09-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Create an interactive experience"],
+        "Delivery Stages": [],
+        "Project Domains": ["Personal productivity"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Recipe and grocery-list application that began as a hobby project.",
+        "Delivery Evidence": "The description reports a useful app but no adoption or business metric. Similar later products are not evidence of this project's commercial success.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal scope, what shipped, actual usage and whether the service is still maintained.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "153487a4-4b86-48b2-998c-3675a85bfd8e",
+      "source": {
+        "name": "Web Strategy Toolbox Web-App",
+        "description": "This project is actually a secret beta. Don’t visit it and create an account. You will not be able to control, scrape and manage your complete website. And definitely not gain knowledge about conversion rate optimization…",
+        "kpis": "Streamlined brainstorming, conception, prioritization and A/B-test controlling",
+        "experiences": [
+          "A/B-Testing",
+          "Backend-Development",
+          "Business Administration",
+          "Conception",
+          "Data Aggregation",
+          "Data Analysis",
+          "Expert Research",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Leadership",
+          "Online-Marketing",
+          "Prototyping",
+          "SEO",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "Web-Scraping"
+        ],
+        "status": "On Hold",
+        "startDate": "2020-03-01",
+        "endDate": "2021-07-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Build internal tooling",
+          "Make data actionable",
+          "Improve conversion"
+        ],
+        "Delivery Stages": ["Prototype"],
+        "Project Domains": ["Marketing and research"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Beta toolbox for website analysis, prioritization and A/B-test management.",
+        "Delivery Evidence": "The source calls this a beta and uses playful marketing copy. It does not establish production adoption or quantified optimization outcomes.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): Streamlined brainstorming, conception, prioritization and A/B-test controlling\nThis describes a capability rather than a measured buyer outcome.",
+        "Outcome Basis": "Capability only",
+        "Evidence Gaps": "Confirm exact implemented workflows, personal ownership, availability and what was evaluated beyond the beta.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "129bf87c-e0d6-4217-9c16-c320eeb0e29b",
+      "source": {
+        "name": "Zooplus E-Food - E-Commerce App Interface",
+        "description": "As part of a study collaboration with Zooplus we (me and four others) conceptualized and managed a startup-like project for an e-food-online-shop app comparable to Amazon Fresh (for pets). \nWe had almost no restrictions, structured and organized with state of the art tools and prototyped rapidly with Axure and eye tracking and other usability tests.",
+        "kpis": "",
+        "experiences": [
+          "Consulting",
+          "Conversion Rate Optimization",
+          "Expert Research",
+          "Leadership",
+          "UI-Design",
+          "User Research",
+          "User Testing"
+        ],
+        "status": "Completed",
+        "startDate": "2018-04-01",
+        "endDate": "2018-10-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Validate a product idea",
+          "Improve a complex interface"
+        ],
+        "Delivery Stages": ["Discovery", "Prototype"],
+        "Project Domains": ["Education", "E-commerce"],
+        "AI Usage": [],
+        "Personal Contribution": "Participated in a five-person team that conceptualized and managed the study project; individual responsibilities remain unspecified.",
+        "Case Context": "Five-person university collaboration exploring an online pet-food shopping concept with prototypes and usability testing.",
+        "Delivery Evidence": "The source explicitly describes Axure prototypes, eye tracking and usability tests. It does not establish a commercial Zooplus launch.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Identify personal research/design/management responsibilities and concrete usability findings; keep this identified as a student collaboration.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "afd09462-172e-40a9-8011-d2f6af5f5859",
+      "source": {
+        "name": "Bags’n Boxes Online-Shop Packaging Configurator",
+        "description": "This collaboration on Interface Design, API Integration in CRM System and Delivery Pipelines was my first large-scale project as an employee.\nIt aimed to redesign and simplify packaging product configuration flows and therefore increase conversion.\nAs the team's frontend and e-commerce specialist my main mission was layering interface design and functionality onto a given Shopware theme.",
+        "kpis": "+35% packaging configurator conversion rate",
+        "experiences": [
+          "Backend-Development",
+          "Behaviour Psychology",
+          "Conversion Rate Optimization",
+          "Expert Research",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "UI-Design",
+          "Usability"
+        ],
+        "status": "Completed",
+        "startDate": "2016-10-01",
+        "endDate": "2019-01-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Improve a complex interface",
+          "Improve conversion",
+          "Integrate business systems",
+          "Join an existing team"
+        ],
+        "Delivery Stages": ["Improvement"],
+        "Project Domains": ["E-commerce"],
+        "AI Usage": [],
+        "Personal Contribution": "Served as the team's frontend and e-commerce specialist, implementing interface design and functionality on an existing Shopware theme.",
+        "Case Context": "Packaging configurator work involving interface design, CRM API integration and delivery pipelines.",
+        "Delivery Evidence": "The source specifies a team role and reports conversion improvement; it does not imply sole ownership of the whole platform.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): +35% packaging configurator conversion rate\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal responsibility for CRM integration and pipelines, production scope, and conversion baseline, timeframe and measurement source.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "30f6e7c0-b762-4f33-adf0-2f433ec05090",
+      "source": {
+        "name": "Dres. Stähler - Dentist Brand Website",
+        "description": "This dentist website was my first paid side-project during my studies. It was a basic brand website, but I was already able to implement many learnings around usability and consumer psychology in this project.",
+        "kpis": "+ 60% more traffic / +10% more calls",
+        "experiences": [
+          "Backend-Development",
+          "Behaviour Psychology",
+          "Conception",
+          "Consulting",
+          "Conversion Rate Optimization",
+          "Expert Research",
+          "Frontend-Development",
+          "Online-Marketing",
+          "UX-Design"
+        ],
+        "status": "Completed",
+        "startDate": "2017-08-01",
+        "endDate": "2017-09-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Create a public website", "Improve conversion"],
+        "Delivery Stages": [],
+        "Project Domains": ["Healthcare"],
+        "AI Usage": [],
+        "Personal Contribution": "Delivered a paid website side project during studies; the source does not break down design, implementation and maintenance responsibilities.",
+        "Case Context": "Paid dentist brand-website project applying usability and consumer-psychology principles.",
+        "Delivery Evidence": "A website and traffic/call figures are reported. The source does not establish causal attribution or measurement methodology.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): + 60% more traffic / +10% more calls\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal scope, dates, traffic/call data source and whether increases can be attributed to the website changes.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "10bcfe51-e86d-44dc-a247-0c542f9996be",
+      "source": {
+        "name": "Kleiner als Raute - Clothing Design & E-Commerce",
+        "description": "Kleiner als Raute was my first entrepreneurial endeavour. It started as a fun project, creating clothes for my friends but then created more demand than expected. So I invited two friends and took the project to a new level with various marketing and sales channels and production pipelines. We were young, and decided for ourselves at some point, that this project takes up to much time and that we would like to engage in new directions.",
+        "kpis": "",
+        "experiences": [
+          "A/B-Testing",
+          "Behaviour Psychology",
+          "Business Administration",
+          "Conversion Rate Optimization",
+          "Data Analysis",
+          "Fashion Design",
+          "Finance",
+          "Frontend-Development",
+          "Leadership",
+          "Online-Marketing",
+          "UI-Design",
+          "UX-Design"
+        ],
+        "status": "Completed",
+        "startDate": "2016-07-01",
+        "endDate": "2018-01-01"
+      },
+      "fields": {
+        "Buyer Needs": [],
+        "Delivery Stages": [],
+        "Project Domains": ["E-commerce"],
+        "AI Usage": [],
+        "Personal Contribution": "Initiated the venture and later brought in two friends, as stated in the project account.",
+        "Case Context": "Clothing venture that expanded from making products for friends into sales channels and production pipelines.",
+        "Delivery Evidence": "This demonstrates entrepreneurial experience. The source does not establish a specific software-delivery scope; the venture was later stopped.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Separate clothing/business responsibilities from software work and clarify team roles and any approved business outcomes.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "23b40e8e-626f-4fcf-9c04-83684b404adb",
+      "source": {
+        "name": "Mobile.de Financing Conversion Rate Optimization",
+        "description": "As part of KonversionsKRAFT, mobile.de was my most impressive experience. I was fortunate enough to consult the financing unit, with over 90 members on conversion rate optimization, A/B-Testing and consumer psychology, as well as implementing test pipelines with my agency-team. Our tests were able to drive conversion rate for car financing sign ups to over 150%.",
+        "kpis": "+90% Conversion Rate (sig.) on Car Financing Rate Sign-Ups in one test / over +150% in total",
+        "experiences": [
+          "Behaviour Psychology",
+          "Business Administration",
+          "Conception",
+          "Consulting",
+          "Conversion Rate Optimization",
+          "Data Analysis",
+          "Data Visualization",
+          "Expert Research",
+          "Finance",
+          "Leadership",
+          "Online-Marketing",
+          "Prototyping",
+          "Reporting",
+          "Site Audit",
+          "UI-Design",
+          "Usability",
+          "User Testing",
+          "Workshop"
+        ],
+        "status": "Completed",
+        "startDate": "2019-03-01",
+        "endDate": "2020-09-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Improve conversion",
+          "Make data actionable",
+          "Join an existing team"
+        ],
+        "Delivery Stages": ["Improvement"],
+        "Project Domains": ["Automotive", "Marketing and research"],
+        "AI Usage": [],
+        "Personal Contribution": "Consulted the financing unit through KonversionsKRAFT and implemented test pipelines with the agency team.",
+        "Case Context": "Financing-signup optimization through consulting, consumer psychology and A/B-testing pipelines at mobile.de.",
+        "Delivery Evidence": "Reported experiment outcomes belong to a team engagement; the source does not support sole attribution or independently verify the uplift.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): +90% Conversion Rate (sig.) on Car Financing Rate Sign-Ups in one test / over +150% in total\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal research/design/implementation scope, dates and experiment evidence; clarify relative uplift versus resulting conversion level and single-test versus cumulative figures.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "b6ea7e71-2e97-42f2-8644-a57545c20d59",
+      "source": {
+        "name": "ROLLT! - Bundeswehr Logistics Prototype Hackathon Team Lead ",
+        "description": "This workshop / think tank / hackathon for the Bundeswehr (German army) was aimed at innovating new digital products for their logistics. In close collaboration with our soldiers we managed to become prize-winners and the team’s idea was rewarded with being implemented for the whole Bundeswehr.",
+        "kpis": "1st prize of the annual German Army Logistics Innovation Challenge achieved",
+        "experiences": [
+          "Conception",
+          "Frontend-Development",
+          "Geospatial Visualization",
+          "Leadership",
+          "Prototyping",
+          "UI-Design",
+          "User Research",
+          "Workshop"
+        ],
+        "status": "Completed",
+        "startDate": "2022-06-01",
+        "endDate": "2022-07-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Validate a product idea",
+          "Deliver an industry-specific workflow"
+        ],
+        "Delivery Stages": ["Discovery", "Prototype"],
+        "Project Domains": ["Logistics and maritime", "Public sector"],
+        "AI Usage": [],
+        "Personal Contribution": "The project title identifies a hackathon team-lead role; the narrative describes collaboration with soldiers and a prize-winning team idea.",
+        "Case Context": "Logistics innovation workshop and hackathon conducted with Bundeswehr users.",
+        "Delivery Evidence": "The source reports first prize and says the idea was selected for wider implementation. It does not establish Alexander's ownership of a subsequent production rollout.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): 1st prize of the annual German Army Logistics Innovation Challenge achieved\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm actual team-lead responsibilities, prototype deliverables, prize evidence and whether later implementation involved you.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "d53554cf-ec81-4e1c-a46a-6da27179ba7c",
+      "source": {
+        "name": "E-Smart Control - EV Charging Simulation & Planning Interface",
+        "description": "This study project with four of my colleagues was aimed at creating sustainability through innovation. We created an imaginary product that enables consumers to track, plan and control their solar energy incomes and EV charging outputs with different profiles. We built a custom product design and mobile UI to convey the idea and sell it to a fictional jury.",
+        "kpis": "",
+        "experiences": [
+          "Conception",
+          "Expert Research",
+          "Frontend-Development",
+          "User Research",
+          "User Testing"
+        ],
+        "status": "Completed",
+        "startDate": "2016-03-01",
+        "endDate": "2016-10-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Validate a product idea",
+          "Create an interactive experience"
+        ],
+        "Delivery Stages": ["Discovery", "Prototype"],
+        "Project Domains": ["Education", "Sustainability", "Automotive"],
+        "AI Usage": [],
+        "Personal Contribution": "Worked with four study colleagues on the product concept and mobile UI; individual responsibilities remain unspecified.",
+        "Case Context": "Five-person study concept for visualizing solar-energy income and EV-charging output.",
+        "Delivery Evidence": "The source explicitly calls the product imaginary and the jury fictional. Do not describe it as a shipped energy-control system.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Identify personal design/code/research work, what was interactive and any real user testing beyond the fictional presentation.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "9d4999cb-5ee7-4fc3-a99e-9ee7fbadce5d",
+      "source": {
+        "name": "Burger Loop - Interactive Programming Tutorial",
+        "description": "Burger Loop was a tutor project alongside one colleague for our university to explain coding basics. We used a burger to get it down a little funnier. It involved stepping back and re-thinking previously learned knowledge with a naive approach",
+        "kpis": "30% higher success rate in entry level coding questionnaires after completion",
+        "experiences": [
+          "Behaviour Psychology",
+          "Conception",
+          "Consulting",
+          "Expert Research",
+          "Frontend-Development",
+          "Leadership",
+          "UI-Design",
+          "UX-Design",
+          "Usability"
+        ],
+        "status": "Completed",
+        "startDate": "2018-08-01",
+        "endDate": "2019-08-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Create an interactive experience",
+          "Make data actionable"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Education"],
+        "AI Usage": [],
+        "Personal Contribution": "Created the university tutoring project with one colleague; individual implementation and teaching responsibilities remain unspecified.",
+        "Case Context": "University tutorial using a burger-building metaphor to explain programming basics.",
+        "Delivery Evidence": "The reported questionnaire improvement lacks a baseline, sample and method; it is not independently verified learning-outcome evidence.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): 30% higher success rate in entry level coding questionnaires after completion\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal contribution, learning evaluation design, sample size, baseline and timeframe for the reported improvement.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "f139765e-8589-4978-b7fd-86f8bfefc376",
+      "source": {
+        "name": "Nautic Internet Brand Website",
+        "description": "Branding our open-source efforts was part of the strategy to create an “A-Team meets Rocket Internet“ like software development team for the maritime industry. So far, we still have to find funding to further dive into this endeavour.",
+        "kpis": "",
+        "experiences": [
+          "Business Administration",
+          "Frontend-Development",
+          "Prototyping",
+          "UI-Design"
+        ],
+        "status": "Completed",
+        "startDate": "2023-10-01",
+        "endDate": "2023-11-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Create a public website"],
+        "Delivery Stages": [],
+        "Project Domains": ["Logistics and maritime", "Brand and portfolio"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Brand website supporting an open-source maritime-software initiative.",
+        "Delivery Evidence": "The source describes branding and a funding goal, not an established funded software company or proven operational outcome.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal design/code scope, launch status at the time and what was achieved beyond the brand site.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "94b5c46b-abd4-4eec-9a4a-19a07654db84",
+      "source": {
+        "name": "Public Searoutes - Sea Navigation Web-App",
+        "description": "Public Searoutes was an open-source endeavor with the primary objective of offering a free and sustainable alternative to commercial routing services. Our core belief is in innovative problem-solving. In the context of today's highly interconnected world, where global logistics play an indispensable role in our daily lives, we, two developers from the maritime industry, are committed to making shipping more efficient and climate friendly.",
+        "kpis": ">1000 route calculations / month free of charge",
+        "experiences": [
+          "Backend-Development",
+          "Conception",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Geospatial Visualization",
+          "UI-Design",
+          "UX-Design",
+          "Usability"
+        ],
+        "status": "Completed",
+        "startDate": "2023-08-01",
+        "endDate": "2023-10-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Deliver an industry-specific workflow",
+          "Make data actionable"
+        ],
+        "Delivery Stages": ["Production"],
+        "Project Domains": ["Logistics and maritime"],
+        "AI Usage": [],
+        "Personal Contribution": "Developed in a two-person maritime-industry team; individual component ownership remains unspecified.",
+        "Case Context": "Open-source maritime route-planning alternative to commercial routing services.",
+        "Delivery Evidence": "The portfolio reports over one thousand monthly route calculations, supporting historical use but not verified accuracy or quantified climate impact.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): >1000 route calculations / month free of charge\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal scope, routing/data sources, measurement dates and analytics; distinguish routing assistance from certified navigational safety.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "b77109b3-803c-4132-a07b-44b9b9ccc5df",
+      "source": {
+        "name": "NuMobility - Mobility Database & Blog",
+        "description": "NuMobility was ideated in response to the wave of EVs popping up on the market, after Tesla introduced their low-price models. We pivoted our focus to mobility in general though, on the one hand because of the large competition on EV marketing and on the other hand, because our focus is to help people decide which way of transportation is their best compromise between flexibility and sustainability",
+        "kpis": ">1000 users per month staying on site longer than 3 minutes",
+        "experiences": [
+          "A/B-Testing",
+          "AI Engineering",
+          "Artificial Intelligence",
+          "Backend-Development",
+          "Behaviour Psychology",
+          "Business Administration",
+          "Conversion Rate Optimization",
+          "Data Aggregation",
+          "Data Analysis",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Leadership",
+          "Online-Marketing",
+          "Prompt Engineering",
+          "Prototyping",
+          "SEO",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "Web-Scraping"
+        ],
+        "status": "Completed",
+        "startDate": "2022-04-01",
+        "endDate": "2023-08-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Make data actionable", "Create a public website"],
+        "Delivery Stages": ["Production"],
+        "Project Domains": ["Automotive", "Sustainability"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Mobility database and blog helping readers compare transport choices.",
+        "Delivery Evidence": "The source reports monthly engaged users. It does not document the exact personal role, current operations or any delivered AI feature.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): >1000 users per month staying on site longer than 3 minutes\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm personal data/design/code ownership, analytics timeframe and definition of users staying longer than three minutes, and current maintenance status.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "7c7ab543-4c3c-4744-b070-bf3c030d5d6a",
+      "source": {
+        "name": "Gemeinde-App - Local Tourism & Public Information App",
+        "description": "With Gemeinde-App (engl. Commune-App) we enable communes to target local tourists as well as the residents with easy to create recreational and informative tours around the region. Providing easy interfaces to interact with app users, communes are able to improve their tourism outcomes and at the same time reduce their paper and work resources.",
+        "kpis": "",
+        "experiences": [
+          "Artificial Intelligence",
+          "Behaviour Psychology",
+          "Business Administration",
+          "Conversion Rate Optimization",
+          "Data Aggregation",
+          "Expert Research",
+          "Finance",
+          "Frontend-Development",
+          "Geospatial Visualization",
+          "Native Development",
+          "Prototyping",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "Workshop"
+        ],
+        "status": "Completed",
+        "startDate": "2023-12-01",
+        "endDate": "2024-07-31"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Deliver an industry-specific workflow",
+          "Create an interactive experience"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Tourism and travel", "Public sector"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Local-tourism and public-information app enabling communes to create regional tours and communicate with visitors.",
+        "Delivery Evidence": "The description states intended tourism and resource-saving benefits without adoption numbers or measured outcomes.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal responsibilities, municipalities actually using it, shipped platforms and whether reduced paper/work was measured.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "765dfa64-20ea-431b-a507-fd90cf18a015",
+      "source": {
+        "name": "PortCheck - Port Administration Web-App",
+        "description": "PortCheck / PierCheck (working titles) tried to rethink processes in a port environment by providing data-based berthing and planning recommendations. We aggregated and compared various data points (from AIS to publicly available schedule data) to make estimations about CO2 emissions, late or early arrivals and more.",
+        "kpis": "+15 different instant charts instead",
+        "experiences": [
+          "3D",
+          "Backend-Development",
+          "Data Aggregation",
+          "Data Analysis",
+          "Data Visualization",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "Geospatial Visualization",
+          "Prototyping",
+          "UI-Design",
+          "UX-Design",
+          "Usability"
+        ],
+        "status": "On Hold",
+        "startDate": "2023-06-01",
+        "endDate": "2024-01-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Make data actionable",
+          "Deliver an industry-specific workflow",
+          "Validate a product idea"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Logistics and maritime"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Port-planning interface aggregating AIS and schedule data to estimate arrivals and emissions.",
+        "Delivery Evidence": "The source describes estimates and charts; it does not establish validated predictive performance, realized emissions savings or a production port deployment.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): +15 different instant charts instead\nThis describes a capability rather than a measured buyer outcome.",
+        "Outcome Basis": "Capability only",
+        "Evidence Gaps": "Confirm personal contribution, prototype versus production scope, estimated versus measured outputs and prediction validation.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "e315ebfb-d36f-4b62-8f7c-f58eaacf7806",
+      "source": {
+        "name": "Playlist-Stats - Spotify Playlist Metadata Charts Web-App",
+        "description": "With Playlist-Stats you can find interesting facts about the music inside your Spotify playlists.\nUsing the Spotify API and some chart-magic, this app lets you dig deeper inside your musical taste. It automatically analyses the playlists of your choice for top artists, release date distribution and more.",
+        "kpis": "",
+        "experiences": [
+          "Conception",
+          "Data Aggregation",
+          "Data Analysis",
+          "Data Visualization",
+          "Frontend-Development",
+          "UI-Design",
+          "Usability",
+          "User Testing"
+        ],
+        "status": "Completed",
+        "startDate": "2024-02-16",
+        "endDate": "2024-02-19"
+      },
+      "fields": {
+        "Buyer Needs": ["Make data actionable", "Integrate business systems"],
+        "Delivery Stages": [],
+        "Project Domains": ["Entertainment"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Spotify API integration visualizing playlist artists, release dates and other metadata.",
+        "Delivery Evidence": "The source supports API integration and data visualization; automatic analysis here does not establish AI or measured customer value.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal scope, operation/adoption and whether there are technical or usage results suitable for a case study.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "f9cc2539-c940-4864-8ff0-8424ed0d9fb9",
+      "source": {
+        "name": "Playlist-Canvas - Spotify Album Art Collage Creator Web-App",
+        "description": "Playlist-Canvas lets you create collages from your Spotify Album Art the way you want it. \nJust select your playlist and configure, drag and drop, rotate and align your artwork. Or just place them randomly. No more need to google and download every single artwork, just edit it inside the tool and download the finished collage.",
+        "kpis": "",
+        "experiences": [
+          "Conception",
+          "Frontend-Development",
+          "UI-Design",
+          "Usability",
+          "User Testing"
+        ],
+        "status": "Completed",
+        "startDate": "2024-02-02",
+        "endDate": "2024-02-12"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Create an interactive experience",
+          "Integrate business systems"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Entertainment"],
+        "AI Usage": [],
+        "Personal Contribution": "",
+        "Case Context": "Spotify artwork editor allowing drag, rotation, arrangement and export of album-art collages.",
+        "Delivery Evidence": "The source supports an interactive editor and export workflow, without measured usage or time-saving data.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal architecture/design/implementation scope, usage and whether any performance or workflow improvement was measured.",
+        "Case Review": "Source-backed draft"
+      }
+    },
+    {
+      "id": "153f6668-f4d6-490a-8345-0b999b35305a",
+      "source": {
+        "name": "Seabo - Maritime Chartering & Logistics Web-App ",
+        "description": "With seabo, the international maritime industry leaps one step further into digitalization.\nThe app provides several useful features around voyage calculation, competitor analysis, route monitoring and negotiation.\nBy fostering a feature-rich and intuitive UI for this niche industry, this project enables charterer brokers to improve their efficiency and plan ahead with confidence.",
+        "kpis": ">50 inherited usability problems eliminated and design system introduced\n7 user journeys (re-)designed from scratch",
+        "experiences": [
+          "AI Engineering",
+          "Animation",
+          "Artificial Intelligence",
+          "Backend-Development",
+          "Behaviour Psychology",
+          "CI/CD",
+          "Conception",
+          "Consulting",
+          "Conversion Rate Optimization",
+          "Data Analysis",
+          "Data Visualization",
+          "Frontend-Development",
+          "Geospatial Visualization",
+          "Leadership",
+          "Prototyping",
+          "Site Audit",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "User Testing",
+          "Workshop"
+        ],
+        "status": "In Progress",
+        "startDate": "2021-07-01",
+        "endDate": "2026-07-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Improve a complex interface",
+          "Make data actionable",
+          "Deliver an industry-specific workflow",
+          "Join an existing team"
+        ],
+        "Delivery Stages": ["Production", "Improvement"],
+        "Project Domains": ["Logistics and maritime"],
+        "AI Usage": [],
+        "Personal Contribution": "Contributed UX/UI design and frontend development, plus some backend work, within a team of five to ten developers.",
+        "Case Context": "Maritime chartering interface covering voyage calculation, competitor analysis, route monitoring and negotiation.",
+        "Delivery Evidence": "Owner confirmed several enterprise customers and that his engagement ended in July 2026. The old May 2024 end date was corrected using month-level precision. Existing portfolio text reports usability improvements and a design system; current involvement is not claimed.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): >50 inherited usability problems eliminated and design system introduced\n7 user journeys (re-)designed from scratch\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Clarify how usability issues were counted and any approved enterprise adoption details. Personal contribution, enterprise usage and engagement end month were owner-confirmed; underlying outcome records were not reviewed.",
+        "Case Review": "Source-backed draft",
+        "Ownership Model": "Team contributor",
+        "Contribution Basis": "Owner confirmation",
+        "Maintenance Mode": "Engagement ended"
+      },
+      "confirmations": {
+        "personalContribution": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Seabo: UX, UI, frontend and a bit backend in a team of 5-10 devs"
+        },
+        "deliveryStage": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Seabo: several enterprise customers"
+        },
+        "maintenance": {
+          "date": "2026-11-14",
+          "source": "Direct owner response in this conversation",
+          "quote": "Mainly konfig and conversion-y, others occasionally. Seabo finished 7/26"
+        }
+      }
+    },
+    {
+      "id": "510f3492-1e77-4788-8ef5-73754af2d2e2",
+      "source": {
+        "name": "Sophisticates Brand Website",
+        "description": "Sophisticates offers Digital Transformation by planning and implementing custom business software. I offered their website a digital transformation.",
+        "kpis": "",
+        "experiences": [
+          "Backend-Development",
+          "Consulting",
+          "Frontend-Development",
+          "Fullstack-Development",
+          "SEO",
+          "UI-Design",
+          "Usability"
+        ],
+        "status": "Completed",
+        "startDate": "2019-01-01",
+        "endDate": "2019-03-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Create a public website"],
+        "Delivery Stages": [],
+        "Project Domains": ["Brand and portfolio"],
+        "AI Usage": [],
+        "Personal Contribution": "The first-person description attributes the website work to Alexander; the exact delivery scope is unspecified.",
+        "Case Context": "Brand-website work for a custom-business-software consultancy.",
+        "Delivery Evidence": "The description supports a website engagement, not measurable digital-transformation outcomes for the consultancy's clients.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm design/implementation scope, launch and handover, and any substantiated website outcome.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "cdd10e91-b9ef-4232-8378-14db1a67bc15",
+      "source": {
+        "name": "Fuerst.one E-Commerce Playground",
+        "description": "This website was more or less my first big project. It was started during my study at THWS and in the beginning it was planned to only inhabit the most basic infos. As my study continued and I learned more about professional online businesses, I also included more ways to project that knowledge onto my website as part of my hobby. In the end the project turned out far more feature-rich as I would have imagined and the basic principles I show there still stand to this day.",
+        "kpis": "",
+        "experiences": [
+          "A/B-Testing",
+          "Backend-Development",
+          "Behaviour Psychology",
+          "Conception",
+          "Conversion Rate Optimization",
+          "Data Analysis",
+          "Expert Research",
+          "Frontend-Development",
+          "Online-Marketing",
+          "SEO",
+          "UI-Design",
+          "UX-Design",
+          "Usability",
+          "User Research"
+        ],
+        "status": "Completed",
+        "startDate": "2015-07-01",
+        "endDate": "2016-08-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Create a public website",
+          "Create an interactive experience"
+        ],
+        "Delivery Stages": [],
+        "Project Domains": ["Brand and portfolio", "Education"],
+        "AI Usage": [],
+        "Personal Contribution": "Started and expanded the website during studies, applying growing knowledge of professional online businesses.",
+        "Case Context": "Personal portfolio and e-commerce learning playground developed during studies.",
+        "Delivery Evidence": "The source describes a learning and demonstration project; it does not establish client-commerce results or current availability of the retired portfolio host.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm technical scope and any demonstrable experiments; distinguish educational examples from commercial client outcomes.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "482c21e0-0e0d-436b-8858-a338875ee4bd",
+      "source": {
+        "name": "FAAREN Car Subscription Configurator UI",
+        "description": "Working for FAAREN, which was just founded by study colleagues a few weeks ago, was an inspiring experience.\nBeing part of an innovative and focused team while in their early stages was great for experiencing an growth mindset, being part of implementing new processes and prioritization yourself and gaining new tools. Embracing rapid prototyping and design thinking mindsets made us reach finish line in record time.",
+        "kpis": "250hrs for complete web frontend",
+        "experiences": [
+          "A/B-Testing",
+          "Conception",
+          "Consulting",
+          "Frontend-Development",
+          "UI-Design",
+          "Usability"
+        ],
+        "status": "Completed",
+        "startDate": "2018-09-01",
+        "endDate": "2019-03-01"
+      },
+      "fields": {
+        "Buyer Needs": ["Launch a new product", "Improve a complex interface"],
+        "Delivery Stages": ["Prototype"],
+        "Project Domains": ["Automotive", "E-commerce"],
+        "AI Usage": [],
+        "Personal Contribution": "Worked as part of the early FAAREN team; individual responsibility beyond the reported frontend work remains unspecified.",
+        "Case Context": "Early-stage car-subscription frontend built in a startup team using rapid prototyping and design thinking.",
+        "Delivery Evidence": "The source reports a complete frontend and rapid prototyping. The 250-hour figure is delivery effort, not proof of commercial launch or a comparative speed improvement.",
+        "Outcome Evidence": "Existing portfolio KPI (self-reported): 250hrs for complete web frontend\nNo independent measurement source, baseline or complete methodology was reviewed for this backfill.",
+        "Outcome Basis": "Self-reported result",
+        "Evidence Gaps": "Confirm sole versus shared frontend ownership, design/architecture scope, whether it launched, and what was included in the 250 hours.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    },
+    {
+      "id": "a2e00fd0-11cd-4128-ad63-76c98bae2010",
+      "source": {
+        "name": "Druckpanda Sustainability Certificate Shopware Plugin",
+        "description": "A study project on sustainability in a team of four. Made available as a Shopware plugin, we built a flow for online shoppers to buy a CO2 certificate alongside their print product. The focus here was on the technical and project management side, which we seemed to handle quite well, landing on the second place.",
+        "kpis": "",
+        "experiences": [
+          "Backend-Development",
+          "Conception",
+          "Expert Research",
+          "Frontend-Development"
+        ],
+        "status": "Completed",
+        "startDate": "2018-10-01",
+        "endDate": "2019-02-01"
+      },
+      "fields": {
+        "Buyer Needs": [
+          "Integrate business systems",
+          "Validate a product idea"
+        ],
+        "Delivery Stages": ["Prototype"],
+        "Project Domains": ["Education", "E-commerce", "Sustainability"],
+        "AI Usage": [],
+        "Personal Contribution": "Participated in a four-person study team with a technical and project-management focus; individual responsibilities remain unspecified.",
+        "Case Context": "Four-person study project integrating optional CO2 certificates into a Shopware checkout flow.",
+        "Delivery Evidence": "The source reports a plugin and second place in the study project. It does not establish commercial adoption or verified environmental impact.",
+        "Outcome Evidence": "No outcome is recorded in the existing KPI field. Product descriptions and intended benefits are not treated as measured results.",
+        "Outcome Basis": "No outcome recorded",
+        "Evidence Gaps": "Confirm personal implementation/management scope, plugin deployment and the competition context; avoid treating purchased certificates as verified emissions reductions.",
+        "Case Review": "Source-backed draft",
+        "Contribution Basis": "Existing portfolio account"
+      }
+    }
+  ],
+  "sourceCorrections": [
+    {
+      "id": "153f6668-f4d6-490a-8345-0b999b35305a",
+      "property": "End Date",
+      "before": "2024-05-01",
+      "after": "2026-07-01",
+      "precision": "month",
+      "confirmationDate": "2026-11-14",
+      "quote": "Seabo finished 7/26",
+      "normalization": "First day represents the owner-confirmed end month; exact end day was not supplied."
+    }
+  ]
+}
