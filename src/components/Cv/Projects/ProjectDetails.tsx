@@ -12,6 +12,7 @@ import { ProjectScreenshots } from "./ProjectScreenshots";
 import { ProjectMetaTable } from "./ProjectMetaTable";
 import { getJsxFormattedTextFromTextBlock } from "./getJsxFormattedTextFromTextBlock";
 import { getProjectLogoSources } from "./getProjectLogoSources";
+import { ProjectLogo } from "./ProjectLogo";
 import { colors } from "./colors";
 import { cn } from "@/lib/utils";
 
@@ -71,15 +72,7 @@ export const ProjectDetails = ({
             {projectType}
           </span>
           {primaryLogo && (
-            <div className="flex h-9 shrink-0 items-center justify-center border border-white/30 bg-white/20 px-3 text-neutral-200">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={primaryLogo}
-                alt={`${name} logo`}
-                className="h-5 w-auto object-contain grayscale [mix-blend-mode:screen]"
-                loading="lazy"
-              />
-            </div>
+            <ProjectLogo src={primaryLogo} alt={`${name} logo`} size="detail" />
           )}
         </div>
         {heading ?? (

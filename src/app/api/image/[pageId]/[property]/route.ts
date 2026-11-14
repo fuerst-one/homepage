@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import { flattenNotionProperty } from "@/server/notion/utils/flattenNotionObject";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { createNotionFetch } from "@/server/notion/createNotionFetch";
+import { getLegacyLogoPath } from "@/server/notion/notionImageProxy";
 
 const URL_CACHE_TTL_SECONDS = 50 * 60;
 const BYTES_CACHE_MAX_AGE_SECONDS = 60 * 60;
@@ -67,6 +68,16 @@ export const GET = async (
   ): Promise<FetchImageResult> => {
     const url = await resolver(pageId, property, index);
     if (!url) return { url: null, response: null };
+    const localPath = getLegacyLogoPath(url);
+    if (localPath) {
+      return {
+        url,
+        response: new NextResponse(null, {
+          status: 307,
+          headers: { Location: localPath },
+        }),
+      };
+    }
     const response = await fetch(url, { cache: "no-store" });
     return { url, response };
   };
@@ -98,6 +109,7 @@ export const GET = async (
   }
 
   const upstream = attempt.response;
+  if (upstream?.status === 307) return upstream;
   if (!upstream || !upstream.ok || !upstream.body) {
     return NextResponse.json(
       { error: "Upstream image fetch failed" },

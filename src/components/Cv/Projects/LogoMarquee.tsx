@@ -1,6 +1,7 @@
 import { CvProject } from "@/server/notion/getCvProjects";
 import { getProjectLogoSources } from "./getProjectLogoSources";
 import uniqBy from "lodash/uniqBy";
+import { ProjectLogo } from "./ProjectLogo";
 
 export const LogoMarquee = ({ projects }: { projects: CvProject[] }) => {
   const logos = projects.flatMap((project) =>
@@ -34,19 +35,12 @@ export const LogoMarquee = ({ projects }: { projects: CvProject[] }) => {
         }}
       >
         {uniqueLogos.map((logo, index) => (
-          <span
+          <ProjectLogo
             key={`${logo.src}-${index}`}
-            className="flex h-8 items-center"
-            aria-label={logo.alt}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={logo.src}
-              alt={logo.alt}
-              className="h-full w-auto max-w-[9rem] object-contain opacity-90 grayscale [mix-blend-mode:screen]"
-              loading="lazy"
-            />
-          </span>
+            src={logo.src}
+            alt={logo.alt}
+            size="marquee"
+          />
         ))}
       </div>
     </div>

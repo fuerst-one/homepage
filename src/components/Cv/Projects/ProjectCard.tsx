@@ -13,6 +13,7 @@ import { FaExternalLinkAlt } from "@react-icons/all-files/fa/FaExternalLinkAlt";
 import { FaChartLine } from "@react-icons/all-files/fa/FaChartLine";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 import { getProjectLogoSources } from "./getProjectLogoSources";
+import { ProjectLogo } from "./ProjectLogo";
 import { colors } from "./colors";
 import { useProjectFocusStore } from "./projectFocusStore";
 import { cn } from "@/lib/utils";
@@ -45,7 +46,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const openDialog = () => setFocused(id);
 
   return (
-    <article className="group relative grid grid-cols-1 gap-5 border border-white/30 bg-black/85 p-5 transition hover:border-white md:grid-cols-[14rem_1fr] md:gap-6">
+    <article className="group relative grid grid-cols-1 gap-5 border border-white/30 bg-black/85 p-5 transition hover:border-white md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
       <button
         type="button"
         onClick={openDialog}
@@ -56,7 +57,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
         }
         className="absolute inset-0 z-0 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white print:hidden"
       />
-      <div className="pointer-events-none relative z-10 flex flex-col gap-3">
+      <div className="pointer-events-none relative z-10 flex min-w-0 flex-col gap-3">
         <Thumbnail
           src={thumbnail}
           projectName={name}
@@ -96,7 +97,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
           </div>
         )}
       </div>
-      <div className="pointer-events-none relative z-10 flex flex-col gap-3">
+      <div className="pointer-events-none relative z-10 flex min-w-0 flex-col gap-3">
         <header className="space-y-1">
           <div className="flex items-center justify-between gap-3">
             <span
@@ -115,15 +116,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
               {projectType}
             </span>
             {primaryLogo && (
-              <div className="flex h-5 shrink-0 items-center justify-center border border-white/30 bg-white/20 px-2 text-neutral-200 print:hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={primaryLogo}
-                  alt={`${name} logo`}
-                  className="h-3 w-auto object-contain grayscale [mix-blend-mode:screen]"
-                  loading="lazy"
-                />
-              </div>
+              <ProjectLogo src={primaryLogo} alt={`${name} logo`} />
             )}
           </div>
           <h3 className="text-2xl font-semibold text-white">
