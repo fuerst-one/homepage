@@ -84,7 +84,7 @@ export async function Layout({
           </div>
           <nav
             aria-label={locale === "de" ? "Hauptnavigation" : "Main navigation"}
-            className="flex flex-wrap gap-6 text-xs uppercase tracking-[0.2em]"
+            className="flex flex-wrap gap-6 text-xs uppercase tracking-[0.2em] [&>a]:flex [&>a]:items-center"
           >
             <Link href="/cv" className="hover:text-white">
               CV
@@ -104,7 +104,9 @@ export async function Layout({
             <Link href="/services/ai-automation" className="hover:text-white">
               {locale === "de" ? "KI & Automatisierung" : "AI & automation"}
             </Link>
-            <LanguageSwitcher availableLocales={availableLocales} />
+            <div className="md:ml-auto">
+              <LanguageSwitcher availableLocales={availableLocales} />
+            </div>
           </nav>
           <div className="h-px w-full bg-white/20" />
         </header>
