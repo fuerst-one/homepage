@@ -2,6 +2,7 @@
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import Link from "@/components/i18n/LocalizedLink";
+import { caseLabel } from "@/lib/projectCase";
 import type { SearchProject } from "./projectSearch";
 
 export const ProjectSearchResults = ({
@@ -19,7 +20,8 @@ export const ProjectSearchResults = ({
   retry: () => void;
   onPreview: (project: SearchProject | null) => void;
 }) => {
-  const de = useLocale() === "de";
+  const locale = useLocale();
+  const de = locale === "de";
   return (
     <section
       className="landing-search-results"
@@ -64,9 +66,42 @@ export const ProjectSearchResults = ({
                   <span className="landing-search-result-name">
                     {project.name}
                   </span>
-                  <span className="landing-search-result-summary">
+                  <span
+                    lang={project.summaryLocale}
+                    className="landing-search-result-summary"
+                  >
                     {project.summary}
                   </span>
+                  {!!project.matchReasons?.length && (
+                    <span className="landing-search-result-summary">
+                      {project.partial
+                        ? de
+                          ? "Teilweise passend"
+                          : "Partial match"
+                        : de
+                          ? "Gemeinsame Themen"
+                          : "Shared topics"}
+                      :{" "}
+                      {project.matchReasons
+                        .slice(0, 2)
+                        .map((reason) => caseLabel(reason, locale))
+                        .join(" · ")}
+                    </span>
+                  )}
+                  {project.matching && (
+                    <span className="landing-search-result-summary">
+                      {project.matching.stages.length
+                        ? project.matching.stages
+                            .map((stage) => caseLabel(stage, locale))
+                            .join(" · ")
+                        : de
+                          ? "Umsetzungsstand nicht dokumentiert"
+                          : "Delivery stage not documented"}
+                      {project.matching.ownership && (
+                        <> · {caseLabel(project.matching.ownership, locale)}</>
+                      )}
+                    </span>
+                  )}
                 </span>
                 <span aria-hidden="true">↗</span>
               </Link>
@@ -75,8 +110,8 @@ export const ProjectSearchResults = ({
         ) : (
           <p className="landing-search-empty">
             {de
-              ? `Keine passenden Projekte für „${query}“. Probiere einen Projektnamen, ein Tool, eine Branche oder ein Fachgebiet.`
-              : `No projects match “${query}”. Try a project name, tool, industry, or area of expertise.`}
+              ? `Keine passenden Projekte für „${query}“. Probiere einen Bedarf, eine Funktion, einen Projektnamen oder ein Tool.`
+              : `No projects match “${query}”. Try a buyer need, capability, project name, or tool.`}
           </p>
         ))}
     </section>

@@ -205,6 +205,22 @@ export const buildOpenApiSpec = () => ({
             type: ["string", "null"],
             description: "3D icon name chosen in the Notion project record.",
           },
+          matching: {
+            type: "object",
+            description:
+              "Optional allowlisted public case dimensions. Missing values mean undocumented; editorial evidence notes are excluded. Case summary is currently English.",
+            additionalProperties: false,
+            properties: {
+              buyerNeeds: { type: "array", items: { type: "string" } },
+              stages: { type: "array", items: { type: "string" } },
+              domains: { type: "array", items: { type: "string" } },
+              aiUsage: { type: "array", items: { type: "string" } },
+              aiCapabilities: { type: "array", items: { type: "string" } },
+              ownership: { type: "string" },
+              maintenance: { type: "string" },
+              summary: { type: "string", maxLength: 600 },
+            },
+          },
           oneLineSummary: { type: "string" },
           tools: { type: "array", items: { type: "string" } },
           industries: { type: "array", items: { type: "string" } },

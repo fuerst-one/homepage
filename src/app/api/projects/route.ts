@@ -1,3 +1,4 @@
+import { getPublicProjectCases } from "@/server/notion/getEnquiryEvidence";
 import { isLocale } from "@/lib/i18n";
 import { NextRequest, NextResponse } from "next/server";
 import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
@@ -31,20 +32,23 @@ export const GET = async (request: NextRequest) => {
     );
   }
 
-  const [allProjects, icons] = await Promise.all([
+  const [allProjects, icons, cases] = await Promise.all([
     getCachedCvProjects(locale),
     getCachedProjectIcons().catch(() => null),
+    getPublicProjectCases().catch(() => []),
   ]);
+  const casesById = new Map(cases.map((value) => [value.id, value.caseStudy]));
   const matched = filterCvProjectsForApi(allProjects, parsed.params);
-  const results = matched.map((project) =>
-    toProjectListItem(
+  const results = matched.map((project) => ({
+    matching: casesById.get(project.id),
+    ...toProjectListItem(
       {
         ...project,
         icon: icons ? (icons[project.id] ?? null) : (project.icon ?? null),
       },
       locale,
     ),
-  );
+  }));
 
   return NextResponse.json(
     { count: results.length, total: allProjects.length, results },

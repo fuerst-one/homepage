@@ -1,3 +1,4 @@
+import type { ProjectCase } from "@/lib/projectCase";
 import type { Locale } from "@/lib/i18n";
 import { CvProject } from "../notion/getCvProjects";
 import { RichTextField } from "../notion/types";
@@ -5,6 +6,7 @@ import { API_BASE_URL } from "./baseUrl";
 import { projectPath, SITE_URL } from "@/lib/seo";
 
 export type ProjectListItem = {
+  matching?: ProjectCase;
   id: string;
   name: string;
   icon: string | null;

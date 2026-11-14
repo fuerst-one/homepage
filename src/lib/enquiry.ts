@@ -1,5 +1,4 @@
 import { localizedPath, type Locale } from "./i18n";
-import { serviceProjects } from "../data/services";
 
 export const ENQUIRY_INTENTS = [
   "prototype",
@@ -199,40 +198,6 @@ export function restoreEntry(
     ),
     step: changed ? 1 : saved.step,
   };
-}
-
-const evidence: Record<EnquiryIntent, readonly string[]> = {
-  prototype: serviceProjects["ai-automation"],
-  production: serviceProjects["product-interfaces"],
-  improve: [
-    ...serviceProjects["product-interfaces"],
-    ...serviceProjects["ai-automation"],
-  ],
-  team: serviceProjects["product-interfaces"],
-  explore: [
-    ...serviceProjects["product-interfaces"],
-    ...serviceProjects["ai-automation"],
-  ],
-};
-export function selectEnquiryEvidence<T extends { id: string }>(
-  projects: T[],
-  intent: EnquiryIntent | "",
-  sourceId?: string,
-  service?: EnquiryContext["service"],
-): T[] {
-  const ids = [
-    ...new Set([
-      ...(sourceId ? [sourceId] : []),
-      ...(service ? serviceProjects[service] : []),
-      ...(intent ? evidence[intent] : []),
-    ]),
-  ];
-  return ids
-    .flatMap((id) => {
-      const project = projects.find((p) => p.id === id);
-      return project ? [project] : [];
-    })
-    .slice(0, 2);
 }
 
 export const ENQUIRY_DRAFT_KEY = "fuerst-enquiry-v1";

@@ -331,3 +331,195 @@ test("projects with no workplace or optional prose remain searchable", () => {
   assert.deepEqual(searchProjectIndex(sparse, "unmatched").projects, []);
   assert.equal(searchProjectIndex(sparse, "Atlas").projects[0].id, "atlas");
 });
+
+const caseProfile = (values = {}) => ({
+  buyerNeeds: [],
+  stages: [],
+  domains: [],
+  aiUsage: [],
+  aiCapabilities: [],
+  ownership: "",
+  maintenance: "",
+  summary: "",
+  ...values,
+});
+const enrichedItems = [
+  {
+    ...projects[0],
+    matching: caseProfile({
+      buyerNeeds: ["Maintain and evolve a product"],
+      stages: ["Production", "Ongoing maintenance"],
+      ownership: "Product engineering owner",
+      aiUsage: ["AI-assisted implementation"],
+    }),
+  },
+  {
+    ...projects[1],
+    matching: caseProfile({
+      buyerNeeds: ["Add AI capabilities"],
+      stages: ["MVP"],
+      aiUsage: ["AI product feature"],
+      aiCapabilities: ["Survey analysis", "Translation"],
+    }),
+  },
+  {
+    ...projects[2],
+    matching: caseProfile({
+      buyerNeeds: ["Improve a complex interface"],
+      stages: ["Prototype"],
+    }),
+  },
+];
+
+test("landing suggestions include buyer needs, stages, capabilities and ownership with exact counts", () => {
+  const enriched = buildProjectSearchIndex(enrichedItems);
+  for (const [query, field, value, id] of [
+    ["maintain", "buyerNeeds", "Maintain and evolve a product", "atlas"],
+    ["production", "stages", "Production", "atlas"],
+    ["survey analysis", "aiCapabilities", "Survey analysis", "agent"],
+    [
+      "product engineering owner",
+      "ownership",
+      "Product engineering owner",
+      "atlas",
+    ],
+  ]) {
+    const result = searchProjectIndex(enriched, query);
+    const chip = result.suggestions.find(
+      (item) => item.filter?.field === field && item.filter.value === value,
+    );
+    assert.ok(chip, query);
+    const filtered = searchProjectIndex(enriched, chip.label, chip.filter);
+    assert.equal(filtered.projects.length, chip.count);
+    assert.deepEqual(
+      filtered.projects.map((p) => p.id),
+      [id],
+    );
+  }
+});
+
+test("landing buyer-need phrases and German capability prompts share the enquiry matcher", () => {
+  for (const [locale, query, expected] of [
+    ["en", "I need survey analysis and translation", "agent"],
+    ["de", "Ich möchte Umfragen auswerten und übersetzen", "agent"],
+    ["en", "maintain an existing product", "atlas"],
+  ]) {
+    const result = searchProjectIndex(
+      buildProjectSearchIndex(enrichedItems, locale),
+      query,
+    );
+    assert.equal(result.projects[0]?.id, expected, query);
+    assert.ok(result.projects[0].matchReasons.length > 0);
+  }
+});
+
+test("German buyer-need chips retain the canonical field value", () => {
+  const enriched = buildProjectSearchIndex(enrichedItems, "de");
+  const result = searchProjectIndex(enriched, "Umfrageauswertung");
+  const chip = result.suggestions.find(
+    (item) => item.filter?.field === "aiCapabilities",
+  );
+  assert.equal(chip?.label, "Umfrageauswertung");
+  assert.deepEqual(chip.filter, {
+    field: "aiCapabilities",
+    value: "Survey analysis",
+  });
+});
+
+test("combining a new dimension with an existing tool preserves all query constraints", () => {
+  const enriched = buildProjectSearchIndex(enrichedItems);
+  assert.deepEqual(
+    searchProjectIndex(enriched, "React production").projects.map((p) => p.id),
+    ["atlas"],
+  );
+  assert.deepEqual(
+    searchProjectIndex(enriched, "Docker production").projects,
+    [],
+  );
+});
+
+test("AI delivery and AI-assisted implementation remain distinct selectable facets", () => {
+  const enriched = buildProjectSearchIndex(enrichedItems);
+  const chip = enriched.keywords.find(
+    (item) =>
+      item.filter?.field === "aiUsage" &&
+      item.filter.value === "AI product feature",
+  );
+  assert.ok(chip);
+  assert.deepEqual(
+    searchProjectIndex(enriched, chip.label, chip.filter).projects.map(
+      (p) => p.id,
+    ),
+    ["agent"],
+  );
+});
+
+test("buyer-need interpretation cannot drop an explicitly requested technology", () => {
+  const enriched = buildProjectSearchIndex(enrichedItems);
+  assert.deepEqual(
+    searchProjectIndex(enriched, "Tailwind survey analysis").projects,
+    [],
+  );
+});
+
+test("related landing results preserve explicit delivery, workplace, engagement and client constraints", () => {
+  const enriched = buildProjectSearchIndex(enrichedItems);
+  for (const query of [
+    "production survey analysis",
+    "remote survey analysis",
+    "freelance survey analysis",
+    "Acme survey analysis",
+  ]) {
+    assert.deepEqual(searchProjectIndex(enriched, query).projects, [], query);
+  }
+  assert.equal(
+    searchProjectIndex(enriched, "MVP survey analysis").projects[0]?.id,
+    "agent",
+  );
+});
+
+test("English case summaries retain their language in project suggestion captions", () => {
+  const enriched = buildProjectSearchIndex(
+    [
+      {
+        ...enrichedItems[1],
+        matching: {
+          ...enrichedItems[1].matching,
+          summary: "A public English summary",
+        },
+      },
+    ],
+    "de",
+  );
+  const suggestion = searchProjectIndex(
+    enriched,
+    "Umfrageauswertung",
+  ).suggestions.find((item) => item.kind === "project");
+  assert.equal(suggestion?.captionLocale, "en");
+});
+
+test("typing an AI-use classification keeps the same distinction as selecting its chip", () => {
+  for (const [locale, phrase, expected] of [
+    ["en", "AI-assisted implementation", "atlas"],
+    ["en", "AI product feature", "agent"],
+    ["de", "KI-unterstützte Umsetzung", "atlas"],
+  ]) {
+    const enriched = buildProjectSearchIndex(enrichedItems, locale);
+    assert.deepEqual(
+      searchProjectIndex(enriched, phrase).projects.map((p) => p.id),
+      [expected],
+      phrase,
+    );
+  }
+});
+
+test("introductory words cannot turn an unrelated tool prefix into a mandatory filter", () => {
+  const enriched = buildProjectSearchIndex([
+    ...enrichedItems,
+    { ...projects[2], id: "webpack", tools: ["Webpack"] },
+  ]);
+  assert.equal(
+    searchProjectIndex(enriched, "We need survey analysis").projects[0]?.id,
+    "agent",
+  );
+});

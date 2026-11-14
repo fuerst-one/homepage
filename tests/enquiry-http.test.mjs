@@ -71,3 +71,26 @@ test("enquiry API rejects untrusted origins, invalid data and large bodies witho
     assert.equal(response.headers.get("cache-control"), "no-store");
   }
 });
+
+test("landing search API exposes public case dimensions without editorial evidence notes", async () => {
+  const response = await fetch(`${base}/api/projects?locale=en`);
+  assert.equal(response.status, 200);
+  const data = await response.json();
+  const cases = data.results.filter((project) => project.matching);
+  assert.ok(cases.length > 0);
+  const allowed = [
+    "buyerNeeds",
+    "stages",
+    "domains",
+    "aiUsage",
+    "aiCapabilities",
+    "ownership",
+    "maintenance",
+    "summary",
+  ];
+  for (const project of cases) {
+    assert.deepEqual(Object.keys(project.matching).sort(), [...allowed].sort());
+    for (const field of allowed.slice(0, 5))
+      assert.ok(Array.isArray(project.matching[field]));
+  }
+});

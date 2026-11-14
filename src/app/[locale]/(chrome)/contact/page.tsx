@@ -9,13 +9,11 @@ import {
   enquiryContext,
   type EnquiryIntent,
 } from "@/lib/enquiry";
-import { projectPath } from "@/lib/seo";
-import { flattenRichText } from "@/app/cv.pdf/flattenRichText";
 import { IconLink } from "@/components/IconLink";
 import { FaEnvelope } from "@react-icons/all-files/fa/FaEnvelope";
 import { FaLinkedin } from "@react-icons/all-files/fa/FaLinkedin";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
-import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
+import { getEnquiryEvidence } from "@/server/notion/getEnquiryEvidence";
 
 export const revalidate = 3600;
 
@@ -41,19 +39,13 @@ export default async function ContactPage({
 }) {
   const locale = await getLocale(params);
   const [projects, query] = await Promise.all([
-    getCachedCvProjects(locale),
+    getEnquiryEvidence(locale),
     searchParams,
   ]);
   const context = enquiryContext(query);
   const intent = ENQUIRY_INTENTS.includes(query.intent as EnquiryIntent)
     ? (query.intent as EnquiryIntent)
     : "";
-  const evidence = projects.map((project) => ({
-    id: project.id,
-    name: project.name,
-    href: projectPath(project, locale),
-    summary: flattenRichText(project.description).slice(0, 280),
-  }));
 
   return (
     <Layout locale={locale}>
@@ -73,7 +65,7 @@ export default async function ContactPage({
 
         <EnquiryFlow
           locale={locale}
-          projects={evidence}
+          projects={projects}
           initialContext={context}
           initialIntent={intent}
         />

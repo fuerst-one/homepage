@@ -6,7 +6,6 @@ const {
   parseEnquiry,
   enquiryPath,
   validateStep,
-  selectEnquiryEvidence,
   restoreDraft,
   applyIntent,
   restoreEntry,
@@ -178,35 +177,6 @@ test("context links contain only supported intent/service/project identifiers", 
   assert.ok(path.includes("intent=team"));
   assert.ok(path.includes("projectId=project-1"));
   assert.doesNotMatch(path, /private|email|invented/);
-});
-
-test("matching returns only available curated public evidence and includes the source case", () => {
-  const projects = [
-    { id: "source", name: "Source" },
-    { id: "unrelated", name: "Unrelated" },
-  ];
-  assert.deepEqual(
-    selectEnquiryEvidence(projects, "production", "source").map((p) => p.id),
-    ["source"],
-  );
-  assert.deepEqual(
-    selectEnquiryEvidence(projects, "prototype").map((p) => p.id),
-    [],
-  );
-});
-
-test("a selected service takes priority when recommending related work", () => {
-  const ai = { id: "11d86514-f736-80ed-935c-e6fe30b59d42" };
-  const interfaceProject = { id: "15b86514-f736-803e-b9b7-e47ebc2406d1" };
-  assert.equal(
-    selectEnquiryEvidence(
-      [interfaceProject, ai],
-      "improve",
-      undefined,
-      "ai-automation",
-    )[0].id,
-    ai.id,
-  );
 });
 
 test("draft restoration rejects malformed or expired data", () => {

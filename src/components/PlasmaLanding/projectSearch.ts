@@ -1,8 +1,24 @@
+import {
+  CASE_VOCABULARY,
+  caseLabel,
+  type ProjectCase,
+} from "../../lib/projectCase";
+import {
+  selectEnquiryEvidence,
+  projectCaseAliases,
+} from "../../lib/enquiryEvidence";
 import type { Locale } from "../../lib/i18n";
 import type { ProjectListItem } from "@/server/api/projectListItem";
 import { getKeywordIconShape, getProjectIconShape } from "./iconCatalog";
 
 const FILTER_GROUPS = [
+  { field: "buyerNeeds", label: "Buyer need", shape: 2 },
+  { field: "aiCapabilities", label: "AI capability", shape: 5 },
+  { field: "stages", label: "Delivery stage", shape: 2 },
+  { field: "domains", label: "Project domain", shape: 0 },
+  { field: "ownership", label: "Ownership", shape: 2 },
+  { field: "maintenance", label: "Engagement status", shape: 2 },
+  { field: "aiUsage", label: "AI use", shape: 5 },
   { field: "tools", label: "Tool", shape: 4 },
   { field: "experiences", label: "Expertise", shape: 2 },
   { field: "industries", label: "Industry", shape: 0 },
@@ -115,17 +131,25 @@ const GERMAN_FACETS: Partial<Record<SearchField, Record<string, string[]>>> = {
     "Not featured": ["Nicht hervorgehoben"],
   },
 };
-const facetAliases = (field: SearchField, value: string) => [
-  value,
-  ...(GERMAN_FACETS[field]?.[value] ?? []),
-];
+const isCaseField = (
+  field: SearchField,
+): field is keyof typeof CASE_VOCABULARY =>
+  Object.hasOwn(CASE_VOCABULARY, field);
+const facetAliases = (field: SearchField, value: string) =>
+  isCaseField(field)
+    ? projectCaseAliases(field, value)
+    : [value, ...(GERMAN_FACETS[field]?.[value] ?? [])];
 export type SearchFilter = { field: SearchField; value: string };
 export type SearchProject = {
   id: string;
   name: string;
   href: string;
   summary: string;
+  summaryLocale?: Locale;
   shape: number;
+  matching?: ProjectCase;
+  matchReasons?: string[];
+  partial?: boolean;
   facets: Record<SearchField, string[]>;
 };
 export type SearchSuggestion = {
@@ -136,6 +160,7 @@ export type SearchSuggestion = {
   count: number;
   shape: number;
   caption: string;
+  captionLocale?: Locale;
   filter?: SearchFilter;
   href?: string;
   aliases?: string[];
@@ -208,8 +233,19 @@ export const buildProjectSearchIndex = (
       name: item.name,
       href,
       shape: getProjectIconShape(item.icon),
-      summary: item.oneLineSummary,
+      summary: item.matching?.summary || item.oneLineSummary,
+      summaryLocale: item.matching?.summary ? "en" : undefined,
+      matching: item.matching,
       facets: {
+        buyerNeeds: item.matching?.buyerNeeds ?? [],
+        stages: item.matching?.stages ?? [],
+        domains: item.matching?.domains ?? [],
+        aiCapabilities: item.matching?.aiCapabilities ?? [],
+        aiUsage: item.matching?.aiUsage ?? [],
+        ownership: item.matching?.ownership ? [item.matching.ownership] : [],
+        maintenance: item.matching?.maintenance
+          ? [item.matching.maintenance]
+          : [],
         tools: item.tools,
         experiences: item.experiences,
         industries: item.industries,
@@ -227,6 +263,13 @@ export const buildProjectSearchIndex = (
       locale === "de"
         ? (
             {
+              buyerNeeds: "Bedarf",
+              aiCapabilities: "KI-Funktion",
+              stages: "Umsetzungsstand",
+              domains: "Projektbereich",
+              ownership: "Verantwortung",
+              maintenance: "Zusammenarbeit",
+              aiUsage: "KI-Einsatz",
               tools: "Tool",
               experiences: "Erfahrung",
               industries: "Branche",
@@ -249,7 +292,9 @@ export const buildProjectSearchIndex = (
     for (const [value, count] of counts) {
       const displayValue =
         locale === "de"
-          ? (GERMAN_FACETS[group.field]?.[value]?.[0] ?? value)
+          ? isCaseField(group.field)
+            ? caseLabel(value, locale)
+            : (GERMAN_FACETS[group.field]?.[value]?.[0] ?? value)
           : value;
       keywords.push({
         id: `${group.field}:${value}`,
@@ -290,12 +335,94 @@ export const searchProjectIndex = (
           (alias) => normalize(alias) === normalized,
         ),
     )?.filter;
+  // Keep explicit categorical constraints when interpreting a longer buyer-need phrase.
+  const technologyConstraints = terms
+    .map((term) =>
+      term.length < 2
+        ? []
+        : index.keywords.filter(
+            (keyword) =>
+              (keyword.filter?.field === "tools" ||
+                keyword.filter?.field === "languages" ||
+                keyword.filter?.field === "clients") &&
+              (keyword.aliases ?? [keyword.label]).some((alias) =>
+                normalize(alias).split(" ").includes(term),
+              ),
+          ),
+    )
+    .filter((values) => values.length > 0);
+  const strictFields = new Set<SearchField>([
+    "aiUsage",
+    "stages",
+    "workplace",
+    "projectType",
+    "featured",
+    "ownership",
+    "maintenance",
+  ]);
+  const explicit = index.keywords.flatMap((keyword) =>
+    keyword.filter && strictFields.has(keyword.filter.field)
+      ? (keyword.aliases ?? [keyword.label])
+          .filter((alias) =>
+            ` ${normalized} `.includes(` ${normalize(alias)} `),
+          )
+          .map((alias) => ({
+            filter: keyword.filter!,
+            phrase: normalize(alias),
+          }))
+      : [],
+  );
+  // Prefer "not featured" over its contained "featured" phrase, for example.
+  const constraints = explicit.filter(
+    (item) =>
+      !explicit.some(
+        (other) =>
+          other.filter.field === item.filter.field &&
+          other.phrase.length > item.phrase.length &&
+          other.phrase.includes(item.phrase),
+      ),
+  );
+  const constraintFields = [
+    ...new Set(constraints.map((item) => item.filter.field)),
+  ];
+  const obeysConstraints = (project: SearchProject) =>
+    constraintFields.every((field) =>
+      constraints.some(
+        (item) =>
+          item.filter.field === field &&
+          project.facets[field].includes(item.filter.value),
+      ),
+    );
+  const related = selectedFilter
+    ? []
+    : selectEnquiryEvidence(
+        index.projects.flatMap((project) =>
+          project.matching &&
+          obeysConstraints(project) &&
+          technologyConstraints.every((alternatives) =>
+            alternatives.some(
+              (keyword) =>
+                keyword.filter &&
+                project.facets[keyword.filter.field].includes(
+                  keyword.filter.value,
+                ),
+            ),
+          )
+            ? [{ ...project, caseStudy: project.matching }]
+            : [],
+        ),
+        { intent: "explore", situation: "", outcome: query, context: {} },
+      );
+  const relatedById = new Map(
+    related.map((match, rank) => [match.project.id, { ...match, rank }]),
+  );
   const projects = index.projects
     .filter((project) => {
       if (selectedFilter)
         return project.facets[selectedFilter.field].includes(
           selectedFilter.value,
         );
+      if (!obeysConstraints(project)) return false;
       const values = [
         project.name,
         project.summary,
@@ -303,8 +430,11 @@ export const searchProjectIndex = (
           project.facets[field].flatMap((value) => facetAliases(field, value)),
         ),
       ];
-      return terms.every((term) =>
-        values.some((value) => Number.isFinite(matchRank(value, term))),
+      return (
+        relatedById.has(project.id) ||
+        terms.every((term) =>
+          values.some((value) => Number.isFinite(matchRank(value, term))),
+        )
       );
     })
     .sort((a, b) => {
@@ -312,8 +442,16 @@ export const searchProjectIndex = (
         terms.reduce((rank, term) => rank + matchRank(project.name, term), 0);
       const aRank = nameRank(a);
       const bRank = nameRank(b);
-      return aRank === bRank ? 0 : aRank - bRank;
-    });
+      return aRank === bRank
+        ? (relatedById.get(a.id)?.rank ?? Infinity) -
+            (relatedById.get(b.id)?.rank ?? Infinity) || 0
+        : aRank - bRank;
+    })
+    .map((project) => ({
+      ...project,
+      matchReasons: relatedById.get(project.id)?.reasons ?? [],
+      partial: relatedById.get(project.id)?.partial,
+    }));
   const keywords = index.keywords
     .map((keyword) => ({
       keyword,
@@ -347,6 +485,7 @@ export const searchProjectIndex = (
       count: 1,
       shape: project.shape,
       caption: project.summary || project.name,
+      captionLocale: project.summaryLocale,
       href: project.href,
     }));
   return { projects, suggestions: [...keywords, ...projectSuggestions] };

@@ -492,7 +492,17 @@ export const PlasmaLanding = ({
         </div>
         <div className="landing-intro">
           <p className="landing-title">{headline}</p>
-          <p key={previewProject?.id ?? active.id} className="landing-caption">
+          <p
+            key={previewProject?.id ?? active.id}
+            className="landing-caption"
+            lang={
+              previewProject
+                ? previewProject.summaryLocale
+                : "captionLocale" in active
+                  ? active.captionLocale
+                  : locale
+            }
+          >
             {previewProject
               ? previewProject.summary || previewProject.name
               : hasQuery && !suggestions.length
@@ -695,8 +705,8 @@ export const PlasmaLanding = ({
                   ? "↑ ↓ entdecken · Enter auswählen · Esc leeren"
                   : "↑ ↓ to explore · enter to select · esc to clear"
                 : de
-                  ? "Projekte, Tools, Erfahrung oder ein Hallo"
-                  : "projects, tools, expertise, or a hello"}
+                  ? "Bedarf, Funktionen, Projekte, Tools oder ein Hallo"
+                  : "needs, capabilities, projects, tools, or a hello"}
             </span>
             {!hasQuery && (
               <span aria-hidden="true">

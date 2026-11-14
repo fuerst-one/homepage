@@ -11,7 +11,6 @@ import {
   restoreDraft,
   restoreEntry,
   applyIntent,
-  selectEnquiryEvidence,
   validateStep,
   type EnquiryContext,
   type EnquiryIntent,
@@ -19,12 +18,11 @@ import {
 import type { Locale } from "@/lib/i18n";
 import { enquiryCopy, intentLabels } from "./enquiryCopy";
 
-export type EnquiryEvidence = {
-  id: string;
-  name: string;
-  href: string;
-  summary: string;
-};
+import {
+  selectEnquiryEvidence,
+  type EnquiryEvidence,
+} from "@/lib/enquiryEvidence";
+import { caseLabel } from "@/lib/projectCase";
 type Field = keyof (typeof enquiryCopy)["en"]["labels"];
 const controlClass =
   "mt-2 block w-full border border-white/35 bg-black px-3 py-3 text-sm text-white placeholder:text-neutral-500 focus:border-white focus:outline focus:outline-1 focus:outline-white disabled:opacity-60 aria-[invalid=true]:border-amber-300";
@@ -111,12 +109,7 @@ export function EnquiryFlow({
   useEffect(() => {
     if (ready) heading.current?.focus();
   }, [step, receipt, standard, ready]);
-  const examples = selectEnquiryEvidence(
-    projects,
-    value.intent,
-    value.context.projectId,
-    value.context.service,
-  );
+  const examples = selectEnquiryEvidence(projects, value);
   const set = (field: Field | "intent" | "website", text: string) => {
     setValue((current) =>
       field === "intent"
@@ -313,7 +306,7 @@ export function EnquiryFlow({
       <p className="text-sm leading-relaxed text-neutral-400">
         {examples.length ? copy.evidenceIntro : copy.none}
       </p>
-      {examples.map((project) => (
+      {examples.map(({ project, reasons, partial, selected }) => (
         <article
           key={project.id}
           className="space-y-3 border border-white/25 bg-white/[0.03] p-5"
@@ -331,9 +324,65 @@ export function EnquiryFlow({
               </span>
             </Link>
           </h3>
-          <p className="text-sm leading-relaxed text-neutral-300">
+          <p
+            lang={project.summaryLocale}
+            className="text-sm leading-relaxed text-neutral-300"
+          >
             {project.summary}
           </p>
+          <p className="text-xs leading-relaxed text-neutral-300">
+            <span className="text-white">
+              {selected && <>{copy.selectedCase} · </>}
+              {partial ? copy.partialMatch : copy.relatedCase}
+            </span>
+            {reasons.length > 0 && (
+              <>
+                {" "}
+                · {copy.matchReasons}:{" "}
+                {reasons.map((reason) => caseLabel(reason, locale)).join(" · ")}
+              </>
+            )}
+          </p>
+          <dl className="space-y-2 text-xs leading-relaxed text-neutral-400">
+            <div>
+              <dt className="inline text-neutral-300">{copy.caseStage}: </dt>
+              <dd className="inline">
+                {project.caseStudy.stages.length
+                  ? project.caseStudy.stages
+                      .map((stage) => caseLabel(stage, locale))
+                      .join(" · ")
+                  : copy.stageUnknown}
+              </dd>
+            </div>
+            <div>
+              <dt className="inline text-neutral-300">{copy.caseRole}: </dt>
+              <dd className="inline">
+                {project.caseStudy.ownership
+                  ? caseLabel(project.caseStudy.ownership, locale)
+                  : copy.roleUnknown}
+              </dd>
+            </div>
+            {project.caseStudy.maintenance && (
+              <div>
+                <dt className="inline text-neutral-300">
+                  {copy.caseMaintenance}:{" "}
+                </dt>
+                <dd className="inline">
+                  {caseLabel(project.caseStudy.maintenance, locale)}
+                </dd>
+              </div>
+            )}
+            {project.caseStudy.aiUsage.length > 0 && (
+              <div>
+                <dt className="inline text-neutral-300">{copy.caseAI}: </dt>
+                <dd className="inline">
+                  {project.caseStudy.aiUsage
+                    .map((usage) => caseLabel(usage, locale))
+                    .join(" · ")}
+                </dd>
+              </div>
+            )}
+          </dl>
         </article>
       ))}
       <Link

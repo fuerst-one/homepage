@@ -84,17 +84,12 @@ to the affected fields and manifest.
 
 ## Website integration boundary
 
-This task enriches the source data. The existing enquiry selector still uses
-fixed project lists, and the public project mapper currently ignores these new
-editorial fields. No matching improvement or public UI deployment follows
-automatically from the Notion backfill.
-
-When connecting this data, expose a reviewed public view model, use buyer need,
-ownership and delivery stage alongside existing capabilities, and explain each
-match. Preserve distinctions between estimates and measurements, internal use
-and customer production, and team contribution and solo ownership. Check
-realistic enquiries, including partial matches and cases with no suitable
-evidence, before claiming recommendation quality.
+The source backfill is now connected to the enquiry flow and landing suggestion
+box in the [shared matching integration](enquiry-project-matching-2026-11-15.md).
+It uses an allowlisted public view model, buyer needs, capabilities, ownership and
+delivery stage, and explains each match. Internal use, MVP, production, ended
+engagements and partial matches remain distinct. Editorial evidence notes and
+outcome claims are not copied into the public matching projection.
 
 ## Validation
 
