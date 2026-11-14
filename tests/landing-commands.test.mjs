@@ -18,7 +18,7 @@ test("German command chips and aliases resolve to localized destinations", () =>
     ["Zeig mir deine Projekte!", "/de/cv"],
     ["Über mich", "/de/cv"],
     ["Wie kann ich dich kontaktieren?", "/de/contact"],
-    ["Lebenslauf downloaden", "/de/cv.pdf"],
+    ["Lebenslauf downloaden", "/de/contact"],
     ["Mit dir arbeiten", "/de/hire"],
     ["Lass uns basteln", "/de/plasma"],
   ])
@@ -51,7 +51,7 @@ test("natural navigation phrases ignore case and punctuation", () => {
   assert.equal(resolveCommand("  Show me your PROJECTS! ")?.href, "/cv");
   assert.equal(resolveCommand("How can I get in touch?")?.href, "/contact");
   assert.equal(resolveCommand("Tell me about your experience")?.href, "/cv");
-  assert.equal(resolveCommand("Download my CV")?.href, "/cv.pdf");
+  assert.equal(resolveCommand("Download my CV")?.href, "/contact");
 });
 
 test("plasma commands change playback without navigating", () => {

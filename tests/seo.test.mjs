@@ -206,12 +206,10 @@ test("AI discovery includes the public profile, HTML pages, and existing API", a
   assert.match(body, /UX\+AI Engineer/);
 });
 
-test("print-only content is excluded from indexing", async () => {
-  const { body } = await get("/en/pdf-content");
-  assert.match(
-    tagAttribute(body, "meta", "name", "robots", "content") || "",
-    /noindex/,
-  );
+test("retired print content is gone and excluded from indexing", async () => {
+  const { response } = await get("/en/pdf-content");
+  assert.equal(response.status, 410);
+  assert.match(response.headers.get("x-robots-tag"), /noindex/);
 });
 
 test("legacy portfolio URLs redirect to matching current content", async () => {

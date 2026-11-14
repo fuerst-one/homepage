@@ -138,20 +138,29 @@ export default function PrivacyPage() {
         destination provider processes data under its own privacy policy.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        CV download form
+        Project enquiry form
       </h2>
       <p>
-        The CV download form on the contact page requires an email address. When
-        you submit it, your email address and the submission timestamp are sent
-        through our server to a database at Notion Labs, Inc., USA. The PDF is
-        then downloaded directly in your browser; it is not sent by email. We
-        use the submitted details to keep a record of CV requests and handle
-        related business enquiries. The legal basis is our legitimate interest
-        in handling and documenting these requests under Art. 6(1)(f) GDPR;
-        where an enquiry concerns a contract or steps before entering a
-        contract, Art. 6(1)(b) GDPR applies. Entering an email is voluntary, but
-        the form requires it before starting the download. Submitting the form
-        does not subscribe you to a newsletter.
+        The contact form collects the project or collaboration brief you review
+        and submit: your selected starting point, current situation, desired
+        outcome, contact details, optional commercial details, and the page or
+        service you selected. On submission, our server stores these details and
+        a timestamp in a private database at Notion Labs, Inc., USA, so we can
+        handle your business enquiry. The form does not send an automatic email
+        receipt, book a call, or subscribe you to a newsletter. The existing
+        legal bases for contact enquiries described below also apply to this
+        form.
+      </p>
+      <p>
+        An unsent draft is kept in session storage in your browser tab for up to
+        two hours after your last edit. This allows you to go back or change the
+        site language without retyping your brief. It is removed on successful
+        submission or when you discard it. Expired drafts are ignored and
+        cleared when you return to the form; you can also clear your browser’s
+        site data. These drafts are not sent to our server before submission.
+        Project suggestions use published portfolio information and your
+        selections; no external AI provider processes your brief in this
+        version.
       </p>
       <p>
         Notion and its subprocessors may process these data in the United States
@@ -163,7 +172,7 @@ export default function PrivacyPage() {
         >
           privacy practices
         </a>
-        . CV request records are retained while needed to handle the request and
+        . Enquiry records are retained while needed to handle the request and
         related correspondence, subject to the retention criteria below. You can
         contact us to request their erasure or object to processing.
       </p>

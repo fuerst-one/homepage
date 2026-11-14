@@ -24,7 +24,7 @@ export const GET = async (request: NextRequest) => {
 - [Home](${API_BASE_URL}/en) — introduction and links to work and contact information.
 - [Project portfolio](${API_BASE_URL}/en/projects) — full directory with stable, descriptive HTML URLs for each project, including descriptions, technologies, collaborators, and results. Use the API's webUrl for the canonical page to read and cite.
 - [CV and experience](${API_BASE_URL}/en/cv) — public profile and interactive project filtering by specialty.
-- [Contact and CV download](${API_BASE_URL}/en/contact) — project inquiries, team opportunities, and tailored PDF CV downloads.
+- [Contact](${API_BASE_URL}/en/contact) — guided project and collaboration enquiries with relevant public work and a reviewed brief. Public CV downloads have been retired.
 - [Hiring platforms](${API_BASE_URL}/en/hire) — owner-confirmed professional profiles and ways to hire Alexander.
 - [Plasma playground](${API_BASE_URL}/en/plasma) — interactive creative coding experiment.
 - [GitHub](https://github.com/fuerst-one) — public code profile.

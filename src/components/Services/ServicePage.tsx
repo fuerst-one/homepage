@@ -1,3 +1,4 @@
+import { enquiryPath } from "@/lib/enquiry";
 import Link from "next/link";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/Button";
@@ -108,6 +109,14 @@ export async function ServicePage({
   const copy = serviceCopy[slug][locale];
   const t = ui[locale];
   const email = serviceEmail(slug, locale);
+  const enquiry = enquiryPath(
+    {
+      source: "service",
+      service: slug,
+      intent: slug === "ai-automation" ? "explore" : "improve",
+    },
+    locale,
+  );
   const other =
     slug === "product-interfaces" ? "ai-automation" : "product-interfaces";
   // The offer and contact path remain useful during a temporary upstream outage.
@@ -150,7 +159,7 @@ export async function ServicePage({
           <h1>{copy.headline}</h1>
           <p className={styles.intro}>{copy.intro}</p>
           <div className={styles.actions}>
-            <Button href={email} arrow className={styles.primary}>
+            <Button href={enquiry} arrow className={styles.primary}>
               {copy.cta}
             </Button>
             <a href="#work" className={styles.textLink}>
@@ -345,7 +354,7 @@ export async function ServicePage({
           </p>
           <h2 id="enquiry-heading">{copy.closing}</h2>
           <p>{copy.closingText}</p>
-          <Button href={email} arrow className={styles.closingButton}>
+          <Button href={enquiry} arrow className={styles.closingButton}>
             {copy.cta}
           </Button>
           <div className={styles.directEmail}>

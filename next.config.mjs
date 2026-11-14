@@ -35,15 +35,7 @@ const nextConfig = {
         permanent: true,
       })),
       { source: "/", destination: "/en", permanent: true },
-      ...[
-        "cv",
-        "projects",
-        "contact",
-        "hire",
-        "plasma",
-        "pdf-content",
-        "cv.pdf",
-      ].map((page) => ({
+      ...["cv", "projects", "contact", "hire", "plasma"].map((page) => ({
         source: `/${page}`,
         destination: `/en/${page}`,
         permanent: true,

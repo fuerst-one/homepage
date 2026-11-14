@@ -1,3 +1,4 @@
+import { enquiryPath } from "@/lib/enquiry";
 import { getLocale } from "@/server/i18n/getLocale";
 import { hasGermanTranslation } from "@/lib/localizeContent";
 import { locales, localizedPath, type Locale } from "@/lib/i18n";
@@ -85,7 +86,13 @@ export default async function ProjectPage({ params }: Props) {
         {locale === "de"
           ? "Interesse an einer ähnlichen Zusammenarbeit? "
           : "Interested in similar work? "}
-        <Link href="/contact" className="underline">
+        <Link
+          href={enquiryPath(
+            { source: "project", projectId: project.id },
+            locale,
+          )}
+          className="underline"
+        >
           {locale === "de"
             ? "Alexander Fuerst kontaktieren"
             : "Contact Alexander Fuerst"}

@@ -6,6 +6,7 @@ import { IconLink } from "@/components/IconLink";
 import { Button } from "@/components/Button";
 import { FaEnvelope } from "@react-icons/all-files/fa/FaEnvelope";
 import { hiringPlatforms } from "@/data/hiringPlatforms";
+import { enquiryPath } from "@/lib/enquiry";
 import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 3600;
@@ -36,6 +37,39 @@ export default async function HirePage({ params }: LocaleParams) {
             {copy["hire.intro"]}
           </p>
         </header>
+        <section
+          className="grid gap-5 border-y border-white/20 py-8 sm:grid-cols-2"
+          aria-label={
+            locale === "de" ? "Zusammenarbeit starten" : "Start a collaboration"
+          }
+        >
+          <div className="space-y-4">
+            <h2 className="text-xl text-white">
+              {locale === "de" ? "Ein Projekt besprechen" : "Discuss a project"}
+            </h2>
+            <Button
+              href={enquiryPath({ source: "hire", intent: "explore" }, locale)}
+              arrow
+            >
+              {locale === "de" ? "Projektanfrage" : "Project enquiry"}
+            </Button>
+          </div>
+          <div className="space-y-4">
+            <h2 className="text-xl text-white">
+              {locale === "de"
+                ? "Länger zusammenarbeiten"
+                : "Work together longer"}
+            </h2>
+            <Button
+              href={enquiryPath({ source: "hire", intent: "team" }, locale)}
+              arrow
+            >
+              {locale === "de"
+                ? "Zusammenarbeit besprechen"
+                : "Discuss collaboration"}
+            </Button>
+          </div>
+        </section>
         <section
           aria-label="Hiring platform profiles"
           className="divide-y divide-white/20 border-y border-white/20"
@@ -103,9 +137,7 @@ export default async function HirePage({ params }: LocaleParams) {
               alexander@fuerst.one
             </IconLink>
             <Button href="/contact" arrow>
-              {locale === "de"
-                ? "Kontakt & passender Lebenslauf"
-                : "Contact & tailored CV"}
+              {locale === "de" ? "Kontakt aufnehmen" : "Get in touch"}
             </Button>
           </div>
         </section>

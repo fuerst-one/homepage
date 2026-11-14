@@ -24,11 +24,11 @@ const COMMANDS: LandingCommand[] = [
     href: "/contact",
   },
   {
-    id: "download",
-    label: "Download my CV",
-    caption: "A little more about me. To take away.",
+    id: "enquiry",
+    label: "Discuss a project",
+    caption: "Find a useful starting point together.",
     shape: 3,
-    href: "/cv.pdf",
+    href: "/contact",
   },
   {
     id: "tinker",
@@ -48,7 +48,7 @@ const COMMANDS: LandingCommand[] = [
 
 export const SUGGESTIONS = COMMANDS.filter(({ id }) => id !== "tinker");
 
-const [experience, contact, download, tinker, hire] = COMMANDS;
+const [experience, contact, enquiry, tinker, hire] = COMMANDS;
 
 const normalizeMessage = (message: string) =>
   message
@@ -78,13 +78,13 @@ export const resolveExplicitCommand = (
       servus: "contact",
       zusammenarbeiten: "hire",
       beauftragen: "hire",
-      "lebenslauf herunterladen": "download",
-      "lebenslauf downloaden": "download",
+      "lebenslauf herunterladen": "enquiry",
+      "lebenslauf downloaden": "enquiry",
       "uber mich": "experience",
       "mit dir arbeiten": "hire",
       "wie kann ich dich kontaktieren": "contact",
       "lass uns basteln": "tinker",
-      pdf: "download",
+      pdf: "enquiry",
       basteln: "tinker",
     };
     const translated =
@@ -138,7 +138,7 @@ export const resolveExplicitCommand = (
       text,
     )
   )
-    return download;
+    return enquiry;
   if (
     /^(?:(show|explore)( me)?( your)? )?(projects?|portfolio|experience|cv|resume|about|skills)$/.test(
       text,
@@ -184,7 +184,7 @@ export const resolveCommand = (message: string): LandingCommand | null => {
       action: "play",
     };
   if (/\b(download|pdf)\b/.test(text) && /\b(cv|resume|pdf)\b/.test(text))
-    return download;
+    return enquiry;
   if (/\b(hire|hiring|malt|freelancermap|platforms?)\b/.test(text)) return hire;
   if (/\b(projects?|portfolio|work)\b/.test(text)) return experience;
   if (/\b(contact|touch|email|hello)\b/.test(text)) return contact;
@@ -199,9 +199,9 @@ const GERMAN_COMMANDS: Record<string, [string, string]> = {
     "Die Menschen, Produkte und Ideen hinter meiner Arbeit.",
   ],
   contact: ["Kontakt aufnehmen", "Gute Dinge beginnen mit einem Gespräch."],
-  download: [
-    "Lebenslauf herunterladen",
-    "Ein bisschen mehr über mich. Zum Mitnehmen.",
+  enquiry: [
+    "Ein Projekt besprechen",
+    "Gemeinsam den passenden Einstieg finden.",
   ],
   tinker: ["Lass uns basteln", "Weniger ernst. Mehr Möglichkeiten."],
   hire: [

@@ -146,22 +146,29 @@ export default function DatenschutzPage() {
         Datenschutzerklärung.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Formular zum Lebenslauf-Download
+        Formular für Projektanfragen
       </h2>
       <p>
-        Das Formular zum Lebenslauf-Download auf der Kontaktseite erfordert eine
-        E-Mail-Adresse. Beim Absenden werden Ihre E-Mail-Adresse und der
-        Zeitpunkt der Anfrage über unseren Server in einer Datenbank bei Notion
-        Labs, Inc., USA, gespeichert. Anschließend wird die PDF-Datei direkt in
-        Ihrem Browser heruntergeladen; sie wird nicht per E-Mail versandt. Wir
-        verwenden die Angaben zur Dokumentation von Lebenslauf-Anfragen und zur
-        Bearbeitung damit verbundener geschäftlicher Anfragen. Rechtsgrundlage
-        ist unser berechtigtes Interesse an der Bearbeitung und Dokumentation
-        dieser Anfragen nach Art. 6 Abs. 1 lit. f DSGVO. Betrifft eine Anfrage
-        einen Vertrag oder vorvertragliche Maßnahmen, gilt Art. 6 Abs. 1 lit. b
-        DSGVO. Die Angabe ist freiwillig; das Formular setzt sie jedoch voraus,
-        bevor der Download startet. Durch das Absenden abonnieren Sie keinen
-        Newsletter.
+        Das Kontaktformular erfasst die von Ihnen geprüfte und abgesendete
+        Projekt- oder Zusammenarbeitsanfrage: Einstieg, Ausgangslage,
+        gewünschtes Ergebnis, Kontaktdaten, freiwillige kaufmännische Angaben
+        und die gewählte Seite oder Leistung. Unser Server speichert diese
+        Angaben und einen Zeitstempel in einer privaten Datenbank bei Notion
+        Labs, Inc., USA, um Ihre geschäftliche Anfrage zu bearbeiten. Das
+        Formular versendet keine automatische E-Mail-Bestätigung, bucht keinen
+        Termin und abonniert keinen Newsletter. Es gelten die unten erläuterten
+        Rechtsgrundlagen für Kontaktanfragen.
+      </p>
+      <p>
+        Ein nicht abgesendeter Entwurf bleibt bis zu zwei Stunden nach der
+        letzten Änderung im Sitzungsspeicher Ihres Browser-Tabs. So können Sie
+        zurückgehen oder die Sprache wechseln, ohne alles neu einzugeben. Nach
+        erfolgreichem Absenden oder Verwerfen wird er entfernt. Abgelaufene
+        Entwürfe werden beim erneuten Aufruf ignoriert und entfernt. Sie können
+        auch die Website-Daten Ihres Browsers löschen. Vor dem Absenden wird der
+        Entwurf nicht an unseren Server übertragen. Projektvorschläge verwenden
+        veröffentlichte Portfolioangaben und Ihre Auswahl. In dieser Version
+        verarbeitet kein externer KI-Anbieter Ihre Anfrage.
       </p>
       <p>
         Notion und seine Unterauftragsverarbeiter können diese Daten in den USA
@@ -174,7 +181,7 @@ export default function DatenschutzPage() {
         >
           Datenschutzhinweisen
         </a>
-        . Einträge zu Lebenslauf-Anfragen werden aufbewahrt, solange sie für die
+        . Einträge zu Anfragen werden aufbewahrt, solange sie für die
         Bearbeitung und damit verbundene Korrespondenz benötigt werden;
         ergänzend gelten die unten beschriebenen Speicherkriterien. Sie können
         uns zur Löschung auffordern oder der Verarbeitung widersprechen.

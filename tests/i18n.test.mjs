@@ -71,6 +71,6 @@ test("German landing commands resolve to localized destinations", () => {
   );
   assert.equal(
     commands.resolveExplicitCommand("Lebenslauf herunterladen", "de")?.href,
-    "/de/cv.pdf",
+    "/de/contact",
   );
 });

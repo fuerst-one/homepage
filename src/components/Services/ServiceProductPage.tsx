@@ -1,3 +1,4 @@
+import { enquiryPath } from "@/lib/enquiry";
 import Link from "next/link";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/Button";
@@ -24,6 +25,15 @@ export async function ServiceProductPage({
   const copy = serviceProducts[slug].copy[locale];
   const de = locale === "de";
   const email = serviceProductEmail(slug, locale);
+  const enquiry = enquiryPath(
+    {
+      source: "service",
+      service: slug,
+      offer: serviceProducts[slug].segment as "review" | "assessment",
+      intent: "improve",
+    },
+    locale,
+  );
   const projects = await getCachedCvProjects(locale).catch((error: unknown) => {
     console.error("Starting-offer evidence unavailable", error);
     return [];
@@ -73,7 +83,7 @@ export async function ServiceProductPage({
           <h1>{copy.headline}</h1>
           <p className={styles.intro}>{copy.intro}</p>
           <div className={styles.actions}>
-            <Button href={email} arrow className={styles.primary}>
+            <Button href={enquiry} arrow className={styles.primary}>
               {copy.cta}
             </Button>
             <a href="#deliverables" className={styles.textLink}>
@@ -280,7 +290,7 @@ export async function ServiceProductPage({
               ? "Ein Link oder ein paar Sätze reichen. Du sprichst direkt mit mir; wir klären Ziel und Umfang, bevor du die Arbeit beauftragst."
               : "A link or a few sentences is enough. You will speak directly with me; we establish the goal and scope before you commission the work."}
           </p>
-          <Button href={email} arrow className={styles.closingButton}>
+          <Button href={enquiry} arrow className={styles.closingButton}>
             {copy.cta}
           </Button>
           <div className={styles.directEmail}>
