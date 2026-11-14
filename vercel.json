@@ -4,5 +4,11 @@
     "src/app/api/**/route.ts": {
       "maxDuration": 60
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/integrations/malt",
+      "schedule": "23 5 * * *"
+    }
+  ]
 }

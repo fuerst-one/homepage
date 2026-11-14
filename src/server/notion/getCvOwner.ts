@@ -21,7 +21,7 @@ export type CvOwnerPublic = {
   languages: string;
   education: string;
   city: string;
-  available: boolean;
+  available: boolean | null;
   avatarUrl: string | null;
 };
 

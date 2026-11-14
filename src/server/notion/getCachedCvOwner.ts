@@ -1,3 +1,4 @@
+import { getMaltMirror } from "@/server/malt/getMaltMirror";
 import type { Locale } from "@/lib/i18n";
 import { unstable_cache } from "next/cache";
 import { getCvOwner, toPublicOwner, localizeOwner } from "./getCvOwner";
@@ -13,5 +14,10 @@ const getCachedOwnerSource = unstable_cache(
 export const getCachedCvOwner = async (locale: Locale = "en") =>
   localizeOwner(await getCachedOwnerSource(), locale);
 
-export const getCachedCvOwnerPublic = async (locale: Locale = "en") =>
-  toPublicOwner(await getCachedCvOwner(locale));
+export const getCachedCvOwnerPublic = async (locale: Locale = "en") => {
+  const [owner, malt] = await Promise.all([
+    getCachedCvOwner(locale),
+    getMaltMirror(),
+  ]);
+  return { ...toPublicOwner(owner), available: malt.available, malt };
+};

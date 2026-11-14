@@ -71,15 +71,22 @@ export async function Layout({
               <div className="shrink-0 whitespace-nowrap border border-white/30 bg-black px-4 py-2 text-[0.7rem] uppercase tracking-[0.25em] text-neutral-200">
                 UX+AI Engineer
               </div>
-              {owner.available && (
-                <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[0.7rem] uppercase tracking-[0.2em] text-emerald-300">
-                  <span
-                    aria-hidden
-                    className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_currentColor]"
-                  />
-                  {locale === "de" ? "Verfügbar" : "Available"}
-                </span>
-              )}
+              <Link
+                href="/contact"
+                className={`inline-flex shrink-0 items-center gap-1.5 text-[0.7rem] uppercase tracking-[0.12em] ${owner.available === true ? "text-emerald-300" : "text-neutral-300"}`}
+              >
+                {owner.available === true
+                  ? locale === "de"
+                    ? "Verfügbar · Malt"
+                    : "Available · Malt"
+                  : owner.available === false
+                    ? locale === "de"
+                      ? "Nicht verfügbar · Malt"
+                      : "Unavailable · Malt"
+                    : locale === "de"
+                      ? "Verfügbarkeit anfragen ↗"
+                      : "Ask about availability ↗"}
+              </Link>
             </div>
           </div>
           <nav

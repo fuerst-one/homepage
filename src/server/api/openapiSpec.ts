@@ -142,7 +142,7 @@ export const buildOpenApiSpec = () => ({
         summary: "Public CV profile (owner)",
         parameters: [LOCALE_PARAMETER],
         description:
-          "Returns Alexander Fuerst's public CV profile facts. Sensitive fields (daily rate, full address, phone) are deliberately not exposed via this endpoint.",
+          "Returns Alexander Fuerst's public CV profile facts and timestamped public Malt terms. Private Notion rate, full address and phone are excluded.",
         responses: {
           "200": {
             description: "Public profile",
@@ -284,8 +284,46 @@ export const buildOpenApiSpec = () => ({
             description: "City and country (e.g. 'Würzburg, Germany').",
           },
           available: {
-            type: "boolean",
-            description: "Whether currently available for new engagements.",
+            type: ["boolean", "null"],
+            description:
+              "Malt-confirmed availability; null means unknown or stale. Legacy Notion availability is not a fallback.",
+          },
+          malt: {
+            type: "object",
+            additionalProperties: false,
+            required: [
+              "profileUrl",
+              "rate",
+              "available",
+              "observedAt",
+              "availabilityConfirmedAt",
+            ],
+            properties: {
+              profileUrl: { type: "string", format: "uri" },
+              rate: {
+                description:
+                  "Public Malt daily rate; null when unpublished, unverified or older than seven days.",
+                anyOf: [
+                  { type: "null" },
+                  {
+                    type: "object",
+                    additionalProperties: false,
+                    required: ["amount", "currency", "unit"],
+                    properties: {
+                      amount: { type: "number", exclusiveMinimum: 0 },
+                      currency: { const: "EUR" },
+                      unit: { const: "day" },
+                    },
+                  },
+                ],
+              },
+              available: { type: ["boolean", "null"] },
+              observedAt: { type: ["string", "null"], format: "date-time" },
+              availabilityConfirmedAt: {
+                type: ["string", "null"],
+                format: "date-time",
+              },
+            },
           },
           avatarUrl: {
             type: ["string", "null"],

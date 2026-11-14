@@ -9,6 +9,7 @@ import { Button } from "@/components/Button";
 import { StructuredData } from "@/components/StructuredData";
 import { pageMetadata, personSchema, SITE_URL, PERSON_ID } from "@/lib/seo";
 import "../home.css";
+import { MaltTerms } from "@/components/MaltTerms";
 import { EnquiryStart } from "@/components/Enquiry/EnquiryStart";
 
 export const revalidate = 3600;
@@ -35,6 +36,9 @@ export default async function Home({ params }: LocaleParams) {
     <main>
       <PlasmaLanding headline={copy["home.eyebrow"]} />
       <EnquiryStart locale={locale} />
+      <div className="mx-auto w-full max-w-4xl px-6 pb-16">
+        <MaltTerms locale={locale} mirror={owner.malt} />
+      </div>
       <section className="home-about" aria-labelledby="home-about-title">
         <div className="home-about-heading">
           <p className="home-about-eyebrow">{copy["home.eyebrow"]}</p>

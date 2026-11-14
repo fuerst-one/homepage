@@ -94,3 +94,11 @@ test("landing search API exposes public case dimensions without editorial eviden
       assert.ok(Array.isArray(project.matching[field]));
   }
 });
+
+test("Malt refresh and operator import reject unauthenticated writes", async () => {
+  for (const method of ["GET", "POST"]) {
+    const response = await fetch(`${base}/api/integrations/malt`, { method });
+    assert.ok([401, 503].includes(response.status));
+    assert.equal(response.headers.get("cache-control"), "no-store");
+  }
+});

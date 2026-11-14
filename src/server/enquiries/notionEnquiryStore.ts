@@ -1,9 +1,12 @@
+import { scheduleEnquiryMention } from "./enquiryMention";
 import { Client } from "@notionhq/client";
 import type { BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints";
 import type { EnquiryStore } from "./submitEnquiry";
 
 /** Existing inbox schema: id (title), email (email), createdAt (date). */
-export function notionEnquiryStore(): EnquiryStore {
+export function notionEnquiryStore(
+  afterResponse: (task: () => Promise<void>) => void,
+): EnquiryStore {
   const databaseId =
     process.env.NEXT_NOTION_ENQUIRIES_DB_ID ||
     process.env.NEXT_NOTION_CV_SIGNUP_DATABASE_ID;
@@ -68,7 +71,7 @@ export function notionEnquiryStore(): EnquiryStore {
             ),
           },
         }));
-      await notion.pages.create({
+      const page = await notion.pages.create({
         parent: { database_id: databaseId },
         properties: {
           id: {
@@ -81,6 +84,12 @@ export function notionEnquiryStore(): EnquiryStore {
         },
         children,
       });
+      scheduleEnquiryMention(
+        page.id,
+        process.env.NOTION_ENQUIRY_MENTION_USER_ID,
+        afterResponse,
+        (args) => notion.blocks.children.append(args),
+      );
       return { receipt: value.id, fingerprint };
     },
   };

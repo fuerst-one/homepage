@@ -1,3 +1,5 @@
+import { MaltTerms } from "@/components/MaltTerms";
+import { getMaltMirror } from "@/server/malt/getMaltMirror";
 import { getLocale } from "@/server/i18n/getLocale";
 import { getSiteCopy } from "@/server/notion/getSiteCopy";
 import { type LocaleParams } from "@/lib/i18n";
@@ -20,7 +22,10 @@ export async function generateMetadata({ params }: LocaleParams) {
 
 export default async function HirePage({ params }: LocaleParams) {
   const locale = await getLocale(params);
-  const copy = await getSiteCopy(locale);
+  const [copy, mirror] = await Promise.all([
+    getSiteCopy(locale),
+    getMaltMirror(),
+  ]);
   return (
     <Layout locale={locale}>
       <div className="space-y-10">
@@ -70,6 +75,7 @@ export default async function HirePage({ params }: LocaleParams) {
             </Button>
           </div>
         </section>
+        <MaltTerms locale={locale} mirror={mirror} />
         <section
           aria-label="Hiring platform profiles"
           className="divide-y divide-white/20 border-y border-white/20"
