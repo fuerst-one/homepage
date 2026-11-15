@@ -453,6 +453,7 @@ export const searchProjectIndex = (
       partial: relatedById.get(project.id)?.partial,
     }));
   const keywords = index.keywords
+    .filter((keyword) => keyword.filter?.field !== "clients")
     .map((keyword) => ({
       keyword,
       rank: terms.reduce(
@@ -475,18 +476,24 @@ export const searchProjectIndex = (
     )
     .slice(0, 12)
     .map((item) => item.keyword);
-  const projectSuggestions: SearchSuggestion[] = projects
-    .slice(0, 6)
-    .map((project) => ({
-      id: `project:${project.id}`,
-      kind: "project",
-      label: project.name,
-      category: index.locale === "de" ? "Projekt" : "Project",
-      count: 1,
-      shape: project.shape,
-      caption: project.summary || project.name,
-      captionLocale: project.summaryLocale,
-      href: project.href,
-    }));
+  // Clients remain search constraints, but the suggested destinations are their projects.
+  const matchesClient = index.keywords.some(
+    (keyword) =>
+      keyword.filter?.field === "clients" &&
+      terms.some((term) => Number.isFinite(matchRank(keyword.label, term))),
+  );
+  const projectSuggestions: SearchSuggestion[] = (
+    matchesClient ? projects : projects.slice(0, 6)
+  ).map((project) => ({
+    id: `project:${project.id}`,
+    kind: "project",
+    label: project.name,
+    category: index.locale === "de" ? "Projekt" : "Project",
+    count: 1,
+    shape: project.shape,
+    caption: project.summary || project.name,
+    captionLocale: project.summaryLocale,
+    href: project.href,
+  }));
   return { projects, suggestions: [...keywords, ...projectSuggestions] };
 };

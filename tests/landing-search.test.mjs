@@ -523,3 +523,55 @@ test("introductory words cannot turn an unrelated tool prefix into a mandatory f
     "agent",
   );
 });
+
+test("client searches suggest their projects without standalone client results", () => {
+  for (const locale of ["en", "de"]) {
+    const result = searchProjectIndex(
+      buildProjectSearchIndex(projects, locale),
+      "Acme",
+    );
+    assert.deepEqual(
+      result.projects.map((project) => project.id),
+      ["atlas"],
+    );
+    assert.deepEqual(
+      result.suggestions
+        .filter((item) => item.kind === "project")
+        .map((item) => item.label),
+      ["Atlas Configurator"],
+    );
+    assert.ok(
+      result.suggestions.every((item) => item.filter?.field !== "clients"),
+    );
+  }
+});
+
+test("client matches include every matching project suggestion and retain other query constraints", () => {
+  const clientProjects = Array.from({ length: 9 }, (_, i) => ({
+    ...projects[0],
+    id: `client-${i}`,
+    name: `Delivery ${i}`,
+    tools: i === 8 ? ["Docker"] : ["React.js"],
+  }));
+  const clientIndex = buildProjectSearchIndex([...clientProjects, projects[1]]);
+  for (const [query, expected] of [
+    ["Acme", 9],
+    ["ACM", 9],
+    ["projects for Acme", 9],
+    ["Acme React", 8],
+  ]) {
+    const result = searchProjectIndex(clientIndex, query);
+    assert.equal(result.projects.length, expected, query);
+    assert.deepEqual(
+      result.suggestions
+        .filter((item) => item.kind === "project")
+        .map((item) => item.id),
+      result.projects.map((project) => `project:${project.id}`),
+      query,
+    );
+    assert.ok(
+      result.suggestions.every((item) => item.filter?.field !== "clients"),
+      query,
+    );
+  }
+});

@@ -18,3 +18,9 @@
 - Confirmation fits within a 320px viewport. Screenshots: `/tmp/homepage-send-details-confirmation-desktop.jpg` and `/tmp/homepage-suggest-loading.jpg`.
 - The conversation tagline is now above the homepage enquiry CTAs; the rotating contact caption explicitly describes opening the form/contact details.
 - Runtime QA used the optimized build. The dev server is restored on port 6888 with polling to avoid this machine's file-watcher limit. No deployment performed.
+
+## Client search follow-up
+
+Client names remain indexed for matching and combined constraints, but no longer appear as standalone suggestions. Client queries include every matching project in the suggestion rail, removing its previous six-project cap for these searches. Other keyword suggestions and non-client search limits are preserved.
+
+Verified exact/partial client searches and client-plus-tool constraints in behavior tests. Browser checks show 16 project suggestions/results for Fuerst.one (EN) and five for partial Nauti (DE), with no Client/Kunde chips. All 174 tests, TypeScript, scoped lint and formatting pass. Screenshot: `/tmp/homepage-client-project-results.jpg`.
