@@ -74,3 +74,21 @@ test("German landing commands resolve to localized destinations", () => {
     "/de/contact",
   );
 });
+
+test("link destinations preserve explicit English project fallbacks on German pages", () => {
+  const { localizedLinkPath } = loadTs(
+    new URL("../src/lib/i18n.ts", import.meta.url),
+  );
+  assert.equal(
+    localizedLinkPath("/en/projects/english-only", "de"),
+    "/en/projects/english-only",
+  );
+  assert.equal(
+    localizedLinkPath("/de/projects/german-case", "en"),
+    "/de/projects/german-case",
+  );
+  assert.equal(
+    localizedLinkPath("/contact?source=home", "de"),
+    "/de/contact?source=home",
+  );
+});

@@ -9,6 +9,11 @@ export function EnquiryStart({ locale }: { locale: Locale }) {
       className="mx-auto w-full max-w-4xl space-y-6 px-6 py-16"
       aria-labelledby="enquiry-start-title"
     >
+      <p className="text-xs uppercase tracking-[0.15em] text-neutral-400">
+        {locale === "de"
+          ? "Gute Dinge beginnen mit einem Gespräch."
+          : "Good things start with a conversation."}
+      </p>
       <h2
         id="enquiry-start-title"
         className="max-w-2xl text-2xl font-medium leading-relaxed text-white"

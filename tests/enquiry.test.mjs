@@ -9,6 +9,7 @@ const {
   restoreDraft,
   applyIntent,
   restoreEntry,
+  missingProjectDetails,
 } = loadTs(new URL("../src/lib/enquiry.ts", import.meta.url));
 const { submitEnquiry } = loadTs(
   new URL("../src/server/enquiries/submitEnquiry.ts", import.meta.url),
@@ -140,7 +141,6 @@ test("invalid, oversized, bot and incomplete submissions cannot become leads", (
     { ...valid, intent: "invented" },
     { ...valid, email: "invalid" },
     { ...valid, locale: "xx" },
-    { ...valid, situation: "" },
     { ...valid, name: "" },
     { ...valid, website: "bot.example" },
     { ...valid, outcome: "x".repeat(4001) },
@@ -264,4 +264,29 @@ test("concurrent same-reference submissions join one receipt or report a conflic
   assert.equal((await first).receipt, (await retry).receipt);
   await different;
   assert.equal(rows.length, 1);
+});
+
+test("project descriptions are optional and can be shorter than ten characters", () => {
+  for (const situation of ["", "  ", "MVP"]) {
+    const result = parseEnquiry({ ...valid, situation, outcome: "" });
+    assert.equal(result.ok, true);
+    assert.equal(result.value.situation, situation.trim());
+    assert.equal(result.value.outcome, "");
+    assert.deepEqual(validateStep(1, { ...valid, situation, outcome: "" }), []);
+  }
+});
+
+test("missing project details identify only blank descriptions for the send confirmation", () => {
+  assert.deepEqual(missingProjectDetails(valid), []);
+  assert.deepEqual(missingProjectDetails({ ...valid, situation: "   " }), [
+    "situation",
+  ]);
+  assert.deepEqual(
+    missingProjectDetails({ ...valid, situation: "", outcome: "" }),
+    ["situation", "outcome"],
+  );
+  assert.deepEqual(
+    missingProjectDetails({ ...valid, situation: "MVP", outcome: "Ship" }),
+    [],
+  );
 });

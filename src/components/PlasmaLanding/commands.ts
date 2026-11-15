@@ -19,7 +19,7 @@ const COMMANDS: LandingCommand[] = [
   {
     id: "contact",
     label: "Get in touch",
-    caption: "Good things start with a conversation.",
+    caption: "Open the enquiry form or find my contact details.",
     shape: 1,
     href: "/contact",
   },
@@ -198,7 +198,10 @@ const GERMAN_COMMANDS: Record<string, [string, string]> = {
     "Projekte entdecken",
     "Die Menschen, Produkte und Ideen hinter meiner Arbeit.",
   ],
-  contact: ["Kontakt aufnehmen", "Gute Dinge beginnen mit einem Gespräch."],
+  contact: [
+    "Kontakt aufnehmen",
+    "Öffne das Anfrageformular oder finde meine Kontaktdaten.",
+  ],
   enquiry: [
     "Ein Projekt besprechen",
     "Gemeinsam den passenden Einstieg finden.",

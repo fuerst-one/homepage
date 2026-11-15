@@ -5,6 +5,13 @@ export type LocaleParams = { params: Promise<{ locale: string }> };
 export const isLocale = (value: string): value is Locale =>
   value === "en" || value === "de";
 
+/** Explicit link locales can represent a published translation fallback. */
+export function localizedLinkPath(path: string, locale: Locale) {
+  return /^\/(en|de)(\/|[?#]|$)/.test(path)
+    ? path
+    : localizedPath(path, locale);
+}
+
 /** Change page language without changing API, asset or external URLs. */
 export function localizedPath(path: string, locale: Locale): string {
   if (!path.startsWith("/") || path.startsWith("//")) return path;

@@ -122,11 +122,7 @@ const validUrl = (value: string) => {
 export function validateStep(step: number, value: Enquiry): string[] {
   if (step === 0) return isIntent(value.intent) ? [] : ["intent"];
   if (step === 1)
-    return [
-      value.situation.trim().length < 10 ? "situation" : "",
-      value.outcome.trim().length < 10 ? "outcome" : "",
-      !validUrl(value.productUrl.trim()) ? "productUrl" : "",
-    ].filter(Boolean);
+    return !validUrl(value.productUrl.trim()) ? ["productUrl"] : [];
   if (step === 4)
     return [
       !value.name.trim() ? "name" : "",
@@ -135,6 +131,13 @@ export function validateStep(step: number, value: Enquiry): string[] {
         : "",
     ].filter(Boolean);
   return [];
+}
+
+/** Blank descriptions are allowed; the send CTA offers a chance to add them. */
+export function missingProjectDetails(value: Enquiry) {
+  return (["situation", "outcome"] as const).filter(
+    (field) => !value[field].trim(),
+  );
 }
 
 export function parseEnquiry(

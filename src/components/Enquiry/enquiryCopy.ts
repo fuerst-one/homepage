@@ -32,8 +32,8 @@ export const enquiryCopy = {
     contact: "How can Alexander reach you?",
     review: "Check your brief before sending",
     labels: {
-      situation: "What exists today?",
-      outcome: "What would you like to achieve?",
+      situation: "What exists today? (optional)",
+      outcome: "What would you like to achieve? (optional)",
       productUrl: "Product or website link (optional)",
       timing: "When would you like to start? (optional)",
       budget: "Budget or range (optional)",
@@ -51,7 +51,12 @@ export const enquiryCopy = {
     sending: "Saving your enquiry…",
     optional: "“Not sure” is a useful answer too.",
     invalid:
-      "Please check the highlighted fields. Context and desired outcome need at least 10 characters; a link must begin with https:// or http://.",
+      "Please check the highlighted fields. Include your name and a valid email address; any product link must begin with https:// or http://.",
+    missingDetailsTitle: "Send without project details?",
+    missingDetailsDescription:
+      "You’ve left some project details blank. A little context helps Alexander prepare, but you can also discuss it together later.",
+    addDetails: "Add details",
+    sendWithoutDetails: "Send without details",
     failed:
       "Your enquiry could not be confirmed as saved. Your answers are still here. Try again or email Alexander directly.",
     conflict:
@@ -107,8 +112,8 @@ export const enquiryCopy = {
     contact: "Wie kann Alexander dich erreichen?",
     review: "Prüfe deine Angaben vor dem Absenden",
     labels: {
-      situation: "Was gibt es bereits?",
-      outcome: "Was möchtest du erreichen?",
+      situation: "Was gibt es bereits? (optional)",
+      outcome: "Was möchtest du erreichen? (optional)",
       productUrl: "Produkt- oder Website-Link (optional)",
       timing: "Wann möchtest du starten? (optional)",
       budget: "Budget oder Rahmen (optional)",
@@ -126,7 +131,12 @@ export const enquiryCopy = {
     sending: "Deine Anfrage wird gespeichert …",
     optional: "„Noch unklar“ ist auch eine hilfreiche Antwort.",
     invalid:
-      "Bitte prüfe die markierten Felder. Ausgangslage und Ziel brauchen mindestens 10 Zeichen; ein Link muss mit https:// oder http:// beginnen.",
+      "Bitte prüfe die markierten Felder. Gib deinen Namen und eine gültige E-Mail-Adresse an; ein Produktlink muss mit https:// oder http:// beginnen.",
+    missingDetailsTitle: "Ohne Projektdetails senden?",
+    missingDetailsDescription:
+      "Einige Projektdetails sind noch offen. Etwas Kontext hilft Alexander bei der Vorbereitung. Ihr könnt die Details aber auch später gemeinsam besprechen.",
+    addDetails: "Details ergänzen",
+    sendWithoutDetails: "Ohne Details senden",
     failed:
       "Die Speicherung deiner Anfrage konnte nicht bestätigt werden. Deine Angaben sind noch da. Versuche es erneut oder schreibe Alexander direkt per E-Mail.",
     conflict:

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "@/components/i18n/LocalizedLink";
 import { Button } from "@/components/Button";
+import * as Dialog from "@radix-ui/react-dialog";
 import {
   ENQUIRY_INTENTS,
   ENQUIRY_DRAFT_KEY,
@@ -12,6 +13,7 @@ import {
   restoreEntry,
   applyIntent,
   validateStep,
+  missingProjectDetails,
   type EnquiryContext,
   type EnquiryIntent,
 } from "@/lib/enquiry";
@@ -52,6 +54,9 @@ export function EnquiryFlow({
   const [failure, setFailure] = useState("");
   const [sending, setSending] = useState(false);
   const [receipt, setReceipt] = useState("");
+  const [confirmDetails, setConfirmDetails] = useState(false);
+  const editingDetails = useRef(false);
+  const sendControl = useRef<HTMLElement | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const submitting = useRef(false);
   const contextKey = JSON.stringify(initialContext);
@@ -126,6 +131,7 @@ export function EnquiryFlow({
     setErrors([]);
     setFailure("");
     setRestored(false);
+    setConfirmDetails(false);
     try {
       sessionStorage.removeItem(ENQUIRY_DRAFT_KEY);
     } catch {
@@ -138,12 +144,7 @@ export function EnquiryFlow({
     if (fields.length) document.getElementById(`enquiry-${fields[0]}`)?.focus();
     else setStep((current) => Math.min(5, current + 1));
   };
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!standard && step < 5) {
-      next();
-      return;
-    }
+  const send = async (withoutDetails = false) => {
     if (submitting.current) return;
     const parsed = parseEnquiry(value);
     if (!parsed.ok) {
@@ -151,6 +152,11 @@ export function EnquiryFlow({
       if (!standard)
         setStep(!value.intent ? 0 : validateStep(1, value).length ? 1 : 4);
       else document.getElementById(`enquiry-${parsed.fields[0]}`)?.focus();
+      return;
+    }
+    if (!withoutDetails && missingProjectDetails(parsed.value).length) {
+      sendControl.current = document.activeElement as HTMLElement | null;
+      setConfirmDetails(true);
       return;
     }
     submitting.current = true;
@@ -182,6 +188,12 @@ export function EnquiryFlow({
       setSending(false);
     }
   };
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    if (confirmDetails) return;
+    if (!standard && step < 5) next();
+    else void send();
+  };
 
   const field = (key: Field, multiline = false) => {
     const props = {
@@ -197,7 +209,7 @@ export function EnquiryFlow({
             : key === "name"
               ? 150
               : 250,
-      required: ["situation", "outcome", "name", "email"].includes(key),
+      required: ["name", "email"].includes(key),
       "aria-invalid": errors.includes(key),
       "aria-describedby": errors.includes(key)
         ? `enquiry-error-${key}`
@@ -215,7 +227,7 @@ export function EnquiryFlow({
       >
         {copy.labels[key]}
         {multiline ? (
-          <textarea {...props} rows={4} minLength={10} />
+          <textarea {...props} rows={4} />
         ) : (
           <input
             {...props}
@@ -246,13 +258,9 @@ export function EnquiryFlow({
                 ? locale === "de"
                   ? "Bitte einen vollständigen http://- oder https://-Link eingeben."
                   : "Enter a complete http:// or https:// link."
-                : multiline
-                  ? locale === "de"
-                    ? "Bitte mindestens 10 Zeichen eingeben."
-                    : "Please enter at least 10 characters."
-                  : locale === "de"
-                    ? "Bitte dieses Feld ausfüllen."
-                    : "Please complete this field."}
+                : locale === "de"
+                  ? "Bitte dieses Feld ausfüllen."
+                  : "Please complete this field."}
           </span>
         )}
       </label>
@@ -468,6 +476,56 @@ export function EnquiryFlow({
       className="space-y-6 border border-white/30 bg-black/85 p-5 sm:p-8"
       aria-label={locale === "de" ? "Projektanfrage" : "Project enquiry"}
     >
+      <Dialog.Root open={confirmDetails} onOpenChange={setConfirmDetails}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm" />
+          <Dialog.Content
+            className="fixed left-1/2 top-1/2 z-[101] max-h-[90dvh] w-[min(30rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 space-y-5 overflow-y-auto border border-white/30 bg-black p-6 text-neutral-100 shadow-2xl outline-none"
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              if (!editingDetails.current) {
+                if (!submitting.current) sendControl.current?.focus();
+                return;
+              }
+              editingDetails.current = false;
+              document
+                .getElementById(
+                  `enquiry-${missingProjectDetails(value)[0] ?? "situation"}`,
+                )
+                ?.focus();
+            }}
+          >
+            <Dialog.Title className="text-xl leading-relaxed text-white">
+              {copy.missingDetailsTitle}
+            </Dialog.Title>
+            <Dialog.Description className="text-sm leading-relaxed text-neutral-300">
+              {copy.missingDetailsDescription}
+            </Dialog.Description>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                type="button"
+                onClick={() => {
+                  editingDetails.current = true;
+                  if (!standard) setStep(1);
+                  setConfirmDetails(false);
+                }}
+              >
+                {copy.addDetails}
+              </Button>
+              <button
+                type="button"
+                className="min-h-11 px-2 text-sm text-neutral-300 underline underline-offset-4"
+                onClick={() => {
+                  setConfirmDetails(false);
+                  void send(true);
+                }}
+              >
+                {copy.sendWithoutDetails}
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/20 pb-5">
         <p className="text-xs uppercase tracking-[0.15em] text-neutral-400">
           {receipt

@@ -1,9 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { localizedPath } from "@/lib/i18n";
+import { localizedLinkPath } from "@/lib/i18n";
 import Link from "@/components/i18n/LocalizedLink";
 import {
   FormEvent,
@@ -13,8 +14,16 @@ import {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from "react";
-import { ArrowUp, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import {
+  ArrowUp,
+  ChevronLeft,
+  ChevronRight,
+  LoaderCircle,
+  Pause,
+  Play,
+} from "lucide-react";
 import { FrameBounds } from "../Plasma/types";
 import { useInterval } from "../Plasma/useInterval";
 import {
@@ -67,6 +76,8 @@ export const PlasmaLanding = ({
 }) => {
   const locale = useLocale();
   const de = locale === "de";
+  const router = useRouter();
+  const [navigating, startNavigation] = useTransition();
   const SUGGESTIONS = useMemo(() => getLocalizedSuggestions(locale), [locale]);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<PlasmaCanvasHandle>(null);
@@ -138,6 +149,17 @@ export const PlasmaLanding = ({
   const shownShape = previewProject?.shape ?? active.shape;
   const suggestionsId = useId();
   const showResults = hasQuery && !explicitCommand;
+  const loadingSuggestions = searchLoading && !explicitCommand;
+  const busy = loadingSuggestions || navigating;
+  const progress = navigating
+    ? de
+      ? "Seite wird geöffnet …"
+      : "Opening page…"
+    : loadingSuggestions
+      ? de
+        ? "Vorschläge werden geladen …"
+        : "Loading suggestions…"
+      : "";
   const paused = !isPlaying;
   const isShapeMode = showIcon && shapeReady;
   const renderBackdrop = useCallback(() => {
@@ -297,7 +319,7 @@ export const PlasmaLanding = ({
     if (index >= 0) preview(index);
     if (command.href) {
       // The typed input uses the same allowlisted destinations as the links.
-      window.location.assign(localizedPath(command.href, locale));
+      navigate(command.href);
       return;
     }
     if (command.action === "pause") setIsPlaying(false);
@@ -305,6 +327,10 @@ export const PlasmaLanding = ({
     setStatus(command.caption);
     setInput("");
     setSearchFilter(undefined);
+  };
+
+  const navigate = (href: string) => {
+    startNavigation(() => router.push(localizedLinkPath(href, locale)));
   };
 
   const chooseSuggestion = (suggestion: DisplaySuggestion) => {
@@ -315,17 +341,13 @@ export const PlasmaLanding = ({
       preview(0);
       return;
     }
-    if (suggestion.href)
-      window.location.assign(
-        suggestion.href.startsWith("/en/") || suggestion.href.startsWith("/de/")
-          ? suggestion.href
-          : localizedPath(suggestion.href, locale),
-      );
+    if (suggestion.href) navigate(suggestion.href);
     else if (!("kind" in suggestion)) execute(suggestion);
   };
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
+    if (navigating) return;
     if (hasQuery && !explicitCommand && (searchLoading || searchError)) return;
     if (hasQuery && suggestions[currentIndex]) {
       chooseSuggestion(suggestions[currentIndex]);
@@ -520,7 +542,11 @@ export const PlasmaLanding = ({
               setFocused(false);
           }}
         >
-          <form className="landing-input-box" onSubmit={submit}>
+          <form
+            className="landing-input-box"
+            onSubmit={submit}
+            aria-busy={busy}
+          >
             <span className="landing-prompt" aria-hidden="true">
               ↳
             </span>
@@ -579,10 +605,22 @@ export const PlasmaLanding = ({
             <button
               type="submit"
               className="landing-submit"
-              aria-label={de ? "Los" : "Go"}
-              disabled={!input.trim()}
+              aria-label={progress || (de ? "Los" : "Go")}
+              disabled={
+                !hasQuery ||
+                busy ||
+                (!explicitCommand && (searchError || !suggestions.length))
+              }
             >
-              <ArrowUp size={18} />
+              {busy ? (
+                <LoaderCircle
+                  size={18}
+                  className="landing-loading-icon"
+                  aria-hidden="true"
+                />
+              ) : (
+                <ArrowUp size={18} aria-hidden="true" />
+              )}
             </button>
           </form>
           <div className="landing-suggestions">
@@ -668,6 +706,10 @@ export const PlasmaLanding = ({
                     key={suggestion.id}
                     href={suggestion.href}
                     prefetch={false}
+                    onNavigate={(event) => {
+                      event.preventDefault();
+                      if (!navigating) navigate(suggestion.href!);
+                    }}
                     {...props}
                   >
                     {content}
@@ -728,7 +770,7 @@ export const PlasmaLanding = ({
             />
           )}
           <p id="landing-status" className="landing-status" role="status">
-            {status}
+            {progress || status}
           </p>
         </div>
       </div>
