@@ -61,9 +61,9 @@ export const enquiryCopy = {
       "Your enquiry could not be confirmed as saved. Your answers are still here. Try again or email Alexander directly.",
     conflict:
       "This reference was already saved with different details. Start a new enquiry if you want to send an updated brief.",
-    saved: "Your enquiry is saved",
+    saved: "Your enquiry has been received",
     savedDetail:
-      "Alexander can review your brief and contact you using the email below. No email receipt or booking has been sent automatically.",
+      "Thank you for getting in touch. Your enquiry will now be processed, and a response will be sent to the email address below.",
     reference: "Reference",
     restart: "Start a new enquiry",
     reset: "Discard draft and start again",
@@ -141,9 +141,9 @@ export const enquiryCopy = {
       "Die Speicherung deiner Anfrage konnte nicht bestätigt werden. Deine Angaben sind noch da. Versuche es erneut oder schreibe Alexander direkt per E-Mail.",
     conflict:
       "Diese Referenz wurde bereits mit anderen Angaben gespeichert. Starte eine neue Anfrage, wenn du einen aktualisierten Text senden möchtest.",
-    saved: "Deine Anfrage ist gespeichert",
+    saved: "Deine Anfrage ist eingegangen",
     savedDetail:
-      "Alexander kann deine Angaben prüfen und dich unter der unten genannten E-Mail-Adresse kontaktieren. Es wurde keine automatische Bestätigung per E-Mail versendet und kein Termin gebucht.",
+      "Vielen Dank für deine Nachricht. Deine Anfrage wird nun bearbeitet. Eine Rückmeldung erhältst du über die unten angegebene E-Mail-Adresse.",
     reference: "Referenz",
     restart: "Neue Anfrage starten",
     reset: "Entwurf verwerfen und neu starten",
