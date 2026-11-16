@@ -1,0 +1,19 @@
+services:
+  knowledge-db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: homepage_knowledge
+      POSTGRES_USER: homepage
+      POSTGRES_PASSWORD: ${KNOWLEDGE_DB_PASSWORD:?Set KNOWLEDGE_DB_PASSWORD in .env.local}
+    ports:
+      - "127.0.0.1:55438:5432"
+    volumes:
+      - knowledge-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U homepage -d homepage_knowledge"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+volumes:
+  knowledge-data:

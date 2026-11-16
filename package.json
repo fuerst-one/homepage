@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "test:seo": "node --test tests/seo.test.mjs",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
     "dev": "next dev -p 6888",
     "build": "next build",
     "start": "next start",
@@ -14,7 +14,12 @@
     "eslint": "eslint . --ext .ts",
     "eslint:fix": "eslint . --ext .ts --fix",
     "pre-commit": "pnpm eslint:fix && pnpm prettier:fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "knowledge:migrate": "tsx --env-file=.env.local scripts/knowledge.ts migrate",
+    "knowledge:sync": "tsx --env-file=.env.local scripts/knowledge.ts sync",
+    "knowledge:watch": "tsx --env-file=.env.local scripts/knowledge.ts watch",
+    "knowledge:status": "tsx --env-file=.env.local scripts/knowledge.ts status",
+    "knowledge:db": "docker compose --env-file .env.local -f compose.ai.yaml up -d --wait"
   },
   "dependencies": {
     "@mapbox/tiny-sdf": "^2.1.0",
@@ -38,6 +43,7 @@
     "lucide-react": "^0.363.0",
     "motion": "^10.18.0",
     "next": "16.2.4",
+    "postgres": "^4.1.1",
     "prettier": "^3.8.3",
     "puppeteer": "^22.15.0",
     "react": "^19.2.5",
@@ -66,6 +72,7 @@
     "tailwind-scrollbar": "^3.1.0",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.2"
   },
   "packageManager": "pnpm@10.13.1"

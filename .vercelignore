@@ -1,0 +1,8 @@
+.pnpm-store
+.env*
+.vercel
+.serena
+node_modules
+.next
+*.tsbuildinfo
+compose.ai.yaml

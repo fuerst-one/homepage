@@ -1,5 +1,7 @@
 "use server";
 
+import type { ProjectCase } from "@/lib/projectCase";
+
 import {
   fetchNotionProjectsDatabase,
   NotionProject,
@@ -27,6 +29,7 @@ const toProxyUrls = (
 };
 
 export type CvProject = {
+  matching?: ProjectCase;
   id: string;
   name: string;
   logo: string[] | null;

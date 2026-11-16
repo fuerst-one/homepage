@@ -41,6 +41,17 @@ function preview() {
   return { timer, changes, controller };
 }
 
+test("reset restores the wordmark and allows a new preview immediately", () => {
+  const { timer, changes, controller } = preview();
+  controller.hold();
+  controller.reset();
+  assert.deepEqual(changes, [true, false]);
+  controller.touch();
+  assert.deepEqual(changes, [true, false, true]);
+  timer.advance(3000);
+  assert.deepEqual(changes, [true, false, true, false]);
+});
+
 test("the hero stays on its wordmark until interaction and returns after three idle seconds", () => {
   const { timer, changes, controller } = preview();
   timer.advance(20000);

@@ -36,6 +36,12 @@ export const createHeroPreviewController = (
   };
   return {
     touch,
+    reset() {
+      clear();
+      held = false;
+      active = false;
+      onChange(false);
+    },
     hold() {
       held = true;
       touch();

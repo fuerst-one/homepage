@@ -16,14 +16,7 @@ import {
   useState,
   useTransition,
 } from "react";
-import {
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
-  LoaderCircle,
-  Pause,
-  Play,
-} from "lucide-react";
+import { ArrowUp, LoaderCircle, Pause, Play } from "lucide-react";
 import { FrameBounds } from "../Plasma/types";
 import { useInterval } from "../Plasma/useInterval";
 import {
@@ -44,18 +37,25 @@ import {
   getLocalizedSuggestions,
   localizeCommand,
 } from "./commands";
-import { getRailScrollState } from "./getRailScrollState";
 import {
   searchProjectIndex,
   SearchFilter,
   SearchProject,
   SearchSuggestion,
+  resolveSearchDestination,
 } from "./projectSearch";
 import { useProjectSearch } from "./useProjectSearch";
 import { ProjectSearchResults } from "./ProjectSearchResults";
+import { knowledgeFallback } from "../../lib/knowledgeFallback";
+import type { KnowledgeAction } from "../../lib/knowledge";
+import { useKnowledgeAssistant } from "./useKnowledgeAssistant";
 import "./landing.css";
+import "./knowledge.css";
 
 const LandingShape = dynamic(() => import("./LandingShape"), { ssr: false });
+const KnowledgeAssistant = dynamic(() => import("./KnowledgeAssistant"), {
+  ssr: false,
+});
 const BRAND_PLACEMENTS = [
   {
     row: 0,
@@ -96,23 +96,26 @@ export const PlasmaLanding = ({
   const heroPreviewRef = useRef<ReturnType<
     typeof createHeroPreviewController
   > | null>(null);
-  const railRef = useRef<HTMLDivElement>(null);
-  const manualScrollRef = useRef(false);
-  const centerRailRef = useRef(true);
+  const discoveryRef = useRef<HTMLDivElement>(null);
+  const submittedTurn = useRef(0);
+  const suppressChatResume = useRef(false);
   const [bounds, setBounds] = useState<FrameBounds | null>(null);
   const [brandOffset, setBrandOffset] = useState({ x: 0, y: 0 });
   const [interactionTarget, setInteractionTarget] =
     useState<HTMLDivElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [scrollState, setScrollState] = useState({
-    back: false,
-    forward: false,
-  });
   const [isPlaying, setIsPlaying] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [visible, setVisible] = useState(true);
   const [focused, setFocused] = useState(false);
   const [input, setInput] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const assistantEnabled =
+    process.env.NEXT_PUBLIC_KNOWLEDGE_ASSISTANT_ENABLED === "true";
+  const [chatMode, setChatMode] = useState(false);
+  const assistant = useKnowledgeAssistant();
+  const [assistantProject, setAssistantProject] = useState<string | null>(null);
+  const [assistantShowProjects, setAssistantShowProjects] = useState(false);
   const [searchFilter, setSearchFilter] = useState<SearchFilter>();
   const [previewProject, setPreviewProject] = useState<SearchProject | null>(
     null,
@@ -153,8 +156,48 @@ export const PlasmaLanding = ({
   const active = suggestions[currentIndex] ?? SUGGESTIONS[0];
   const shownShape = previewProject?.shape ?? active.shape;
   const suggestionsId = useId();
-  const showResults = hasQuery && !explicitCommand;
-  const loadingSuggestions = searchLoading && !explicitCommand;
+  const showDiscovery =
+    !chatMode &&
+    (hasQuery || Boolean(assistantProject) || assistantShowProjects);
+  const shownProjects =
+    assistantProject && searchIndex
+      ? searchIndex.projects.filter(
+          (project) => project.id === assistantProject,
+        )
+      : assistantShowProjects
+        ? (searchIndex?.projects ?? [])
+        : explicitCommand
+          ? []
+          : search.projects;
+  const discoveryChoices = suggestions.filter(
+    (suggestion) =>
+      hasQuery && (!("kind" in suggestion) || suggestion.kind === "keyword"),
+  );
+  useEffect(() => {
+    if (!showDiscovery) return;
+    const update = () => {
+      const slot = discoveryRef.current;
+      const header = containerRef.current?.querySelector(".landing-header");
+      if (!slot || !header) return;
+      const available =
+        slot.getBoundingClientRect().bottom -
+        Math.max(16, header.getBoundingClientRect().bottom) -
+        20;
+      slot.style.setProperty(
+        "--discovery-height",
+        `${Math.max(50, Math.min(260, available / 2))}px`,
+      );
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    if (containerRef.current) observer.observe(containerRef.current);
+    window.addEventListener("resize", update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [showDiscovery]);
+  const loadingSuggestions = !chatMode && searchLoading && !explicitCommand;
   const busy = loadingSuggestions || navigating;
   const progress = navigating
     ? de
@@ -237,31 +280,6 @@ export const PlasmaLanding = ({
     return () => window.clearTimeout(timer);
   }, [showIcon]);
 
-  const updateScrollState = useCallback(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const next = getRailScrollState(
-      rail.scrollLeft,
-      rail.scrollWidth,
-      rail.clientWidth,
-    );
-    setScrollState((previous) =>
-      previous.back === next.back && previous.forward === next.forward
-        ? previous
-        : next,
-    );
-  }, []);
-
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const observer = new ResizeObserver(updateScrollState);
-    observer.observe(rail);
-    for (const chip of rail.children) observer.observe(chip);
-    updateScrollState();
-    return () => observer.disconnect();
-  }, [updateScrollState, suggestions]);
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -317,17 +335,6 @@ export const PlasmaLanding = ({
   }, [cellSize, interactionTarget]);
 
   useEffect(() => {
-    const rail = railRef.current;
-    const chip = rail?.children[currentIndex] as HTMLElement | undefined;
-    if (!rail || !chip || manualScrollRef.current || !centerRailRef.current)
-      return;
-    rail.scrollTo({
-      left: chip.offsetLeft - (rail.clientWidth - chip.clientWidth) / 2,
-      behavior: reducedMotion ? "instant" : "smooth",
-    });
-  }, [currentIndex, reducedMotion, suggestions]);
-
-  useEffect(() => {
     renderBackdrop();
   }, [bounds, renderBackdrop]);
 
@@ -335,11 +342,10 @@ export const PlasmaLanding = ({
     if (visible && isPlaying && !reducedMotion) renderBackdrop();
   }, 1000 / 24);
 
-  const preview = (index: number, center = true, reveal = true) => {
+  const preview = (index: number, reveal = true) => {
+    if (previewProject) heroPreviewRef.current?.release();
     if (reveal) heroPreviewRef.current?.touch();
     setPreviewProject(null);
-    centerRailRef.current = center;
-    if (center) manualScrollRef.current = false;
     setActiveIndex(index);
   };
 
@@ -362,12 +368,71 @@ export const PlasmaLanding = ({
     startNavigation(() => router.push(localizedLinkPath(href, locale)));
   };
 
+  const restoreLanding = () => {
+    submittedTurn.current++;
+    assistant.stop();
+    setChatMode(false);
+    setInput("");
+    setSearchFilter(undefined);
+    setAssistantProject(null);
+    setAssistantShowProjects(false);
+    setPreviewProject(null);
+    setActiveIndex(0);
+    setStatus("");
+    heroPreviewRef.current?.reset();
+    suppressChatResume.current = true;
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+      suppressChatResume.current = false;
+    });
+  };
+
+  const assistantAction = (action: KnowledgeAction) => {
+    if (action.type === "navigate") {
+      navigate(action.target);
+      return;
+    }
+    setChatMode(false);
+    if (action.type === "filter") {
+      setAssistantProject(action.target);
+      setInput("");
+      setSearchFilter(undefined);
+      setFocused(true);
+      setStatus(
+        de
+          ? "Ausgewähltes Projekt wird angezeigt."
+          : "Showing the selected project.",
+      );
+    }
+    const target = action.type === "filter" ? "projects" : action.target;
+    if (target === "projects" && action.type === "highlight") {
+      setAssistantProject(null);
+      setAssistantShowProjects(true);
+      setInput("");
+      setFocused(true);
+    }
+    requestAnimationFrame(() => {
+      const element = document.getElementById(`landing-${target}`);
+      if (!element) return;
+      element.scrollIntoView({
+        block: "center",
+        behavior: reducedMotion ? "instant" : "smooth",
+      });
+      element.focus({ preventScroll: true });
+      element.classList.add("knowledge-highlight");
+      setTimeout(() => element.classList.remove("knowledge-highlight"), 3000);
+    });
+  };
+
   const chooseSuggestion = (suggestion: DisplaySuggestion) => {
     if ("kind" in suggestion && suggestion.kind === "keyword") {
       setSearchFilter(suggestion.filter);
       setInput(suggestion.label);
       setStatus("");
       preview(0);
+      suppressChatResume.current = true;
+      inputRef.current?.focus();
+      suppressChatResume.current = false;
       return;
     }
     if (suggestion.href) navigate(suggestion.href);
@@ -377,21 +442,38 @@ export const PlasmaLanding = ({
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (navigating) return;
-    if (hasQuery && !explicitCommand && (searchLoading || searchError)) return;
+    if (hasQuery && !explicitCommand && searchLoading) return;
+    if (explicitCommand) {
+      execute(explicitCommand);
+      return;
+    }
+    const destination =
+      searchIndex && resolveSearchDestination(searchIndex, input, searchFilter);
+    if (destination) {
+      navigate(destination);
+      return;
+    }
+    if (assistantEnabled) {
+      if (!hasQuery || assistant.busy) return;
+      setChatMode(true);
+      setAssistantProject(null);
+      setAssistantShowProjects(false);
+      const question = input;
+      const request = ++submittedTurn.current;
+      void assistant
+        .ask(question, knowledgeFallback(locale, search.projects))
+        .then((succeeded) => {
+          if (!succeeded && request === submittedTurn.current)
+            setInput(question);
+        });
+      setInput("");
+      setStatus("");
+      return;
+    }
     if (hasQuery && suggestions[currentIndex]) {
       chooseSuggestion(suggestions[currentIndex]);
       return;
     }
-  };
-
-  const move = (direction: number) => {
-    const rail = railRef.current;
-    if (!rail) return;
-    manualScrollRef.current = true;
-    rail.scrollBy({
-      left: direction * rail.clientWidth * 0.75,
-      behavior: reducedMotion ? "instant" : "smooth",
-    });
   };
 
   return (
@@ -399,7 +481,8 @@ export const PlasmaLanding = ({
       ref={containerRef}
       className="landing"
       data-paused={paused || reducedMotion}
-      data-searching={showResults}
+      data-discovery={showDiscovery}
+      data-chat={chatMode}
       data-hero={isShapeMode ? "shape" : "brand"}
       data-shape-mounted={shapeMounted}
       onPointerMove={(event) => {
@@ -552,7 +635,7 @@ export const PlasmaLanding = ({
             drag to rotate ↔
           </span>
         </div>
-        <div className="landing-intro">
+        <div className="landing-intro" aria-hidden={showDiscovery || chatMode}>
           <p className="landing-title">{headline}</p>
           <p
             key={previewProject?.id ?? active.id}
@@ -576,246 +659,325 @@ export const PlasmaLanding = ({
         </div>
         <div
           className="landing-console"
+          onKeyDown={(event) => {
+            if (event.key === "Escape" && !event.defaultPrevented) {
+              event.preventDefault();
+              restoreLanding();
+            }
+          }}
           onFocusCapture={() => setFocused(true)}
           onBlurCapture={(event) => {
             if (!event.currentTarget.contains(event.relatedTarget))
               setFocused(false);
           }}
         >
-          <form
-            className="landing-input-box"
-            onSubmit={submit}
-            aria-busy={busy}
+          <div
+            ref={discoveryRef}
+            className="landing-discovery-slot"
+            hidden={chatMode}
           >
-            <span className="landing-prompt" aria-hidden="true">
-              ↳
-            </span>
-            <label className="sr-only" htmlFor="landing-command">
-              {de
-                ? "Was möchtest du entdecken?"
-                : "Where would you like to go?"}
-            </label>
-            <input
-              id="landing-command"
-              value={input}
-              onChange={(event) => {
-                setInput(event.target.value);
-                setSearchFilter(undefined);
-                setStatus("");
-                preview(0, true, showIcon);
-              }}
-              onKeyDown={(event) => {
-                if (event.nativeEvent.isComposing) return;
-                if (event.key === "Escape") {
-                  setInput("");
-                  setSearchFilter(undefined);
-                  setStatus("");
-                  preview(0, true, showIcon);
-                } else if (
-                  hasQuery &&
-                  suggestions.length &&
-                  (event.key === "ArrowDown" || event.key === "ArrowUp")
-                ) {
-                  event.preventDefault();
-                  preview(
-                    (currentIndex +
-                      (event.key === "ArrowDown" ? 1 : -1) +
-                      suggestions.length) %
-                      suggestions.length,
+            <nav
+              className="landing-quick-access"
+              aria-hidden={chatMode || showDiscovery}
+              inert={chatMode || showDiscovery}
+              aria-label={de ? "Schnellzugriff" : "Quick access"}
+            >
+              {SUGGESTIONS.map((suggestion, index) => (
+                <Link
+                  key={suggestion.id}
+                  className="landing-chip"
+                  href={suggestion.href!}
+                  prefetch={false}
+                  onPointerMove={() => preview(index)}
+                  onFocus={() => preview(index)}
+                >
+                  <span aria-hidden="true">↗</span>
+                  {suggestion.label}
+                </Link>
+              ))}
+            </nav>
+            {showDiscovery && (
+              <div
+                className="landing-discovery"
+                id={suggestionsId}
+                aria-label={de ? "Projekte und Filter" : "Projects and filters"}
+                tabIndex={-1}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    event.preventDefault();
+                    restoreLanding();
+                    return;
+                  }
+                  if (
+                    !["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)
+                  )
+                    return;
+                  const choices = Array.from(
+                    event.currentTarget.querySelectorAll<HTMLElement>(
+                      "[data-discovery-choice]",
+                    ),
                   );
-                }
-              }}
-              role={hasQuery ? "combobox" : undefined}
-              aria-autocomplete={hasQuery ? "list" : undefined}
-              aria-expanded={hasQuery ? suggestions.length > 0 : undefined}
-              aria-controls={hasQuery ? suggestionsId : undefined}
-              aria-activedescendant={
-                hasQuery && suggestions.length
-                  ? `${suggestionsId}-${currentIndex}`
-                  : undefined
-              }
-              placeholder={
-                de ? "Suchen oder Hallo sagen …" : "Search or say hello…"
-              }
-              autoComplete="off"
-              spellCheck={false}
-              maxLength={240}
-              aria-describedby="landing-input-help landing-status"
-            />
-            <button
-              type="submit"
-              className="landing-submit"
-              aria-label={progress || (de ? "Los" : "Go")}
-              disabled={
-                !hasQuery ||
-                busy ||
-                (!explicitCommand && (searchError || !suggestions.length))
-              }
-            >
-              {busy ? (
-                <LoaderCircle
-                  size={18}
-                  className="landing-loading-icon"
-                  aria-hidden="true"
-                />
-              ) : (
-                <ArrowUp size={18} aria-hidden="true" />
-              )}
-            </button>
-          </form>
-          <div className="landing-suggestions">
-            <button
-              type="button"
-              className="landing-rail-arrow"
-              aria-label={de ? "Vorheriger Vorschlag" : "Previous suggestion"}
-              disabled={!scrollState.back}
-              aria-hidden={!scrollState.back}
-              onClick={() => move(-1)}
-            >
-              <ChevronLeft size={14} />
-            </button>
-            <div
-              ref={railRef}
-              id={suggestionsId}
-              role={hasQuery ? "listbox" : undefined}
-              className="landing-rail"
-              data-scroll-back={scrollState.back}
-              data-scroll-forward={scrollState.forward}
-              aria-label={
-                hasQuery
-                  ? de
-                    ? "Vorschläge für Projekte und Stichwörter"
-                    : "Project keyword and name suggestions"
-                  : de
-                    ? "Vorgeschlagene Ziele und Plasma-Steuerung"
-                    : "Suggested destinations and plasma controls"
-              }
-              onPointerDown={() => {
-                manualScrollRef.current = true;
-              }}
-              onWheel={() => {
-                manualScrollRef.current = true;
-              }}
-              onScroll={() => {
-                updateScrollState();
-                if (!manualScrollRef.current || !railRef.current) return;
-                const rail = railRef.current;
-                if (!rail.children.length) return;
-                const center =
-                  rail.getBoundingClientRect().left + rail.clientWidth / 2;
-                const distances = Array.from(rail.children).map((chip) => {
-                  const rect = chip.getBoundingClientRect();
-                  return Math.abs(rect.left + rect.width / 2 - center);
-                });
-                preview(distances.indexOf(Math.min(...distances)), false);
-              }}
-            >
-              {suggestions.map((suggestion, index) => {
-                const props = {
-                  className: "landing-chip",
-                  id: `${suggestionsId}-${index}`,
-                  role: hasQuery ? "option" : undefined,
-                  "aria-selected": hasQuery
-                    ? index === currentIndex
-                    : undefined,
-                  tabIndex: hasQuery ? -1 : undefined,
-                  "data-active": showIcon && index === currentIndex,
-                  onPointerMove: () => preview(index, false),
-                  onFocus: () => preview(index),
-                };
-                const content = (
-                  <>
-                    <span aria-hidden="true">
-                      {"kind" in suggestion && suggestion.kind === "keyword"
-                        ? "#"
-                        : "↗"}
-                    </span>
-                    {suggestion.label}
-                    {"category" in suggestion && (
-                      <span className="landing-chip-category">
-                        {suggestion.category}
-                        {suggestion.kind === "keyword"
-                          ? ` · ${suggestion.count}`
-                          : ""}
-                      </span>
-                    )}
-                  </>
-                );
-                return suggestion.href ? (
-                  <Link
-                    key={suggestion.id}
-                    href={suggestion.href}
-                    prefetch={false}
-                    onNavigate={(event) => {
-                      event.preventDefault();
-                      if (!navigating) navigate(suggestion.href!);
-                    }}
-                    {...props}
+                  if (!choices.length) return;
+                  const index = choices.indexOf(
+                    document.activeElement as HTMLElement,
+                  );
+                  const next =
+                    event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? choices.length - 1
+                        : (index +
+                            (event.key === "ArrowDown" ? 1 : -1) +
+                            choices.length) %
+                          choices.length;
+                  event.preventDefault();
+                  choices[next].focus();
+                }}
+              >
+                {(shownProjects.length > 0 ||
+                  (searchLoading && !explicitCommand) ||
+                  searchError ||
+                  !discoveryChoices.length) && (
+                  <div
+                    id="landing-projects"
+                    className="landing-discovery-panel"
+                    tabIndex={-1}
                   >
-                    {content}
-                  </Link>
-                ) : (
-                  <button
-                    key={suggestion.id}
-                    type="button"
-                    {...props}
-                    onMouseDown={(event) => {
-                      if (hasQuery) event.preventDefault();
-                    }}
-                    onClick={() => chooseSuggestion(suggestion)}
+                    <ProjectSearchResults
+                      projects={shownProjects}
+                      query={input.trim()}
+                      loading={searchLoading && !explicitCommand}
+                      error={searchError && !explicitCommand}
+                      retry={retrySearch}
+                      onPreview={(project) => {
+                        if (project) heroPreviewRef.current?.hold();
+                        else if (previewProject)
+                          heroPreviewRef.current?.release();
+                        setPreviewProject(project);
+                      }}
+                    />
+                  </div>
+                )}
+                {!!discoveryChoices.length && (
+                  <nav
+                    className="landing-discovery-choices"
+                    aria-label={de ? "Suchvorschläge" : "Search suggestions"}
                   >
-                    {content}
-                  </button>
-                );
-              })}
-            </div>
-            <button
-              type="button"
-              className="landing-rail-arrow"
-              aria-label={de ? "Nächster Vorschlag" : "Next suggestion"}
-              disabled={!scrollState.forward}
-              aria-hidden={!scrollState.forward}
-              onClick={() => move(1)}
-            >
-              <ChevronRight size={14} />
-            </button>
-          </div>
-          <div className="landing-console-meta">
-            <span id="landing-input-help">
-              {hasQuery
-                ? de
-                  ? "↑ ↓ entdecken · Enter auswählen · Esc leeren"
-                  : "↑ ↓ to explore · enter to select · esc to clear"
-                : de
-                  ? "Bedarf, Funktionen, Projekte, Tools oder ein Hallo"
-                  : "needs, capabilities, projects, tools, or a hello"}
-            </span>
-            {!hasQuery && (
-              <span aria-hidden="true">
-                {de ? "tippen & Enter ↵" : "type & enter ↵"}
-              </span>
+                    {discoveryChoices.map((suggestion) => (
+                      <button
+                        key={suggestion.id}
+                        type="button"
+                        className="landing-chip"
+                        data-discovery-choice
+                        onClick={() => chooseSuggestion(suggestion)}
+                        onPointerMove={() =>
+                          preview(suggestions.indexOf(suggestion))
+                        }
+                        onFocus={() => preview(suggestions.indexOf(suggestion))}
+                      >
+                        <span aria-hidden="true">
+                          {"kind" in suggestion ? "+" : "↗"}
+                        </span>
+                        {suggestion.label}
+                      </button>
+                    ))}
+                  </nav>
+                )}
+              </div>
             )}
           </div>
-          {showResults && (
-            <ProjectSearchResults
-              projects={search.projects}
-              query={input.trim()}
-              loading={searchLoading}
-              error={searchError}
-              retry={retrySearch}
-              onPreview={(project) => {
-                setPreviewProject(project);
-                if (project) heroPreviewRef.current?.touch();
+          {chatMode && (
+            <KnowledgeAssistant
+              turns={assistant.turns}
+              busy={assistant.busy}
+              error={assistant.error}
+              pendingQuestion={assistant.pendingQuestion}
+              onAction={assistantAction}
+              onBack={restoreLanding}
+              onClear={() => {
+                assistant.clear();
+                restoreLanding();
               }}
             />
           )}
+          <div className="landing-composer">
+            <form
+              id="landing-search"
+              tabIndex={-1}
+              className="landing-input-box"
+              onSubmit={submit}
+              aria-busy={assistantEnabled ? assistant.busy : busy}
+            >
+              <span className="landing-prompt" aria-hidden="true">
+                ↳
+              </span>
+              <label className="sr-only" htmlFor="landing-command">
+                {chatMode
+                  ? de
+                    ? "Frage zu Alex’ Arbeit"
+                    : "Question about Alex's work"
+                  : de
+                    ? "Was möchtest du entdecken?"
+                    : "Where would you like to go?"}
+              </label>
+              <input
+                ref={inputRef}
+                id="landing-command"
+                value={input}
+                onFocus={() => {
+                  if (
+                    assistantEnabled &&
+                    assistant.turns.length &&
+                    !suppressChatResume.current
+                  )
+                    setChatMode(true);
+                }}
+                onClick={() => {
+                  if (assistantEnabled && assistant.turns.length)
+                    setChatMode(true);
+                }}
+                onChange={(event) => {
+                  setAssistantProject(null);
+                  setAssistantShowProjects(false);
+                  setInput(event.target.value);
+                  setSearchFilter(undefined);
+                  setStatus("");
+                  preview(0, showIcon);
+                }}
+                onKeyDown={(event) => {
+                  if (event.nativeEvent.isComposing) return;
+                  if (event.key === "Escape") {
+                    event.preventDefault();
+                    restoreLanding();
+                  } else if (
+                    showDiscovery &&
+                    (event.key === "ArrowDown" || event.key === "ArrowUp")
+                  ) {
+                    const choices =
+                      discoveryRef.current?.querySelectorAll<HTMLElement>(
+                        "[data-discovery-choice]",
+                      );
+                    if (!choices?.length) return;
+                    event.preventDefault();
+                    choices[
+                      event.key === "ArrowDown" ? 0 : choices.length - 1
+                    ].focus();
+                  }
+                }}
+                type="search"
+                aria-controls={showDiscovery ? suggestionsId : undefined}
+                placeholder={
+                  assistantEnabled
+                    ? chatMode
+                      ? de
+                        ? "Stelle eine weitere Frage …"
+                        : "Ask another question…"
+                      : de
+                        ? "Projekte suchen oder eine Frage stellen …"
+                        : "Search projects or ask a question…"
+                    : de
+                      ? "Suchen oder Hallo sagen …"
+                      : "Search or say hello…"
+                }
+                autoComplete="off"
+                spellCheck={false}
+                maxLength={assistantEnabled ? 1000 : 240}
+                readOnly={assistant.busy}
+                aria-describedby="landing-input-help landing-status"
+              />
+              <button
+                type={assistant.busy ? "button" : "submit"}
+                onClick={
+                  assistant.busy
+                    ? (event) => {
+                        event.preventDefault();
+                        assistant.stop();
+                      }
+                    : undefined
+                }
+                className="landing-submit"
+                aria-label={
+                  assistantEnabled
+                    ? assistant.busy
+                      ? de
+                        ? "Antwort stoppen"
+                        : "Stop answer"
+                      : de
+                        ? "Suchen oder fragen"
+                        : "Search or ask"
+                    : progress || (de ? "Los" : "Go")
+                }
+                disabled={
+                  assistantEnabled
+                    ? (!hasQuery && !assistant.busy) ||
+                      navigating ||
+                      (!assistant.busy && !explicitCommand && searchLoading)
+                    : !hasQuery ||
+                      busy ||
+                      (!explicitCommand && (searchError || !suggestions.length))
+                }
+              >
+                {assistant.busy ? (
+                  <span aria-hidden="true">■</span>
+                ) : !assistantEnabled && busy ? (
+                  <LoaderCircle
+                    size={18}
+                    className="landing-loading-icon"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <ArrowUp size={18} aria-hidden="true" />
+                )}
+              </button>
+            </form>
+            <div className="landing-console-meta">
+              <span id="landing-input-help">
+                {assistantEnabled
+                  ? chatMode
+                    ? de
+                      ? "Enter fragen · Esc Chat schließen"
+                      : "enter to ask · esc to close chat"
+                    : de
+                      ? "Enter öffnen oder fragen · ↑ ↓ Vorschläge · Esc leeren"
+                      : "enter to open or ask · ↑ ↓ suggestions · esc to clear"
+                  : hasQuery
+                    ? de
+                      ? "↑ ↓ entdecken · Enter auswählen · Esc leeren"
+                      : "↑ ↓ to explore · enter to select · esc to clear"
+                    : de
+                      ? "Bedarf, Funktionen, Projekte, Tools oder ein Hallo"
+                      : "needs, capabilities, projects, tools, or a hello"}
+              </span>
+              {!hasQuery && !assistantEnabled && (
+                <span aria-hidden="true">
+                  {de ? "tippen & Enter ↵" : "type & enter ↵"}
+                </span>
+              )}
+            </div>
+            {assistantEnabled && (
+              <p className="knowledge-privacy">
+                {de
+                  ? "Fragen gehen über OpenRouter an KI-Anbieter. Verlauf: bis zu 2 Stunden in diesem Tab. Keine vertraulichen Angaben. KI kann sich irren. "
+                  : "Questions go through OpenRouter to AI providers. History: up to 2 hours in this tab. Leave out confidential details. AI can make mistakes. "}
+                <Link
+                  href={
+                    de ? "/datenschutz#ai-assistant" : "/privacy#ai-assistant"
+                  }
+                  prefetch={false}
+                  className="underline"
+                >
+                  {de ? "Datenschutz" : "Privacy"}
+                </Link>
+              </p>
+            )}
+          </div>
           <p id="landing-status" className="landing-status" role="status">
             {progress || status}
           </p>
         </div>
       </div>
       <div className="landing-footer">
-        <nav aria-label="Social links">
+        <nav id="landing-contact" tabIndex={-1} aria-label="Social links">
           <a href="https://github.com/fuerst-one">GitHub ↗</a>
           <a href="https://www.linkedin.com/in/fuerst-one/">LinkedIn ↗</a>
           <Link href="/contact" prefetch={false}>

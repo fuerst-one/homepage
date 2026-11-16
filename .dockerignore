@@ -1,0 +1,12 @@
+.git
+.vercel
+.next
+node_modules
+.pnpm-store
+.env*
+*.tsbuildinfo
+coverage
+out
+build
+data
+.DS_Store

@@ -6,6 +6,7 @@ import { Layout } from "@/components/Layout";
 import { ProjectsClientView } from "@/components/Cv/Projects/ProjectsClientView";
 import { LogoMarquee } from "@/components/Cv/Projects/LogoMarquee";
 import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
+import { getPublicProjectCases } from "@/server/notion/getEnquiryEvidence";
 import { getCachedCvOwnerPublic } from "@/server/notion/getCachedCvOwner";
 import { Intro } from "@/components/Cv/Intro";
 import { OwnerFacts } from "@/components/Cv/OwnerFacts";
@@ -32,10 +33,18 @@ export const revalidate = 3600;
 export default async function ProjectsPage({ params }: LocaleParams) {
   const locale = await getLocale(params);
   const copy = await getSiteCopy(locale);
-  const [projects, owner] = await Promise.all([
+  const [sourceProjects, owner, cases] = await Promise.all([
     getCachedCvProjects(locale),
     getCachedCvOwnerPublic(locale),
+    getPublicProjectCases().catch(() => []),
   ]);
+  const matchingById = new Map(
+    cases.map((project) => [project.id, project.caseStudy]),
+  );
+  const projects = sourceProjects.map((project) => ({
+    ...project,
+    matching: matchingById.get(project.id),
+  }));
 
   return (
     <Layout

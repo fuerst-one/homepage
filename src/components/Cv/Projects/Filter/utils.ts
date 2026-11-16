@@ -1,19 +1,23 @@
 import { CvProject } from "@/server/notion/getCvProjects";
 import countBy from "lodash/countBy";
 import { colors } from "../colors";
+import { CASE_VOCABULARY } from "../../../../lib/projectCase";
 
-type FilterKey = keyof Omit<
-  CvProject,
-  | "description"
-  | "kpis"
-  | "clients"
-  | "descriptionDe"
-  | "kpisDe"
-  | "germanReady"
-  | "contentLocale"
-  | "caseStudyEn"
-  | "caseStudyDe"
->;
+type FilterKey =
+  | keyof Omit<
+      CvProject,
+      | "description"
+      | "kpis"
+      | "clients"
+      | "descriptionDe"
+      | "kpisDe"
+      | "germanReady"
+      | "contentLocale"
+      | "caseStudyEn"
+      | "caseStudyDe"
+      | "matching"
+    >
+  | keyof typeof CASE_VOCABULARY;
 export type FilterParams = Partial<Record<FilterKey, string[]>>;
 
 export const getFilterOptionCounts = (
@@ -40,13 +44,16 @@ export const filterProjects = (
       if (!searchValues?.length) {
         return true;
       }
-      return getIsMatchingProject(project[key], searchValues);
+      const value = Object.hasOwn(CASE_VOCABULARY, key)
+        ? project.matching?.[key as keyof typeof CASE_VOCABULARY]
+        : project[key as keyof CvProject];
+      return getIsMatchingProject(value, searchValues);
     });
   });
 };
 
 const getIsMatchingProject = (
-  projectValue: CvProject[FilterKey],
+  projectValue: unknown,
   searchValues: string[],
 ) => {
   return searchValues.some((searchValue) => {
@@ -59,12 +66,11 @@ const getIsMatchingProject = (
   });
 };
 
-const compareValues = (
-  projectValue: string | number | boolean | null,
-  searchValue: string,
-) => {
+const compareValues = (projectValue: unknown, searchValue: string) => {
   return (
-    projectValue &&
+    (typeof projectValue === "string" ||
+      typeof projectValue === "number" ||
+      typeof projectValue === "boolean") &&
     projectValue.toString().toLowerCase() === searchValue.toLowerCase()
   );
 };

@@ -59,6 +59,7 @@ export const ProjectSearchResults = ({
                 href={project.href}
                 prefetch={false}
                 className="landing-search-result"
+                data-discovery-choice
                 onPointerMove={() => onPreview(project)}
                 onFocus={() => onPreview(project)}
               >

@@ -10,5 +10,6 @@
       "path": "/api/integrations/malt",
       "schedule": "23 5 * * *"
     }
-  ]
+  ],
+  "regions": ["fra1"]
 }

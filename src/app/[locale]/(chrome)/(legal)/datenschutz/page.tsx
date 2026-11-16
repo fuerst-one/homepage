@@ -20,7 +20,7 @@ export default function DatenschutzPage() {
         Datenschutzerklärung
       </h1>
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
-        Stand: 14. November 2026
+        Stand: 16. November 2026
       </p>
       <p>
         Diese Erklärung beschreibt, wie personenbezogene Daten beim Besuch von
@@ -144,6 +144,79 @@ export default function DatenschutzPage() {
         Links und keine eingebetteten Social-Media-Plugins. Wenn Sie einem Link
         folgen, verarbeitet der Zielanbieter Daten nach seiner eigenen
         Datenschutzerklärung.
+      </p>
+      <h2
+        id="ai-assistant"
+        className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white"
+      >
+        KI-Portfolio-Assistent
+      </h2>
+      <p>
+        Der freiwillig nutzbare Assistent beantwortet Fragen zu veröffentlichten
+        Projekten. Das Tippen einer Suche und das Öffnen gespeicherter
+        Nachrichten senden keine Frage an einen KI-Anbieter. Wenn Sie Text ohne
+        exakte Übereinstimmung mit einem Navigationsziel absenden, gehen Ihre
+        Frage und die Seitensprache über unseren Server an OpenRouter, Inc.,
+        USA, sowie an die Anbieter für Embeddings und die Antwortgenerierung.
+        Die Antwortanfrage enthält außerdem passende Auszüge aus
+        veröffentlichten Portfolio-Inhalten. Frühere Nachrichten werden lokal
+        angezeigt und nicht bei späteren Modellanfragen mitgesendet. Bitte geben
+        Sie keine vertraulichen Informationen, sensiblen personenbezogenen Daten
+        oder personenbezogenen Daten Dritter ein.
+      </p>
+      <p>
+        Wir halten die letzten fünf abgeschlossenen Fragen und Antworten samt
+        Quellenlinks und Seitenaktionen im Sitzungsspeicher dieses Browser-Tabs
+        vor. Sie stehen über Seitenwechsel und Neuladen hinweg für zwei Stunden
+        nach der letzten abgeschlossenen Antwort bereit. Chat schließen blendet
+        das Gespräch aus; ein Klick auf das Startseiten-Eingabefeld öffnet es
+        erneut. Chat löschen entfernt den gespeicherten Verlauf. Abgelaufene
+        Verläufe werden bei geöffneter Startseite oder bei Ihrer nächsten
+        Rückkehr gelöscht. Das Schließen des Tabs beendet den Sitzungsspeicher
+        normalerweise; eine Sitzungswiederherstellung des Browsers kann ihn
+        wiederherstellen. Sie können auch die Website-Daten im Browser löschen.
+        Bei gesperrtem Browserspeicher bleibt der Verlauf nur im Arbeitsspeicher
+        der aktuellen Seite.
+      </p>
+      <p>
+        Sind die KI-Dienste nicht verfügbar, entstehen Projektvorschläge lokal,
+        ohne Ihre Frage an ein Modell zu senden. Ein gesonderter technischer
+        Status im Sitzungsspeicher dieses Tabs merkt sich diesen Modus bis zur
+        bestätigten Wiederherstellung oder zum Schließen des Tabs. Er enthält
+        weder Fragetext noch Nutzerkennung. Prüfungen zur Wiederherstellung
+        senden feste Testtexte an die KI-Dienste, keine Besucherfragen oder
+        Gesprächsverläufe.
+      </p>
+      <p>
+        Unsere Anwendungsdatenbank speichert keine Fragen oder Antworten. Sie
+        enthält öffentliche Wissensauszüge und Embeddings sowie
+        Nutzungszeitpunkte, Kosten, Anfragestatus und einen mit geheimem
+        Schlüssel aus der IP-Adresse abgeleiteten Hash zur Missbrauchsabwehr.
+        Dieser Hash ist pseudonym und nicht anonym. Nutzungsdatensätze, die
+        älter als 35 Tage sind, werden bei der Zulassung einer weiteren Anfrage
+        gelöscht. Hosting-Zugriffsprotokolle werden getrennt wie oben
+        beschrieben verarbeitet. Die Modellanfragen enthalten Ihre ursprüngliche
+        IP-Adresse nicht im Anfrageinhalt.
+      </p>
+      <p>
+        Rechtsgrundlage für die Beantwortung freiwillig gestellter
+        Portfolio-Fragen, das von Ihnen gewünschte fortsetzbare Gespräch und die
+        Missbrauchsabwehr ist unser berechtigtes Interesse nach Art. 6 Abs. 1
+        lit. f DSGVO. Suche und direkter Kontakt bleiben ohne den Assistenten
+        möglich. Die Verarbeitung bei Anbietern kann außerhalb des EWR, auch in
+        den USA, stattfinden. OpenRouter beschreibt internationale
+        Übermittlungsgarantien und Speicherfristen in seiner{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://openrouter.ai/privacy"
+        >
+          Datenschutzerklärung
+        </a>
+        . Speicherung und Trainingsnutzung bei Modellanbietern richten sich nach
+        dem tatsächlichen Endpunkt, den Kontoeinstellungen und den geltenden
+        Vereinbarungen. Wir versprechen keine vollständige Spurenfreiheit bei
+        Dritten. Das Löschen des lokalen Verlaufs löscht keine bereits bei einem
+        Anbieter vorhandenen Datensätze.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Formular für Projektanfragen

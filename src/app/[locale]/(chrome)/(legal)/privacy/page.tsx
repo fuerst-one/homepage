@@ -20,7 +20,7 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
-        Last updated: 14 November 2026
+        Last updated: 16 November 2026
       </p>
       <p>
         This policy explains how personal data is processed when you visit
@@ -136,6 +136,71 @@ export default function PrivacyPage() {
         Links to GitHub, LinkedIn and freelance platforms are ordinary links,
         rather than embedded social plugins. If you follow a link, the
         destination provider processes data under its own privacy policy.
+      </p>
+      <h2
+        id="ai-assistant"
+        className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white"
+      >
+        AI portfolio assistant
+      </h2>
+      <p>
+        The optional assistant answers questions about published projects.
+        Typing a search or opening saved messages does not send a question to an
+        AI provider. Submitting text without an exact navigation match sends
+        your question and site language through our server to OpenRouter, Inc.,
+        USA, and the providers that process the embedding and answer requests.
+        The answer request also includes relevant excerpts from published
+        portfolio content. Earlier messages are displayed locally and are not
+        included in later model requests. Please do not submit confidential
+        information, sensitive personal data or personal data about other
+        people.
+      </p>
+      <p>
+        We keep the last five completed question-and-answer exchanges, including
+        source links and page actions, in this tab’s session storage. They
+        remain available across pages and reloads for two hours after the last
+        completed answer. Closing chat hides it; clicking the landing input
+        reopens it. Clear chat removes the saved conversation. Expired history
+        is cleared while the landing page is open or when you next return;
+        closing the tab normally ends session storage, although browser session
+        recovery can restore it. You can also clear this website’s browser data.
+        If storage is blocked, history remains only in the current page’s
+        memory.
+      </p>
+      <p>
+        If AI services are unavailable, project suggestions are generated
+        locally without sending your question to a model. A separate technical
+        status in this tab’s session storage remembers this mode until verified
+        recovery or tab closure; it contains no question text or user
+        identifier. Background recovery checks send fixed test text to the AI
+        services, without visitor questions or conversation history.
+      </p>
+      <p>
+        Our application database does not store questions or answers. It stores
+        public knowledge passages and embeddings, plus usage timestamps, costs,
+        request status and a keyed hash derived from your IP address for abuse
+        prevention. This hash is pseudonymous, not anonymous. Usage records
+        older than 35 days are deleted when a further request is admitted.
+        Hosting access logs are handled separately as described above. We do not
+        include your raw IP address in model request bodies.
+      </p>
+      <p>
+        The legal basis for answering voluntarily submitted portfolio questions,
+        keeping your requested resumable chat and preventing abuse is our
+        legitimate interest under Art. 6(1)(f) GDPR. Search and direct contact
+        remain available without the assistant. Provider processing can take
+        place outside the EEA, including in the USA. OpenRouter describes its
+        international-transfer safeguards and retention in its{" "}
+        <a
+          className="text-white underline underline-offset-4 hover:text-neutral-300"
+          href="https://openrouter.ai/privacy"
+        >
+          privacy policy
+        </a>
+        . Provider retention and training rules depend on the actual endpoint,
+        account settings and applicable agreements. We do not promise that
+        third-party processing leaves no records. Deleting this tab’s history
+        does not delete records already held by a provider.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Project enquiry form

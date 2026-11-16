@@ -140,6 +140,34 @@ const facetAliases = (field: SearchField, value: string) =>
     ? projectCaseAliases(field, value)
     : [value, ...(GERMAN_FACETS[field]?.[value] ?? [])];
 export type SearchFilter = { field: SearchField; value: string };
+
+/** Exact destinations take priority over a paid assistant question. */
+export function resolveSearchDestination(
+  index: ProjectSearchIndex,
+  query: string,
+  selected?: SearchFilter,
+): string | null {
+  const exact = normalize(query);
+  if (!exact) return null;
+  const project = index.projects.find((item) => normalize(item.name) === exact);
+  if (project) return project.href;
+  const matches = index.keywords.filter(
+    (item) =>
+      item.filter?.field !== "clients" && normalize(item.label) === exact,
+  );
+  const keyword =
+    matches.find(
+      (item) =>
+        selected &&
+        item.filter?.field === selected.field &&
+        item.filter.value === selected.value,
+    ) ?? matches[0];
+  if (!keyword?.filter) return null;
+  const { field, value } = keyword.filter;
+  const filterValue =
+    field === "featured" ? String(value === "Featured") : value;
+  return `/projects?${new URLSearchParams({ [field]: filterValue })}`;
+}
 export type SearchProject = {
   id: string;
   name: string;

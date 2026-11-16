@@ -396,7 +396,11 @@ export const useShapesLuminance = (
         if (
           controlled.shapeIndex !== (refs.transition?.index ?? refs.poolIndex)
         ) {
-          refs.transition = { index: controlled.shapeIndex, startedAt: now };
+          // Retarget in flight without postponing the swap on every key press.
+          refs.transition = {
+            index: controlled.shapeIndex,
+            startedAt: refs.transition?.startedAt ?? now,
+          };
         }
         if (refs.transition) {
           const progress =

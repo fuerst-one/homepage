@@ -4,6 +4,7 @@ import { useId, useMemo, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useFiltersStore } from "../filtersStore";
 import clsx from "clsx";
+import { caseLabel } from "../../../../lib/projectCase";
 import { CvProject } from "@/server/notion/getCvProjects";
 import { FilterParams, filterProjects } from "./utils";
 import {
@@ -21,6 +22,11 @@ const ARRAY_COLUMNS: (keyof FilterParams)[] = [
   "experiences",
   "tools",
   "languages",
+  "buyerNeeds",
+  "stages",
+  "domains",
+  "aiCapabilities",
+  "aiUsage",
 ];
 
 type CliFilterKey =
@@ -76,6 +82,18 @@ const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
   projectType: "Projekttypen",
   tools: "Tools",
   languages: "Sprachen",
+};
+
+const EXTRA_FILTER_LABELS: Record<string, [string, string]> = {
+  id: ["Project", "Projekt"],
+  buyerNeeds: ["Buyer need", "Bedarf"],
+  stages: ["Delivery stage", "Umsetzungsstand"],
+  domains: ["Project domain", "Projektbereich"],
+  aiCapabilities: ["AI capability", "KI-Funktion"],
+  aiUsage: ["AI use", "KI-Einsatz"],
+  ownership: ["Contribution", "Verantwortung"],
+  maintenance: ["Engagement", "Zusammenarbeit"],
+  workplace: ["Workplace", "Arbeitsort"],
 };
 
 const CLI_FILTER_LABEL_LOOKUP = Object.fromEntries(
@@ -163,11 +181,25 @@ export const FilterSqlConsole = ({
           (de
             ? GROUP_LABELS_DE[key as CliFilterKey]
             : CLI_FILTER_LABEL_LOOKUP[key as CliFilterKey]) ??
+          EXTRA_FILTER_LABELS[key]?.[de ? 1 : 0] ??
           key.replace(/([a-z0-9])([A-Z])/g, "$1 $2"),
         value,
+        displayValue:
+          key === "id"
+            ? (projects.find((project) => project.id === value)?.name ??
+              (de ? "Ausgewähltes Projekt" : "Selected project"))
+            : key === "featured"
+              ? value === "true"
+                ? de
+                  ? "Ja"
+                  : "Yes"
+                : de
+                  ? "Nein"
+                  : "No"
+              : caseLabel(value, locale),
       })),
     );
-  }, [normalizedFilters, de]);
+  }, [normalizedFilters, de, locale, projects]);
 
   const loweredQuery = searchQuery.toLowerCase();
 
@@ -203,6 +235,7 @@ export const FilterSqlConsole = ({
           aria-controls={panelId}
         >
           {isExpanded ? (de ? "Schließen" : "Close") : "Filter"}
+          {!!activeFilters.length && <span>({activeFilters.length})</span>}
           <span
             className={clsx(
               "transition-transform",
@@ -213,6 +246,60 @@ export const FilterSqlConsole = ({
             ▾
           </span>
         </button>
+      </div>
+      <div
+        className="filter-active-summary mt-4 flex flex-wrap items-center gap-2 border-t border-white/20 pt-4 text-xs text-neutral-300"
+        role="region"
+        aria-label={de ? "Aktive Filter" : "Active filters"}
+      >
+        <span className="text-[0.65rem] uppercase tracking-[0.2em] text-neutral-400">
+          {activeFilters.length
+            ? de
+              ? "Aktive Filter"
+              : "Active filters"
+            : de
+              ? "Alle Projekte"
+              : "All projects"}
+        </span>
+        {activeFilters.map(({ key, label, value, displayValue }) => (
+          <button
+            key={`${key}-${value}`}
+            type="button"
+            aria-label={`${de ? "Entfernen" : "Remove"} ${label}: ${displayValue}`}
+            className="inline-flex min-h-11 max-w-full items-center gap-2 border border-white/40 bg-white/5 px-3 py-1.5 text-left text-xs text-neutral-100 transition hover:border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            onClick={() => {
+              const next = { ...filterParams };
+              const filterKey = key as keyof FilterParams;
+              const remaining = next[filterKey]?.filter(
+                (item) => item !== value,
+              );
+              if (remaining?.length) next[filterKey] = remaining;
+              else delete next[filterKey];
+              setFilters(next);
+            }}
+          >
+            <span className="min-w-0 break-words">
+              {label}: <span className="text-white">{displayValue}</span>
+            </span>
+            <span aria-hidden="true">×</span>
+          </button>
+        ))}
+        <span
+          className="whitespace-nowrap text-[0.65rem] text-neutral-400"
+          role="status"
+        >
+          {resultsCount} {de ? "Ergebnisse" : "results"}
+        </span>
+        {!!activeFilters.length && (
+          <button
+            type="button"
+            data-clear-filters
+            onClick={resetFilters}
+            className="min-h-11 px-2 text-xs text-neutral-300 underline underline-offset-4 hover:text-white"
+          >
+            {de ? "Alle Filter löschen" : "Clear all filters"}
+          </button>
+        )}
       </div>
       <div
         id={panelId}
@@ -248,25 +335,6 @@ export const FilterSqlConsole = ({
               <pre className="inline whitespace-pre-wrap break-words text-neutral-100">
                 {sqlStatement}
               </pre>
-            </div>
-            <div className="my-3 flex flex-wrap items-center gap-2 text-[0.7rem] uppercase tracking-[0.25em] text-neutral-400">
-              <span>{de ? "Aktive Filter" : "Active filters"}</span>
-              <div className="flex flex-wrap gap-2">
-                {activeFilters.length ? (
-                  activeFilters.map(({ key, label, value }) => (
-                    <span
-                      key={`${key}-${value}`}
-                      className="border border-white/40 bg-white/10 px-2 py-1 text-[0.65rem] text-neutral-100"
-                    >
-                      {label}: <span className="text-white">{value}</span>
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-neutral-500">
-                    {de ? "Keine" : "None"}
-                  </span>
-                )}
-              </div>
             </div>
             <label className="block text-[0.65rem] uppercase tracking-[0.2em] text-neutral-400">
               {de ? "Datensatz durchsuchen" : "Search dataset"}

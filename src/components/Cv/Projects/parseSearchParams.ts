@@ -1,10 +1,15 @@
 import type { CvProject } from "@/server/notion/getCvProjects";
 import type { FilterParams } from "./Filter/utils";
+import { CASE_VOCABULARY } from "../../../lib/projectCase";
 
 export type ProjectSearchParams = Partial<
-  Record<keyof CvProject | "all" | "focus", string | string[]>
+  Record<
+    keyof CvProject | keyof FilterParams | "all" | "focus",
+    string | string[]
+  >
 >;
 const FILTER_KEYS = new Set([
+  ...Object.keys(CASE_VOCABULARY),
   "id",
   "name",
   "logo",
