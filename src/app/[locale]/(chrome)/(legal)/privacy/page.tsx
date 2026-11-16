@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getSiteFeatures } from "@/server/siteFeatures";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Fuerst.one",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
+  const { assistantEnabled } = getSiteFeatures();
   return (
     <>
       <h1 className="text-2xl font-semibold tracking-tight text-white">
@@ -60,6 +62,20 @@ export default function PrivacyPage() {
         separate from visitor analytics.
       </p>
       <p>
+        Database and background services run on our server at Hetzner Online
+        GmbH in Nuremberg, Germany. Coolify is the software we use to manage
+        that server. The database stores published website content and, where
+        applicable, submitted enquiries
+        {assistantEnabled
+          ? " and the assistant usage data described below."
+          : "."}{" "}
+        Access is restricted to the relevant application services and
+        administration. Daily database backups are kept on the same server, with
+        at most seven copies retained for up to seven days. Erased records can
+        remain in these backups until rotation; restoration must preserve
+        erasure requests.
+      </p>
+      <p>
         Public API requests are also limited using an IP-based request counter
         held temporarily in server memory. The counting window is one minute;
         expired entries are removed during periodic cleanup when further
@@ -95,12 +111,13 @@ export default function PrivacyPage() {
         not create visitor profiles.
       </p>
       <p>
-        The Plasma playground remembers your selected visual source, size and
-        contrast in your browser’s local storage so that your settings are
-        available on your next visit. These settings are not sent to us and do
-        not contain a visitor identifier. They remain until you clear this
-        website’s data in your browser. This storage supports the playground
-        settings you select; it is not used for tracking.
+        The Plasma playground keeps visual settings in page memory by default.
+        If you select “Remember visual settings on this device”, your source,
+        size and contrast settings and that choice are saved in local storage
+        until you uncheck the option or clear this website’s browser data. They
+        are not sent to us and contain no visitor identifier. This optional
+        storage is based on your consent under §25(1) TDDDG. Unchecking removes
+        the saved settings; the playground continues to work.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Camera, selected files and recordings
@@ -125,83 +142,108 @@ export default function PrivacyPage() {
         without a browser request to Google Fonts.
       </p>
       <p>
-        Project images are normally served through this website. Where no
-        project logo is available, a logo may be requested directly from
-        logo.clearbit.com. Such a request discloses your IP address and the
-        request information sent by your browser to the external provider. The
-        purpose is to display project logos, based on our legitimate interest in
-        presenting our work under Art. 6(1)(f) GDPR.
+        Project images and available logos are served through this website.
+        Missing logos are not automatically fetched from an external logo
+        service. Ordinary browsing does not require an AI service.
       </p>
       <p>
         Links to GitHub, LinkedIn and freelance platforms are ordinary links,
         rather than embedded social plugins. If you follow a link, the
         destination provider processes data under its own privacy policy.
       </p>
-      <h2
-        id="ai-assistant"
-        className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white"
-      >
-        AI portfolio assistant
-      </h2>
-      <p>
-        The optional assistant answers questions about published projects.
-        Typing a search or opening saved messages does not send a question to an
-        AI provider. Submitting text without an exact navigation match sends
-        your question and site language through our server to OpenRouter, Inc.,
-        USA, and the providers that process the embedding and answer requests.
-        The answer request also includes relevant excerpts from published
-        portfolio content. Earlier messages are displayed locally and are not
-        included in later model requests. Please do not submit confidential
-        information, sensitive personal data or personal data about other
-        people.
-      </p>
-      <p>
-        We keep the last five completed question-and-answer exchanges, including
-        source links and page actions, in this tab’s session storage. They
-        remain available across pages and reloads for two hours after the last
-        completed answer. Closing chat hides it; clicking the landing input
-        reopens it. Clear chat removes the saved conversation. Expired history
-        is cleared while the landing page is open or when you next return;
-        closing the tab normally ends session storage, although browser session
-        recovery can restore it. You can also clear this website’s browser data.
-        If storage is blocked, history remains only in the current page’s
-        memory.
-      </p>
-      <p>
-        If AI services are unavailable, project suggestions are generated
-        locally without sending your question to a model. A separate technical
-        status in this tab’s session storage remembers this mode until verified
-        recovery or tab closure; it contains no question text or user
-        identifier. Background recovery checks send fixed test text to the AI
-        services, without visitor questions or conversation history.
-      </p>
-      <p>
-        Our application database does not store questions or answers. It stores
-        public knowledge passages and embeddings, plus usage timestamps, costs,
-        request status and a keyed hash derived from your IP address for abuse
-        prevention. This hash is pseudonymous, not anonymous. Usage records
-        older than 35 days are deleted when a further request is admitted.
-        Hosting access logs are handled separately as described above. We do not
-        include your raw IP address in model request bodies.
-      </p>
-      <p>
-        The legal basis for answering voluntarily submitted portfolio questions,
-        keeping your requested resumable chat and preventing abuse is our
-        legitimate interest under Art. 6(1)(f) GDPR. Search and direct contact
-        remain available without the assistant. Provider processing can take
-        place outside the EEA, including in the USA. OpenRouter describes its
-        international-transfer safeguards and retention in its{" "}
-        <a
-          className="text-white underline underline-offset-4 hover:text-neutral-300"
-          href="https://openrouter.ai/privacy"
-        >
-          privacy policy
-        </a>
-        . Provider retention and training rules depend on the actual endpoint,
-        account settings and applicable agreements. We do not promise that
-        third-party processing leaves no records. Deleting this tab’s history
-        does not delete records already held by a provider.
-      </p>
+      {assistantEnabled && (
+        <>
+          <h2
+            id="ai-assistant"
+            className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white"
+          >
+            AI portfolio assistant
+          </h2>
+          <p>
+            The optional assistant answers questions about published projects.
+            Typing, exact project navigation and opening saved messages do not
+            send a question to an AI provider. When enabled, the assistant first
+            asks for your permission before a question is sent. “Allow AI and
+            send” permits your question and site language to be sent through our
+            server to OpenRouter, Inc., USA, and OpenAI, USA, which processes
+            the embedding and answer requests. Routing is restricted to OpenAI;
+            it does not fall back to other model providers. The answer request
+            also includes relevant excerpts from published portfolio content.
+            Earlier messages are displayed locally and are not included in later
+            model requests. Please do not submit confidential information,
+            sensitive personal data or personal data about other people.
+          </p>
+          <p>
+            We remember both allow and decline, the notice version, time and
+            separate history choice in this browser’s local storage for up to
+            180 days. Visits do not renew this period. A changed notice version
+            or clearing browser data invalidates the choice. You can change your
+            AI preference or withdraw below the landing input. This minimal
+            privacy choice is remembered as an expressly requested setting under
+            §25(2)(2) TDDDG. Chat itself stays in page memory unless you
+            additionally select “Also remember chat in this tab”. Only with that
+            choice are the last five completed exchanges, source links and
+            actions saved across pages and reloads. History expires two hours
+            after the last completed answer, or earlier when permission expires
+            or is withdrawn. Closing chat hides it; Clear chat removes its
+            history. Expired saved data are cleared on the landing page or your
+            next return. Closing the tab normally ends session storage, although
+            browser session recovery can restore it. With storage blocked,
+            permission and history stay only in this page’s memory.
+          </p>
+          <p>
+            You can withdraw using “Withdraw AI permission” below the landing
+            input. Withdrawal stops pending client requests and further AI
+            questions, and removes local chat and status data. A declined choice
+            is saved so we do not ask again. Data already transmitted cannot be
+            recalled; withdrawal does not affect the lawfulness of earlier
+            processing. Search and contact remain usable without AI permission.
+            The basis for optional AI processing is Art. 6(1)(a) GDPR; optional
+            chat storage uses §25(1) TDDDG consent. The permission can be
+            changed without losing ordinary search or contact.
+          </p>
+          <p>
+            If AI services are unavailable, project suggestions are generated
+            locally without sending your question to a model. A separate
+            technical status may remember this mode in tab session storage with
+            active permission; it contains no question text or user identifier.
+            A same-site availability check contains no question or history.
+            Server health checks use fixed synthetic text, never visitor
+            questions, history or visitor IP addresses. Unavailable AI shows
+            project suggestions without a consent prompt.
+          </p>
+          <p>
+            Our application database does not store questions or answers. It
+            stores public knowledge passages and embeddings, plus usage
+            timestamps, costs, request status and a keyed hash derived from your
+            IP address for abuse prevention. This hash is pseudonymous, not
+            anonymous. Usage records also contain the declared consent version,
+            time and history choice to document permission, under Art. 6(1)(c)
+            with Art. 7(1) GDPR. Abuse prevention is based on Art. 6(1)(f) GDPR.
+            Records, including receipts, older than 35 days are deleted when a
+            further request is admitted. Hosting access logs are handled
+            separately as described above. We do not include your raw IP address
+            in model request bodies.
+          </p>
+          <p>
+            Provider processing can take place outside the EEA, including in the
+            USA. OpenRouter describes its international-transfer safeguards and
+            retention in its{" "}
+            <a
+              className="text-white underline underline-offset-4 hover:text-neutral-300"
+              href="https://openrouter.ai/privacy"
+            >
+              privacy policy
+            </a>
+            . Requests restrict provider routing using no-training and
+            zero-data- retention controls. Actual retention also depends on
+            account settings, endpoint policies and legal safety exceptions.
+            These controls do not establish EU-only processing. We do not
+            promise that third-party processing leaves no records. Deleting this
+            tab’s history does not delete records already held by a provider.
+          </p>
+        </>
+      )}
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Project enquiry form
       </h2>
@@ -209,12 +251,17 @@ export default function PrivacyPage() {
         The contact form collects the project or collaboration brief you review
         and submit: your selected starting point, current situation, desired
         outcome, contact details, optional commercial details, and the page or
-        service you selected. On submission, our server stores these details and
-        a timestamp in a private database at Notion Labs, Inc., USA, so we can
-        handle your business enquiry. The form does not send an automatic email
-        receipt, book a call, or subscribe you to a newsletter. The existing
-        legal bases for contact enquiries described below also apply to this
-        form.
+        service you selected. On submission, our server first stores these
+        details and a timestamp in our private PostgreSQL database in Germany. A
+        background worker transfers the enquiry to our private database at
+        Notion Labs, Inc., USA, and adds an internal notification mention. If
+        Notion is unavailable, the transfer is retried. The queued brief is
+        deleted after delivery; a receipt identifier and content fingerprint are
+        retained for up to 30 days to recognise repeat submissions. Backup
+        copies expire under the backup retention schedule. The form does not
+        send an automatic email receipt, book a call, or subscribe you to a
+        newsletter. The existing legal bases for contact enquiries described
+        below also apply to this form.
       </p>
       <p>
         An unsent draft is kept in session storage in your browser tab for up to

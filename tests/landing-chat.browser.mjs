@@ -1,12 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import puppeteer from "puppeteer";
+import { grantKnowledgeConsent } from "./helpers/knowledge-consent.mjs";
 
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 test("the shared input previews search, submits chat, and returns to search", async () => {
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
+    await grantKnowledgeConsent(page);
     await page.setViewport({ width: 1280, height: 900 });
     await page.evaluateOnNewDocument(() => {
       const original = window.fetch;

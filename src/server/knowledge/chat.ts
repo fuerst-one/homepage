@@ -1,4 +1,5 @@
 import { createHmac } from "node:crypto";
+import type { KnowledgeConsent } from "../../lib/knowledgeConsent";
 import {
   validateKnowledgeAnswer,
   knowledgeResponseSchema,
@@ -29,6 +30,7 @@ export async function answerKnowledge(
   locale: Locale,
   address: string,
   signal?: AbortSignal,
+  consent?: KnowledgeConsent,
 ) {
   signal?.throwIfAborted();
   const secret =
@@ -44,7 +46,12 @@ export async function answerKnowledge(
     throw new Error("Embedding model mismatch");
   await verifyChatPrice(signal);
   const visitor = createHmac("sha256", secret).update(address).digest("hex");
-  const reservation = await reserveKnowledgeUsage(visitor, false, signal);
+  const reservation = await reserveKnowledgeUsage(
+    visitor,
+    false,
+    signal,
+    consent,
+  );
   try {
     signal?.throwIfAborted();
     const [vector] = await embedKnowledge([message], signal);

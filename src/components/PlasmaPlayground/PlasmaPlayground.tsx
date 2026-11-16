@@ -12,6 +12,13 @@ import { useInterval } from "../Plasma/useInterval";
 import { getIsReducedMotion } from "../Plasma/getIsReducedMotion";
 import { KnobDropdown } from "./KnobDropdown";
 import { LegalFooter } from "../Plasma/LegalFooter";
+import { useLocale } from "../i18n/LocaleProvider";
+import {
+  PLAYGROUND_REMEMBER_KEY,
+  readPlaygroundPreference,
+  writePlaygroundPreference,
+  rememberPlaygroundPreferences,
+} from "../../lib/playgroundPreferences";
 import { getPlaygroundLabels } from "./playgroundLabels";
 import { getSplashLabels } from "./splashLabels";
 import { useWebcamStream } from "./useWebcamStream";
@@ -45,13 +52,21 @@ import {
   SplashChoice,
 } from "./types";
 
-const FOOTER_RESERVED_PX = 40;
+const FOOTER_RESERVED_PX = 84;
 
 const readSplashChoice = (): SplashChoice => {
   if (typeof window === "undefined") {
     return null;
   }
-  const stored = window.localStorage.getItem(SPLASH_LOCAL_STORAGE_KEY);
+  let stored: string | null = null;
+  try {
+    stored = readPlaygroundPreference(
+      window.localStorage,
+      SPLASH_LOCAL_STORAGE_KEY,
+    );
+  } catch {
+    /* Storage can be unavailable. */
+  }
   if (
     stored === "camera" ||
     stored === "upload" ||
@@ -67,7 +82,15 @@ const writeSplashChoice = (choice: Exclude<SplashChoice, null>) => {
   if (typeof window === "undefined") {
     return;
   }
-  window.localStorage.setItem(SPLASH_LOCAL_STORAGE_KEY, choice);
+  try {
+    writePlaygroundPreference(
+      window.localStorage,
+      SPLASH_LOCAL_STORAGE_KEY,
+      choice,
+    );
+  } catch {
+    /* Keep the choice in memory. */
+  }
 };
 
 const isSource = (value: unknown): value is Source =>
@@ -86,11 +109,12 @@ const readKnobs = (): KnobState | null => {
   if (typeof window === "undefined") {
     return null;
   }
-  const raw = window.localStorage.getItem(KNOBS_LOCAL_STORAGE_KEY);
-  if (raw === null) {
-    return null;
-  }
   try {
+    const raw = readPlaygroundPreference(
+      window.localStorage,
+      KNOBS_LOCAL_STORAGE_KEY,
+    );
+    if (raw === null) return null;
     const parsed: unknown = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") {
       return null;
@@ -117,7 +141,15 @@ const writeKnobs = (knobs: KnobState) => {
   if (typeof window === "undefined") {
     return;
   }
-  window.localStorage.setItem(KNOBS_LOCAL_STORAGE_KEY, JSON.stringify(knobs));
+  try {
+    writePlaygroundPreference(
+      window.localStorage,
+      KNOBS_LOCAL_STORAGE_KEY,
+      JSON.stringify(knobs),
+    );
+  } catch {
+    /* Keep the settings in memory. */
+  }
 };
 
 const isSupportedUploadFile = (file: File): boolean =>
@@ -148,6 +180,8 @@ const pickFileFromDataTransfer = (dataTransfer: DataTransfer): File | null => {
 };
 
 export const PlasmaPlayground = () => {
+  const de = useLocale() === "de";
+  const [remember, setRemember] = useState(false);
   const [knobs, setKnobs] = useState<KnobState>(DEFAULT_KNOBS);
   const [openKnob, setOpenKnob] = useState<KnobId | null>(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -191,6 +225,16 @@ export const PlasmaPlayground = () => {
   );
 
   useEffect(() => {
+    try {
+      setRemember(
+        readPlaygroundPreference(
+          window.localStorage,
+          PLAYGROUND_REMEMBER_KEY,
+        ) === "true",
+      );
+    } catch {
+      /* No persistent settings. */
+    }
     const splash = readSplashChoice();
     const persistedKnobs = readKnobs();
     if (persistedKnobs) {
@@ -749,6 +793,32 @@ export const PlasmaPlayground = () => {
           onClose={closeKnob}
         />
       </div>
+      <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 px-4 text-xs text-neutral-400">
+        <input
+          type="checkbox"
+          data-remember-playground
+          checked={remember}
+          onChange={(event) => {
+            try {
+              const allowed = rememberPlaygroundPreferences(
+                window.localStorage,
+                event.target.checked,
+              );
+              setRemember(allowed);
+              if (allowed) {
+                writeKnobs(knobs);
+                if (splashChoice) writeSplashChoice(splashChoice);
+              }
+            } catch {
+              setRemember(false);
+            }
+          }}
+          className="h-4 w-4 accent-[#dfc993]"
+        />
+        {de
+          ? "Darstellung auf diesem Gerät merken (freiwillig)"
+          : "Remember visual settings on this device (optional)"}
+      </label>
       <LegalFooter />
       <video
         ref={videoRef}

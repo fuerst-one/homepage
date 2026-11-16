@@ -1,7 +1,10 @@
 # Assistant privacy review — 16 November 2026
 
-Status: local draft updated; **public launch is not cleared**. No production
-settings, provider account settings or contracts were changed by this review.
+Historical snapshot of the earlier implementation. Superseded by the
+[current consent and provider review](privacy-launch-review-2026-11-16.md), which
+documents the new opt-in, provider restrictions and remaining account checks.
+The observations below describe the earlier release, not the current working
+tree. **Public AI launch remains on hold.**
 
 ## Verified against code
 

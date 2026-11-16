@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import type { KnowledgeConsent } from "../../lib/knowledgeConsent";
 import { knowledgeDatabase } from "./database";
 
 export class KnowledgeQuotaError extends Error {}
@@ -14,6 +15,7 @@ export async function reserveKnowledgeUsage(
   visitor: string,
   indexer = false,
   signal?: AbortSignal,
+  consent?: KnowledgeConsent,
 ) {
   signal?.throwIfAborted();
   const sql = knowledgeDatabase(),
@@ -41,7 +43,7 @@ export async function reserveKnowledgeUsage(
     )
       throw new KnowledgeQuotaError("Knowledge allowance reached");
     const id = randomUUID();
-    await tx`INSERT INTO knowledge_usage(id,visitor,amount_micro_usd) VALUES (${id},${visitor},${amount})`.signal(
+    await tx`INSERT INTO knowledge_usage(id,visitor,amount_micro_usd,consent) VALUES (${id},${visitor},${amount},${consent ? JSON.stringify(consent) : null}::jsonb)`.signal(
       signal,
     );
     // Usage records contain no prompts, responses or raw IP addresses.

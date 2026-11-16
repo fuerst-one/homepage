@@ -5,9 +5,11 @@ shared input to preview project suggestions; press **Enter** to ask the
 assistant. Try “Show projects with AI automation”. Answers cite
 published projects; the buttons can filter the landing page, open a known page,
 or highlight its search, project results, and contact area. Each question is
-independent; the last five completed exchanges are kept in this tab’s session
-storage for two hours after the latest answer (with in-memory fallback if
-storage is blocked). Chat replaces
+independent. Available AI asks for opt-in before sending a question; allow and
+decline are remembered for 180 days without renewal on visits. Unknown/unavailable
+AI goes directly to local suggestions. The last five exchanges are saved in this
+tab for two hours after the latest answer only when the separate history option
+is selected; otherwise they remain in page memory. Chat replaces
 the entire discovery section, with messages above the shared input. The page
 grows naturally and the composer stays near the bottom while scrolling. Choose
 **Close chat** or press Escape to restore the default landing page.
@@ -24,13 +26,20 @@ chat remains available; opening history never repeats a model request.
 
 Close chat hides the conversation and restores the landing. Clicking or focusing
 the input resumes saved messages, including after page navigation or reload.
-Clear chat erases them. Reading history does not extend expiry. Expired storage
+Clear chat erases them. Withdraw AI permission aborts pending requests, clears
+chat/status and remembers a refusal; Change AI preference permits a new choice.
+Reading history does not extend expiry. Expired storage
 is cleared on the landing page or on the next return.
 
 The local English/German privacy notices have been updated. See the
-[pre-publication privacy review](knowledge-assistant-privacy-review-2026-11-16.md)
+[pre-publication privacy review](privacy-launch-review-2026-11-16.md)
 for provider settings, DPA/transfers and production hosting checks that remain
-outstanding. This feature has not been published.
+outstanding. The site is deployed with public AI disabled; the consent and legal
+changes remain local pending review. Before release, apply the updated initial
+SQL migration as administrator to add the consent receipt column. The app and
+indexer login roles cannot alter tables. Provider routing is pinned to OpenAI
+with no-training/ZDR restrictions and no provider fallback. Changing model
+recipients requires another privacy review and notice-version update.
 
 ## Silent fallback
 
@@ -42,7 +51,8 @@ local suggestions immediately. Stop and Clear still cancel pending questions.
 
 A process-local circuit starts with a 30-second cooldown, increasing failed
 recovery checks to a maximum five minutes. Active pages check status in the
-background and Next `after()` runs one recovery check per Node process at a time.
+background with no question/history, and Next `after()` runs synthetic checks
+one per Node process at a time, including while health is still unknown.
 Fallback stays active until fresh DB content, embeddings and a tiny structured
 chat response all work. These synthetic checks use the same global spending
 budget as chat/indexing, not visitor messages. No traffic means no checks.

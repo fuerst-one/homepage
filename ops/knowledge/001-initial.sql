@@ -34,3 +34,4 @@ CREATE TABLE IF NOT EXISTS knowledge_usage (
   status text NOT NULL DEFAULT 'reserved' CHECK (status IN ('reserved','complete','failed'))
 );
 CREATE INDEX IF NOT EXISTS knowledge_usage_time ON knowledge_usage(created_at);
+ALTER TABLE knowledge_usage ADD COLUMN IF NOT EXISTS consent jsonb;

@@ -6,7 +6,7 @@ export const chatModel = () =>
 
 export async function routerRequest(
   path: string,
-  body: unknown,
+  body: Record<string, unknown>,
   signal?: AbortSignal,
 ) {
   const key = process.env.OPENROUTER_API_KEY;
@@ -17,7 +17,17 @@ export async function routerRequest(
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+      ...body,
+      provider: {
+        ...(body.provider as Record<string, unknown> | undefined),
+        data_collection: "deny",
+        zdr: true,
+        // Adding a provider requires a new recipient/privacy review first.
+        only: ["openai"],
+        allow_fallbacks: false,
+      },
+    }),
     signal: signal
       ? AbortSignal.any([signal, AbortSignal.timeout(45_000)])
       : AbortSignal.timeout(45_000),

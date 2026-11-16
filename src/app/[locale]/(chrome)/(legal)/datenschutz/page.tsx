@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getSiteFeatures } from "@/server/siteFeatures";
 
 export const metadata: Metadata = {
   title: "Datenschutz | Fuerst.one",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function DatenschutzPage() {
+  const { assistantEnabled } = getSiteFeatures();
   return (
     <>
       <h1 className="text-2xl font-semibold tracking-tight text-white">
@@ -62,6 +64,20 @@ export default function DatenschutzPage() {
         unterscheiden.
       </p>
       <p>
+        Datenbank und Hintergrunddienste laufen auf unserem Server bei der
+        Hetzner Online GmbH in Nürnberg, Deutschland. Coolify ist die Software,
+        mit der wir diesen Server verwalten. Gespeichert werden veröffentlichte
+        Website-Inhalte und gegebenenfalls eingereichte Anfragen
+        {assistantEnabled
+          ? " sowie die unten beschriebenen KI-Nutzungsdaten."
+          : "."}{" "}
+        Zugriff haben die zuständigen Anwendungsdienste und die Administration.
+        Tägliche Datenbanksicherungen bleiben auf demselben Server, höchstens
+        sieben Kopien für bis zu sieben Tage. Gelöschte Datensätze können bis
+        zur Rotation in Sicherungen verbleiben; bei einer Wiederherstellung sind
+        Löschungen zu beachten.
+      </p>
+      <p>
         Anfragen an die öffentliche API werden außerdem anhand eines
         IP-bezogenen Anfragezählers vorübergehend im Arbeitsspeicher des Servers
         begrenzt. Das Zählfenster beträgt eine Minute. Abgelaufene Einträge
@@ -99,13 +115,14 @@ export default function DatenschutzPage() {
         erstellt keine Besucherprofile.
       </p>
       <p>
-        Der Plasma-Spielplatz speichert Ihre gewählte Bildquelle, Größe und
-        Kontrasteinstellung lokal in Ihrem Browser, damit Ihre Einstellungen
-        beim nächsten Besuch wieder verfügbar sind. Diese Einstellungen werden
-        nicht an uns übermittelt und enthalten keine Besucherkennung. Sie
-        bleiben gespeichert, bis Sie die Daten dieser Website in Ihrem Browser
-        löschen. Der lokale Speicher unterstützt die von Ihnen gewählten
-        Spielplatz-Einstellungen und wird nicht zum Tracking verwendet.
+        Der Plasma-Spielplatz hält Einstellungen zunächst nur im Arbeitsspeicher
+        der Seite. Erst wenn Sie „Darstellung auf diesem Gerät merken“ wählen,
+        werden Quelle, Größe, Kontrast und Ihre Auswahl im lokalen Browser-
+        Speicher aufbewahrt. Sie werden nicht an uns gesendet und enthalten
+        keine Besucherkennung. Grundlage ist Ihre Einwilligung nach §25 Abs. 1
+        TDDDG. Entfernen Sie das Häkchen oder löschen Sie die Website-Daten im
+        Browser, werden die gespeicherten Einstellungen entfernt. Der Spielplatz
+        bleibt ohne Speicherung nutzbar.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Kamera, ausgewählte Dateien und Aufnahmen
@@ -132,12 +149,10 @@ export default function DatenschutzPage() {
         Fonts aufruft.
       </p>
       <p>
-        Projektbilder werden normalerweise über diese Website ausgeliefert. Ist
-        kein Projektlogo vorhanden, kann ein Logo direkt von logo.clearbit.com
-        abgerufen werden. Dabei erhält der externe Anbieter Ihre IP-Adresse und
-        die von Ihrem Browser übermittelten Anfrageinformationen. Zweck ist die
-        Anzeige von Projektlogos auf Grundlage unseres berechtigten Interesses
-        an der Darstellung unserer Arbeit nach Art. 6 Abs. 1 lit. f DSGVO.
+        Projektbilder und vorhandene Logos werden über diese Website
+        ausgeliefert. Fehlende Logos werden nicht automatisch von externen
+        Logo-Diensten nachgeladen. Zum normalen Besuch ist kein KI-Dienst
+        erforderlich.
       </p>
       <p>
         Verweise auf GitHub, LinkedIn und Freelancer-Plattformen sind normale
@@ -145,79 +160,110 @@ export default function DatenschutzPage() {
         folgen, verarbeitet der Zielanbieter Daten nach seiner eigenen
         Datenschutzerklärung.
       </p>
-      <h2
-        id="ai-assistant"
-        className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white"
-      >
-        KI-Portfolio-Assistent
-      </h2>
-      <p>
-        Der freiwillig nutzbare Assistent beantwortet Fragen zu veröffentlichten
-        Projekten. Das Tippen einer Suche und das Öffnen gespeicherter
-        Nachrichten senden keine Frage an einen KI-Anbieter. Wenn Sie Text ohne
-        exakte Übereinstimmung mit einem Navigationsziel absenden, gehen Ihre
-        Frage und die Seitensprache über unseren Server an OpenRouter, Inc.,
-        USA, sowie an die Anbieter für Embeddings und die Antwortgenerierung.
-        Die Antwortanfrage enthält außerdem passende Auszüge aus
-        veröffentlichten Portfolio-Inhalten. Frühere Nachrichten werden lokal
-        angezeigt und nicht bei späteren Modellanfragen mitgesendet. Bitte geben
-        Sie keine vertraulichen Informationen, sensiblen personenbezogenen Daten
-        oder personenbezogenen Daten Dritter ein.
-      </p>
-      <p>
-        Wir halten die letzten fünf abgeschlossenen Fragen und Antworten samt
-        Quellenlinks und Seitenaktionen im Sitzungsspeicher dieses Browser-Tabs
-        vor. Sie stehen über Seitenwechsel und Neuladen hinweg für zwei Stunden
-        nach der letzten abgeschlossenen Antwort bereit. Chat schließen blendet
-        das Gespräch aus; ein Klick auf das Startseiten-Eingabefeld öffnet es
-        erneut. Chat löschen entfernt den gespeicherten Verlauf. Abgelaufene
-        Verläufe werden bei geöffneter Startseite oder bei Ihrer nächsten
-        Rückkehr gelöscht. Das Schließen des Tabs beendet den Sitzungsspeicher
-        normalerweise; eine Sitzungswiederherstellung des Browsers kann ihn
-        wiederherstellen. Sie können auch die Website-Daten im Browser löschen.
-        Bei gesperrtem Browserspeicher bleibt der Verlauf nur im Arbeitsspeicher
-        der aktuellen Seite.
-      </p>
-      <p>
-        Sind die KI-Dienste nicht verfügbar, entstehen Projektvorschläge lokal,
-        ohne Ihre Frage an ein Modell zu senden. Ein gesonderter technischer
-        Status im Sitzungsspeicher dieses Tabs merkt sich diesen Modus bis zur
-        bestätigten Wiederherstellung oder zum Schließen des Tabs. Er enthält
-        weder Fragetext noch Nutzerkennung. Prüfungen zur Wiederherstellung
-        senden feste Testtexte an die KI-Dienste, keine Besucherfragen oder
-        Gesprächsverläufe.
-      </p>
-      <p>
-        Unsere Anwendungsdatenbank speichert keine Fragen oder Antworten. Sie
-        enthält öffentliche Wissensauszüge und Embeddings sowie
-        Nutzungszeitpunkte, Kosten, Anfragestatus und einen mit geheimem
-        Schlüssel aus der IP-Adresse abgeleiteten Hash zur Missbrauchsabwehr.
-        Dieser Hash ist pseudonym und nicht anonym. Nutzungsdatensätze, die
-        älter als 35 Tage sind, werden bei der Zulassung einer weiteren Anfrage
-        gelöscht. Hosting-Zugriffsprotokolle werden getrennt wie oben
-        beschrieben verarbeitet. Die Modellanfragen enthalten Ihre ursprüngliche
-        IP-Adresse nicht im Anfrageinhalt.
-      </p>
-      <p>
-        Rechtsgrundlage für die Beantwortung freiwillig gestellter
-        Portfolio-Fragen, das von Ihnen gewünschte fortsetzbare Gespräch und die
-        Missbrauchsabwehr ist unser berechtigtes Interesse nach Art. 6 Abs. 1
-        lit. f DSGVO. Suche und direkter Kontakt bleiben ohne den Assistenten
-        möglich. Die Verarbeitung bei Anbietern kann außerhalb des EWR, auch in
-        den USA, stattfinden. OpenRouter beschreibt internationale
-        Übermittlungsgarantien und Speicherfristen in seiner{" "}
-        <a
-          className="text-white underline underline-offset-4 hover:text-neutral-300"
-          href="https://openrouter.ai/privacy"
-        >
-          Datenschutzerklärung
-        </a>
-        . Speicherung und Trainingsnutzung bei Modellanbietern richten sich nach
-        dem tatsächlichen Endpunkt, den Kontoeinstellungen und den geltenden
-        Vereinbarungen. Wir versprechen keine vollständige Spurenfreiheit bei
-        Dritten. Das Löschen des lokalen Verlaufs löscht keine bereits bei einem
-        Anbieter vorhandenen Datensätze.
-      </p>
+      {assistantEnabled && (
+        <>
+          <h2
+            id="ai-assistant"
+            className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white"
+          >
+            KI-Portfolio-Assistent
+          </h2>
+          <p>
+            Der freiwillig nutzbare Assistent beantwortet Fragen zu
+            veröffentlichten Projekten. Tippen, direkte Projektnavigation und
+            das Öffnen gespeicherter Nachrichten senden keine Frage an einen
+            KI-Anbieter. Ist KI verfügbar, fragen wir vor dem ersten Senden nach
+            Ihrer Einwilligung. „KI erlauben und senden“ erlaubt die
+            Übermittlung Ihrer Frage und der Seitensprache über unseren Server
+            an OpenRouter, Inc., USA, und OpenAI, USA, für Embeddings und
+            Antworten. Die Route ist auf OpenAI beschränkt; andere
+            Modellanbieter werden nicht automatisch als Ersatz verwendet. Die
+            Antwortanfrage enthält außerdem passende Auszüge aus
+            veröffentlichten Portfolio-Inhalten. Frühere Nachrichten werden
+            lokal angezeigt und nicht bei späteren Modellanfragen mitgesendet.
+            Bitte geben Sie keine vertraulichen Informationen, sensiblen
+            personenbezogenen Daten oder personenbezogenen Daten Dritter ein.
+          </p>
+          <p>
+            Wir merken Erlaubnis oder Ablehnung, Hinweisversion, Zeitpunkt und
+            die gesonderte Verlaufsauswahl bis zu 180 Tage im lokalen
+            Browser-Speicher. Besuche verlängern diese Frist nicht. Eine
+            geänderte Hinweisversion oder das Löschen der Website-Daten macht
+            die Wahl ungültig. Unter dem Eingabefeld können Sie Ihre
+            KI-Einstellung ändern oder die Einwilligung widerrufen. Die minimale
+            Speicherung Ihrer Datenschutzwahl dient der ausdrücklich gewünschten
+            Einstellung nach §25 Abs. 2 Nr. 2 TDDDG.
+          </p>
+          <p>
+            Der Chat bleibt im Arbeitsspeicher der aktuellen Seite, solange Sie
+            nicht zusätzlich „Chat in diesem Tab merken“ wählen. Nur dann
+            bleiben bis zu fünf abgeschlossene Fragen und Antworten mit Quellen
+            und Aktionen im Sitzungsspeicher dieses Tabs über Seitenwechsel und
+            Neuladen hinweg erhalten. Der Verlauf läuft zwei Stunden nach der
+            letzten Antwort ab und wird bei geöffneter Startseite oder der
+            nächsten Rückkehr entfernt. Chat schließen blendet ihn aus, Chat
+            löschen entfernt ihn. Das Schließen des Tabs beendet den
+            Sitzungsspeicher normalerweise; der Browser kann eine Sitzung
+            wiederherstellen. Bei gesperrtem Speicher bleiben Wahl und Verlauf
+            nur auf der aktuellen Seite verfügbar.
+          </p>
+          <p>
+            „KI-Einwilligung widerrufen“ unter dem Eingabefeld stoppt
+            ausstehende Client-Anfragen und weitere Fragen an die KI und
+            entfernt lokale Chat- und Statusdaten. Die Ablehnung wird
+            gespeichert, damit wir nicht erneut fragen. Bereits übermittelte
+            Daten lassen sich nicht zurückholen. Die Rechtmäßigkeit früherer
+            Verarbeitung bleibt unberührt. Rechtsgrundlage der freiwilligen
+            KI-Verarbeitung ist Art. 6 Abs. 1 lit. a DSGVO; für den optional
+            gespeicherten Verlauf gilt §25 Abs. 1 TDDDG. Suche und Kontakt
+            bleiben ohne Einwilligung möglich.
+          </p>
+          <p>
+            Sind die KI-Dienste nicht verfügbar, entstehen Projektvorschläge
+            lokal, ohne Ihre Frage an ein Modell zu senden. Ein gesonderter
+            technischer Status kann diesen Modus bei aktiver Einwilligung im
+            Sitzungsspeicher dieses Tabs merken. Er enthält weder Fragetext noch
+            Nutzerkennung. Eine Verfügbarkeitsprüfung über unsere Website
+            enthält keine Frage und keinen Verlauf. Server-Prüfungen verwenden
+            feste synthetische Texte, keine Besucherfragen, Gesprächsverläufe
+            oder Besucher-IP-Adressen. Bei nicht verfügbarer KI zeigen wir
+            Projektvorschläge ohne Einwilligungsdialog.
+          </p>
+          <p>
+            Unsere Anwendungsdatenbank speichert keine Fragen oder Antworten.
+            Sie enthält öffentliche Wissensauszüge und Embeddings sowie
+            Nutzungszeitpunkte, Kosten, Anfragestatus und einen mit geheimem
+            Schlüssel aus der IP-Adresse abgeleiteten Hash zur
+            Missbrauchsabwehr. Dieser Hash ist pseudonym und nicht anonym.
+            Nutzungsdatensätze enthalten auch die erklärte Einwilligungsversion,
+            den Zeitpunkt und die Verlaufsauswahl zum Nachweis nach Art. 6 Abs.
+            1 lit. c in Verbindung mit Art. 7 Abs. 1 DSGVO. Datensätze, die
+            älter als 35 Tage sind, werden bei der Zulassung einer weiteren
+            Anfrage gelöscht. Hosting-Zugriffsprotokolle werden getrennt wie
+            oben beschrieben verarbeitet. Die Modellanfragen enthalten Ihre
+            ursprüngliche IP-Adresse nicht im Anfrageinhalt.
+          </p>
+          <p>
+            Die Missbrauchsabwehr beruht auf Art. 6 Abs. 1 lit. f DSGVO. Die
+            Verarbeitung bei Anbietern kann außerhalb des EWR, auch in den USA,
+            stattfinden. OpenRouter beschreibt internationale
+            Übermittlungsgarantien und Speicherfristen in seiner{" "}
+            <a
+              className="text-white underline underline-offset-4 hover:text-neutral-300"
+              href="https://openrouter.ai/privacy"
+            >
+              Datenschutzerklärung
+            </a>
+            . Anfragen beschränken die Route auf Anbieter ohne Trainingsnutzung
+            und mit Zero-Data-Retention-Kontrollen. Tatsächliche Speicherfristen
+            hängen zusätzlich von Kontoeinstellungen, Endpunktregeln und
+            gesetzlichen Sicherheitsausnahmen ab. Diese Einstellungen bedeuten
+            keine reine EU-Verarbeitung. Wir versprechen keine vollständige
+            Spurenfreiheit bei Dritten. Das Löschen des lokalen Verlaufs löscht
+            keine bereits bei einem Anbieter vorhandenen Datensätze.
+          </p>
+        </>
+      )}
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Formular für Projektanfragen
       </h2>
@@ -226,11 +272,18 @@ export default function DatenschutzPage() {
         Projekt- oder Zusammenarbeitsanfrage: Einstieg, Ausgangslage,
         gewünschtes Ergebnis, Kontaktdaten, freiwillige kaufmännische Angaben
         und die gewählte Seite oder Leistung. Unser Server speichert diese
-        Angaben und einen Zeitstempel in einer privaten Datenbank bei Notion
-        Labs, Inc., USA, um Ihre geschäftliche Anfrage zu bearbeiten. Das
-        Formular versendet keine automatische E-Mail-Bestätigung, bucht keinen
-        Termin und abonniert keinen Newsletter. Es gelten die unten erläuterten
-        Rechtsgrundlagen für Kontaktanfragen.
+        Angaben und einen Zeitstempel zunächst in unserer privaten
+        PostgreSQL-Datenbank in Deutschland. Ein Hintergrunddienst überträgt die
+        Anfrage anschließend in unsere private Datenbank bei Notion Labs, Inc.,
+        USA, und ergänzt eine interne Benachrichtigungs-Erwähnung. Ist Notion
+        nicht verfügbar, wird die Übertragung erneut versucht. Nach der
+        Zustellung wird die zwischengespeicherte Anfrage gelöscht. Eine
+        Empfangskennung und ein Inhaltsfingerabdruck bleiben bis zu 30 Tage
+        gespeichert, um wiederholte Übermittlungen zu erkennen. Sicherungskopien
+        verfallen nach dem Aufbewahrungsplan für Backups. Das Formular versendet
+        keine automatische E-Mail-Bestätigung, bucht keinen Termin und abonniert
+        keinen Newsletter. Es gelten die unten erläuterten Rechtsgrundlagen für
+        Kontaktanfragen.
       </p>
       <p>
         Ein nicht abgesendeter Entwurf bleibt bis zu zwei Stunden nach der

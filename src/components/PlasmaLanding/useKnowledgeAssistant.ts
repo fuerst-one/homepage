@@ -5,6 +5,10 @@ import { useLocale } from "../i18n/LocaleProvider";
 import type { KnowledgeAnswer } from "../../lib/knowledge";
 import { knowledgeFallback } from "../../lib/knowledgeFallback";
 import { useKnowledgeAvailability } from "./useKnowledgeAvailability";
+import {
+  parseKnowledgeConsent,
+  type KnowledgeConsent,
+} from "../../lib/knowledgeConsent";
 
 import {
   KNOWLEDGE_HISTORY_KEY,
@@ -13,12 +17,17 @@ import {
   type KnowledgeTurn,
 } from "../../lib/knowledgeHistory";
 export type { KnowledgeTurn } from "../../lib/knowledgeHistory";
-export function useKnowledgeAssistant(enabled = true) {
+export function useKnowledgeAssistant(
+  enabled = true,
+  consent: KnowledgeConsent | null = null,
+) {
   const de = useLocale() === "de";
   const locale = de ? "de" : "en";
   const [turns, setTurns] = useState<KnowledgeTurn[]>([]);
   const [busy, setBusy] = useState(false);
-  const availability = useKnowledgeAvailability(enabled);
+  const allowed = enabled && !!consent;
+  const remember = consent?.remember ?? false;
+  const availability = useKnowledgeAvailability(enabled, consent);
   const [pendingQuestion, setPendingQuestion] = useState("");
   const pending = useRef<AbortController | null>(null);
   const currentTurns = useRef<KnowledgeTurn[]>([]);
@@ -34,24 +43,37 @@ export function useKnowledgeAssistant(enabled = true) {
     }
   };
   useEffect(() => {
-    if (!enabled) return;
-    try {
-      const saved = restoreKnowledgeHistory(
-        sessionStorage.getItem(KNOWLEDGE_HISTORY_KEY),
-      );
-      if (saved) {
-        currentTurns.current = saved.turns;
-        setTurns(saved.turns);
-        setSavedAt(saved.savedAt);
-      } else sessionStorage.removeItem(KNOWLEDGE_HISTORY_KEY);
-    } catch {
-      /* Continue with in-memory history if storage is unavailable. */
+    if (!allowed) {
+      currentTurns.current = [];
+      setTurns([]);
+      setSavedAt(null);
+      setBusy(false);
+      setPendingQuestion("");
+      return;
     }
+    if (remember)
+      try {
+        const saved = restoreKnowledgeHistory(
+          sessionStorage.getItem(KNOWLEDGE_HISTORY_KEY),
+        );
+        if (saved) {
+          currentTurns.current = saved.turns;
+          setTurns(saved.turns);
+          setSavedAt(saved.savedAt);
+        } else {
+          currentTurns.current = [];
+          setTurns([]);
+          setSavedAt(null);
+          sessionStorage.removeItem(KNOWLEDGE_HISTORY_KEY);
+        }
+      } catch {
+        /* Continue with in-memory history if storage is unavailable. */
+      }
     return () => {
       pending.current?.abort();
       pending.current = null;
     };
-  }, [enabled]);
+  }, [allowed, remember]);
   useEffect(() => {
     if (savedAt === null) return;
     const timer = setTimeout(
@@ -66,18 +88,25 @@ export function useKnowledgeAssistant(enabled = true) {
     currentTurns.current = next;
     setTurns(next);
     setSavedAt(timestamp);
-    try {
-      sessionStorage.setItem(
-        KNOWLEDGE_HISTORY_KEY,
-        JSON.stringify({ version: 1, savedAt: timestamp, turns: next }),
-      );
-    } catch {
-      /* The current conversation still works without storage. */
-    }
+    if (remember)
+      try {
+        sessionStorage.setItem(
+          KNOWLEDGE_HISTORY_KEY,
+          JSON.stringify({ version: 1, savedAt: timestamp, turns: next }),
+        );
+      } catch {
+        /* The current conversation still works without storage. */
+      }
   }
   async function ask(input: string, fallback = knowledgeFallback(locale)) {
     const question = input.trim();
-    if (!enabled || !question || pending.current) return false;
+    if (
+      !allowed ||
+      !parseKnowledgeConsent(consent) ||
+      !question ||
+      pending.current
+    )
+      return false;
     if (!availability.current.current.available) {
       append(question, fallback);
       return true;
@@ -91,7 +120,7 @@ export function useKnowledgeAssistant(enabled = true) {
       const response = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: question, locale }),
+        body: JSON.stringify({ message: question, locale, consent }),
         signal: controller.signal,
       });
       if (pending.current !== controller || controller.signal.reason === "user")
@@ -143,6 +172,11 @@ export function useKnowledgeAssistant(enabled = true) {
   }
 
   return {
+    available:
+      availability.current.current.available &&
+      availability.current.current.verified,
+    suggest: (question: string, fallback: KnowledgeAnswer) =>
+      append(question, fallback),
     turns,
     busy,
     error: "",
