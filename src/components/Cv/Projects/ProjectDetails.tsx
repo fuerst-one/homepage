@@ -15,6 +15,9 @@ import { getProjectLogoSources } from "./getProjectLogoSources";
 import { ProjectLogo } from "./ProjectLogo";
 import { colors } from "./colors";
 import { cn } from "@/lib/utils";
+import { projectPath, SITE_URL } from "@/lib/seo";
+import { localeFromPath } from "@/lib/i18n";
+import { caseStudyPageId } from "@/lib/projectCaseStudy";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -45,6 +48,8 @@ export const ProjectDetails = ({
   const logos = getProjectLogoSources(project);
   const primaryLogo = logos[0];
   const color = colors.projectType?.[projectType];
+  const path = projectPath(project, locale);
+  const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
 
   return (
     <div
@@ -128,6 +133,22 @@ export const ProjectDetails = ({
           filterable={inDialog}
           locale={locale}
         />
+      </div>
+      <div className="flex shrink-0 flex-col items-start gap-3 border-t border-white/15 p-6 text-sm">
+        <Link
+          href={path}
+          className="break-all text-xs text-neutral-400 underline underline-offset-4"
+        >
+          {`${SITE_URL.replace("https://", "")}${path}`}
+        </Link>
+        {hasCaseStudy && (
+          <Link
+            href={`${path}/case-study`}
+            className="text-neutral-200 underline underline-offset-4"
+          >
+            {locale === "de" ? "Fallstudie lesen" : "Read case study"} →
+          </Link>
+        )}
       </div>
     </div>
   );

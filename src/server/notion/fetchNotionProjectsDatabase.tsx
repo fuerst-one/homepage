@@ -40,6 +40,8 @@ export type NotionProjectPropertiesRaw = {
   "Project Description DE"?: RichTextField;
   "KPIs DE"?: RichTextField;
   "German ready"?: CheckBoxField;
+  "Case study EN"?: UrlField;
+  "Case study DE"?: UrlField;
   "Project Type": SelectField;
   "Start Date": DateField;
   "End Date": DateField;
@@ -67,6 +69,8 @@ export type NotionProject = {
   descriptionDe?: RichTextField;
   kpisDe?: RichTextField;
   germanReady?: boolean;
+  caseStudyEn?: string | null;
+  caseStudyDe?: string | null;
   wowFactor: number;
   status: string;
   hidden: boolean;
@@ -100,6 +104,8 @@ const rawToInternalPropertiesMap: Record<
   "Project Description DE": "descriptionDe",
   "KPIs DE": "kpisDe",
   "German ready": "germanReady",
+  "Case study EN": "caseStudyEn",
+  "Case study DE": "caseStudyDe",
   Status: "status",
   Hidden: "hidden",
   Featured: "featured",
@@ -125,6 +131,9 @@ export const fetchNotionProjectsDatabase = async () => {
 
   const projectsRaw = (await fetchNotionDatabase(
     process.env.NEXT_NOTION_PROJECT_DB_ID,
+    // The merged project source owns the cache. Avoid retaining stale Notion
+    // prose in a second fetch cache across a new deployment.
+    true,
   )) as unknown as Omit<QueryDatabaseResponse, "results"> & {
     results: NotionProjectRaw[];
   };

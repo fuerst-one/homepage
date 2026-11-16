@@ -11,6 +11,8 @@ type FilterKey = keyof Omit<
   | "kpisDe"
   | "germanReady"
   | "contentLocale"
+  | "caseStudyEn"
+  | "caseStudyDe"
 >;
 export type FilterParams = Partial<Record<FilterKey, string[]>>;
 

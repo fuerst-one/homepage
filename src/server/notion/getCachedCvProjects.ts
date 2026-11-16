@@ -7,7 +7,7 @@ export const CV_PROJECTS_CACHE_TAG = "cv-projects";
 
 const getCachedProjectSource = unstable_cache(
   () => getCvProjects(),
-  ["cv-projects-merged-i18n-v1"],
+  ["cv-projects-merged-i18n-v2"],
   { tags: [CV_PROJECTS_CACHE_TAG], revalidate: 3600 },
 );
 
