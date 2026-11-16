@@ -124,3 +124,44 @@ Retain migration 008 and subsequent usage/enquiries during rollback. The previou
 worker's OpenAI-only routing conflicts with the new Azure guardrail, so align
 provider code before expecting it to generate new embeddings. Keep the current
 worker for routine web-only rollback. Preserve the deployment holds.
+
+## Follow-up: client lottery eligibility
+
+Web source `51f18272d4d945b47f54d7cce749cdd9c29dd862` was deployed as
+`dpl_5R1HsXzRs76qYo35nrzfAmZjs32N` and promoted to `https://fuerst.one`.
+Vercel independently reported READY, `fra1`, and the exact source SHA on the
+production target. The deployment holds remain in place. This release changed
+only the web application; the worker was not redeployed.
+
+The uncached status API now reports eligibility separately from service health
+and gives selected clients an expiry. The homepage waits for an explicit win
+before showing AI controls or restoring consent/history. Pending eligibility
+preserves saved choices untouched; explicit exclusion restores the original
+search and clears AI storage, matching the disabled-release behavior. A rejected
+POST closes existing AI UI, and the client rechecks at the next lottery window
+even while AI is healthy. Every paid request still independently checks server
+admission. The English and German policies keep the public AI disclosures and
+clarify lottery selection, shared-IP behavior, and selected-only controls and
+consent prompts.
+
+Validation: 276 unit/HTTP tests, 15 browser cases, workspace type checks, ESLint,
+formatting, and the production build passed. Bugs, code quality, security and UI
+reviewers returned no remaining findings. Browser regressions cover pending
+selection without an AI flash, excluded EN/DE original search, selected controls,
+withdrawn admission, lottery-window expiry, incomplete status snapshots,
+consent, outages and history restoration.
+
+After promotion, public EN/DE home and privacy routes returned 200. Initial HTML
+contained no AI controls; both policies retained their AI disclosure and lottery
+clause. An automation-signature status request returned `eligible:false` with
+`Cache-Control: no-store`. In the existing real Chrome session, temporary 0%
+selection showed original German search without AI consent text; temporary 100%
+showed German and English AI controls and the German consent dialog. That dialog
+was closed without permission or sending a question. Restored and verified
+`ai.rollout_percent=25`, `ai.enabled=true`, and `ai.lottery_hours=24`, then reloaded
+Chrome under the restored policy. Usage remained 85 completed indexer rows, two
+completed chats and one completed probe, so this acceptance added no paid usage.
+Sanitized artifacts are in `/private/tmp/homepage-ai-eligibility`.
+
+The preceding web deployment `dpl_AFvWRgJQe1GDyCUQE6kuVas6xuMR`, source
+`60f10b8274ac1ff0664d8d0441a1daf90412b20a`, is the immediate web rollback target.
