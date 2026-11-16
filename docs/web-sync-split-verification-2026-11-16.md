@@ -57,7 +57,13 @@ Final local worker image: `sha256:770f8e0cc385e488dd9a5bd58aa4f32f6f5d4f069b3410
 Logs are saved under `/private/tmp/homepage-split-*`. Temporary test databases and
 the review worktree are local; they are not production resources.
 
-## Remaining release work
+## Subsequent production release
+
+The staged rollout was completed afterward; see the
+[production rollout receipt](web-sync-split-rollout-2026-11-16.md). The following
+was the release handoff at the time of local verification.
+
+## Original release handoff
 
 Follow [content operations](notion-content-operations.md): apply 005/006, seed and
 validate `website-v2`, replace the worker, then switch Vercel’s project root to

@@ -49,13 +49,14 @@ docker build -f ops/knowledge/Dockerfile -t homepage-sync .
 
 ## Rollout
 
-The split is **not deployed**. The running worker remains pinned to `81106e8`,
-and Vercel deployment holds remain in place. Before the split is released, apply
-migrations 005/006 as administrator, seed `website-v2`, then validate the new worker
-before releasing the website. Keep the old publication tables and SELECT grants for rollback. After the rollback
-window, separately revoke the web role’s legacy snapshot/asset grants.
-Vercel's future project root is `apps/web`; do not change the live project root or
-remove deployment holds as part of a local build.
+The split is deployed from `7898980` on Vercel (`apps/web`) and Coolify. Public AI
+remains disabled and automatic deployments remain held; releases are manual while
+the separate privacy work is reconciled. Migrations 005/006 and the `website-v2`
+seed are complete. Preserve the old publication tables and grants for rollback,
+then explicitly retire them after that window.
+
+See [the production rollout receipt](docs/web-sync-split-rollout-2026-11-16.md)
+for exact deployment IDs, live verification and rollback details.
 
 See [the split design](docs/plans/2026-11-16-web-sync-split-design.md),
 [local verification](docs/web-sync-split-verification-2026-11-16.md),

@@ -1,8 +1,8 @@
 # Database-first website content
 
-The durable worker base is deployed; see the
-[worker rollout receipt](notion-worker-rollout-2026-11-16.md). Vercel automatic
-deployments remain held, and the live website has not switched to these readers.
+The web/sync split is deployed; see the
+[production rollout receipt](web-sync-split-rollout-2026-11-16.md). Vercel automatic
+deployments remain held, and the live website uses these database readers.
 
 The public web app needs PostgreSQL, not a live Notion connection. All normal
 page renders, project/profile APIs, case studies, and image routes read published
@@ -13,8 +13,8 @@ available. Notion remains the editing interface and enquiry inbox.
 
 1. As administrator, apply the additive migrations under
    `packages/database/migrations`: 003/004 are already applied to production;
-   apply `005-public-content.sql`, then `006-public-content-access.sql` for this
-   split. Both are rerunnable. Keep the existing legacy SELECT grants throughout
+   005/006 were applied in the split rollout. On a fresh installation, apply
+   `005-public-content.sql`, then `006-public-content-access.sql`. Both are rerunnable. Keep the existing legacy SELECT grants throughout
    cutover and the rollback window. Do not run `002-production-access.sql` again:
    it contains broader historical grants.
 2. Keep the existing worker running until ready to replace it. Build the updated
