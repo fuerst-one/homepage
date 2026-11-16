@@ -5,7 +5,7 @@ A pnpm workspace with two independently packaged applications:
 - `apps/web`: Next.js website. Reads prepared PostgreSQL publications and writes
   enquiry receipts; it has no Notion dependency or credentials.
 - `apps/sync`: background content/asset publication, enquiry delivery with Notion
-  mentions, and optional knowledge indexing. It has no Next.js or React dependency.
+  mentions, daily Malt refresh, and optional knowledge indexing. It has no Next.js or React dependency.
 - `packages/content`: public types and shared domain utilities.
 - `packages/database`: persistence, public readers and migrations.
 - `packages/knowledge`: shared provider, budget and embedding-cache runtime.
@@ -24,8 +24,12 @@ pnpm dev
 ```
 
 The web runs at <http://localhost:6894>. Use `pnpm notion:watch` for content and
-notifications alone, or `pnpm knowledge:watch` to include indexing. Run one worker
+notifications plus Malt refresh, or `pnpm knowledge:watch` to include indexing. Run one worker
 watch command, not both. `pnpm notion:status` reports publication/outbox progress.
+
+Malt refresh uses the existing `site_malt_mirror` table and a durable daily schedule.
+See [Malt operations](docs/notion-content-operations.md#malt-refresh) for worker commands,
+manual public observations and recovery.
 
 ## Build and verification
 

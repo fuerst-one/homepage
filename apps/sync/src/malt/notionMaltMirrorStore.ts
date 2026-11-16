@@ -7,7 +7,7 @@ import {
   readMaltMirror,
   type MaltMirror,
 } from "@homepage/content/maltMirror";
-import type { MaltMirrorStore } from "@homepage/database/refreshMaltMirror";
+import type { MaltMirrorStore } from "@homepage/database/postgresMaltMirrorStore";
 const pending = new Map<string, Promise<unknown>>();
 const richText = (content: string) => ({
   rich_text: Array.from(

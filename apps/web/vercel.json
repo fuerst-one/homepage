@@ -8,11 +8,6 @@
       "maxDuration": 60
     }
   },
-  "crons": [
-    {
-      "path": "/api/integrations/malt",
-      "schedule": "23 5 * * *"
-    }
-  ],
+  "crons": [],
   "regions": ["fra1"]
 }

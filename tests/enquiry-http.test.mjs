@@ -95,10 +95,11 @@ test("landing search API exposes public case dimensions without editorial eviden
   }
 });
 
-test("Malt refresh and operator import reject unauthenticated writes", async () => {
+test("Malt refresh and operator import are retired on the web service", async () => {
   for (const method of ["GET", "POST"]) {
     const response = await fetch(`${base}/api/integrations/malt`, { method });
-    assert.ok([401, 503].includes(response.status));
+    assert.equal(response.status, 410);
+    assert.equal((await response.json()).error, "malt_refresh_moved_to_worker");
     assert.equal(response.headers.get("cache-control"), "no-store");
   }
 });

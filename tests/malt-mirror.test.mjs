@@ -4,7 +4,7 @@ import { loadTs } from "./helpers/load-ts.mjs";
 const { parseMaltProfile, maltMirrorView, readMaltMirror, MALT_PROFILE_URL } =
   loadTs(new URL("../packages/content/src/maltMirror.ts", import.meta.url));
 const { refreshMaltMirror } = loadTs(
-  new URL("../packages/database/src/refreshMaltMirror.ts", import.meta.url),
+  new URL("../apps/sync/src/malt/refreshMaltMirror.ts", import.meta.url),
 );
 const now = Date.parse("2026-11-15T10:00:00Z");
 const at = new Date(now).toISOString();
@@ -172,4 +172,64 @@ test("a failed in-flight refresh preserves an observation imported while it was 
   release();
   await job;
   assert.equal(current.observation.rate.amount, 800);
+});
+
+test("worker refreshes keep the existing 05:23 UTC daily schedule across restarts", () => {
+  const { nextMaltRefreshAt } = loadTs(
+    new URL("../apps/sync/src/malt/refreshMaltMirror.ts", import.meta.url),
+  );
+  assert.equal(
+    typeof nextMaltRefreshAt,
+    "function",
+    "the worker needs a stable daily refresh boundary",
+  );
+  assert.equal(
+    nextMaltRefreshAt(Date.parse("2026-11-16T05:22:59Z")),
+    "2026-11-16T05:23:00.000Z",
+  );
+  assert.equal(
+    nextMaltRefreshAt(Date.parse("2026-11-16T05:23:00Z")),
+    "2026-11-17T05:23:00.000Z",
+  );
+  assert.equal(
+    nextMaltRefreshAt(Date.parse("2026-12-31T23:59:00Z")),
+    "2027-01-01T05:23:00.000Z",
+  );
+});
+
+test("worker imports validate source, freshness and monotonic observations without a web endpoint", async () => {
+  const { importMaltObservation } = loadTs(
+    new URL("../apps/sync/src/malt/refreshMaltMirror.ts", import.meta.url),
+  );
+  assert.equal(
+    typeof importMaltObservation,
+    "function",
+    "operator imports belong to the worker",
+  );
+  let saved;
+  const store = {
+    read: async () => state(),
+    write: async (value) => {
+      saved = value;
+    },
+  };
+  const input = {
+    sourceUrl: MALT_PROFILE_URL,
+    observedAt: at,
+    html: html(800),
+  };
+  await importMaltObservation(input, store, now);
+  assert.equal(saved.observation.rate.amount, 800);
+  assert.equal(saved.observation.method, "browser-verified");
+  for (const invalid of [
+    { ...input, sourceUrl: "https://evil.invalid" },
+    { ...input, observedAt: new Date(now - 3600001).toISOString() },
+    { ...input, observedAt: new Date(now + 1).toISOString() },
+    { ...input, html: "x".repeat(200001) },
+  ])
+    await assert.rejects(importMaltObservation(invalid, store, now));
+  await assert.rejects(
+    importMaltObservation(input, { ...store, write: async () => "older" }, now),
+    /older_observation/,
+  );
 });

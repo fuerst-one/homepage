@@ -20,6 +20,7 @@ const result = spawnSync(
     "--test-concurrency=1",
     "tests/notion-db.integration.mjs",
     "tests/notion-worker.integration.mjs",
+    "tests/malt-worker.integration.mjs",
   ],
   {
     stdio: "inherit",

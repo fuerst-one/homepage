@@ -16,6 +16,7 @@ async function main() {
       for (const file of [
         "003-notion-resilience.sql",
         "005-public-content.sql",
+        "007-malt-refresh.sql",
       ])
         await sql.unsafe(
           await readFile(

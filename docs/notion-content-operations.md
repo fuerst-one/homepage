@@ -19,7 +19,7 @@ available. Notion remains the editing interface and enquiry inbox.
    it contains broader historical grants.
 2. Keep the existing worker running until ready to replace it. Build the updated
    `ops/knowledge/Dockerfile` with runtime-only secrets. Its existing
-   `scripts/knowledge.ts watch` command now starts independent content and
+   `scripts/knowledge.ts watch` command now starts independent content, Malt and
    enquiry loops even with public AI disabled.
 3. Run `node --import tsx scripts/notion.ts sync` once with the worker's runtime
    environment. This seeds content, case bodies, image bytes, and the existing
@@ -102,3 +102,38 @@ The test runner derives a localhost test URL from `.env.local`, uses separate
 processes sequentially, and refuses remote databases. An optional
 `NOTION_TEST_DATABASE_URL` must point to a localhost database ending in `_test`.
 Tests use synthetic Notion responses and create no real pages or notifications.
+
+## Malt refresh
+
+Apply `007-malt-refresh.sql` as database administrator before deploying the Malt
+worker release. It adds schedule and lease columns to `site_malt_mirror`; it does
+not replace the existing observation or change its freshness. Preserve legacy
+Malt DML grants during the rollback window. The website only reads the snapshot.
+
+The worker checks for a due refresh every minute, independently of Notion and
+embedding work. Each completed attempt schedules the next run at 05:23 UTC. A
+403/429 is recorded as blocked and keeps the last observation; stale rates still
+expire after seven days. An expired lease permits crash recovery after two minutes.
+Storage/publication failures retry after five minutes when the database is reachable.
+The Vercel cron is removed; `/api/integrations/malt` returns 410 for GET and POST.
+
+Use repository commands with worker database credentials in `.env.local`:
+
+```sh
+pnpm malt:status
+pnpm malt:refresh
+pnpm malt:import /path/to/public-observation.json
+```
+
+Inside the worker artifact, use `node --import tsx scripts/malt.ts status` or
+`refresh`, and `node --import tsx scripts/import-malt-observation.mjs /path/to/file.json`.
+Manual refresh bypasses the daily schedule but respects an active lease. It records
+an ordinary attempt and schedules the next daily run.
+
+When public fetches are challenged, use a browser-verified public observation with
+`sourceUrl`, `observedAt` and `html` fields. The import requires the exact configured
+Malt profile URL, an observation at most one hour old, and a file at most 200 KB.
+Older observations cannot replace newer ones. Never include browser credentials or
+cookies. A successful import does not establish current availability without a
+separate dated owner confirmation. Check `malt:status` for observation date, last
+attempt, next run and active lease; a source block does not make worker health fail.

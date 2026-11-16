@@ -3,23 +3,25 @@ import { setTimeout as pause } from "node:timers/promises";
 import { knowledgeDatabase } from "@homepage/database/database";
 import { drainEnquiryOutbox } from "@homepage/database/durableEnquiryStore";
 import { notionEnquiryStore } from "../enquiries/notionEnquiryStore";
+import { postgresMaltMirrorStore } from "@homepage/database/postgresMaltMirrorStore";
+import { refreshMaltIfDue } from "../malt/scheduledRefresh";
 import { notionMaltMirrorStore } from "../malt/notionMaltMirrorStore";
 import { syncWebsiteContent } from "./syncWebsiteContent";
 
 export async function seedMaltMirror() {
   const sql = knowledgeDatabase();
-  const [existing] = await sql`SELECT id FROM site_malt_mirror WHERE id=1`;
-  if (existing) return;
+  const store = postgresMaltMirrorStore(sql);
+  if ((await store.read())?.observation) return;
   const value = await notionMaltMirrorStore().read();
-  if (value)
-    await sql`INSERT INTO site_malt_mirror(id,payload) VALUES (1,${sql.json(JSON.parse(JSON.stringify(value)))}) ON CONFLICT DO NOTHING`;
+  // An empty legacy mirror must not erase a concurrent successful refresh.
+  if (value?.observation) await store.write(value);
 }
 
 export async function deliverPendingEnquiries() {
   return drainEnquiryOutbox(knowledgeDatabase(), notionEnquiryStore());
 }
 
-/** Separate loops keep notification delivery independent of slow content/AI syncs. */
+/** Separate loops keep notifications and Malt refresh independent of content/AI syncs. */
 export async function watchNotion(signal: AbortSignal) {
   const loop = async (
     work: () => Promise<unknown>,
@@ -44,6 +46,7 @@ export async function watchNotion(signal: AbortSignal) {
   };
   await Promise.all([
     loop(deliverPendingEnquiries, 5000, "Notion enquiry delivery"),
+    loop(() => refreshMaltIfDue(), 60_000, "Malt refresh"),
     loop(
       async () => {
         await syncWebsiteContent();
