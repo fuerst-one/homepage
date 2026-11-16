@@ -105,7 +105,8 @@ Tests use synthetic Notion responses and create no real pages or notifications.
 
 ## Malt refresh
 
-Apply `007-malt-refresh.sql` as database administrator before deploying the Malt
+See the [Malt rollout receipt](malt-worker-rollout-2026-11-16.md) for the deployed
+revision and verification. Apply `007-malt-refresh.sql` as database administrator before deploying the Malt
 worker release. It adds schedule and lease columns to `site_malt_mirror`; it does
 not replace the existing observation or change its freshness. Preserve legacy
 Malt DML grants during the rollback window. The website only reads the snapshot.
