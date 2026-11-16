@@ -78,6 +78,34 @@
   outline: 2px solid #dfc993;
   outline-offset: -2px;
 }
+/* Mobile results need their own space; the desktop overlay budget can collapse
+   when focusing the input scrolls the page or the browser viewport changes. */
+@media (max-width: 767px) {
+  .landing[data-discovery="true"] {
+    height: auto;
+    min-height: 100svh;
+  }
+  .landing[data-discovery="true"] .landing-content {
+    align-self: start;
+  }
+  .landing[data-discovery="true"]
+    :is(.landing-quick-access, .landing-intro, .landing-eyebrow) {
+    display: none;
+  }
+  .landing[data-discovery="true"] .landing-stage {
+    height: clamp(80px, 16svh, 120px);
+  }
+  .landing[data-discovery="true"][data-hero="shape"] .landing-sculpture {
+    transform: scale(0.7);
+  }
+  .landing-discovery {
+    position: static;
+  }
+  .landing-discovery-panel {
+    max-height: clamp(240px, 45svh, 360px);
+  }
+}
+
 .landing[data-chat="true"] .landing-quick-access {
   max-height: 0;
   margin: 0;

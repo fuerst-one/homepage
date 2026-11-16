@@ -168,3 +168,87 @@ test("discovery keeps search suggestions below a separate project list", async (
     await browser.close();
   }
 });
+
+test("mobile results keep a complete project readable after viewport changes and allow opening the last match", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({
+      width: 390,
+      height: 660,
+      isMobile: true,
+      hasTouch: true,
+    });
+    await page.goto(`${base}/en`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    await page.type("#landing-command", "Seabo");
+    await page.waitForSelector("a.landing-search-result");
+    // Focusing a search field and collapsing browser chrome changes the visible
+    // viewport on phones. The first complete result must still be readable.
+    await page.$eval("#landing-command", (input) =>
+      input.scrollIntoView({ block: "center" }),
+    );
+    for (const viewport of [
+      { width: 390, height: 520 },
+      { width: 320, height: 480 },
+      { width: 767, height: 540 },
+    ]) {
+      await page.setViewport({ ...viewport, isMobile: true, hasTouch: true });
+      await page.evaluate(
+        () =>
+          new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          ),
+      );
+      const readable = await page.$eval("a.landing-search-result", (link) => {
+        const panel = link
+          .closest(".landing-discovery-panel")
+          .getBoundingClientRect();
+        const result = link.getBoundingClientRect();
+        return result.top >= panel.top && result.bottom <= panel.bottom;
+      });
+      assert.equal(
+        readable,
+        true,
+        `the complete result is readable at ${viewport.width}×${viewport.height}`,
+      );
+    }
+    await page.setViewport({
+      width: 390,
+      height: 520,
+      isMobile: true,
+      hasTouch: true,
+    });
+    await page.focus("#landing-command");
+    await page.keyboard.press("Escape");
+    await page.type("#landing-command", "ai");
+    await page.waitForSelector("a.landing-search-result");
+    const links = await page.$$("a.landing-search-result");
+    assert.ok(links.length > 1, "exercise a scrollable set of matches");
+    const last = links.at(-1);
+    const href = await last.evaluate((link) => link.getAttribute("href"));
+    await last.focus();
+    const reachable = await last.evaluate((link) => {
+      const panel = link
+        .closest(".landing-discovery-panel")
+        .getBoundingClientRect();
+      const row = link.getBoundingClientRect();
+      return row.top >= panel.top - 1 && row.bottom <= panel.bottom + 1;
+    });
+    assert.equal(
+      reachable,
+      true,
+      "scrolling/focus reveals the complete last result",
+    );
+    await last.click();
+    await page.waitForFunction(
+      (path) => location.pathname === path,
+      { timeout: 90000 },
+      href,
+    );
+  } finally {
+    await browser.close();
+  }
+});
