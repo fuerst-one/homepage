@@ -12,7 +12,7 @@ import { ServiceProductPage } from "@/components/Services/ServiceProductPage";
 type Props = {
   params: Promise<{ locale: string; service: string; product: string }>;
 };
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>

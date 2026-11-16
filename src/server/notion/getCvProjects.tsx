@@ -1,5 +1,3 @@
-"use server";
-
 import type { ProjectCase } from "@/lib/projectCase";
 
 import {
@@ -76,9 +74,11 @@ export type CvContact = {
   knowledge: string[];
 };
 
-export const getCvProjects = async () => {
+export const getCvProjects = async (sourceProjects?: NotionProject[]) => {
   try {
-    const projects = await fetchNotionProjectsDatabase();
+    const projects = (
+      sourceProjects ?? (await fetchNotionProjectsDatabase())
+    ).filter((project) => !project.hidden);
     const clients = await getClientsFromNotionProjects(projects);
     const contacts = await getContactsFromNotionClients(clients);
     const merged = mergeProjectData(projects, clients, contacts)
@@ -92,7 +92,7 @@ export const getCvProjects = async () => {
       });
     return embedProjectsTo3D(merged);
   } catch (error) {
-    console.error(error);
+    console.error("Notion portfolio refresh failed");
     // Never cache an upstream failure as an empty public portfolio or sitemap.
     throw error;
   }
@@ -104,7 +104,8 @@ const getClientsFromNotionProjects = async (projects: NotionProject[]) => {
     .flat()
     .filter(Boolean);
   const clientIds = uniq(clientRelations.map((relation) => relation.id));
-  const clients = await Promise.all(clientIds.map(fetchNotionClient));
+  const clients: NotionClient[] = [];
+  for (const id of clientIds) clients.push(await fetchNotionClient(id));
   return clients;
 };
 
@@ -114,7 +115,8 @@ const getContactsFromNotionClients = async (clients: NotionClient[]) => {
     .flat()
     .filter(Boolean);
   const contactIds = uniq(contactRelations.map((relation) => relation.id));
-  const contacts = await Promise.all(contactIds.map(fetchNotionContact));
+  const contacts: NotionContact[] = [];
+  for (const id of contactIds) contacts.push(await fetchNotionContact(id));
   return contacts;
 };
 

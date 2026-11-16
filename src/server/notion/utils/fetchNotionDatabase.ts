@@ -1,16 +1,19 @@
 "use server";
 
+import { safeNotionLogger } from "../notionDiagnostics";
 import { isDev } from "@/utils/env";
 import { Client, collectPaginatedAPI } from "@notionhq/client";
-import { createNotionFetch } from "../createNotionFetch";
+import { createNotionReadFetch } from "../createNotionFetch";
 
 export const fetchNotionDatabase = async (
   databaseId: string,
   uncached = false,
 ) => {
   const notion = new Client({
+    timeoutMs: 120_000,
+    logger: safeNotionLogger,
     auth: process.env.NEXT_NOTION_TOKEN,
-    fetch: createNotionFetch((url, options) =>
+    fetch: createNotionReadFetch((url, options) =>
       fetch(url, {
         ...options,
         ...(uncached

@@ -1,3 +1,4 @@
+import { safeNotionLogger } from "../notion/notionDiagnostics";
 import { Client } from "@notionhq/client";
 import { createHash } from "node:crypto";
 import { caseStudyPageId } from "../../lib/projectCaseStudy";
@@ -5,7 +6,7 @@ import {
   loadCaseStudyBlocks,
   type CaseStudyBlock,
 } from "../notion/caseStudyBlocks";
-import { createNotionFetch } from "../notion/createNotionFetch";
+import { createNotionReadFetch } from "../notion/createNotionFetch";
 import { publicKnowledgeSeeds, type KnowledgeSeed } from "./publicContent";
 import slugs from "../../data/project-slugs.json";
 
@@ -31,7 +32,12 @@ export async function readNotionKnowledge(
     database_id = process.env.NEXT_NOTION_PROJECT_DB_ID;
   if (!auth || !database_id)
     throw new Error("Notion knowledge source unconfigured");
-  const notion = new Client({ auth, fetch: createNotionFetch() });
+  const notion = new Client({
+    timeoutMs: 120_000,
+    logger: safeNotionLogger,
+    auth,
+    fetch: createNotionReadFetch(),
+  });
   const pages = [];
   let cursor: string | undefined;
   do {

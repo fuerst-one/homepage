@@ -1,20 +1,22 @@
-import { scheduleEnquiryMention } from "./enquiryMention";
+import { safeNotionLogger } from "../notion/notionDiagnostics";
+import { enquiryMention } from "./enquiryMention";
 import { Client } from "@notionhq/client";
 import type { BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints";
 import type { EnquiryStore } from "./submitEnquiry";
+import { createNotionFetch } from "../notion/createNotionFetch";
 
 /** Existing inbox schema: id (title), email (email), createdAt (date). */
-export function notionEnquiryStore(
-  afterResponse: (task: () => Promise<void>) => void,
-): EnquiryStore {
+export function notionEnquiryStore(): EnquiryStore {
   const databaseId =
     process.env.NEXT_NOTION_ENQUIRIES_DB_ID ||
     process.env.NEXT_NOTION_CV_SIGNUP_DATABASE_ID;
   if (!databaseId || !process.env.NEXT_NOTION_TOKEN)
     throw new Error("enquiry_storage_unconfigured");
   const notion = new Client({
+    logger: safeNotionLogger,
     auth: process.env.NEXT_NOTION_TOKEN,
     timeoutMs: 12_000,
+    fetch: createNotionFetch(),
   });
   return {
     async find(id) {
@@ -30,7 +32,11 @@ export function notionEnquiryStore(
         title?.type === "title"
           ? title.title.map((t) => t.plain_text).join("")
           : "";
-      return { receipt: id, fingerprint: text.split(":")[2] ?? "" };
+      return {
+        receipt: id,
+        fingerprint: text.split(":")[2] ?? "",
+        pageId: page.id,
+      };
     },
     async create(value, fingerprint) {
       const rows = {
@@ -84,13 +90,40 @@ export function notionEnquiryStore(
         },
         children,
       });
-      scheduleEnquiryMention(
-        page.id,
-        process.env.NOTION_ENQUIRY_MENTION_USER_ID,
-        afterResponse,
-        (args) => notion.blocks.children.append(args),
-      );
-      return { receipt: value.id, fingerprint };
+      return { receipt: value.id, fingerprint, pageId: page.id };
+    },
+    async notify(receipt) {
+      const userId = process.env.NOTION_ENQUIRY_MENTION_USER_ID;
+      if (!enquiryMention(userId).length) return;
+      if (!receipt.pageId) throw new Error("enquiry_notification_page_missing");
+      // Reconcile an append whose response was lost before retrying the mention.
+      let cursor: string | undefined;
+      do {
+        const page = await notion.blocks.children.list({
+          block_id: receipt.pageId,
+          start_cursor: cursor,
+          page_size: 100,
+        });
+        if (
+          page.results.some(
+            (block) =>
+              "type" in block &&
+              block.type === "paragraph" &&
+              block.paragraph.rich_text.some(
+                (text) =>
+                  text.type === "mention" &&
+                  text.mention.type === "user" &&
+                  text.mention.user.id === userId,
+              ),
+          )
+        )
+          return;
+        cursor = page.has_more ? (page.next_cursor ?? undefined) : undefined;
+      } while (cursor);
+      await notion.blocks.children.append({
+        block_id: receipt.pageId,
+        children: enquiryMention(userId),
+      });
     },
   };
 }

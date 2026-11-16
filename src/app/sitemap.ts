@@ -7,7 +7,7 @@ import { serviceProductPath } from "@/data/serviceProducts";
 import { locales, localizedPath, languageAlternates } from "@/lib/i18n";
 import { hasGermanTranslation } from "@/lib/localizeContent";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getCachedCvProjects();

@@ -1,5 +1,3 @@
-"use server";
-
 import {
   PageObjectResponse,
   QueryDatabaseResponse,
@@ -124,19 +122,23 @@ const rawToInternalPropertiesMap: Record<
   References: "references",
 };
 
-export const fetchNotionProjectsDatabase = async () => {
+export const fetchNotionProjectsDatabase = async (
+  sourcePages?: NotionProjectRaw[],
+) => {
   if (!process.env.NEXT_NOTION_PROJECT_DB_ID) {
     throw new Error("Missing NEXT_NOTION_PROJECT_DB_ID environment variable");
   }
 
-  const projectsRaw = (await fetchNotionDatabase(
-    process.env.NEXT_NOTION_PROJECT_DB_ID,
-    // The merged project source owns the cache. Avoid retaining stale Notion
-    // prose in a second fetch cache across a new deployment.
-    true,
-  )) as unknown as Omit<QueryDatabaseResponse, "results"> & {
-    results: NotionProjectRaw[];
-  };
+  const projectsRaw = sourcePages
+    ? { results: sourcePages }
+    : ((await fetchNotionDatabase(
+        process.env.NEXT_NOTION_PROJECT_DB_ID,
+        // The merged project source owns the cache. Avoid retaining stale Notion
+        // prose in a second fetch cache across a new deployment.
+        true,
+      )) as unknown as Omit<QueryDatabaseResponse, "results"> & {
+        results: NotionProjectRaw[];
+      });
 
   const projects = projectsRaw.results.map((projectRaw) => {
     // We keep the Description field separate from the other properties to keep the rich text annotations

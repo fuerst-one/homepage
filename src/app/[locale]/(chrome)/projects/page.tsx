@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: LocaleParams) {
   });
 }
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export default async function ProjectsPage({ params }: LocaleParams) {
   const locale = await getLocale(params);

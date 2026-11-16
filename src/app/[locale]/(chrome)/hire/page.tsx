@@ -11,7 +11,7 @@ import { hiringPlatforms } from "@/data/hiringPlatforms";
 import { enquiryPath } from "@/lib/enquiry";
 import { pageMetadata } from "@/lib/seo";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 export async function generateMetadata({ params }: LocaleParams) {
   const locale = await getLocale(params);
   const copy = await getSiteCopy(locale);

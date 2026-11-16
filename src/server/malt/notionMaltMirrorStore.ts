@@ -1,4 +1,6 @@
+import { safeNotionLogger } from "../notion/notionDiagnostics";
 import { Client } from "@notionhq/client";
+import { createNotionFetch } from "../notion/createNotionFetch";
 import {
   MALT_MIRROR_PROPERTY,
   MALT_REFRESH_PROPERTY,
@@ -21,8 +23,10 @@ export function notionMaltMirrorStore(): MaltMirrorStore {
   if (!pageId || !process.env.NEXT_NOTION_TOKEN)
     throw new Error("malt_store_unconfigured");
   const client = new Client({
+    logger: safeNotionLogger,
     auth: process.env.NEXT_NOTION_TOKEN,
     timeoutMs: 10_000,
+    fetch: createNotionFetch(),
   });
   const read = async () => {
     const page = await client.pages.retrieve({ page_id: pageId });

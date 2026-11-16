@@ -1,28 +1,11 @@
-import { unstable_cache } from "next/cache";
 import { flattenRichText } from "@/app/cv.pdf/flattenRichText";
 import type { Locale } from "@/lib/i18n";
 import type { EnquiryEvidence } from "@/lib/enquiryEvidence";
-import { readPublicProjectCase } from "@/lib/projectCase";
 import { projectPath } from "@/lib/seo";
-import {
-  CV_PROJECTS_CACHE_TAG,
-  getCachedCvProjects,
-} from "./getCachedCvProjects";
-import { fetchNotionDatabase } from "./utils/fetchNotionDatabase";
+import { getCachedCvProjects } from "./getCachedCvProjects";
+import { readWebsiteSection } from "./websiteContent";
 
-export const getPublicProjectCases = unstable_cache(
-  async () => {
-    const databaseId = process.env.NEXT_NOTION_PROJECT_DB_ID;
-    if (!databaseId) throw new Error("Project database unconfigured");
-    const { results } = await fetchNotionDatabase(databaseId);
-    return results.flatMap((page) => {
-      const caseStudy = readPublicProjectCase(page);
-      return caseStudy ? [{ id: page.id, caseStudy }] : [];
-    });
-  },
-  ["enquiry-public-cases-v1"],
-  { tags: [CV_PROJECTS_CACHE_TAG], revalidate: 3600 },
-);
+export const getPublicProjectCases = () => readWebsiteSection("cases");
 
 /** Join public cases only, and project an explicit DTO before crossing into the browser. */
 export async function getEnquiryEvidence(

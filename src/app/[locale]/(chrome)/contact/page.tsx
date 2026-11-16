@@ -15,7 +15,7 @@ import { FaLinkedin } from "@react-icons/all-files/fa/FaLinkedin";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 import { getEnquiryEvidence } from "@/server/notion/getEnquiryEvidence";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: LocaleParams) {
   const locale = await getLocale(params);

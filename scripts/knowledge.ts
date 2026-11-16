@@ -1,34 +1,48 @@
 import { readFile } from "node:fs/promises";
 import { knowledgeDatabase } from "../src/server/knowledge/database";
 import { indexKnowledge } from "../src/server/knowledge/indexKnowledge";
+import { watchNotion } from "../src/server/notion/notionWorker";
+import { setTimeout as pause } from "node:timers/promises";
 
 async function main() {
   const sql = knowledgeDatabase(),
     command = process.argv[2] ?? "status";
   try {
     if (command === "migrate") {
-      const migration = await readFile("ops/knowledge/001-initial.sql", "utf8");
-      await sql.begin(async (tx) => {
-        await tx.unsafe(migration);
-      });
+      for (const file of ["001-initial.sql", "003-notion-resilience.sql"]) {
+        const migration = await readFile(`ops/knowledge/${file}`, "utf8");
+        await sql.begin(async (tx) => {
+          await tx.unsafe(migration);
+        });
+      }
       console.log("Knowledge database ready");
     } else if (command === "sync" || command === "watch") {
-      do {
-        try {
-          console.log(
-            new Date().toISOString(),
-            JSON.stringify(await indexKnowledge()),
-          );
-        } catch (error) {
-          console.error(
-            "Knowledge sync failed:",
-            error instanceof Error ? error.message : "unknown error",
-          );
-          if (command === "sync") throw error;
-        }
-        if (command === "watch")
-          await new Promise((resolve) => setTimeout(resolve, 60_000));
-      } while (command === "watch");
+      const controller = new AbortController();
+      process.once("SIGTERM", () => controller.abort());
+      process.once("SIGINT", () => controller.abort());
+      const index = async () => {
+        do {
+          try {
+            console.log(
+              new Date().toISOString(),
+              JSON.stringify(await indexKnowledge()),
+            );
+          } catch (error) {
+            console.error(
+              "Knowledge sync failed:",
+              error instanceof Error ? error.message : "unknown error",
+            );
+            if (command === "sync") throw error;
+          }
+          if (command === "watch")
+            await pause(60_000, undefined, { signal: controller.signal }).catch(
+              () => {},
+            );
+        } while (command === "watch" && !controller.signal.aborted);
+      };
+      if (command === "watch")
+        await Promise.all([index(), watchNotion(controller.signal)]);
+      else await index();
     } else if (command === "status") {
       console.log(
         JSON.stringify(

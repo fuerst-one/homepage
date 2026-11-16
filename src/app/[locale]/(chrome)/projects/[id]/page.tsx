@@ -19,7 +19,7 @@ import {
   SITE_URL,
 } from "@/lib/seo";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 const getProject = cache(async (reference: string, locale: Locale) => {
   const projects = await getCachedCvProjects(locale);

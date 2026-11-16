@@ -19,6 +19,11 @@
     "knowledge:sync": "tsx --env-file=.env.local scripts/knowledge.ts sync",
     "knowledge:watch": "tsx --env-file=.env.local scripts/knowledge.ts watch",
     "knowledge:status": "tsx --env-file=.env.local scripts/knowledge.ts status",
+    "notion:migrate": "tsx --env-file=.env.local scripts/notion.ts migrate",
+    "notion:sync": "tsx --env-file=.env.local scripts/notion.ts sync",
+    "notion:status": "tsx --env-file=.env.local scripts/notion.ts status",
+    "notion:watch": "tsx --env-file=.env.local scripts/notion.ts watch",
+    "test:notion:integration": "node --env-file=.env.local tests/run-notion-integration.mjs",
     "knowledge:db": "docker compose --env-file .env.local -f compose.ai.yaml up -d --wait"
   },
   "dependencies": {

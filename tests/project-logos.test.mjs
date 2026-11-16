@@ -54,9 +54,8 @@ test("legacy logo proxy responses lead to usable images on the same site", async
       redirect: "manual",
       signal: AbortSignal.timeout(60000),
     });
-    assert.equal(response.status, 307);
-    assert.equal(response.headers.get("location"), `/img/logos/${name}`);
-    const image = await fetch(new URL(response.headers.get("location"), base));
+    assert.equal(response.status, 200, name);
+    const image = response;
     assert.equal(image.status, 200);
     assert.match(image.headers.get("content-type"), /^image\//);
     assert.ok((await image.arrayBuffer()).byteLength > 0);

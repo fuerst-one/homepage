@@ -1,7 +1,7 @@
-import { after, NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { parseEnquiry, ENQUIRY_MAX_BODY_BYTES } from "@/lib/enquiry";
 import { submitEnquiry } from "@/server/enquiries/submitEnquiry";
-import { notionEnquiryStore } from "@/server/enquiries/notionEnquiryStore";
+import { durableEnquiryStore } from "@/server/enquiries/durableEnquiryStore";
 import { checkRateLimit } from "@/server/api/rateLimit";
 
 export const runtime = "nodejs";
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.ok)
     return respond({ error: "invalid_brief", fields: parsed.fields }, 400);
   try {
-    const saved = await submitEnquiry(parsed.value, notionEnquiryStore(after));
+    const saved = await submitEnquiry(parsed.value, durableEnquiryStore());
     return respond({ receipt: saved.receipt }, 201);
   } catch (error) {
     if (error instanceof Error && error.message === "enquiry_conflict")

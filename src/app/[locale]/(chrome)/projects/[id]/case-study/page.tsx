@@ -18,7 +18,7 @@ import {
 } from "@/lib/seo";
 import type { Locale } from "@/lib/i18n";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 export const maxDuration = 60;
 
 export async function generateStaticParams() {

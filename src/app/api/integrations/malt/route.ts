@@ -1,9 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
-import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { MALT_PROFILE_URL, parseMaltProfile } from "@/lib/maltMirror";
-import { MALT_MIRROR_CACHE_TAG } from "@/server/malt/getMaltMirror";
-import { notionMaltMirrorStore } from "@/server/malt/notionMaltMirrorStore";
+import { postgresMaltMirrorStore } from "@/server/malt/postgresMaltMirrorStore";
 import { refreshMaltMirror } from "@/server/malt/refreshMaltMirror";
 import { fetchMaltProfile } from "@/server/malt/fetchMaltProfile";
 
@@ -23,10 +21,9 @@ export async function GET(request: NextRequest) {
   if (rejected) return rejected;
   try {
     const result = await refreshMaltMirror(
-      notionMaltMirrorStore(),
+      postgresMaltMirrorStore(),
       fetchMaltProfile,
     );
-    revalidateTag(MALT_MIRROR_CACHE_TAG, { expire: 0 });
     return respond(result, result.status === "ok" ? 200 : 502);
   } catch {
     return respond({ error: "mirror_storage_failed" }, 503);
@@ -74,7 +71,7 @@ export async function POST(request: NextRequest) {
     return respond({ error: "invalid_observation" }, 400);
   }
   try {
-    const written = await notionMaltMirrorStore().write({
+    const written = await postgresMaltMirrorStore().write({
       version: 1,
       profileUrl: MALT_PROFILE_URL,
       observation,
@@ -82,7 +79,6 @@ export async function POST(request: NextRequest) {
     });
     if (written === "older")
       return respond({ error: "older_observation" }, 409);
-    revalidateTag(MALT_MIRROR_CACHE_TAG, { expire: 0 });
     return respond({ status: "ok", observedAt: observation.observedAt }, 200);
   } catch {
     return respond({ error: "mirror_storage_failed" }, 503);

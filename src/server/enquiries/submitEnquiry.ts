@@ -1,10 +1,15 @@
 import { createHash } from "node:crypto";
 import type { Enquiry } from "../../lib/enquiry";
 
-export type EnquiryReceipt = { receipt: string; fingerprint: string };
+export type EnquiryReceipt = {
+  receipt: string;
+  fingerprint: string;
+  pageId?: string;
+};
 export type EnquiryStore = {
   find(id: string): Promise<EnquiryReceipt | undefined>;
   create(value: Enquiry, fingerprint: string): Promise<EnquiryReceipt>;
+  notify?(receipt: EnquiryReceipt): Promise<void>;
 };
 const pending = new Map<string, Promise<EnquiryReceipt>>();
 

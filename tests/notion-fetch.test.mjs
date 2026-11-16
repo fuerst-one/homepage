@@ -1,22 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { readFile } from "node:fs/promises";
-import ts from "typescript";
-
-// Use the project's compiler so the tests also run on Next.js's supported Node 20.
-const source = await readFile(
+import { loadTs } from "./helpers/load-ts.mjs";
+const { createNotionFetch: factory } = loadTs(
   new URL("../src/server/notion/createNotionFetch.ts", import.meta.url),
-  "utf8",
 );
-const { outputText } = ts.transpileModule(source, {
-  compilerOptions: {
-    module: ts.ModuleKind.ESNext,
-    target: ts.ScriptTarget.ES2022,
-  },
-});
-const { createNotionFetch } = await import(
-  `data:text/javascript;base64,${Buffer.from(outputText).toString("base64")}`
-);
+const createNotionFetch = (fetcher, wait) =>
+  factory(fetcher, wait, {
+    gate: { acquire: async () => 0, defer: async () => {} },
+    jitter: () => 0,
+  });
 
 test("Notion rate limits are retried after the server's requested delay", async () => {
   let calls = 0;

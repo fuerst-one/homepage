@@ -3,8 +3,6 @@ import { fetchNotionPage } from "./utils/fetchNotionPage";
 import { flattenNotionObject } from "./utils/flattenNotionObject";
 import { buildNotionImageProxyPath } from "./notionImageProxy";
 
-import type { Locale } from "@/lib/i18n";
-
 const AVATAR_PROPERTY_NAME = "Avatar";
 
 export type CvAddress = {
@@ -65,7 +63,9 @@ const hasAvatar = (value: NotionOwnerRow["Avatar"]): boolean => {
   return value.length > 0;
 };
 
-export const getCvOwner = async (): Promise<CvOwner> => {
+export const getCvOwner = async (
+  sourcePage?: PageObjectResponse,
+): Promise<CvOwner> => {
   const ownerId = process.env.NEXT_NOTION_OWNER_CONTACT_ID;
   if (!ownerId) {
     throw new Error(
@@ -73,7 +73,8 @@ export const getCvOwner = async (): Promise<CvOwner> => {
     );
   }
 
-  const page = (await fetchNotionPage(ownerId)) as PageObjectResponse;
+  const page =
+    sourcePage ?? ((await fetchNotionPage(ownerId)) as PageObjectResponse);
   const row = flattenNotionObject(page) as NotionOwnerRow;
 
   const address: CvAddress = {
@@ -107,26 +108,7 @@ export const getCvOwner = async (): Promise<CvOwner> => {
     address,
     dailyRate: row["Daily Rate"] ?? 0,
     avatarUrl: hasAvatar(row.Avatar)
-      ? buildNotionImageProxyPath(ownerId, AVATAR_PROPERTY_NAME)
+      ? buildNotionImageProxyPath(page.id, AVATAR_PROPERTY_NAME)
       : null,
   };
-};
-
-export const toPublicOwner = (owner: CvOwner): CvOwnerPublic => ({
-  name: owner.name,
-  position: owner.position,
-  status: owner.status,
-  languages: owner.languages,
-  education: owner.education,
-  city: owner.city,
-  available: owner.available,
-  avatarUrl: owner.avatarUrl,
-});
-
-export const localizeOwner = (owner: CvOwner, locale: Locale): CvOwner => {
-  if (locale === "en") return owner;
-  const translated = Object.fromEntries(
-    Object.entries(owner.german ?? {}).filter(([, value]) => value?.trim()),
-  );
-  return { ...owner, ...translated };
 };

@@ -6,13 +6,15 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts --prod=false
 COPY tsconfig.json ./
 COPY scripts/knowledge.ts ./scripts/knowledge.ts
+COPY scripts/notion.ts ./scripts/notion.ts
 COPY src/lib ./src/lib
 COPY src/data ./src/data
-COPY src/server/knowledge ./src/server/knowledge
-COPY src/server/notion ./src/server/notion
-COPY ops/knowledge/001-initial.sql ./ops/knowledge/001-initial.sql
+COPY src/server ./src/server
+COPY src/utils ./src/utils
+COPY public/img ./public/img
+COPY ops/knowledge/001-initial.sql ops/knowledge/003-notion-resilience.sql ./ops/knowledge/
 ENV NODE_ENV=production
 USER node
-HEALTHCHECK --interval=60s --timeout=15s --start-period=120s --retries=3 \
-  CMD node --import tsx scripts/knowledge.ts status > /dev/null || exit 1
+HEALTHCHECK --interval=60s --timeout=15s --start-period=300s --retries=3 \
+  CMD node --import tsx scripts/notion.ts health > /dev/null || exit 1
 CMD ["node", "--import", "tsx", "scripts/knowledge.ts", "watch"]

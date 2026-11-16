@@ -12,7 +12,7 @@ import "../home.css";
 import { MaltTerms } from "@/components/MaltTerms";
 import { EnquiryStart } from "@/components/Enquiry/EnquiryStart";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 export async function generateMetadata({ params }: LocaleParams) {
   const locale = await getLocale(params);
   const copy = await getSiteCopy(locale);
