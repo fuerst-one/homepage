@@ -20,7 +20,7 @@ function parseStatus(value: unknown): ServiceAvailability | null {
 }
 
 /** Remember an outage across navigation; only verified recovery removes the latch. */
-export function useKnowledgeAvailability() {
+export function useKnowledgeAvailability(enabled = true) {
   const current = useRef(INITIAL);
   const [status, setStatus] = useState(INITIAL);
   const version = useRef(0);
@@ -84,6 +84,7 @@ export function useKnowledgeAvailability() {
     }
   }, [accept, fail]);
   useEffect(() => {
+    if (!enabled) return;
     try {
       const saved = parseStatus(
         JSON.parse(sessionStorage.getItem(KEY) || "null"),
@@ -102,9 +103,9 @@ export function useKnowledgeAvailability() {
       checking.current?.abort();
       checking.current = null;
     };
-  }, [fail, refresh]);
+  }, [enabled, fail, refresh]);
   useEffect(() => {
-    if (status.available) return;
+    if (!enabled || status.available) return;
     const timer = setTimeout(
       () => {
         void refresh();
@@ -112,7 +113,7 @@ export function useKnowledgeAvailability() {
       Math.max(5000, status.retryAt - Date.now()),
     );
     return () => clearTimeout(timer);
-  }, [status, refresh]);
+  }, [enabled, status, refresh]);
   return {
     current,
     fail,

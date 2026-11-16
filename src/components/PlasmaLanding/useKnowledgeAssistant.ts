@@ -13,12 +13,12 @@ import {
   type KnowledgeTurn,
 } from "../../lib/knowledgeHistory";
 export type { KnowledgeTurn } from "../../lib/knowledgeHistory";
-export function useKnowledgeAssistant() {
+export function useKnowledgeAssistant(enabled = true) {
   const de = useLocale() === "de";
   const locale = de ? "de" : "en";
   const [turns, setTurns] = useState<KnowledgeTurn[]>([]);
   const [busy, setBusy] = useState(false);
-  const availability = useKnowledgeAvailability();
+  const availability = useKnowledgeAvailability(enabled);
   const [pendingQuestion, setPendingQuestion] = useState("");
   const pending = useRef<AbortController | null>(null);
   const currentTurns = useRef<KnowledgeTurn[]>([]);
@@ -34,6 +34,7 @@ export function useKnowledgeAssistant() {
     }
   };
   useEffect(() => {
+    if (!enabled) return;
     try {
       const saved = restoreKnowledgeHistory(
         sessionStorage.getItem(KNOWLEDGE_HISTORY_KEY),
@@ -50,7 +51,7 @@ export function useKnowledgeAssistant() {
       pending.current?.abort();
       pending.current = null;
     };
-  }, []);
+  }, [enabled]);
   useEffect(() => {
     if (savedAt === null) return;
     const timer = setTimeout(
@@ -76,7 +77,7 @@ export function useKnowledgeAssistant() {
   }
   async function ask(input: string, fallback = knowledgeFallback(locale)) {
     const question = input.trim();
-    if (!question || pending.current) return false;
+    if (!enabled || !question || pending.current) return false;
     if (!availability.current.current.available) {
       append(question, fallback);
       return true;

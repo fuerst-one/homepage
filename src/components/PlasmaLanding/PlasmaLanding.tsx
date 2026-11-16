@@ -113,7 +113,7 @@ export const PlasmaLanding = ({
   const assistantEnabled =
     process.env.NEXT_PUBLIC_KNOWLEDGE_ASSISTANT_ENABLED === "true";
   const [chatMode, setChatMode] = useState(false);
-  const assistant = useKnowledgeAssistant();
+  const assistant = useKnowledgeAssistant(assistantEnabled);
   const [assistantProject, setAssistantProject] = useState<string | null>(null);
   const [assistantShowProjects, setAssistantShowProjects] = useState(false);
   const [searchFilter, setSearchFilter] = useState<SearchFilter>();
