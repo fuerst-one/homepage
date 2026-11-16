@@ -4,7 +4,7 @@ import { loadTs } from "./helpers/load-ts.mjs";
 
 const { getLabelPlacementAtPoint } = loadTs(
   new URL(
-    "../src/components/Plasma/getLabelGroupPlacements.ts",
+    "../apps/web/src/components/Plasma/getLabelGroupPlacements.ts",
     import.meta.url,
   ),
 );

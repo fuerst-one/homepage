@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 
 const { createNotionFetch } = loadTs(
-  new URL("../src/server/notion/createNotionFetch.ts", import.meta.url),
+  new URL("../apps/sync/src/notion/createNotionFetch.ts", import.meta.url),
 );
 
 function clock() {
@@ -132,7 +132,7 @@ test("restricted access is not retried and uncertain writes are not replayed", a
 
 test("maintenance diagnostics keep useful codes while excluding private error content", () => {
   const { notionFailure } = loadTs(
-    new URL("../src/server/notion/notionDiagnostics.ts", import.meta.url),
+    new URL("../packages/database/src/notionDiagnostics.ts", import.meta.url),
   );
   assert.deepEqual(
     notionFailure({

@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import { test, after } from "node:test";
 import { randomUUID } from "node:crypto";
 import puppeteer from "puppeteer";
-import { knowledgeDatabase } from "../src/server/knowledge/database.ts";
-import { emptyEnquiry } from "../src/lib/enquiry.ts";
-import { caseStudyPageId } from "../src/lib/projectCaseStudy.ts";
-import { readWebsiteSections } from "../src/server/notion/websiteContent.ts";
+import { knowledgeDatabase } from "../packages/database/src/database.ts";
+import { emptyEnquiry } from "../packages/content/src/enquiry.ts";
+import { caseStudyPageId } from "../packages/content/src/projectCaseStudy.ts";
+import { readWebsiteSections } from "../packages/database/src/websiteContent.ts";
 
 const base = process.env.NOTION_OFFLINE_BASE_URL;
 const database = new URL(

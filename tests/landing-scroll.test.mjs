@@ -6,7 +6,7 @@ import ts from "typescript";
 const { outputText } = ts.transpileModule(
   readFileSync(
     new URL(
-      "../src/components/PlasmaLanding/getRailScrollState.ts",
+      "../apps/web/src/components/PlasmaLanding/getRailScrollState.ts",
       import.meta.url,
     ),
     "utf8",

@@ -19,6 +19,8 @@ export function loadTs(sourceUrl) {
     },
   });
   new Function("exports", "require", outputText)(exports, (specifier) => {
+    if (specifier.startsWith("@homepage/") && !specifier.endsWith(".json"))
+      return loadTs(require.resolve(specifier));
     if (specifier.startsWith(".") && !specifier.endsWith(".json"))
       return loadTs(resolve(dirname(path), `${specifier}.ts`));
     return require(specifier);

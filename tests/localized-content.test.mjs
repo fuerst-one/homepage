@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
-const moduleUrl = new URL("../src/lib/localizeContent.ts", import.meta.url);
+const moduleUrl = new URL(
+  "../packages/content/src/localizeContent.ts",
+  import.meta.url,
+);
 const rt = (text) => ({
   type: "rich_text",
   rich_text: text ? [{ plain_text: text }] : [],

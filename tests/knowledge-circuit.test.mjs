@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { createServiceCircuit } = loadTs(
-  new URL("../src/server/knowledge/serviceCircuit.ts", import.meta.url),
+  new URL(
+    "../apps/web/src/server/knowledge/serviceCircuit.ts",
+    import.meta.url,
+  ),
 );
 const fallback = { answer: "Explore projects", sources: [], actions: [] };
 function setup() {

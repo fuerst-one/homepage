@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createRequire } from "node:module";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 
@@ -28,7 +29,7 @@ function clock() {
 function preview() {
   const { createHeroPreviewController } = loadTs(
     new URL(
-      "../src/components/PlasmaLanding/createHeroPreviewController.ts",
+      "../apps/web/src/components/PlasmaLanding/createHeroPreviewController.ts",
       import.meta.url,
     ),
   );
@@ -110,11 +111,14 @@ test("the homepage includes the public profile portrait with lazy loading and a 
 });
 
 test("responsive metrics use the same initial render before browser hydration", async () => {
-  const React = await import("react");
-  const { renderToString } = await import("react-dom/server");
+  const require = createRequire(
+    new URL("../apps/web/package.json", import.meta.url),
+  );
+  const React = require("react");
+  const { renderToString } = require("react-dom/server");
   const { useResponsiveMetrics } = loadTs(
     new URL(
-      "../src/components/Plasma/useResponsiveMetrics.ts",
+      "../apps/web/src/components/Plasma/useResponsiveMetrics.ts",
       import.meta.url,
     ),
   );

@@ -2,10 +2,16 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { buildProjectSearchIndex, searchProjectIndex } = loadTs(
-  new URL("../src/components/PlasmaLanding/projectSearch.ts", import.meta.url),
+  new URL(
+    "../apps/web/src/components/PlasmaLanding/projectSearch.ts",
+    import.meta.url,
+  ),
 );
 const { iconShape } = loadTs(
-  new URL("../src/components/PlasmaLanding/iconCatalog.ts", import.meta.url),
+  new URL(
+    "../apps/web/src/components/PlasmaLanding/iconCatalog.ts",
+    import.meta.url,
+  ),
 );
 const projects = [
   {

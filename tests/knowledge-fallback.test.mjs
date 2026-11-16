@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { knowledgeFallback } = loadTs(
-  new URL("../src/lib/knowledgeFallback.ts", import.meta.url),
+  new URL("../apps/web/src/lib/knowledgeFallback.ts", import.meta.url),
 );
 test("fallback uses bounded public project suggestions without outage wording", () => {
   const projects = Array.from({ length: 5 }, (_, i) => ({

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { publicKnowledgeSeeds } = loadTs(
-  new URL("../src/server/knowledge/publicContent.ts", import.meta.url),
+  new URL("../apps/sync/src/knowledge/publicContent.ts", import.meta.url),
 );
 const text = (value) => ({ rich_text: [{ plain_text: value }] });
 const page = {

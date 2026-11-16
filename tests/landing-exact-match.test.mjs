@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { resolveSearchDestination } = loadTs(
-  new URL("../src/components/PlasmaLanding/projectSearch.ts", import.meta.url),
+  new URL(
+    "../apps/web/src/components/PlasmaLanding/projectSearch.ts",
+    import.meta.url,
+  ),
 );
 const filter = { field: "tools", value: "React" };
 const index = {

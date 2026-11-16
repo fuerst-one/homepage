@@ -16,7 +16,7 @@ const get = (path) =>
 
 test("starting offers have localized URLs and a product-specific enquiry brief", () => {
   const { serviceProductPath, serviceProductEmail, isServiceProduct } = loadTs(
-    new URL("../src/data/serviceProducts.ts", import.meta.url),
+    new URL("../apps/web/src/data/serviceProducts.ts", import.meta.url),
   );
   for (const [service, product] of products) {
     assert.equal(isServiceProduct(service, product), true);

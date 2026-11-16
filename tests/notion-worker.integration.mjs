@@ -2,19 +2,19 @@ import assert from "node:assert/strict";
 import { test, after } from "node:test";
 import { readFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
-import { knowledgeDatabase } from "../src/server/knowledge/database.ts";
-import { syncWebsiteContent } from "../src/server/notion/syncWebsiteContent.ts";
+import { knowledgeDatabase } from "../packages/database/src/database.ts";
+import { syncWebsiteContent } from "../apps/sync/src/notion/syncWebsiteContent.ts";
 import {
   readWebsiteSection,
   readWebsiteAsset,
   propertyAssetKey,
-} from "../src/server/notion/websiteContent.ts";
+} from "../packages/database/src/websiteContent.ts";
 import {
   durableEnquiryStore,
   drainEnquiryOutbox,
-} from "../src/server/enquiries/durableEnquiryStore.ts";
-import { notionEnquiryStore } from "../src/server/enquiries/notionEnquiryStore.ts";
-import { emptyEnquiry } from "../src/lib/enquiry.ts";
+} from "../packages/database/src/durableEnquiryStore.ts";
+import { notionEnquiryStore } from "../apps/sync/src/enquiries/notionEnquiryStore.ts";
+import { emptyEnquiry } from "../packages/content/src/enquiry.ts";
 
 const url = new URL(
   process.env.KNOWLEDGE_DATABASE_URL || "http://unconfigured",
@@ -27,10 +27,20 @@ if (
 const sql = knowledgeDatabase();
 await sql.unsafe(
   await readFile(
-    new URL("../ops/knowledge/003-notion-resilience.sql", import.meta.url),
+    new URL(
+      "../packages/database/migrations/003-notion-resilience.sql",
+      import.meta.url,
+    ),
     "utf8",
   ),
 );
+for (const name of ["001-initial.sql", "005-public-content.sql"])
+  await sql.unsafe(
+    await readFile(
+      new URL(`../packages/database/migrations/${name}`, import.meta.url),
+      "utf8",
+    ),
+  );
 const originalFetch = global.fetch;
 after(async () => {
   global.fetch = originalFetch;
@@ -141,8 +151,16 @@ global.fetch = async (input) => {
 };
 
 test("worker publishes public content and image bytes; DB readers require no Notion connection", async () => {
-  await sql`TRUNCATE notion_snapshots,notion_assets,notion_request_gate`;
+  await sql`TRUNCATE public_content,notion_snapshots,notion_assets,notion_request_gate`;
+  const legacyAsset = randomUUID();
+  await sql`INSERT INTO notion_assets(key,content,content_type,created_at) VALUES (${legacyAsset},${Buffer.from("rollback image")},'image/png',now()-interval '2 days')`;
+  await sql`INSERT INTO notion_snapshots(key,payload,refreshed_at) VALUES ('website-v1',${sql.json({ assets: { legacy: legacyAsset } })},now())`;
   await syncWebsiteContent(true);
+  assert.equal(
+    (await sql`SELECT key FROM notion_assets WHERE key=${legacyAsset}`).length,
+    1,
+    "legacy rollback images survive new-worker garbage collection",
+  );
   const projects = await readWebsiteSection("projects");
   assert.deepEqual(
     projects.map((p) => p.id),
@@ -166,9 +184,21 @@ test("worker publishes public content and image bytes; DB readers require no Not
   global.fetch = async () => {
     throw new Error("Notion offline");
   };
-  assert.equal((await readWebsiteSection("copy"))[0].en, "Published");
+  assert.equal((await readWebsiteSection("copy"))["home.title"], "Published");
   assert.ok(await readWebsiteAsset(propertyAssetKey(publicId, "Logo", 0)));
   global.fetch = fetcher;
+});
+
+test("unchanged case bodies reuse the private worker cache without exposing it to web readers", async () => {
+  const before = requests.filter((p) => p.includes("/blocks/")).length;
+  await syncWebsiteContent(true);
+  assert.equal(requests.filter((p) => p.includes("/blocks/")).length, before);
+  const [publicRow] =
+    await sql`SELECT payload FROM public_content WHERE key='website-v2'`;
+  const [workerRow] =
+    await sql`SELECT payload FROM notion_snapshots WHERE key='website-v2'`;
+  assert.equal(publicRow.payload.sourceCache, undefined);
+  assert.ok(workerRow.payload.sourceCache[studyId]);
 });
 
 test("a real SDK 429 preserves the entire previous database publication", async () => {
@@ -268,4 +298,159 @@ test("a lost mention response is reconciled through the real Notion adapter with
     blocks[0].paragraph.rich_text[1].mention.user.id,
     process.env.NOTION_ENQUIRY_MENTION_USER_ID,
   );
+});
+
+test("indexing uses the prepared public records and cannot restore content withdrawn during paid work", async () => {
+  const { readPublishedKnowledge } =
+    await import("../apps/sync/src/knowledge/publicationSource.ts");
+  const { writeIndexPublication } =
+    await import("../apps/sync/src/knowledge/publicationIndex.ts");
+  hidePublic = false;
+  // The preceding enquiry test installed its own synthetic adapter.
+  global.fetch = async (input) => {
+    const path = new URL(String(input)).pathname;
+    if (path === `/v1/databases/${dbId}/query`)
+      return list([project(publicId, hidePublic)]);
+    if (path === `/v1/databases/${copyId}/query`)
+      return list([
+        page(copyId, {
+          Key: { type: "title", title: [{ plain_text: "home.title" }] },
+          English: rich("Published"),
+          German: rich("Veröffentlicht"),
+        }),
+      ]);
+    if (path === `/v1/pages/${ownerId.replaceAll("-", "")}`)
+      return Response.json(page(ownerId));
+    if (path === `/v1/pages/${studyId}`) return Response.json(page(studyId));
+    if (path === `/v1/blocks/${studyId}/children`) return list([]);
+    throw new Error(`Unexpected synthetic request: ${path}`);
+  };
+  await syncWebsiteContent(true);
+  let source;
+  const fetcher = global.fetch;
+  global.fetch = async () => {
+    throw new Error("Index source must not contact Notion");
+  };
+  try {
+    source = await readPublishedKnowledge(sql);
+  } finally {
+    global.fetch = fetcher;
+  }
+  assert.ok(source.documents.length > 0);
+  assert.ok(source.documents.every((d) => d.projectId === publicId));
+  hidePublic = true;
+  await syncWebsiteContent(true);
+  const prepared = source.documents.map((doc) => ({
+    doc,
+    chunks: [],
+    vectors: [],
+  }));
+  assert.equal(
+    await writeIndexPublication(sql, source, prepared, "test"),
+    false,
+  );
+  const rows =
+    await sql`SELECT id FROM knowledge_documents WHERE project_id=${publicId}`;
+  assert.equal(
+    rows.length,
+    0,
+    "stale index work cannot reintroduce a withdrawn project",
+  );
+});
+
+test("publishing a redacted case body or withdrawn locale invalidates that exact evidence immediately", async () => {
+  const { preparePublication } =
+    await import("../apps/sync/src/notion/preparePublication.ts");
+  const { publishedKnowledgeDocuments } =
+    await import("../apps/sync/src/knowledge/publicationSource.ts");
+  const { publicationStore } =
+    await import("../apps/sync/src/notion/publicationStore.ts");
+  const source = {
+    projects: [
+      {
+        id: publicId,
+        name: "Retained",
+        hidden: false,
+        description: rich("English"),
+        kpis: rich("Result"),
+        descriptionDe: rich("Deutsch"),
+        kpisDe: rich("Ergebnis"),
+        germanReady: true,
+        caseStudyEn: `https://notion.so/${studyId}`,
+      },
+    ],
+    studies: {
+      [studyId]: [
+        {
+          id: "body",
+          type: "paragraph",
+          richText: [{ plain_text: "Withdraw this prose" }],
+          caption: [],
+          children: [],
+        },
+      ],
+    },
+    assets: {},
+  };
+  const previous = preparePublication(source);
+  await sql`TRUNCATE knowledge_documents CASCADE`;
+  for (const d of publishedKnowledgeDocuments(previous))
+    await sql`INSERT INTO knowledge_documents(id,project_id,title,locale,href,hash,embedding_model) VALUES (${d.id},${d.projectId},${d.title},${d.locale},${d.href},${d.hash},'test')`;
+  await sql`INSERT INTO knowledge_sync(id,synced_at) VALUES (1,now()) ON CONFLICT(id) DO UPDATE SET synced_at=now()`;
+  const store = publicationStore(sql),
+    key = randomUUID();
+  // Identical publication retains the current index.
+  assert.equal(
+    await store.publish(key, await store.claim(key, 0), previous),
+    true,
+  );
+  assert.equal((await sql`SELECT id FROM knowledge_documents`).length, 2);
+  assert.equal((await sql`SELECT id FROM knowledge_sync`).length, 1);
+  source.projects[0].germanReady = false;
+  source.studies[studyId] = [];
+  const redacted = preparePublication(source);
+  assert.equal(
+    redacted.locales.en.projects.length,
+    1,
+    "the project remains public",
+  );
+  assert.equal(
+    await store.publish(key, await store.claim(key, 0), redacted),
+    true,
+  );
+  assert.equal(
+    (await sql`SELECT id FROM knowledge_documents`).length,
+    0,
+    "old body and German variant both leave retrieval",
+  );
+  assert.equal(
+    (await sql`SELECT id FROM knowledge_sync`).length,
+    0,
+    "retrieval remains unavailable until the replacement is indexed",
+  );
+});
+
+test("a website publication is independent of knowledge indexing size limits", async () => {
+  const { preparePublication } =
+    await import("../apps/sync/src/notion/preparePublication.ts");
+  const { publicationStore } =
+    await import("../apps/sync/src/notion/publicationStore.ts");
+  const publication = preparePublication({
+    projects: [
+      {
+        id: publicId,
+        name: "Large case",
+        hidden: false,
+        description: rich("x".repeat(100001)),
+      },
+    ],
+    assets: {},
+  });
+  const store = publicationStore(sql),
+    key = randomUUID();
+  assert.equal(
+    await store.publish(key, await store.claim(key, 0), publication),
+    true,
+  );
+  assert.equal((await readWebsiteSection("projects"))[0].id, publicId);
 });

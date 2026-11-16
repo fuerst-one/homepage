@@ -7,7 +7,7 @@ const loadTs = (path) => loadSourceTs(new URL(path, import.meta.url));
 
 test("React and React Native suggestions select the atom instead of the generic tool", () => {
   const { getKeywordIconShape, iconShape } = loadTs(
-    "../src/components/PlasmaLanding/iconCatalog.ts",
+    "../apps/web/src/components/PlasmaLanding/iconCatalog.ts",
   );
   assert.equal(getKeywordIconShape("tools", "React.js", 4), iconShape("react"));
   assert.equal(
@@ -20,7 +20,7 @@ test("React and React Native suggestions select the atom instead of the generic 
 
 test("the Notion seed covers published projects and unknown icon values keep a safe fallback", () => {
   const { ICON_IDS, getProjectIconShape, iconShape } = loadTs(
-    "../src/components/PlasmaLanding/iconCatalog.ts",
+    "../apps/web/src/components/PlasmaLanding/iconCatalog.ts",
   );
   const PROJECT_ICONS = JSON.parse(
     readFileSync(
@@ -30,7 +30,10 @@ test("the Notion seed covers published projects and unknown icon values keep a s
   );
   const slugs = JSON.parse(
     readFileSync(
-      new URL("../src/data/project-slugs.json", import.meta.url),
+      new URL(
+        "../packages/content/src/data/project-slugs.json",
+        import.meta.url,
+      ),
       "utf8",
     ),
   );
@@ -49,7 +52,9 @@ test("the Notion seed covers published projects and unknown icon values keep a s
 });
 
 test("project icon metadata reads the Notion select and tolerates missing or empty choices", () => {
-  const { readProjectIcons } = loadTs("../src/server/notion/projectIcons.ts");
+  const { readProjectIcons } = loadTs(
+    "../apps/sync/src/notion/projectIcons.ts",
+  );
   assert.deepEqual(
     readProjectIcons([
       {
@@ -90,10 +95,12 @@ test("the public project API exposes editable icon choices without SVG or privat
 });
 
 test("the icon transformer produces centered 3D geometry from a shape with holes", () => {
-  const require = createRequire(import.meta.url);
+  const require = createRequire(
+    new URL("../apps/web/package.json", import.meta.url),
+  );
   const THREE = require("three");
   const { extrudeIconShapes } = loadTs(
-    "../src/components/PlasmaLanding/iconGeometries.ts",
+    "../apps/web/src/components/PlasmaLanding/iconGeometries.ts",
   );
   const shape = new THREE.Shape();
   shape.moveTo(100, 100);
@@ -123,7 +130,7 @@ test("the icon transformer produces centered 3D geometry from a shape with holes
 
 test("the React model has finite geometry extending into all three axes", () => {
   const { createReactGeometry } = loadTs(
-    "../src/components/PlasmaLanding/iconGeometries.ts",
+    "../apps/web/src/components/PlasmaLanding/iconGeometries.ts",
   );
   const geometry = createReactGeometry();
   geometry.computeBoundingBox();
@@ -137,10 +144,10 @@ test("the React model has finite geometry extending into all three axes", () => 
 
 test("3D icons build only when selected, reuse their geometry, and release it once", () => {
   const { createGeometryCache } = loadTs(
-    "../src/components/PlasmaPlayground/createGeometryCache.ts",
+    "../apps/web/src/components/PlasmaPlayground/createGeometryCache.ts",
   );
   const { createReactGeometry } = loadTs(
-    "../src/components/PlasmaLanding/iconGeometries.ts",
+    "../apps/web/src/components/PlasmaLanding/iconGeometries.ts",
   );
   const base = createReactGeometry();
   let built = 0;
@@ -162,10 +169,10 @@ test("3D icons build only when selected, reuse their geometry, and release it on
 
 test("navigation sculptures can be generated one at a time through the same lazy cache", () => {
   const { createLandingGeometry } = loadTs(
-    "../src/components/PlasmaLanding/shapeGeometries.ts",
+    "../apps/web/src/components/PlasmaLanding/shapeGeometries.ts",
   );
   const { createGeometryCache } = loadTs(
-    "../src/components/PlasmaPlayground/createGeometryCache.ts",
+    "../apps/web/src/components/PlasmaPlayground/createGeometryCache.ts",
   );
   const requested = [];
   const cache = createGeometryCache([], (index) => {
@@ -191,10 +198,12 @@ test("navigation sculptures can be generated one at a time through the same lazy
 });
 
 test("the lightweight icon IDs stay aligned with the deferred SVG catalog", () => {
-  const { ICON_IDS } = loadTs("../src/components/PlasmaLanding/iconCatalog.ts");
+  const { ICON_IDS } = loadTs(
+    "../apps/web/src/components/PlasmaLanding/iconCatalog.ts",
+  );
   const icons = JSON.parse(
     readFileSync(
-      new URL("../src/data/landing-icon-svgs.json", import.meta.url),
+      new URL("../apps/web/src/data/landing-icon-svgs.json", import.meta.url),
       "utf8",
     ),
   );

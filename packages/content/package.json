@@ -1,0 +1,11 @@
+{
+  "name": "@homepage/content",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./data/*.json": "./src/data/*.json",
+    "./data/*": "./src/data/*.ts",
+    "./*": "./src/*.ts"
+  }
+}

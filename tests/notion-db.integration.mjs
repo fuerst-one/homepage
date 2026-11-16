@@ -13,23 +13,33 @@ if (
 )
   throw new Error("Use a dedicated localhost database ending in _test");
 const { knowledgeDatabase } = loadTs(
-  new URL("../src/server/knowledge/database.ts", import.meta.url),
+  new URL("../packages/database/src/database.ts", import.meta.url),
 );
 const sql = knowledgeDatabase();
 after(() => sql.end());
 
 test("Notion schema is additive and rerunnable", async () => {
   const migration = await readFile(
-    new URL("../ops/knowledge/003-notion-resilience.sql", import.meta.url),
+    new URL(
+      "../packages/database/migrations/003-notion-resilience.sql",
+      import.meta.url,
+    ),
     "utf8",
   );
   await sql.unsafe(migration);
   await sql.unsafe(migration);
+  for (const name of ["001-initial.sql", "005-public-content.sql"])
+    await sql.unsafe(
+      await readFile(
+        new URL(`../packages/database/migrations/${name}`, import.meta.url),
+        "utf8",
+      ),
+    );
 });
 
 test("database admission coordinates independent clients and never shortens a cooldown", async () => {
   const { postgresNotionGate } = loadTs(
-    new URL("../src/server/notion/notionGate.ts", import.meta.url),
+    new URL("../apps/sync/src/notion/notionGate.ts", import.meta.url),
   );
   const key = randomUUID();
   const a = postgresNotionGate(sql, key),
@@ -45,7 +55,7 @@ test("database admission coordinates independent clients and never shortens a co
 
 test("DB readers return published content without a loader even during a prolonged Notion outage", async () => {
   const { postgresSnapshotStore, readSnapshot, refreshSnapshot } = loadTs(
-    new URL("../src/server/notion/snapshot.ts", import.meta.url),
+    new URL("../apps/sync/src/notion/snapshot.ts", import.meta.url),
   );
   const key = randomUUID();
   const store = postgresSnapshotStore(sql);
@@ -72,7 +82,7 @@ test("DB readers return published content without a loader even during a prolong
 
 test("only one snapshot refresh runs across instances and an expired lease cannot publish", async () => {
   const { postgresSnapshotStore } = loadTs(
-    new URL("../src/server/notion/snapshot.ts", import.meta.url),
+    new URL("../apps/sync/src/notion/snapshot.ts", import.meta.url),
   );
   const store = postgresSnapshotStore(sql),
     key = randomUUID();
@@ -92,7 +102,7 @@ test("only one snapshot refresh runs across instances and an expired lease canno
 
 test("a stale publisher receives an explicit failure instead of reporting a successful sync", async () => {
   const { postgresSnapshotStore, refreshSnapshot } = loadTs(
-    new URL("../src/server/notion/snapshot.ts", import.meta.url),
+    new URL("../apps/sync/src/notion/snapshot.ts", import.meta.url),
   );
   const store = postgresSnapshotStore(sql),
     key = randomUUID();
@@ -113,7 +123,7 @@ test("a stale publisher receives an explicit failure instead of reporting a succ
 
 test("a long-running publisher renews its lease before it can be reclaimed", async () => {
   const { postgresSnapshotStore, refreshSnapshot } = loadTs(
-    new URL("../src/server/notion/snapshot.ts", import.meta.url),
+    new URL("../apps/sync/src/notion/snapshot.ts", import.meta.url),
   );
   const store = postgresSnapshotStore(sql),
     key = randomUUID();
@@ -134,7 +144,7 @@ test("a long-running publisher renews its lease before it can be reclaimed", asy
 
 test("enquiries are durable and deduplicated without contacting Notion", async () => {
   const { durableEnquiryStore } = loadTs(
-    new URL("../src/server/enquiries/durableEnquiryStore.ts", import.meta.url),
+    new URL("../packages/database/src/durableEnquiryStore.ts", import.meta.url),
   );
   const store = durableEnquiryStore(sql),
     id = randomUUID();
@@ -154,7 +164,7 @@ test("enquiries are durable and deduplicated without contacting Notion", async (
 
 test("worker retries reconcile a committed Notion write and clear delivered private data", async () => {
   const { durableEnquiryStore, drainEnquiryOutbox } = loadTs(
-    new URL("../src/server/enquiries/durableEnquiryStore.ts", import.meta.url),
+    new URL("../packages/database/src/durableEnquiryStore.ts", import.meta.url),
   );
   await sql`TRUNCATE notion_enquiry_outbox`;
   const id = randomUUID(),
@@ -187,7 +197,7 @@ test("worker retries reconcile a committed Notion write and clear delivered priv
 
 test("a failed Notion mention is retried without creating another enquiry page", async () => {
   const { durableEnquiryStore, drainEnquiryOutbox } = loadTs(
-    new URL("../src/server/enquiries/durableEnquiryStore.ts", import.meta.url),
+    new URL("../packages/database/src/durableEnquiryStore.ts", import.meta.url),
   );
   await sql`TRUNCATE notion_enquiry_outbox`;
   const id = randomUUID();
@@ -221,19 +231,25 @@ test("a failed Notion mention is retried without creating another enquiry page",
 
 test("website sections and image bytes are read only from the current DB publication", async () => {
   const { readWebsiteSection, readWebsiteAsset, WEBSITE_CONTENT_KEY } = loadTs(
-    new URL("../src/server/notion/websiteContent.ts", import.meta.url),
+    new URL("../packages/database/src/websiteContent.ts", import.meta.url),
   );
   const { postgresSnapshotStore, refreshSnapshot } = loadTs(
-    new URL("../src/server/notion/snapshot.ts", import.meta.url),
+    new URL("../apps/sync/src/notion/snapshot.ts", import.meta.url),
   );
-  const store = postgresSnapshotStore(sql);
+  const { publicationStore } =
+    await import("../apps/sync/src/notion/publicationStore.ts");
+  const store = publicationStore(sql);
   const key = randomUUID(),
     bytes = Buffer.from("published image");
   await sql`INSERT INTO notion_assets(key,content,content_type) VALUES (${key},${bytes},'image/png')`;
   await refreshSnapshot(
     store,
     WEBSITE_CONTENT_KEY,
-    async () => ({ projects: [{ id: "public" }], assets: { avatar: key } }),
+    async () => ({
+      version: 2,
+      locales: { en: { projects: [{ id: "public" }] } },
+      assets: { avatar: key },
+    }),
     0,
   );
   assert.deepEqual(await readWebsiteSection("projects", sql), [
@@ -248,7 +264,7 @@ test("website sections and image bytes are read only from the current DB publica
   await refreshSnapshot(
     store,
     WEBSITE_CONTENT_KEY,
-    async () => ({ projects: [], assets: {} }),
+    async () => ({ version: 2, locales: { en: { projects: [] } }, assets: {} }),
     0,
   );
   assert.equal(
@@ -260,10 +276,10 @@ test("website sections and image bytes are read only from the current DB publica
 
 test("related website sections stay in one publication while a worker publishes concurrently", async () => {
   const { readWebsiteSections, WEBSITE_CONTENT_KEY } = loadTs(
-    new URL("../src/server/notion/websiteContent.ts", import.meta.url),
+    new URL("../packages/database/src/websiteContent.ts", import.meta.url),
   );
   const publish = async (version) =>
-    sql`UPDATE notion_snapshots SET payload=${sql.json({ projects: [{ id: version }], cases: [{ id: version }], icons: { version } })} WHERE key=${WEBSITE_CONTENT_KEY}`;
+    sql`UPDATE public_content SET payload=${sql.json({ version: 2, locales: { en: { projects: [{ id: version }], cases: [{ id: version }], icons: { version } } }, assets: {} })} WHERE key=${WEBSITE_CONTENT_KEY}`;
   await publish("initial");
   await Promise.all([
     (async () => {
@@ -280,4 +296,34 @@ test("related website sections stay in one publication while a worker publishes 
       }
     })(),
   ]);
+});
+
+test("an expired writer cannot change the public publication, and a successful publication withdraws search rows immediately", async () => {
+  const { publicationStore } =
+    await import("../apps/sync/src/notion/publicationStore.ts");
+  const store = publicationStore(sql),
+    key = randomUUID(),
+    token = await store.claim(key, 0);
+  const [before] =
+    await sql`SELECT payload FROM public_content WHERE key='website-v2'`;
+  await sql`UPDATE notion_snapshots SET lease_until=now()-interval '1 second' WHERE key=${key}`;
+  const value = {
+    version: 2,
+    locales: { en: { projects: [] }, de: { projects: [] } },
+    assets: {},
+  };
+  assert.equal(await store.publish(key, token, value), false);
+  const [after] =
+    await sql`SELECT payload FROM public_content WHERE key='website-v2'`;
+  assert.deepEqual(after.payload, before.payload);
+  const id = randomUUID();
+  await sql`INSERT INTO knowledge_documents(id,project_id,title,locale,href,hash,embedding_model) VALUES (${id},'withdrawn','Withdrawn','en','/en/projects/withdrawn','old','test')`;
+  const fresh = await store.claim(key, 0);
+  assert.equal(await store.publish(key, fresh, value), true);
+  const rows = await sql`SELECT id FROM knowledge_documents WHERE id=${id}`;
+  assert.equal(
+    rows.length,
+    0,
+    "withdrawal must not wait for any embedding call",
+  );
 });

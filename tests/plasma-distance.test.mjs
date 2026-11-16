@@ -4,7 +4,7 @@ import { loadTs } from "./helpers/load-ts.mjs";
 
 const { getDistanceReaction } = loadTs(
   new URL(
-    "../src/components/PlasmaLanding/getDistanceReaction.ts",
+    "../apps/web/src/components/PlasmaLanding/getDistanceReaction.ts",
     import.meta.url,
   ),
 );

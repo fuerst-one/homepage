@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 test("model schema restricts citation IDs and action targets to this retrieval", () => {
   const { knowledgeResponseSchema } = loadTs(
-    new URL("../src/lib/knowledge.ts", import.meta.url),
+    new URL("../packages/content/src/knowledge.ts", import.meta.url),
   );
   const schema = knowledgeResponseSchema([
     { id: "s1", projectId: "project-1" },
@@ -18,7 +18,9 @@ test("model schema restricts citation IDs and action targets to this retrieval",
   ]);
 });
 
-const core = loadTs(new URL("../src/lib/knowledge.ts", import.meta.url));
+const core = loadTs(
+  new URL("../packages/content/src/knowledge.ts", import.meta.url),
+);
 
 test("chat rejects oversized messages, invalid locales and injected model settings", () => {
   assert.equal(

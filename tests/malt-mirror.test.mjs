@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { parseMaltProfile, maltMirrorView, readMaltMirror, MALT_PROFILE_URL } =
-  loadTs(new URL("../src/lib/maltMirror.ts", import.meta.url));
+  loadTs(new URL("../packages/content/src/maltMirror.ts", import.meta.url));
 const { refreshMaltMirror } = loadTs(
-  new URL("../src/server/malt/refreshMaltMirror.ts", import.meta.url),
+  new URL("../packages/database/src/refreshMaltMirror.ts", import.meta.url),
 );
 const now = Date.parse("2026-11-15T10:00:00Z");
 const at = new Date(now).toISOString();

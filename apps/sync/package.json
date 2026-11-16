@@ -1,0 +1,25 @@
+{
+  "name": "@homepage/sync",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "start": "tsx scripts/knowledge.ts watch",
+    "notion:sync": "tsx scripts/notion.ts sync",
+    "notion:status": "tsx scripts/notion.ts status"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.14",
+    "lodash": "^4.17.21",
+    "umap-js": "^1.4.0",
+    "@homepage/content": "workspace:*",
+    "@homepage/database": "workspace:*",
+    "@homepage/knowledge": "workspace:*",
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.24"
+  }
+}

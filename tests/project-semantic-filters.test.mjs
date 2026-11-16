@@ -2,11 +2,14 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { filterProjects } = loadTs(
-  new URL("../src/components/Cv/Projects/Filter/utils.ts", import.meta.url),
+  new URL(
+    "../apps/web/src/components/Cv/Projects/Filter/utils.ts",
+    import.meta.url,
+  ),
 );
 const { parseProjectSearchParams, reconcileProjectUrl } = loadTs(
   new URL(
-    "../src/components/Cv/Projects/parseSearchParams.ts",
+    "../apps/web/src/components/Cv/Projects/parseSearchParams.ts",
     import.meta.url,
   ),
 );

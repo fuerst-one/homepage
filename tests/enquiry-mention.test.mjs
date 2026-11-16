@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { enquiryMention } = loadTs(
-  new URL("../src/server/enquiries/enquiryMention.ts", import.meta.url),
+  new URL("../apps/sync/src/enquiries/enquiryMention.ts", import.meta.url),
 );
 const id = "b15bd005-e801-428b-8681-ae36e8dc90bd";
 test("new enquiry attention uses a structured Notion user mention, not plain @text", () => {
@@ -20,7 +20,7 @@ test("an absent or malformed optional mention never prevents saving an enquiry",
 
 test("a failed optional mention does not propagate into lead persistence", async () => {
   const { appendEnquiryMention } = loadTs(
-    new URL("../src/server/enquiries/enquiryMention.ts", import.meta.url),
+    new URL("../apps/sync/src/enquiries/enquiryMention.ts", import.meta.url),
   );
   assert.equal(typeof appendEnquiryMention, "function");
   assert.equal(
@@ -33,7 +33,7 @@ test("a failed optional mention does not propagate into lead persistence", async
 
 test("a stalled mention runs after the receipt path has returned", async () => {
   const { scheduleEnquiryMention } = loadTs(
-    new URL("../src/server/enquiries/enquiryMention.ts", import.meta.url),
+    new URL("../apps/sync/src/enquiries/enquiryMention.ts", import.meta.url),
   );
   const tasks = [];
   let started = false;

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { createNotionFetch: factory } = loadTs(
-  new URL("../src/server/notion/createNotionFetch.ts", import.meta.url),
+  new URL("../apps/sync/src/notion/createNotionFetch.ts", import.meta.url),
 );
 const createNotionFetch = (fetcher, wait) =>
   factory(fetcher, wait, {

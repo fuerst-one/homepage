@@ -87,7 +87,10 @@ test("unknown services return 404 rather than an unrelated offer", async () => {
 test("service evidence is explicitly selected, ordered and strips unrelated client data", async () => {
   const { loadTs } = await import("./helpers/load-ts.mjs");
   const { selectServiceEvidence } = loadTs(
-    new URL("../src/components/Services/serviceEvidence.ts", import.meta.url),
+    new URL(
+      "../apps/web/src/components/Services/serviceEvidence.ts",
+      import.meta.url,
+    ),
   );
   const make = (id, name) => ({
     id,

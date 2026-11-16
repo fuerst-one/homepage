@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 
 const moduleUrl = new URL(
-  "../src/components/Plasma/GL/createProgram.ts",
+  "../apps/web/src/components/Plasma/GL/createProgram.ts",
   import.meta.url,
 );
 

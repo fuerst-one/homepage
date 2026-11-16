@@ -5,7 +5,7 @@ import ts from "typescript";
 const { outputText } = ts.transpileModule(
   readFileSync(
     new URL(
-      "../src/components/Plasma/buildMirroredPlasmaRamp.ts",
+      "../apps/web/src/components/Plasma/buildMirroredPlasmaRamp.ts",
       import.meta.url,
     ),
     "utf8",

@@ -10,3 +10,7 @@ out
 build
 data
 .DS_Store
+**/node_modules
+**/.next
+**/coverage
+**/.env*

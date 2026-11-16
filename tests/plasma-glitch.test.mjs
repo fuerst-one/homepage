@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const { createGlitchClock } = loadTs(
-  new URL("../src/components/Plasma/GL/getGlitchState.ts", import.meta.url),
+  new URL(
+    "../apps/web/src/components/Plasma/GL/getGlitchState.ts",
+    import.meta.url,
+  ),
 );
 
 function bursts(frequency) {

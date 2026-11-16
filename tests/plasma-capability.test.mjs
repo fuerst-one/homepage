@@ -5,7 +5,7 @@ import { loadTs } from "./helpers/load-ts.mjs";
 test("WebGL capability probes reuse the result and release their temporary context", () => {
   const { isWebGL2Supported } = loadTs(
     new URL(
-      "../src/components/Plasma/GL/isWebGL2Supported.ts",
+      "../apps/web/src/components/Plasma/GL/isWebGL2Supported.ts",
       import.meta.url,
     ),
   );

@@ -3,7 +3,7 @@ import { test } from "node:test";
 import {
   translateRichText,
   missingTranslationProperties,
-} from "../scripts/lib/translationProperties.mjs";
+} from "../apps/sync/scripts/lib/translationProperties.mjs";
 const source = [
   {
     type: "text",

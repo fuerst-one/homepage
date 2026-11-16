@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { loadTs } from "./helpers/load-ts.mjs";
 
 const images = loadTs(
-  new URL("../src/server/notion/notionImageProxy.ts", import.meta.url),
+  new URL("../apps/sync/src/notion/notionImageProxy.ts", import.meta.url),
 );
 
 test("retired portfolio logos resolve to bundled originals", async () => {
@@ -27,7 +27,9 @@ test("retired portfolio logos resolve to bundled originals", async () => {
       images.getLegacyLogoPath(`https://portfolio.fuerst.one${path}`),
       path,
     );
-    const bytes = await readFile(new URL(`../public${path}`, import.meta.url));
+    const bytes = await readFile(
+      new URL(`../apps/web/public${path}`, import.meta.url),
+    );
     assert.ok(bytes.length > 0, `${name} must ship with the site`);
   }
 });

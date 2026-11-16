@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const moduleUrl = new URL(
-  "../src/components/Cv/Projects/parseSearchParams.ts",
+  "../apps/web/src/components/Cv/Projects/parseSearchParams.ts",
   import.meta.url,
 );
 const getSync = () => {

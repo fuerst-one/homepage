@@ -1,0 +1,27 @@
+"use server";
+
+import { safeNotionLogger } from "@homepage/database/notionDiagnostics";
+import { Client } from "@notionhq/client";
+import { createNotionFetch } from "../createNotionFetch";
+import { CreatePageParameters } from "@notionhq/client/build/src/api-endpoints";
+
+export const createNotionPage = async (
+  databaseId: string,
+  properties: CreatePageParameters["properties"],
+) => {
+  const notion = new Client({
+    logger: safeNotionLogger,
+    auth: process.env.NEXT_NOTION_TOKEN,
+    fetch: createNotionFetch(),
+  });
+
+  const response = await notion.pages.create({
+    parent: {
+      type: "database_id",
+      database_id: databaseId,
+    },
+    properties,
+  });
+
+  return response;
+};

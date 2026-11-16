@@ -15,19 +15,22 @@ if (
   );
 }
 const { knowledgeDatabase } = loadTs(
-  new URL("../src/server/knowledge/database.ts", import.meta.url),
+  new URL("../packages/database/src/database.ts", import.meta.url),
 );
 const { reserveKnowledgeUsage, finishKnowledgeUsage } = loadTs(
-  new URL("../src/server/knowledge/usage.ts", import.meta.url),
+  new URL("../packages/knowledge/src/usage.ts", import.meta.url),
 );
 const sql = knowledgeDatabase();
 const { cachedKnowledgeEmbeddings } = loadTs(
-  new URL("../src/server/knowledge/embeddingCache.ts", import.meta.url),
+  new URL("../packages/knowledge/src/embeddingCache.ts", import.meta.url),
 );
 test("a failed late batch reuses already paid embeddings on retry", async () => {
   await sql.unsafe(
     await readFile(
-      new URL("../ops/knowledge/001-initial.sql", import.meta.url),
+      new URL(
+        "../packages/database/migrations/001-initial.sql",
+        import.meta.url,
+      ),
       "utf8",
     ),
   );
@@ -61,7 +64,7 @@ test("a failed late batch reuses already paid embeddings on retry", async () => 
 });
 test("real PostgreSQL enforces atomic reservations, concurrency and visitor limits", async () => {
   const migration = await readFile(
-    new URL("../ops/knowledge/001-initial.sql", import.meta.url),
+    new URL("../packages/database/migrations/001-initial.sql", import.meta.url),
     "utf8",
   );
   try {

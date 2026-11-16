@@ -1,31 +1,63 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# fuerst.one
 
-## Getting Started
+A pnpm workspace with two independently packaged applications:
 
-First, run the development server:
+- `apps/web`: Next.js website. Reads prepared PostgreSQL publications and writes
+  enquiry receipts; it has no Notion dependency or credentials.
+- `apps/sync`: background content/asset publication, enquiry delivery with Notion
+  mentions, and optional knowledge indexing. It has no Next.js or React dependency.
+- `packages/content`: public types and shared domain utilities.
+- `packages/database`: persistence, public readers and migrations.
+- `packages/knowledge`: shared provider, budget and embedding-cache runtime.
 
-```bash
-pnpm install
+## Development
+
+Use Node 24+ and pnpm 10.13.1. Root commands load the ignored `.env.local`.
+The web only needs its database settings; source credentials belong to the worker.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm knowledge:db
+pnpm knowledge:migrate
+pnpm notion:sync
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The web runs at <http://localhost:6894>. Use `pnpm notion:watch` for content and
+notifications alone, or `pnpm knowledge:watch` to include indexing. Run one worker
+watch command, not both. `pnpm notion:status` reports publication/outbox progress.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build and verification
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```sh
+pnpm typecheck
+pnpm test
+pnpm test:notion:integration
+pnpm build
+pnpm build:sync
+```
 
-## Learn More
+HTTP tests need `SEO_TEST_BASE_URL` pointing to the local built website. Database
+integration tests refuse remote databases and use a separate `_test` database.
+`pnpm build:sync` creates `build/sync`, a portable runtime containing only worker
+production dependencies. Its entrypoint is `node --import tsx scripts/knowledge.ts watch`.
+The container build uses repository-root context:
 
-To learn more about Next.js, take a look at the following resources:
+```sh
+docker build -f ops/knowledge/Dockerfile -t homepage-sync .
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Rollout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The split is **not deployed**. The running worker remains pinned to `81106e8`,
+and Vercel deployment holds remain in place. Before the split is released, apply
+migrations 005/006 as administrator, seed `website-v2`, then validate the new worker
+before releasing the website. Keep the old publication tables and SELECT grants for rollback. After the rollback
+window, separately revoke the web role’s legacy snapshot/asset grants.
+Vercel's future project root is `apps/web`; do not change the live project root or
+remove deployment holds as part of a local build.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+See [the split design](docs/plans/2026-11-16-web-sync-split-design.md),
+[local verification](docs/web-sync-split-verification-2026-11-16.md),
+[content operations](docs/notion-content-operations.md) and
+[the verified previous rollout](docs/notion-worker-rollout-2026-11-16.md).

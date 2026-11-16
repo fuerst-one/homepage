@@ -7,7 +7,10 @@ const {
   SUGGESTIONS,
   getLocalizedSuggestions,
 } = loadTs(
-  new URL("../src/components/PlasmaLanding/commands.ts", import.meta.url),
+  new URL(
+    "../apps/web/src/components/PlasmaLanding/commands.ts",
+    import.meta.url,
+  ),
 );
 
 test("German command chips and aliases resolve to localized destinations", () => {

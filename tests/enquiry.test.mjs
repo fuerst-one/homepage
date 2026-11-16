@@ -10,9 +10,9 @@ const {
   applyIntent,
   restoreEntry,
   missingProjectDetails,
-} = loadTs(new URL("../src/lib/enquiry.ts", import.meta.url));
+} = loadTs(new URL("../packages/content/src/enquiry.ts", import.meta.url));
 const { submitEnquiry } = loadTs(
-  new URL("../src/server/enquiries/submitEnquiry.ts", import.meta.url),
+  new URL("../packages/database/src/submitEnquiry.ts", import.meta.url),
 );
 const valid = {
   id: "b15bd005-e801-428b-8681-ae36e8dc90bd",

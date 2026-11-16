@@ -1,0 +1,14 @@
+{
+  "name": "@homepage/knowledge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "postgres": "^4.1.1",
+    "@homepage/content": "workspace:*",
+    "@homepage/database": "workspace:*"
+  },
+  "exports": {
+    "./*": "./src/*.ts"
+  }
+}

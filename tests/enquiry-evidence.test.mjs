@@ -3,10 +3,10 @@ import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 
 const { readPublicProjectCase, caseLabel } = loadTs(
-  new URL("../src/lib/projectCase.ts", import.meta.url),
+  new URL("../packages/content/src/projectCase.ts", import.meta.url),
 );
 const { selectEnquiryEvidence } = loadTs(
-  new URL("../src/lib/enquiryEvidence.ts", import.meta.url),
+  new URL("../packages/content/src/enquiryEvidence.ts", import.meta.url),
 );
 const profile = (values = {}) => ({
   buyerNeeds: [],

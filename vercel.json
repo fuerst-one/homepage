@@ -3,16 +3,5 @@
   "git": {
     "deploymentEnabled": false
   },
-  "functions": {
-    "src/app/api/**/route.ts": {
-      "maxDuration": 60
-    }
-  },
-  "crons": [
-    {
-      "path": "/api/integrations/malt",
-      "schedule": "23 5 * * *"
-    }
-  ],
-  "regions": ["fra1"]
+  "ignoreCommand": "exit 0"
 }

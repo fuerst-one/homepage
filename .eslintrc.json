@@ -15,6 +15,18 @@
     "out/*",
     ".next/*",
     ".vscode/*",
-    ".husky/*"
-  ]
+    ".husky/*",
+    "**/node_modules/**",
+    "**/.next/**",
+    "build/**",
+    "coverage/**"
+  ],
+  "settings": {
+    "next": {
+      "rootDir": "apps/web/"
+    },
+    "react": {
+      "version": "19.2"
+    }
+  }
 }

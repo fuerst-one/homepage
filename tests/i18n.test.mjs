@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 
-const moduleUrl = new URL("../src/lib/i18n.ts", import.meta.url);
+const moduleUrl = new URL("../packages/content/src/i18n.ts", import.meta.url);
 const getI18n = () => {
   assert.ok(existsSync(moduleUrl), "Locale routing must be available");
   return loadTs(moduleUrl);
@@ -59,7 +59,10 @@ test("legal language links point directly to the corresponding written page", ()
 
 test("German landing commands resolve to localized destinations", () => {
   const commands = loadTs(
-    new URL("../src/components/PlasmaLanding/commands.ts", import.meta.url),
+    new URL(
+      "../apps/web/src/components/PlasmaLanding/commands.ts",
+      import.meta.url,
+    ),
   );
   assert.equal(
     commands.resolveExplicitCommand("Kontakt", "de")?.href,
@@ -77,7 +80,7 @@ test("German landing commands resolve to localized destinations", () => {
 
 test("link destinations preserve explicit English project fallbacks on German pages", () => {
   const { localizedLinkPath } = loadTs(
-    new URL("../src/lib/i18n.ts", import.meta.url),
+    new URL("../packages/content/src/i18n.ts", import.meta.url),
   );
   assert.equal(
     localizedLinkPath("/en/projects/english-only", "de"),

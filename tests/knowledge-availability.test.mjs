@@ -2,7 +2,16 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const moduleAt = (name) =>
-  loadTs(new URL(`../src/server/knowledge/${name}.ts`, import.meta.url));
+  loadTs(
+    new URL(
+      name === "database"
+        ? "../packages/database/src/database.ts"
+        : ["openRouter", "usage"].includes(name)
+          ? `../packages/knowledge/src/${name}.ts`
+          : `../apps/web/src/server/knowledge/${name}.ts`,
+      import.meta.url,
+    ),
+  );
 const database = moduleAt("database");
 const router = moduleAt("openRouter");
 const usage = moduleAt("usage");

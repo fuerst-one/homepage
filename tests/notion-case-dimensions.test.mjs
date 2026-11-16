@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import {
   planCaseBackfill,
   projectSource,
-} from "../scripts/seed-notion-case-dimensions.mjs";
+} from "../apps/sync/scripts/seed-notion-case-dimensions.mjs";
 
 const text = (content) => ({
   type: "rich_text",

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 const history = loadTs(
-  new URL("../src/lib/knowledgeHistory.ts", import.meta.url),
+  new URL("../apps/web/src/lib/knowledgeHistory.ts", import.meta.url),
 );
 const now = 1_000_000_000;
 const turn = {

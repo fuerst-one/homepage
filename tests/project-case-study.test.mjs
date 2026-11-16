@@ -3,7 +3,10 @@ import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 
-const source = new URL("../src/lib/projectCaseStudy.ts", import.meta.url);
+const source = new URL(
+  "../packages/content/src/projectCaseStudy.ts",
+  import.meta.url,
+);
 const getHelpers = () => {
   assert.ok(existsSync(source), "Case study publication helpers must exist");
   return loadTs(source);
@@ -66,7 +69,7 @@ test("references to public projects stay on the site and private Notion links ar
 
 test("Notion content paginates, preserves nested lists and never expands child pages", async () => {
   const blockSource = new URL(
-    "../src/server/notion/caseStudyBlocks.ts",
+    "../apps/sync/src/notion/caseStudyBlocks.ts",
     import.meta.url,
   );
   assert.ok(existsSync(blockSource), "Notion case study reader must exist");

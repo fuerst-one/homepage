@@ -6,3 +6,5 @@ out
 public
 styles/all.css
 node_modules
+coverage
+.pnpm-store
