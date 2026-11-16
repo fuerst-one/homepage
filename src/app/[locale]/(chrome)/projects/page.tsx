@@ -4,6 +4,8 @@ import Link from "@/components/i18n/LocalizedLink";
 import { Layout } from "@/components/Layout";
 import { StructuredData } from "@/components/StructuredData";
 import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
+import { caseStudyPageId } from "@/lib/projectCaseStudy";
+import { localeFromPath } from "@/lib/i18n";
 import {
   pageMetadata,
   projectDescription,
@@ -72,6 +74,18 @@ export default async function ProjectsPage({ params }: LocaleParams) {
             <p className="text-xs text-neutral-400">
               {[...new Set(project.tools)].slice(0, 6).join(" · ")}
             </p>
+            {caseStudyPageId(
+              project,
+              localeFromPath(projectPath(project, locale)),
+            ) && (
+              <Link
+                href={`${projectPath(project, locale)}/case-study`}
+                prefetch={false}
+                className="inline-block text-sm text-neutral-200 underline underline-offset-4 hover:text-white"
+              >
+                {locale === "de" ? "Fallstudie lesen" : "Read case study"} →
+              </Link>
+            )}
           </li>
         ))}
       </ul>

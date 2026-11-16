@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { projectPath, SITE_URL } from "@/lib/seo";
 import { localeFromPath } from "@/lib/i18n";
 import { caseStudyPageId } from "@/lib/projectCaseStudy";
+import { Button } from "@/components/Button";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -128,6 +129,11 @@ export const ProjectDetails = ({
             {description}
           </div>
         )}
+        {hasCaseStudy && (
+          <Button href={`${path}/case-study`} prefetch={false} arrow>
+            {locale === "de" ? "Fallstudie lesen" : "Read case study"}
+          </Button>
+        )}
         <ProjectMetaTable
           project={project}
           filterable={inDialog}
@@ -141,14 +147,6 @@ export const ProjectDetails = ({
         >
           {`${SITE_URL.replace("https://", "")}${path}`}
         </Link>
-        {hasCaseStudy && (
-          <Link
-            href={`${path}/case-study`}
-            className="text-neutral-200 underline underline-offset-4"
-          >
-            {locale === "de" ? "Fallstudie lesen" : "Read case study"} →
-          </Link>
-        )}
       </div>
     </div>
   );

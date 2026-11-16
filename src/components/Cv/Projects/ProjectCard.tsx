@@ -18,6 +18,8 @@ import { colors } from "./colors";
 import { useProjectFocusStore } from "./projectFocusStore";
 import { cn } from "@/lib/utils";
 import { projectPath } from "@/lib/seo";
+import { localeFromPath } from "@/lib/i18n";
+import { caseStudyPageId } from "@/lib/projectCaseStudy";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -44,6 +46,8 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const thumbnail = screenshots?.[0];
   const color = colors.projectType?.[projectType];
   const openDialog = () => setFocused(id);
+  const path = projectPath(project, locale);
+  const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
 
   return (
     <article className="group relative grid grid-cols-1 gap-5 border border-white/30 bg-black/85 p-5 transition hover:border-white md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
@@ -90,6 +94,15 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
             )}
           </div>
         )}
+        {hasCaseStudy && (
+          <Link
+            href={`${path}/case-study`}
+            prefetch={false}
+            className="pointer-events-auto self-start text-sm text-neutral-200 underline underline-offset-4 hover:text-white"
+          >
+            {locale === "de" ? "Fallstudie lesen" : "Read case study"} →
+          </Link>
+        )}
         {kpis && (
           <div className="flex items-start gap-2 text-sm text-white">
             <FaChartLine className="mt-0.5 shrink-0 text-base" />
@@ -120,10 +133,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
             )}
           </div>
           <h3 className="text-2xl font-semibold text-white">
-            <Link
-              href={projectPath(project, locale)}
-              className="pointer-events-auto hover:underline"
-            >
+            <Link href={path} className="pointer-events-auto hover:underline">
               {name}
             </Link>
           </h3>
