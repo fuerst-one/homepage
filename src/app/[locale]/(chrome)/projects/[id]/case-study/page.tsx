@@ -5,6 +5,10 @@ import { Layout } from "@/components/Layout";
 import { CaseStudyContent } from "@/components/Cv/Projects/CaseStudyContent";
 import { getLocale } from "@/server/i18n/getLocale";
 import { getProjectCaseStudy } from "@/server/notion/getProjectCaseStudy";
+import { getCachedCvProjects } from "@/server/notion/getCachedCvProjects";
+import { caseStudyPageId } from "@/lib/projectCaseStudy";
+import { hasGermanTranslation } from "@/lib/localizeContent";
+import { locales } from "@/lib/i18n";
 import {
   pageMetadata,
   projectDescription,
@@ -15,6 +19,20 @@ import {
 import type { Locale } from "@/lib/i18n";
 
 export const revalidate = 3600;
+export const maxDuration = 60;
+
+export async function generateStaticParams() {
+  return (await getCachedCvProjects()).flatMap((project) =>
+    locales
+      .filter(
+        (locale) =>
+          caseStudyPageId(project, locale) &&
+          (locale === "en" || hasGermanTranslation(project)),
+      )
+      .map((locale) => ({ locale, id: projectSlug(project) })),
+  );
+}
+
 type Props = { params: Promise<{ id: string; locale: string }> };
 const getCase = cache(async (reference: string, locale: Locale) => {
   const result = await getProjectCaseStudy(reference, locale);
