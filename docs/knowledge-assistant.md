@@ -4,7 +4,8 @@ Current rollout/configuration instructions are in [AI operations](ai-operations.
 Migration 008 moves budgets and admission controls into PostgreSQL `settings`,
 adds the stable visitor lottery and BotID, and changes the serving provider to
 Microsoft Azure with renewed consent. Historical local acceptance below predates
-that rollout; consult its release receipt for exact production activation state.
+that rollout; consult the [production release receipt](ai-production-release-2026-11-16.md)
+for exact production activation state.
 
 Open <http://localhost:6888/en> or <http://localhost:6888/de>. Type into the
 shared input to preview project suggestions; press **Enter** to ask the
