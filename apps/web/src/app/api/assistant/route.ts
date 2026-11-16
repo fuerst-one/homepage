@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
       ...knowledgeFallback(parsed.locale),
       mode: "fallback",
       availability: {
+        eligible: false,
         available: false,
         verified: false,
         retryAt: admission.retryAt,

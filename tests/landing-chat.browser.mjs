@@ -35,7 +35,13 @@ test("the shared input previews search, submits chat, and returns to search", as
         void request.respond({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ available: true, verified: true, retryAt: 0 }),
+          body: JSON.stringify({
+            eligible: true,
+            eligibleUntil: Date.now() + 60000,
+            available: true,
+            verified: true,
+            retryAt: 0,
+          }),
         });
       } else if (request.url().endsWith("/api/assistant")) {
         paidRequests++;

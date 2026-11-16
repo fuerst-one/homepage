@@ -5,10 +5,8 @@ import { useLocale } from "../i18n/LocaleProvider";
 import type { KnowledgeAnswer } from "@homepage/content/knowledge";
 import { knowledgeFallback } from "../../lib/knowledgeFallback";
 import { useKnowledgeAvailability } from "./useKnowledgeAvailability";
-import {
-  parseKnowledgeConsent,
-  type KnowledgeConsent,
-} from "../../lib/knowledgeConsent";
+import { parseKnowledgeConsent } from "../../lib/knowledgeConsent";
+import { useKnowledgeConsent } from "./useKnowledgeConsent";
 
 import {
   KNOWLEDGE_HISTORY_KEY,
@@ -17,17 +15,17 @@ import {
   type KnowledgeTurn,
 } from "../../lib/knowledgeHistory";
 export type { KnowledgeTurn } from "../../lib/knowledgeHistory";
-export function useKnowledgeAssistant(
-  enabled = true,
-  consent: KnowledgeConsent | null = null,
-) {
+export function useKnowledgeAssistant(enabled = true) {
+  const [eligible, setEligible] = useState<boolean | undefined>(undefined);
+  const choice = useKnowledgeConsent(enabled ? eligible : false);
+  const consent = choice.receipt;
   const de = useLocale() === "de";
   const locale = de ? "de" : "en";
   const [turns, setTurns] = useState<KnowledgeTurn[]>([]);
   const [busy, setBusy] = useState(false);
-  const allowed = enabled && !!consent;
+  const allowed = enabled && eligible === true && !!consent;
   const remember = consent?.remember ?? false;
-  const availability = useKnowledgeAvailability(enabled, consent);
+  const availability = useKnowledgeAvailability(enabled, consent, setEligible);
   const [pendingQuestion, setPendingQuestion] = useState("");
   const pending = useRef<AbortController | null>(null);
   const currentTurns = useRef<KnowledgeTurn[]>([]);
@@ -172,6 +170,8 @@ export function useKnowledgeAssistant(
   }
 
   return {
+    enabled: enabled && eligible === true,
+    consent: choice,
     available:
       availability.current.current.available &&
       availability.current.current.verified,

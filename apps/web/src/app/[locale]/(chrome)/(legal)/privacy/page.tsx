@@ -227,10 +227,13 @@ export default function PrivacyPage() {
             not include your raw IP address in model request bodies.
           </p>
           <p>
-            AI access is offered to a configurable proportion of visitors. A
-            keyed IP hash determines eligibility for a fixed time window;
-            refreshing does not reroll it, and shared IPs share eligibility.
-            This adds no lottery cookie. Vercel BotID checks technical browser
+            AI access is offered to a configurable proportion of visitors
+            through a background lottery. A keyed IP hash determines eligibility
+            for a fixed time window; refreshing does not reroll it, and visitors
+            with a shared IP address share eligibility. Only selected visitors
+            see the AI controls and consent prompt. Selection itself does not
+            grant consent or send a visitor question to an AI provider. This
+            adds no lottery cookie. Vercel BotID checks technical browser
             signals on assistant endpoints to detect automated traffic. Request
             validation, abuse screening and shared limits run before paid AI
             processing. We retain hourly aggregate admission and rejection

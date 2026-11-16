@@ -49,7 +49,6 @@ import { ProjectSearchResults } from "./ProjectSearchResults";
 import { knowledgeFallback } from "../../lib/knowledgeFallback";
 import type { KnowledgeAction } from "@homepage/content/knowledge";
 import { useKnowledgeAssistant } from "./useKnowledgeAssistant";
-import { useKnowledgeConsent } from "./useKnowledgeConsent";
 import { parseKnowledgeConsent } from "../../lib/knowledgeConsent";
 import "./landing.css";
 import "./knowledge.css";
@@ -79,7 +78,7 @@ type DisplaySuggestion = LandingCommand | SearchSuggestion;
 
 export const PlasmaLanding = ({
   headline = "A little curiosity goes a long way.",
-  assistantEnabled = false,
+  assistantEnabled: assistantReleased = false,
 }: {
   headline?: string;
   assistantEnabled?: boolean;
@@ -118,9 +117,11 @@ export const PlasmaLanding = ({
   const [focused, setFocused] = useState(false);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const [chatMode, setChatMode] = useState(false);
-  const consent = useKnowledgeConsent(assistantEnabled);
-  const assistant = useKnowledgeAssistant(assistantEnabled, consent.receipt);
+  const [chatOpen, setChatMode] = useState(false);
+  const assistant = useKnowledgeAssistant(assistantReleased);
+  const assistantEnabled = assistant.enabled;
+  const chatMode = assistantEnabled && chatOpen;
+  const consent = assistant.consent;
   const askAssistant = assistant.ask;
   const suggestAssistantProjects = assistant.suggest;
   const [consentQuestion, setConsentQuestion] = useState<string | null>(null);
@@ -498,10 +499,16 @@ export const PlasmaLanding = ({
   );
 
   useEffect(() => {
+    if (!assistantEnabled) {
+      setConsentQuestion(null);
+      setChatMode(false);
+      queuedQuestion.current = null;
+      return;
+    }
     if (consentQuestion === null || assistant.available) return;
     setConsentQuestion(null);
     if (consentQuestion.trim()) suggestProjects(consentQuestion);
-  }, [consentQuestion, assistant.available, suggestProjects]);
+  }, [assistantEnabled, consentQuestion, assistant.available, suggestProjects]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();

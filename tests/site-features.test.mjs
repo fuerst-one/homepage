@@ -76,6 +76,11 @@ for (const [locale, page] of [
       const html = renderToStaticMarkup(Page());
       assert.match(html, /id="ai-assistant"/);
       assert.match(html, /OpenRouter/);
+      assert.match(html, locale === "en" ? /lottery/ : /Losverfahren/);
+      assert.match(
+        html,
+        locale === "en" ? /shared IP address/ : /gemeinsame IP-Adresse/,
+      );
       assert.match(html, /OpenAI/);
       assert.match(html, /180/);
       assert.match(html, /35/);

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import ts from "typescript";
 import { loadTs } from "./helpers/load-ts.mjs";
 
-function route(name, admit) {
+function route(name, admit, healthy = true) {
   const calls = [];
   const privacy = loadTs(
     new URL("../apps/web/src/lib/knowledgeConsent.ts", import.meta.url),
@@ -46,7 +46,7 @@ function route(name, admit) {
     };
     dependencies[`${prefix}server/knowledge/availability`] = {
       knowledgeAvailability: () => ({
-        status: () => ({ available: true, verified: true, retryAt: 0 }),
+        status: () => ({ available: healthy, verified: healthy, retryAt: 0 }),
         run: async (work) => work(new AbortController().signal),
       }),
       probeKnowledgeServices: async () => {},
@@ -92,6 +92,7 @@ test("excluded direct POSTs use local fallback without paid calls or probes", as
   const result = await (await exports.POST(request)).json();
   assert.equal(result.mode, "fallback");
   assert.equal(result.availability.available, false);
+  assert.equal(result.availability.eligible, false);
   assert.deepEqual(calls, ["admission"]);
 });
 test("excluded status checks cannot initiate paid recovery probes", async () => {
@@ -102,6 +103,7 @@ test("excluded status checks cannot initiate paid recovery probes", async () => 
     await exports.GET(new Request("https://example.test/api/assistant/status"))
   ).json();
   assert.equal(result.available, false);
+  assert.equal(result.eligible, false);
   assert.deepEqual(calls, ["admission"]);
 });
 test("selected direct POSTs dispatch only after admission", async () => {
@@ -110,3 +112,19 @@ test("selected direct POSTs dispatch only after admission", async () => {
   assert.equal(result.mode, "answer");
   assert.deepEqual(calls, ["admission", "paid"]);
 });
+
+for (const healthy of [true, false]) {
+  test(`selected status reports eligibility independently of service health (${healthy})`, async () => {
+    process.env.KNOWLEDGE_DATABASE_URL = "postgres://localhost/test";
+    process.env.OPENROUTER_API_KEY = "fixture";
+    const { exports } = route("status/route.ts", true, healthy);
+    const result = await (
+      await exports.GET(
+        new Request("https://example.test/api/assistant/status"),
+      )
+    ).json();
+    assert.equal(result.eligible, true);
+    assert.ok(result.eligibleUntil > Date.now());
+    assert.equal(result.available, healthy);
+  });
+}

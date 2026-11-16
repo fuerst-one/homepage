@@ -52,9 +52,16 @@ GROUP BY kind,status;
 Lottery assignment uses an HMAC of a keyed IP hash and a fixed time window. It
 adds no cookie, does not use arbitrary forwarded IP headers, and cannot be
 rerolled by refreshing. Visitors on a shared IP share eligibility. Changing the
-percentage/window changes cohort membership. Existing conversations remain
-visible locally, but every new paid question rechecks admission and quotas.
-The browser starts unverified and offers consent only after eligible health.
+percentage/window changes cohort membership. The uncached status endpoint
+returns `eligible` separately from service health and, for selected visitors,
+`eligibleUntil`. The browser starts with the original search UI, without AI
+controls or consent restoration. Only explicit eligibility enables AI UI;
+consent is offered only after verified health. Unknown eligibility leaves saved
+choices untouched; explicit exclusion clears consent/history just like a
+disabled release. Exclusion also closes any open AI UI. The browser rechecks at
+the lottery boundary even while healthy, and every new paid question rechecks
+admission and quotas. Public privacy disclosures remain visible to everyone
+while the AI release is enabled.
 
 BotID is initialized for assistant POST/status GET only, with no analytics SDK.
 No BotID calls run with the public release flag false. Production bot verification

@@ -21,6 +21,8 @@ test("unavailable AI shows project suggestions without asking for consent", asyn
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
+            eligible: true,
+            eligibleUntil: Date.now() + 60000,
             available: false,
             verified: true,
             retryAt: Date.now() + 300000,
@@ -69,7 +71,13 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
         void request.respond({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ available: true, verified: true, retryAt: 0 }),
+          body: JSON.stringify({
+            eligible: true,
+            eligibleUntil: Date.now() + 60000,
+            available: true,
+            verified: true,
+            retryAt: 0,
+          }),
         });
       } else if (request.url().endsWith("/api/assistant")) {
         posts++;

@@ -118,3 +118,16 @@ test("an enabled release preserves history under a current remembered permission
     assert.equal(choices.size, 1);
   });
 });
+
+test("pending eligibility leaves saved choices and history untouched and installs no listener", () => {
+  mountConsent(
+    undefined,
+    decision(true),
+    ({ sessions, choices, restored, listeners }) => {
+      assert.equal(restored, null);
+      assert.equal(sessions.size, 2);
+      assert.equal(choices.size, 1);
+      assert.equal(listeners.size, 0);
+    },
+  );
+});

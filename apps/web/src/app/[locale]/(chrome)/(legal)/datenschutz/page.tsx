@@ -246,14 +246,17 @@ export default function DatenschutzPage() {
             IP-Adresse nicht im Anfrageinhalt.
           </p>
           <p>
-            Der KI-Zugang wird einem einstellbaren Anteil der Besucher
-            angeboten. Ein mit geheimem Schlüssel aus der IP-Adresse
-            abgeleiteter Hash bestimmt die Auswahl für ein festes Zeitfenster.
-            Neuladen ändert sie nicht; gemeinsam genutzte IP-Adressen teilen die
-            Auswahl. Dafür wird kein zusätzliches Cookie gesetzt. Vercel BotID
-            prüft technische Browsersignale an den Assistenten-Endpunkten zur
-            Erkennung automatisierter Zugriffe. Anfrageprüfung,
-            Missbrauchsfilter und gemeinsame Limits greifen vor
+            Der KI-Zugang wird einem einstellbaren Anteil der Besucher durch ein
+            Losverfahren im Hintergrund angeboten. Ein mit geheimem Schlüssel
+            aus der IP-Adresse abgeleiteter Hash bestimmt die Auswahl für ein
+            festes Zeitfenster. Neuladen ändert sie nicht; Besucher, die eine
+            gemeinsame IP-Adresse nutzen, teilen die Auswahl. Nur ausgewählte
+            Besucher sehen KI-Bedienelemente und den Einwilligungsdialog. Die
+            Auswahl selbst erteilt keine Einwilligung und sendet keine
+            Besucherfrage an einen KI-Anbieter. Dafür wird kein zusätzliches
+            Cookie gesetzt. Vercel BotID prüft technische Browsersignale an den
+            Assistenten-Endpunkten zur Erkennung automatisierter Zugriffe.
+            Anfrageprüfung, Missbrauchsfilter und gemeinsame Limits greifen vor
             kostenpflichtigen KI-Aufrufen. Stündliche Summen zu Zulassungen und
             Ablehnungen werden bis zu 35 Tage gespeichert, ohne Fragetexte oder
             Besucherkennungen. Die normale Projektsuche bleibt ohne KI-Zugang

@@ -14,13 +14,23 @@ export async function GET(request: Request) {
     !process.env.OPENROUTER_API_KEY
   )
     return NextResponse.json(
-      { available: false, verified: false, retryAt: Date.now() + 300_000 },
+      {
+        eligible: false,
+        available: false,
+        verified: false,
+        retryAt: Date.now() + 300_000,
+      },
       { headers: { "Cache-Control": "no-store" } },
     );
   const admission = await getKnowledgeAdmission(request);
   if (!admission.allowed)
     return NextResponse.json(
-      { available: false, verified: false, retryAt: admission.retryAt },
+      {
+        eligible: false,
+        available: false,
+        verified: false,
+        retryAt: admission.retryAt,
+      },
       { headers: { "Cache-Control": "no-store" } },
     );
   const circuit = knowledgeAvailability();
@@ -31,6 +41,8 @@ export async function GET(request: Request) {
   return NextResponse.json(
     {
       ...status,
+      eligible: true,
+      eligibleUntil: admission.retryAt,
       available: status.available && status.verified,
       retryAt: status.verified
         ? status.retryAt

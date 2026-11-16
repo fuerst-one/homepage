@@ -18,6 +18,8 @@ test("outages silently show project suggestions, bypass slow requests across pag
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
+            eligible: true,
+            eligibleUntil: Date.now() + 60000,
             available,
             verified: posts === 0 || recovered,
             retryAt: available ? 0 : Date.now() + 100,
@@ -36,7 +38,13 @@ test("outages silently show project suggestions, bypass slow requests across pag
                   sources: [],
                   actions: [],
                   mode: "answer",
-                  availability: { available: true, verified: true, retryAt: 0 },
+                  availability: {
+                    eligible: true,
+                    eligibleUntil: Date.now() + 60000,
+                    available: true,
+                    verified: true,
+                    retryAt: 0,
+                  },
                 }
               : {
                   answer: "ignored static server fallback",
@@ -44,6 +52,8 @@ test("outages silently show project suggestions, bypass slow requests across pag
                   actions: [],
                   mode: "fallback",
                   availability: {
+                    eligible: true,
+                    eligibleUntil: Date.now() + 60000,
                     available: false,
                     verified: false,
                     retryAt: Date.now() + 100,
@@ -151,6 +161,8 @@ test("a stalled transport quietly falls back by its deadline, then answers local
           return Promise.resolve(
             new Response(
               JSON.stringify({
+                eligible: true,
+                eligibleUntil: Date.now() + 60000,
                 available: true,
                 verified: window.assistantCalls === 0,
                 retryAt: 0,
@@ -215,6 +227,8 @@ test("an older completed answer carrying an outage does not clear the latch", as
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
+            eligible: true,
+            eligibleUntil: Date.now() + 60000,
             available: true,
             verified: calls === 0,
             retryAt: 0,
@@ -231,6 +245,8 @@ test("an older completed answer carrying an outage does not clear the latch", as
             actions: [],
             mode: "answer",
             availability: {
+              eligible: true,
+              eligibleUntil: Date.now() + 60000,
               available: false,
               verified: false,
               retryAt: Date.now() + 30000,

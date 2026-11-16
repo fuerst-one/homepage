@@ -11,7 +11,7 @@ import {
 } from "../../lib/knowledgeConsent";
 import { KNOWLEDGE_HISTORY_KEY } from "../../lib/knowledgeHistory";
 
-export function useKnowledgeConsent(enabled: boolean) {
+export function useKnowledgeConsent(enabled: boolean | undefined) {
   const [receipt, setReceipt] = useState<KnowledgeDecision | null>(null);
   const clearChat = useCallback(() => {
     for (const key of [KNOWLEDGE_HISTORY_KEY, KNOWLEDGE_AVAILABILITY_KEY]) {
@@ -32,6 +32,8 @@ export function useKnowledgeConsent(enabled: boolean) {
     }
   }, [clearChat]);
   useEffect(() => {
+    // Do not touch a saved decision until the server has resolved eligibility.
+    if (enabled === undefined) return;
     if (!enabled) {
       forget();
       return;
