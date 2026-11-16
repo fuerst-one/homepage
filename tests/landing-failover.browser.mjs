@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import puppeteer from "puppeteer";
+import { grantKnowledgeConsent } from "./helpers/knowledge-consent.mjs";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 test("outages silently show project suggestions, bypass slow requests across pages, and recover", async () => {
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
+    await grantKnowledgeConsent(page);
     let available = true;
     let posts = 0;
     let recovered = false;
@@ -17,7 +19,7 @@ test("outages silently show project suggestions, bypass slow requests across pag
           contentType: "application/json",
           body: JSON.stringify({
             available,
-            verified: recovered,
+            verified: posts === 0 || recovered,
             retryAt: available ? 0 : Date.now() + 100,
           }),
         });
@@ -130,6 +132,7 @@ test("a stalled transport quietly falls back by its deadline, then answers local
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
+    await grantKnowledgeConsent(page);
     await page.evaluateOnNewDocument(() => {
       const original = window.fetch;
       window.assistantCalls = 0;
@@ -147,7 +150,11 @@ test("a stalled transport quietly falls back by its deadline, then answers local
         if (String(url).startsWith("/api/assistant/status"))
           return Promise.resolve(
             new Response(
-              JSON.stringify({ available: true, verified: false, retryAt: 0 }),
+              JSON.stringify({
+                available: true,
+                verified: window.assistantCalls === 0,
+                retryAt: 0,
+              }),
               { status: 200 },
             ),
           );
@@ -199,6 +206,7 @@ test("an older completed answer carrying an outage does not clear the latch", as
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
+    await grantKnowledgeConsent(page);
     let calls = 0;
     await page.setRequestInterception(true);
     page.on("request", (request) => {
@@ -208,7 +216,7 @@ test("an older completed answer carrying an outage does not clear the latch", as
           contentType: "application/json",
           body: JSON.stringify({
             available: true,
-            verified: false,
+            verified: calls === 0,
             retryAt: 0,
           }),
         });

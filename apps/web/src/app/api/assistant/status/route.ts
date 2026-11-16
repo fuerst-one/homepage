@@ -1,22 +1,36 @@
-import { after, NextRequest, NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { getSiteFeatures } from "@/server/siteFeatures";
 import {
   knowledgeAvailability,
   probeKnowledgeServices,
 } from "../../../../server/knowledge/availability";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export function GET(request: NextRequest) {
-  if (process.env.KNOWLEDGE_ASSISTANT_ENABLED !== "true")
+export function GET() {
+  if (
+    !getSiteFeatures().assistantEnabled ||
+    !process.env.KNOWLEDGE_DATABASE_URL ||
+    !process.env.OPENROUTER_API_KEY
+  )
     return NextResponse.json(
       { available: false, verified: false, retryAt: Date.now() + 300_000 },
       { headers: { "Cache-Control": "no-store" } },
     );
   const circuit = knowledgeAvailability();
-  const recover = request.nextUrl.searchParams.get("recover") === "1";
   const status = circuit.status();
-  if (!status.available || (recover && !status.verified))
-    after(() => circuit.probe(probeKnowledgeServices, recover));
-  return NextResponse.json(status, {
-    headers: { "Cache-Control": "no-store" },
-  });
+  // Health checks use fixed synthetic text only, never visitor questions, history or IPs.
+  if (!status.available || !status.verified)
+    after(() => circuit.probe(probeKnowledgeServices, true));
+  return NextResponse.json(
+    {
+      ...status,
+      available: status.available && status.verified,
+      retryAt: status.verified
+        ? status.retryAt
+        : Math.max(status.retryAt, Date.now() + 5000),
+    },
+    {
+      headers: { "Cache-Control": "no-store" },
+    },
+  );
 }

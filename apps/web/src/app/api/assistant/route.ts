@@ -3,6 +3,8 @@ import { parseKnowledgeRequest } from "@homepage/content/knowledge";
 import { answerKnowledge } from "../../../server/knowledge/chat";
 import { KnowledgeQuotaError } from "@homepage/knowledge/usage";
 import { knowledgeFallback } from "../../../lib/knowledgeFallback";
+import { parseKnowledgeConsent } from "@/lib/knowledgeConsent";
+import { getSiteFeatures } from "@/server/siteFeatures";
 import {
   knowledgeAvailability,
   probeKnowledgeServices,
@@ -13,7 +15,7 @@ const reply = (body: unknown, status = 200) =>
   NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
 export async function POST(request: NextRequest) {
-  if (process.env.KNOWLEDGE_ASSISTANT_ENABLED !== "true")
+  if (!getSiteFeatures().assistantEnabled)
     return reply({ error: "unavailable" }, 503);
   // CSRF check only; the durable database quotas enforce the public usage boundary.
   if (request.headers.get("origin") !== request.nextUrl.origin)
@@ -40,6 +42,14 @@ export async function POST(request: NextRequest) {
   } catch {
     return reply({ error: "invalid_request" }, 400);
   }
+  if (
+    !parseKnowledgeConsent(
+      input && typeof input === "object" && "consent" in input
+        ? input.consent
+        : null,
+    )
+  )
+    return reply({ error: "consent_required" }, 428);
   const parsed = parseKnowledgeRequest(input);
   if (!parsed) return reply({ error: "invalid_request" }, 400);
   // Vercel replaces this header at its trusted ingress. Local testing shares one visitor bucket.
@@ -51,12 +61,20 @@ export async function POST(request: NextRequest) {
   const circuit = knowledgeAvailability();
   let mode: "answer" | "fallback" = "answer";
   const answer = await circuit.run(
-    (signal) => answerKnowledge(parsed.message, parsed.locale, ip, signal),
+    (signal) =>
+      answerKnowledge(
+        parsed.message,
+        parsed.locale,
+        ip,
+        AbortSignal.any([signal, request.signal]),
+        parsed.consent,
+      ),
     () => {
       mode = "fallback";
       return knowledgeFallback(parsed.locale);
     },
-    (error) => !(error instanceof KnowledgeQuotaError),
+    (error) =>
+      !request.signal.aborted && !(error instanceof KnowledgeQuotaError),
   );
   if (!circuit.status().available)
     after(() => circuit.probe(probeKnowledgeServices));

@@ -49,6 +49,8 @@ import { ProjectSearchResults } from "./ProjectSearchResults";
 import { knowledgeFallback } from "../../lib/knowledgeFallback";
 import type { KnowledgeAction } from "@homepage/content/knowledge";
 import { useKnowledgeAssistant } from "./useKnowledgeAssistant";
+import { useKnowledgeConsent } from "./useKnowledgeConsent";
+import { parseKnowledgeConsent } from "../../lib/knowledgeConsent";
 import "./landing.css";
 import "./knowledge.css";
 
@@ -56,6 +58,10 @@ const LandingShape = dynamic(() => import("./LandingShape"), { ssr: false });
 const KnowledgeAssistant = dynamic(() => import("./KnowledgeAssistant"), {
   ssr: false,
 });
+const KnowledgeConsentDialog = dynamic(
+  () => import("./KnowledgeConsentDialog"),
+  { ssr: false },
+);
 const BRAND_PLACEMENTS = [
   {
     row: 0,
@@ -73,8 +79,10 @@ type DisplaySuggestion = LandingCommand | SearchSuggestion;
 
 export const PlasmaLanding = ({
   headline = "A little curiosity goes a long way.",
+  assistantEnabled = false,
 }: {
   headline?: string;
+  assistantEnabled?: boolean;
 }) => {
   const locale = useLocale();
   const de = locale === "de";
@@ -110,10 +118,14 @@ export const PlasmaLanding = ({
   const [focused, setFocused] = useState(false);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const assistantEnabled =
-    process.env.NEXT_PUBLIC_KNOWLEDGE_ASSISTANT_ENABLED === "true";
   const [chatMode, setChatMode] = useState(false);
-  const assistant = useKnowledgeAssistant(assistantEnabled);
+  const consent = useKnowledgeConsent(assistantEnabled);
+  const assistant = useKnowledgeAssistant(assistantEnabled, consent.receipt);
+  const askAssistant = assistant.ask;
+  const suggestAssistantProjects = assistant.suggest;
+  const [consentQuestion, setConsentQuestion] = useState<string | null>(null);
+  const queuedQuestion = useRef<string | null>(null);
+  const hadConsent = useRef(false);
   const [assistantProject, setAssistantProject] = useState<string | null>(null);
   const [assistantShowProjects, setAssistantShowProjects] = useState(false);
   const [searchFilter, setSearchFilter] = useState<SearchFilter>();
@@ -439,6 +451,58 @@ export const PlasmaLanding = ({
     else if (!("kind" in suggestion)) execute(suggestion);
   };
 
+  const beginQuestion = useCallback(
+    (question: string) => {
+      setChatMode(true);
+      setAssistantProject(null);
+      setAssistantShowProjects(false);
+      const request = ++submittedTurn.current;
+      void askAssistant(
+        question,
+        knowledgeFallback(locale, search.projects),
+      ).then((succeeded) => {
+        if (!succeeded && request === submittedTurn.current) setInput(question);
+      });
+      setInput("");
+      setStatus("");
+    },
+    [askAssistant, locale, search.projects],
+  );
+
+  useEffect(() => {
+    if (!consent.receipt) return;
+    const question = queuedQuestion.current;
+    if (question === null) return;
+    queuedQuestion.current = null;
+    beginQuestion(question);
+  }, [consent.receipt, beginQuestion]);
+
+  useEffect(() => {
+    if (!consent.receipt && hadConsent.current) setChatMode(false);
+    hadConsent.current = !!consent.receipt;
+  }, [consent.receipt]);
+
+  const suggestProjects = useCallback(
+    (question: string) => {
+      setChatMode(true);
+      setAssistantProject(null);
+      setAssistantShowProjects(false);
+      suggestAssistantProjects(
+        question,
+        knowledgeFallback(locale, search.projects),
+      );
+      setInput("");
+      setStatus("");
+    },
+    [suggestAssistantProjects, locale, search.projects],
+  );
+
+  useEffect(() => {
+    if (consentQuestion === null || assistant.available) return;
+    setConsentQuestion(null);
+    if (consentQuestion.trim()) suggestProjects(consentQuestion);
+  }, [consentQuestion, assistant.available, suggestProjects]);
+
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (navigating) return;
@@ -455,19 +519,16 @@ export const PlasmaLanding = ({
     }
     if (assistantEnabled) {
       if (!hasQuery || assistant.busy) return;
-      setChatMode(true);
-      setAssistantProject(null);
-      setAssistantShowProjects(false);
-      const question = input;
-      const request = ++submittedTurn.current;
-      void assistant
-        .ask(question, knowledgeFallback(locale, search.projects))
-        .then((succeeded) => {
-          if (!succeeded && request === submittedTurn.current)
-            setInput(question);
-        });
-      setInput("");
-      setStatus("");
+      if (!assistant.available || consent.declined) {
+        suggestProjects(input);
+        return;
+      }
+      if (!parseKnowledgeConsent(consent.receipt)) {
+        consent.forget();
+        setConsentQuestion(input);
+        return;
+      }
+      beginQuestion(input);
       return;
     }
     if (hasQuery && suggestions[currentIndex]) {
@@ -497,6 +558,24 @@ export const PlasmaLanding = ({
         distanceCursorRef.current = null;
       }}
     >
+      {assistantEnabled && consentQuestion !== null && assistant.available && (
+        <KnowledgeConsentDialog
+          onCancel={() => setConsentQuestion(null)}
+          onDecline={() => {
+            const question = consentQuestion;
+            setConsentQuestion(null);
+            consent.revoke();
+            if (question.trim()) suggestProjects(question);
+          }}
+          onAllow={(remember) => {
+            queuedQuestion.current = consentQuestion.trim()
+              ? consentQuestion
+              : null;
+            setConsentQuestion(null);
+            consent.allow(remember);
+          }}
+        />
+      )}
       <div ref={backdropRef} className="landing-backdrop" aria-hidden="true">
         {bounds && (
           <PlasmaCanvas
@@ -957,8 +1036,8 @@ export const PlasmaLanding = ({
             {assistantEnabled && (
               <p className="knowledge-privacy">
                 {de
-                  ? "Fragen gehen über OpenRouter an KI-Anbieter. Verlauf: bis zu 2 Stunden in diesem Tab. Keine vertraulichen Angaben. KI kann sich irren. "
-                  : "Questions go through OpenRouter to AI providers. History: up to 2 hours in this tab. Leave out confidential details. AI can make mistakes. "}
+                  ? "KI erst nach deiner Einwilligung. Fragen gehen über OpenRouter an KI-Anbieter. Keine vertraulichen Angaben. KI kann sich irren. "
+                  : "AI starts only with your permission. Questions go through OpenRouter to AI providers. Leave out confidential details. AI can make mistakes. "}
                 <Link
                   href={
                     de ? "/datenschutz#ai-assistant" : "/privacy#ai-assistant"
@@ -968,6 +1047,33 @@ export const PlasmaLanding = ({
                 >
                   {de ? "Datenschutz" : "Privacy"}
                 </Link>
+                {consent.receipt && (
+                  <button
+                    data-ai-withdraw
+                    type="button"
+                    className="ml-3 min-h-11 underline"
+                    onClick={() => {
+                      queuedQuestion.current = null;
+                      assistant.clear();
+                      consent.revoke();
+                      restoreLanding();
+                    }}
+                  >
+                    {de
+                      ? "KI-Einwilligung widerrufen"
+                      : "Withdraw AI permission"}
+                  </button>
+                )}
+                {consent.declined && assistant.available && (
+                  <button
+                    type="button"
+                    data-ai-preferences
+                    className="ml-3 min-h-11 underline"
+                    onClick={() => setConsentQuestion("")}
+                  >
+                    {de ? "KI-Einstellung ändern" : "Change AI preference"}
+                  </button>
+                )}
               </p>
             )}
           </div>

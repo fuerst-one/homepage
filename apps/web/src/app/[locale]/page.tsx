@@ -11,6 +11,7 @@ import { pageMetadata, personSchema, SITE_URL, PERSON_ID } from "../../lib/seo";
 import "../home.css";
 import { MaltTerms } from "../../components/MaltTerms";
 import { EnquiryStart } from "../../components/Enquiry/EnquiryStart";
+import { getSiteFeatures } from "@/server/siteFeatures";
 
 export const revalidate = 60;
 export async function generateMetadata({ params }: LocaleParams) {
@@ -28,13 +29,17 @@ export async function generateMetadata({ params }: LocaleParams) {
 
 export default async function Home({ params }: LocaleParams) {
   const locale = await getLocale(params);
+  const { assistantEnabled } = getSiteFeatures();
   const [owner, copy] = await Promise.all([
     getCachedCvOwnerPublic(locale),
     getSiteCopy(locale),
   ]);
   return (
     <main>
-      <PlasmaLanding headline={copy["home.eyebrow"]} />
+      <PlasmaLanding
+        headline={copy["home.eyebrow"]}
+        assistantEnabled={assistantEnabled}
+      />
       <EnquiryStart locale={locale} />
       <div className="mx-auto w-full max-w-4xl px-6 pb-16">
         <MaltTerms locale={locale} mirror={owner.malt} />

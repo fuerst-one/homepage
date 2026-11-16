@@ -21,8 +21,17 @@ test("model schema restricts citation IDs and action targets to this retrieval",
 const core = loadTs(
   new URL("../packages/content/src/knowledge.ts", import.meta.url),
 );
+const { KNOWLEDGE_CONSENT_VERSION } = loadTs(
+  new URL("../apps/web/src/lib/knowledgeConsent.ts", import.meta.url),
+);
 
 test("chat rejects oversized messages, invalid locales and injected model settings", () => {
+  const consent = {
+    version: KNOWLEDGE_CONSENT_VERSION,
+    decidedAt: Date.now(),
+    remember: false,
+    allowed: true,
+  };
   assert.equal(
     core.parseKnowledgeRequest({ message: "a".repeat(1001), locale: "en" }),
     null,
@@ -43,10 +52,12 @@ test("chat rejects oversized messages, invalid locales and injected model settin
     core.parseKnowledgeRequest({
       message: "  Relevant AI projects? ",
       locale: "de",
+      consent,
     }),
     {
       message: "Relevant AI projects?",
       locale: "de",
+      consent,
     },
   );
 });

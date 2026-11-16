@@ -2,8 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ServiceAvailability } from "../../server/knowledge/serviceCircuit";
+import {
+  KNOWLEDGE_AVAILABILITY_KEY as KEY,
+  parseKnowledgeConsent,
+  type KnowledgeConsent,
+} from "../../lib/knowledgeConsent";
 
-const KEY = "fuerst-one:knowledge-availability:v1";
 const INITIAL: ServiceAvailability = {
   available: true,
   verified: false,
@@ -20,22 +24,28 @@ function parseStatus(value: unknown): ServiceAvailability | null {
 }
 
 /** Remember an outage across navigation; only verified recovery removes the latch. */
-export function useKnowledgeAvailability(enabled = true) {
+export function useKnowledgeAvailability(
+  enabled = true,
+  consent: KnowledgeConsent | null = null,
+) {
   const current = useRef(INITIAL);
   const [status, setStatus] = useState(INITIAL);
   const version = useRef(0);
   const checking = useRef<AbortController | null>(null);
+  const persist = useRef(false);
+  persist.current = enabled && !!parseKnowledgeConsent(consent);
   const accept = useCallback((next: ServiceAvailability) => {
     if (next.available && !next.verified && !current.current.available) return;
     version.current++;
     current.current = next;
     setStatus(next);
-    try {
-      if (next.available) sessionStorage.removeItem(KEY);
-      else sessionStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* Availability still works in memory without storage. */
-    }
+    if (persist.current)
+      try {
+        if (next.available) sessionStorage.removeItem(KEY);
+        else sessionStorage.setItem(KEY, JSON.stringify(next));
+      } catch {
+        /* Availability still works in memory without storage. */
+      }
   }, []);
   const fail = useCallback(
     (value?: unknown) => {
@@ -52,7 +62,7 @@ export function useKnowledgeAvailability(enabled = true) {
     [accept],
   );
   const refresh = useCallback(async () => {
-    if (checking.current) return;
+    if (!enabled || checking.current) return;
     const controller = new AbortController();
     checking.current = controller;
     const revision = version.current;
@@ -82,17 +92,23 @@ export function useKnowledgeAvailability(enabled = true) {
       clearTimeout(timeout);
       if (checking.current === controller) checking.current = null;
     }
-  }, [accept, fail]);
+  }, [enabled, accept, fail]);
   useEffect(() => {
-    if (!enabled) return;
-    try {
-      const saved = parseStatus(
-        JSON.parse(sessionStorage.getItem(KEY) || "null"),
-      );
-      if (saved && !saved.available) fail(saved);
-    } catch {
-      /* Ignore invalid or inaccessible storage. */
+    if (!enabled) {
+      version.current++;
+      current.current = INITIAL;
+      setStatus(INITIAL);
+      return;
     }
+    if (persist.current)
+      try {
+        const saved = parseStatus(
+          JSON.parse(sessionStorage.getItem(KEY) || "null"),
+        );
+        if (saved && !saved.available) fail(saved);
+      } catch {
+        /* Ignore invalid or inaccessible storage. */
+      }
     void refresh();
     const online = () => {
       void refresh();
@@ -103,7 +119,7 @@ export function useKnowledgeAvailability(enabled = true) {
       checking.current?.abort();
       checking.current = null;
     };
-  }, [enabled, fail, refresh]);
+  }, [enabled, consent, fail, refresh]);
   useEffect(() => {
     if (!enabled || status.available) return;
     const timer = setTimeout(
@@ -113,7 +129,7 @@ export function useKnowledgeAvailability(enabled = true) {
       Math.max(5000, status.retryAt - Date.now()),
     );
     return () => clearTimeout(timer);
-  }, [enabled, status, refresh]);
+  }, [enabled, consent, status, refresh]);
   return {
     current,
     fail,

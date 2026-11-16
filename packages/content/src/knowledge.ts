@@ -1,4 +1,5 @@
 import type { Locale } from "@homepage/content/i18n";
+import { parseKnowledgeConsent } from "./knowledgeConsent";
 
 export type KnowledgeSource = {
   id: string;
@@ -65,14 +66,22 @@ export function parseKnowledgeRequest(input: unknown) {
   const value = record(input);
   if (
     !value ||
-    Object.keys(value).some((key) => !["message", "locale"].includes(key)) ||
+    Object.keys(value).some(
+      (key) => !["message", "locale", "consent"].includes(key),
+    ) ||
     typeof value.message !== "string" ||
     !value.message.trim() ||
     value.message.length > 1000 ||
     !["en", "de"].includes(String(value.locale))
   )
     return null;
-  return { message: value.message.trim(), locale: value.locale as Locale };
+  const consent = parseKnowledgeConsent(value.consent);
+  if (!consent) return null;
+  return {
+    message: value.message.trim(),
+    locale: value.locale as Locale,
+    consent,
+  };
 }
 
 /** Word boundaries keep passages bounded, including unusually long tokens. */

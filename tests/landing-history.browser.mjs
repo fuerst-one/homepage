@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import puppeteer from "puppeteer";
+import { grantKnowledgeConsent } from "./helpers/knowledge-consent.mjs";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 test("chat resumes after closing, navigation and reload, and can be cleared", async () => {
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
+    await grantKnowledgeConsent(page);
     let calls = 0;
     let failSearch = false;
     await page.setRequestInterception(true);
