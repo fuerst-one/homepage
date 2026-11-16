@@ -1,5 +1,9 @@
 # Database-first website content
 
+The durable worker base is deployed; see the
+[worker rollout receipt](notion-worker-rollout-2026-11-16.md). Vercel automatic
+deployments remain held, and the live website has not switched to these readers.
+
 The public web app needs PostgreSQL, not a live Notion connection. All normal
 page renders, project/profile APIs, case studies, and image routes read published
 rows or mirrored image bytes. A worker failure leaves the last publication
