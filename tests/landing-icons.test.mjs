@@ -179,7 +179,10 @@ test("navigation sculptures can be generated one at a time through the same lazy
   const envelope = cache.get(1);
   assert.notEqual(envelope, folder);
   assert.deepEqual(requested, [0, 1]);
-  for (const geometry of [folder, envelope]) {
+  const discussion = cache.get(3);
+  assert.equal(cache.get(3), discussion);
+  assert.deepEqual(requested, [0, 1, 3]);
+  for (const geometry of [folder, envelope, discussion]) {
     geometry.computeBoundingBox();
     assert.ok(geometry.boundingBox.max.z > geometry.boundingBox.min.z);
     assert.ok([...geometry.attributes.position.array].every(Number.isFinite));

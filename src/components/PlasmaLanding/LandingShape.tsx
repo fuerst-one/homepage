@@ -12,8 +12,10 @@ const createGeometry = (index: number) =>
   index < 6 ? createLandingGeometry(index) : createLandingIconGeometry(index);
 
 const RAMP = PLAYGROUND_CHARACTERS.slice(0, PLAYGROUND_CHARACTERS.length / 2);
-const WIDTH = 100;
-const HEIGHT = 56;
+const CELL_SIZE = 6;
+// Keep the preview footprint while sampling more detail into smaller glyphs.
+const WIDTH = Math.ceil(800 / CELL_SIZE);
+const HEIGHT = Math.ceil(448 / CELL_SIZE);
 
 export default function LandingShape({
   shapeIndex,
@@ -116,9 +118,9 @@ export default function LandingShape({
       ref={canvasRef}
       onCanvasReady={onCanvasReady}
       ramp={RAMP}
-      cellSize={8}
-      cellWidth={8}
-      fontPx={9}
+      cellSize={CELL_SIZE}
+      cellWidth={CELL_SIZE}
+      fontPx={6.75}
       gridWidth={WIDTH}
       gridHeight={HEIGHT}
       className="landing-shape-canvas"

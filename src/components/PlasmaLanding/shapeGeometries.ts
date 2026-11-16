@@ -74,26 +74,31 @@ const combine = (parts: THREE.BufferGeometry[]) => {
   return geometry;
 };
 
-const createFolder = () =>
-  combine([
-    box(2, 1.45, 0.2, { at: [0, 0, -0.32], tone: 0.65 }),
-    box(0.72, 0.3, 0.2, { at: [-0.58, 0.8, -0.32], tone: 0.65 }),
-    box(1.72, 1.35, 0.07, {
-      at: [0.04, 0.13, -0.12],
-      rotation: [0, 0, -0.08],
-      tone: 1,
-    }),
-    box(1.72, 1.25, 0.07, {
-      at: [-0.06, 0.05, 0.02],
-      rotation: [0, 0, 0.07],
-      tone: 0.8,
-    }),
-    box(2, 1.13, 0.22, {
-      at: [0, -0.2, 0.3],
-      rotation: [-0.22, 0, 0],
-      tone: 0.85,
-    }),
-  ]);
+const createProjectCards = () => {
+  const cards = [
+    { x: -0.72, y: 0.24, z: -0.3, angle: 0.28 },
+    { x: 0.72, y: 0.24, z: 0, angle: -0.28 },
+    { x: 0, y: -0.25, z: 0.3, angle: 0.03 },
+  ].map(({ x, y, z, angle }) => {
+    const card = combine([
+      box(1.65, 1.6, 0.12, { tone: 0.45 }),
+      ...[-0.76, 0.76].map((edgeX) =>
+        box(0.09, 1.6, 0.07, { at: [edgeX, 0, 0.09] }),
+      ),
+      ...[-0.75, 0.75].map((edgeY) =>
+        box(1.6, 0.09, 0.07, { at: [0, edgeY, 0.09] }),
+      ),
+      box(1.25, 0.62, 0.08, { at: [0, 0.25, 0.1], tone: 0.85 }),
+      box(0.95, 0.1, 0.09, { at: [-0.15, -0.28, 0.1] }),
+      box(0.65, 0.09, 0.08, { at: [-0.3, -0.52, 0.1], tone: 0.8 }),
+    ]);
+    // Transform the assembled card without replacing its surface tones.
+    card.rotateZ(angle);
+    card.translate(x, y, z);
+    return card;
+  });
+  return combine(cards);
+};
 
 const createEnvelope = () =>
   combine([
@@ -155,45 +160,65 @@ const createBriefcase = () =>
     ),
   ]);
 
-const createDocument = () =>
-  combine([
-    plate(
-      [
-        [-0.72, -0.98],
-        [0.72, -0.98],
-        [0.72, 0.55],
-        [0.3, 0.98],
-        [-0.72, 0.98],
-      ],
-      0.22,
-      { tone: 0.82 },
-    ),
-    plate(
-      [
-        [0.27, 0.94],
-        [0.69, 0.52],
-        [0.27, 0.52],
-      ],
-      0.1,
-      { at: [0, 0, 0.2], tone: 0.55 },
-    ),
-    ...[0.55, 0.3, 0.05].map((y, i) =>
-      box(i === 0 ? 0.52 : 0.85, 0.08, 0.09, {
-        at: [i === 0 ? -0.14 : 0, y, 0.17],
-        tone: 1,
-      }),
-    ),
-    box(0.14, 0.38, 0.13, { at: [0, -0.37, 0.18], tone: 1 }),
-    plate(
-      [
-        [-0.28, -0.48],
-        [0.28, -0.48],
-        [0, -0.78],
-      ],
-      0.13,
-      { at: [0, 0, 0.18], tone: 1 },
-    ),
-  ]);
+const createDiscussion = () => {
+  const bubbles = [
+    { x: -0.38, y: 0.4, z: -0.2, direction: -1, tone: 0.75 },
+    { x: 0.38, y: -0.32, z: 0.2, direction: 1, tone: 1 },
+  ].map(({ x, y, z, direction, tone }) => {
+    const outline = new THREE.Shape();
+    outline.moveTo(-0.65, -0.55);
+    outline.lineTo(-0.6, -0.55);
+    outline.lineTo(-0.72, -0.95);
+    outline.lineTo(-0.14, -0.55);
+    outline.lineTo(0.65, -0.55);
+    outline.quadraticCurveTo(0.85, -0.55, 0.85, -0.35);
+    outline.lineTo(0.85, 0.35);
+    outline.quadraticCurveTo(0.85, 0.55, 0.65, 0.55);
+    outline.lineTo(-0.65, 0.55);
+    outline.quadraticCurveTo(-0.85, 0.55, -0.85, 0.35);
+    outline.lineTo(-0.85, -0.35);
+    outline.quadraticCurveTo(-0.85, -0.55, -0.65, -0.55);
+    outline.closePath();
+
+    const opening = new THREE.Path();
+    opening.moveTo(-0.59, -0.39);
+    opening.lineTo(0.59, -0.39);
+    opening.quadraticCurveTo(0.69, -0.39, 0.69, -0.29);
+    opening.lineTo(0.69, 0.29);
+    opening.quadraticCurveTo(0.69, 0.39, 0.59, 0.39);
+    opening.lineTo(-0.59, 0.39);
+    opening.quadraticCurveTo(-0.69, 0.39, -0.69, 0.29);
+    opening.lineTo(-0.69, -0.29);
+    opening.quadraticCurveTo(-0.69, -0.39, -0.59, -0.39);
+    opening.closePath();
+    outline.holes.push(opening);
+
+    const frame = new THREE.ExtrudeGeometry(outline, {
+      depth: 0.2,
+      bevelEnabled: true,
+      bevelSize: 0.025,
+      bevelThickness: 0.025,
+      bevelSegments: 3,
+      curveSegments: 8,
+      steps: 1,
+    });
+    frame.translate(0, 0, -0.1);
+    if (direction === 1) frame.rotateY(Math.PI);
+    const bubble = combine([
+      place(frame, { tone }),
+      ...[-0.36, 0, 0.36].map((dotX) =>
+        place(new THREE.SphereGeometry(0.115, 12, 8), {
+          at: [dotX, 0, 0.04],
+          tone,
+        }),
+      ),
+    ]);
+    bubble.rotateZ(direction * 0.06);
+    bubble.translate(x, y, z);
+    return bubble;
+  });
+  return combine(bubbles);
+};
 
 const createGear = () => {
   const shape = new THREE.Shape();
@@ -233,16 +258,16 @@ const createGear = () => {
 
 /** Original layered sculptures are constructed only when selected. */
 const NAVIGATION_GEOMETRIES = [
-  createFolder,
+  createProjectCards,
   createEnvelope,
   createBriefcase,
-  createDocument,
+  createDiscussion,
   createGear,
   () => place(new THREE.TorusKnotGeometry(0.72, 0.23, 100, 16)),
 ];
 
 export const createLandingGeometry = (index: number): THREE.BufferGeometry => {
-  const geometry = (NAVIGATION_GEOMETRIES[index] ?? createFolder)();
+  const geometry = (NAVIGATION_GEOMETRIES[index] ?? createProjectCards)();
   geometry.computeBoundingSphere();
   return geometry;
 };

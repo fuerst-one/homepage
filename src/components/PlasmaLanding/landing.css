@@ -90,6 +90,7 @@
 }
 .landing-shape-canvas {
   mix-blend-mode: screen;
+  filter: brightness(1.2) contrast(1.15);
   position: absolute;
   width: 100% !important;
   height: 100% !important;
