@@ -1,5 +1,11 @@
 # Local knowledge assistant
 
+Current rollout/configuration instructions are in [AI operations](ai-operations.md).
+Migration 008 moves budgets and admission controls into PostgreSQL `settings`,
+adds the stable visitor lottery and BotID, and changes the serving provider to
+Microsoft Azure with renewed consent. Historical local acceptance below predates
+that rollout; consult its release receipt for exact production activation state.
+
 Open <http://localhost:6888/en> or <http://localhost:6888/de>. Type into the
 shared input to preview project suggestions; press **Enter** to ask the
 assistant. Try “Show projects with AI automation”. Answers cite

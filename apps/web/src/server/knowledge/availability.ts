@@ -14,6 +14,7 @@ import {
 import {
   finishKnowledgeUsage,
   reserveKnowledgeUsage,
+  KnowledgeQuotaError,
 } from "@homepage/knowledge/usage";
 
 // Route bundles in the same Node process share this flag; it needs no healthy DB.
@@ -21,7 +22,9 @@ const state = globalThis as typeof globalThis & {
   homepageKnowledgeCircuit?: ReturnType<typeof createServiceCircuit>;
 };
 export const knowledgeAvailability = () =>
-  (state.homepageKnowledgeCircuit ??= createServiceCircuit());
+  (state.homepageKnowledgeCircuit ??= createServiceCircuit({
+    shouldTripProbe: (error) => !(error instanceof KnowledgeQuotaError),
+  }));
 
 /** Verify the dependencies actually used by answers, within the shared budget. */
 export async function probeKnowledgeServices(signal: AbortSignal) {
@@ -40,6 +43,15 @@ export async function probeKnowledgeServices(signal: AbortSignal) {
     signal,
   );
   if (!chunks.length) throw new Error("Knowledge source empty");
+  // Cold server instances can reuse a successful synthetic check for one hour.
+  // A process that observed an actual failure must verify recovery itself.
+  if (knowledgeAvailability().status().available) {
+    const [shared] = await sql`SELECT EXISTS(
+      SELECT 1 FROM knowledge_usage WHERE kind='probe' AND status='complete'
+      AND created_at > now()-interval '1 hour'
+    ) AS healthy`.signal(signal);
+    if (shared?.healthy) return;
+  }
   await verifyChatPrice(signal);
   const reservation = await reserveKnowledgeUsage(
     "availability-probe",

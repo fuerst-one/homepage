@@ -128,6 +128,12 @@ for (const flags of [
         "@homepage/knowledge/usage": {
           KnowledgeQuotaError: class extends Error {},
         },
+        "@/server/knowledge/admission": {
+          getKnowledgeAdmission: async () => {
+            throw new Error("disabled AI must not read admission");
+          },
+        },
+        "@homepage/knowledge/policy": {},
       };
       dependencies["../../../../server/knowledge/availability"] =
         dependencies["../../../server/knowledge/availability"];
@@ -135,7 +141,7 @@ for (const flags of [
         "../apps/web/src/app/api/assistant/status/route.ts",
         dependencies,
       );
-      const result = status.GET();
+      const result = await status.GET();
       assert.equal((await result.json()).available, false);
       assert.equal(result.headers.get("cache-control"), "no-store");
       const route = loadModule(

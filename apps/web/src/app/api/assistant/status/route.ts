@@ -1,12 +1,13 @@
 import { after, NextResponse } from "next/server";
 import { getSiteFeatures } from "@/server/siteFeatures";
+import { getKnowledgeAdmission } from "@/server/knowledge/admission";
 import {
   knowledgeAvailability,
   probeKnowledgeServices,
 } from "../../../../server/knowledge/availability";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export function GET() {
+export async function GET(request: Request) {
   if (
     !getSiteFeatures().assistantEnabled ||
     !process.env.KNOWLEDGE_DATABASE_URL ||
@@ -14,6 +15,12 @@ export function GET() {
   )
     return NextResponse.json(
       { available: false, verified: false, retryAt: Date.now() + 300_000 },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  const admission = await getKnowledgeAdmission(request);
+  if (!admission.allowed)
+    return NextResponse.json(
+      { available: false, verified: false, retryAt: admission.retryAt },
       { headers: { "Cache-Control": "no-store" } },
     );
   const circuit = knowledgeAvailability();

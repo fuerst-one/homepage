@@ -48,6 +48,11 @@ test("withdrawing an in-flight request prevents the next provider stage and does
     "@homepage/knowledge/usage": {
       KnowledgeQuotaError: class extends Error {},
     },
+    "@homepage/knowledge/policy": { recordKnowledgeAdmission: async () => {} },
+    "@/server/knowledge/admission": {
+      getKnowledgeAdmission: async () => ({ allowed: true, retryAt: 0 }),
+      knowledgeClientAddress: () => "local",
+    },
     "../../../server/knowledge/availability": {
       knowledgeAvailability: () => circuit,
       probeKnowledgeServices: async () => {},

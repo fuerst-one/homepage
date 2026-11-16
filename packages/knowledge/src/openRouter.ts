@@ -24,7 +24,7 @@ export async function routerRequest(
         data_collection: "deny",
         zdr: true,
         // Adding a provider requires a new recipient/privacy review first.
-        only: ["openai"],
+        only: ["azure"],
         allow_fallbacks: false,
       },
     }),

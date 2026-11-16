@@ -151,3 +151,20 @@ test("an older successful request cannot erase a newer dependency failure", asyn
   await earlier;
   assert.equal(circuit.status().available, false);
 });
+test("probe admission contention defers recovery without marking a healthy dependency failed", async () => {
+  let now = 100;
+  const circuit = createServiceCircuit({
+    now: () => now,
+    cooldownMs: 30,
+    shouldTripProbe: () => false,
+  });
+  await circuit.probe(async () => {
+    throw new Error("quota");
+  }, true);
+  assert.equal(circuit.status().available, true);
+  assert.equal(circuit.status().verified, false);
+  assert.equal(circuit.status().retryAt, 130);
+  now = 131;
+  await circuit.probe(async () => {}, true);
+  assert.equal(circuit.status().verified, true);
+});

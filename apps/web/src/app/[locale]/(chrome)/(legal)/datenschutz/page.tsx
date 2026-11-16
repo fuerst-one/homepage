@@ -175,8 +175,9 @@ export default function DatenschutzPage() {
             KI-Anbieter. Ist KI verfügbar, fragen wir vor dem ersten Senden nach
             Ihrer Einwilligung. „KI erlauben und senden“ erlaubt die
             Übermittlung Ihrer Frage und der Seitensprache über unseren Server
-            an OpenRouter, Inc., USA, und OpenAI, USA, für Embeddings und
-            Antworten. Die Route ist auf OpenAI beschränkt; andere
+            an OpenRouter, Inc., USA, und Microsoft Azure (Microsoft
+            Corporation, USA), das die OpenAI-Modelle für Embeddings und
+            Antworten bereitstellt. Die Route ist auf Azure beschränkt; andere
             Modellanbieter werden nicht automatisch als Ersatz verwendet. Die
             Antwortanfrage enthält außerdem passende Auszüge aus
             veröffentlichten Portfolio-Inhalten. Frühere Nachrichten werden
@@ -238,10 +239,25 @@ export default function DatenschutzPage() {
             Nutzungsdatensätze enthalten auch die erklärte Einwilligungsversion,
             den Zeitpunkt und die Verlaufsauswahl zum Nachweis nach Art. 6 Abs.
             1 lit. c in Verbindung mit Art. 7 Abs. 1 DSGVO. Datensätze, die
-            älter als 35 Tage sind, werden bei der Zulassung einer weiteren
-            Anfrage gelöscht. Hosting-Zugriffsprotokolle werden getrennt wie
-            oben beschrieben verarbeitet. Die Modellanfragen enthalten Ihre
-            ursprüngliche IP-Adresse nicht im Anfrageinhalt.
+            älter als 35 Tage sind, werden durch einen stündlichen Wartungslauf
+            und bei der Zulassung einer weiteren Anfrage gelöscht.
+            Hosting-Zugriffsprotokolle werden getrennt wie oben beschrieben
+            verarbeitet. Die Modellanfragen enthalten Ihre ursprüngliche
+            IP-Adresse nicht im Anfrageinhalt.
+          </p>
+          <p>
+            Der KI-Zugang wird einem einstellbaren Anteil der Besucher
+            angeboten. Ein mit geheimem Schlüssel aus der IP-Adresse
+            abgeleiteter Hash bestimmt die Auswahl für ein festes Zeitfenster.
+            Neuladen ändert sie nicht; gemeinsam genutzte IP-Adressen teilen die
+            Auswahl. Dafür wird kein zusätzliches Cookie gesetzt. Vercel BotID
+            prüft technische Browsersignale an den Assistenten-Endpunkten zur
+            Erkennung automatisierter Zugriffe. Anfrageprüfung,
+            Missbrauchsfilter und gemeinsame Limits greifen vor
+            kostenpflichtigen KI-Aufrufen. Stündliche Summen zu Zulassungen und
+            Ablehnungen werden bis zu 35 Tage gespeichert, ohne Fragetexte oder
+            Besucherkennungen. Die normale Projektsuche bleibt ohne KI-Zugang
+            verfügbar.
           </p>
           <p>
             Die Missbrauchsabwehr beruht auf Art. 6 Abs. 1 lit. f DSGVO. Die

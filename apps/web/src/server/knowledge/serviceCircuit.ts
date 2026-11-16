@@ -31,6 +31,14 @@ export function createServiceCircuit({
   probeTimeoutMs = 10_000,
   cooldownMs = 30_000,
   maxCooldownMs = 300_000,
+  shouldTripProbe = () => true,
+}: {
+  now?: () => number;
+  requestTimeoutMs?: number;
+  probeTimeoutMs?: number;
+  cooldownMs?: number;
+  maxCooldownMs?: number;
+  shouldTripProbe?: (error: unknown) => boolean;
 } = {}) {
   let available = true;
   let verified = false;
@@ -79,8 +87,9 @@ export function createServiceCircuit({
           verified = true;
           retryAt = 0;
           failures = 0;
-        } catch {
-          trip();
+        } catch (error) {
+          if (shouldTripProbe(error)) trip();
+          else retryAt = now() + cooldownMs;
         } finally {
           probing = null;
         }

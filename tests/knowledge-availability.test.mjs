@@ -78,6 +78,7 @@ test("recovery proves DB, embeddings and chat, with budget admission before paid
   assert.deepEqual(calls, [
     "db",
     "db",
+    "db",
     "price",
     "reserve",
     "embedding",
@@ -107,7 +108,7 @@ test("exhausted budget blocks both paid probes", async () => {
     probeKnowledgeServices(new AbortController().signal),
     /quota/,
   );
-  assert.deepEqual(calls, ["db", "db", "price"]);
+  assert.deepEqual(calls, ["db", "db", "db", "price"]);
 });
 test("provider failure retains the conservative reservation and fails recovery", async () => {
   const calls = setup();
@@ -119,6 +120,7 @@ test("provider failure retains the conservative reservation and fails recovery",
     /OpenRouter unreachable/,
   );
   assert.deepEqual(calls, [
+    "db",
     "db",
     "db",
     "price",
@@ -154,4 +156,21 @@ test("plain text success cannot clear a structured-output capability failure", a
   });
   await assert.rejects(probeKnowledgeServices(new AbortController().signal));
   assert.equal(calls.at(-1), "retain");
+});
+
+test("a successful shared probe is reused by cold server instances without more paid checks", async () => {
+  const calls = setup();
+  database.knowledgeDatabase = () => (strings) => ({
+    signal: async () => {
+      calls.push("db");
+      const text = strings.join("");
+      return text.includes("knowledge_sync")
+        ? [{ fresh: true }]
+        : text.includes("knowledge_usage")
+          ? [{ healthy: true }]
+          : [{}];
+    },
+  });
+  await probeKnowledgeServices(new AbortController().signal);
+  assert.deepEqual(calls, ["db", "db", "db"]);
 });

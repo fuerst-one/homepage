@@ -58,6 +58,7 @@ test("consent is versioned, bounded to six months, and history is a separate boo
     null,
     {},
     { ...receipt, version: "old" },
+    { ...receipt, version: "2026-11-16.1" },
     { ...receipt, remember: "true" },
     { ...receipt, decidedAt: now + 120000 },
     { ...receipt, decidedAt: now - KNOWLEDGE_CONSENT_TTL },
@@ -101,7 +102,7 @@ test("both embedding and answer calls enforce no-training and ZDR routing withou
     for (const body of bodies) {
       assert.equal(body.provider.data_collection, "deny");
       assert.equal(body.provider.zdr, true);
-      assert.deepEqual(body.provider.only, ["openai"]);
+      assert.deepEqual(body.provider.only, ["azure"]);
       assert.equal(body.provider.allow_fallbacks, false);
     }
     assert.equal(bodies[1].provider.require_parameters, true);

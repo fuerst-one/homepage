@@ -44,8 +44,8 @@ export default function KnowledgeConsentDialog({
           <div className="min-h-0 overflow-y-auto pr-1">
             <Dialog.Description className="text-neutral-300">
               {de
-                ? "Deine Frage wurde noch nicht gesendet. Wenn du einwilligst, senden wir sie und die Seitensprache über OpenRouter an OpenAI für die Suche und Antwort (beide USA). Relevante öffentliche Projektauszüge werden mitgesendet; frühere Nachrichten nicht. Dabei kann eine Verarbeitung außerhalb der EU stattfinden."
-                : "Your question has not been sent. If you agree, we send it and the site language through OpenRouter to OpenAI for retrieval and an answer (both USA). Relevant public project excerpts are included; earlier messages are not. Processing may take place outside the EU."}
+                ? "Deine Frage wurde noch nicht gesendet. Wenn du einwilligst, senden wir sie und die Seitensprache über OpenRouter an Microsoft Azure für die Suche und Antwort mit OpenAI-Modellen (beide Anbieter USA). Relevante öffentliche Projektauszüge werden mitgesendet; frühere Nachrichten nicht. Dabei kann eine Verarbeitung außerhalb der EU stattfinden."
+                : "Your question has not been sent. If you agree, we send it and the site language through OpenRouter to Microsoft Azure for retrieval and an answer using OpenAI models (both providers USA). Relevant public project excerpts are included; earlier messages are not. Processing may take place outside the EU."}
             </Dialog.Description>
             <p className="mt-4 text-neutral-400">
               {de

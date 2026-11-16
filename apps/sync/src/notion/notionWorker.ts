@@ -7,6 +7,7 @@ import { postgresMaltMirrorStore } from "@homepage/database/postgresMaltMirrorSt
 import { refreshMaltIfDue } from "../malt/scheduledRefresh";
 import { notionMaltMirrorStore } from "../malt/notionMaltMirrorStore";
 import { syncWebsiteContent } from "./syncWebsiteContent";
+import { cleanupKnowledgeUsage } from "@homepage/knowledge/policy";
 
 export async function seedMaltMirror() {
   const sql = knowledgeDatabase();
@@ -45,6 +46,7 @@ export async function watchNotion(signal: AbortSignal) {
     }
   };
   await Promise.all([
+    loop(cleanupKnowledgeUsage, 3600_000, "AI retention cleanup"),
     loop(deliverPendingEnquiries, 5000, "Notion enquiry delivery"),
     loop(() => refreshMaltIfDue(), 60_000, "Malt refresh"),
     loop(

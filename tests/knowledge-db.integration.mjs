@@ -70,8 +70,19 @@ test("real PostgreSQL enforces atomic reservations, concurrency and visitor limi
   try {
     await sql.unsafe(migration);
     await sql.unsafe(migration); // A rerun preserves the existing schema.
+    await sql.unsafe(
+      await readFile(
+        new URL(
+          "../packages/database/migrations/008-ai-admission.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
     await sql`TRUNCATE knowledge_usage`;
-    process.env.KNOWLEDGE_DAILY_BUDGET_USD = "1";
+    await sql`UPDATE settings SET value='true' WHERE key='ai.enabled'`;
+    await sql`UPDATE settings SET value='1' WHERE key='ai.daily_budget_usd'`;
+    await sql`UPDATE settings SET value='20' WHERE key='ai.global_per_minute'`;
     const attempts = await Promise.allSettled(
       Array.from({ length: 12 }, (_, i) =>
         reserveKnowledgeUsage(`visitor-${i}`),
@@ -87,7 +98,7 @@ test("real PostgreSQL enforces atomic reservations, concurrency and visitor limi
       await finishKnowledgeUsage(attempt.value, 0.002);
     assert.ok(await reserveKnowledgeUsage("another-visitor"));
     await sql`TRUNCATE knowledge_usage`;
-    process.env.KNOWLEDGE_DAILY_BUDGET_USD = "0.2";
+    await sql`UPDATE settings SET value='0.2' WHERE key='ai.daily_budget_usd'`;
     const budgets = await Promise.allSettled(
       Array.from({ length: 10 }, (_, i) =>
         reserveKnowledgeUsage(`budget-${i}`),
@@ -99,7 +110,7 @@ test("real PostgreSQL enforces atomic reservations, concurrency and visitor limi
       "parallel calls cannot reuse the same remaining budget",
     );
     await sql`TRUNCATE knowledge_usage`;
-    process.env.KNOWLEDGE_DAILY_BUDGET_USD = "1";
+    await sql`UPDATE settings SET value='1' WHERE key='ai.daily_budget_usd'`;
     for (let i = 0; i < 3; i++)
       await finishKnowledgeUsage(
         await reserveKnowledgeUsage("same-visitor"),

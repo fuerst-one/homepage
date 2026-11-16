@@ -9,7 +9,7 @@ import {
 } from "../../lib/knowledgeConsent";
 
 const INITIAL: ServiceAvailability = {
-  available: true,
+  available: false,
   verified: false,
   retryAt: 0,
 };

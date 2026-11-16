@@ -165,13 +165,14 @@ export default function PrivacyPage() {
             send a question to an AI provider. When enabled, the assistant first
             asks for your permission before a question is sent. “Allow AI and
             send” permits your question and site language to be sent through our
-            server to OpenRouter, Inc., USA, and OpenAI, USA, which processes
-            the embedding and answer requests. Routing is restricted to OpenAI;
-            it does not fall back to other model providers. The answer request
-            also includes relevant excerpts from published portfolio content.
-            Earlier messages are displayed locally and are not included in later
-            model requests. Please do not submit confidential information,
-            sensitive personal data or personal data about other people.
+            server to OpenRouter, Inc., USA, and Microsoft Azure (Microsoft
+            Corporation, USA), which serves the OpenAI embedding and answer
+            models. Routing is restricted to Azure; it does not fall back to
+            other model providers. The answer request also includes relevant
+            excerpts from published portfolio content. Earlier messages are
+            displayed locally and are not included in later model requests.
+            Please do not submit confidential information, sensitive personal
+            data or personal data about other people.
           </p>
           <p>
             We remember both allow and decline, the notice version, time and
@@ -220,10 +221,22 @@ export default function PrivacyPage() {
             anonymous. Usage records also contain the declared consent version,
             time and history choice to document permission, under Art. 6(1)(c)
             with Art. 7(1) GDPR. Abuse prevention is based on Art. 6(1)(f) GDPR.
-            Records, including receipts, older than 35 days are deleted when a
-            further request is admitted. Hosting access logs are handled
-            separately as described above. We do not include your raw IP address
-            in model request bodies.
+            Records, including receipts, older than 35 days are deleted by an
+            hourly maintenance job and when a further request is admitted.
+            Hosting access logs are handled separately as described above. We do
+            not include your raw IP address in model request bodies.
+          </p>
+          <p>
+            AI access is offered to a configurable proportion of visitors. A
+            keyed IP hash determines eligibility for a fixed time window;
+            refreshing does not reroll it, and shared IPs share eligibility.
+            This adds no lottery cookie. Vercel BotID checks technical browser
+            signals on assistant endpoints to detect automated traffic. Request
+            validation, abuse screening and shared limits run before paid AI
+            processing. We retain hourly aggregate admission and rejection
+            counts for up to 35 days, without question text or visitor
+            identifiers. Ordinary project search remains available without AI
+            access.
           </p>
           <p>
             Provider processing can take place outside the EEA, including in the

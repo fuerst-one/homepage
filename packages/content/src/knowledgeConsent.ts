@@ -1,4 +1,4 @@
-export const KNOWLEDGE_CONSENT_VERSION = "2026-11-16.1";
+export const KNOWLEDGE_CONSENT_VERSION = "2026-11-16.2";
 export const KNOWLEDGE_CONSENT_KEY = "fuerst-one:knowledge-consent:v1";
 export const KNOWLEDGE_AVAILABILITY_KEY =
   "fuerst-one:knowledge-availability:v1";

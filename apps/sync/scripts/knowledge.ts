@@ -14,6 +14,7 @@ async function main() {
         "003-notion-resilience.sql",
         "005-public-content.sql",
         "007-malt-refresh.sql",
+        "008-ai-admission.sql",
       ]) {
         const migration = await readFile(
           new URL(import.meta.resolve(`@homepage/database/migrations/${file}`)),

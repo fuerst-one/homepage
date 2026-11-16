@@ -6,6 +6,11 @@ import { knowledgeFallback } from "../../../lib/knowledgeFallback";
 import { parseKnowledgeConsent } from "@/lib/knowledgeConsent";
 import { getSiteFeatures } from "@/server/siteFeatures";
 import {
+  getKnowledgeAdmission,
+  knowledgeClientAddress,
+} from "@/server/knowledge/admission";
+import { recordKnowledgeAdmission } from "@homepage/knowledge/policy";
+import {
   knowledgeAvailability,
   probeKnowledgeServices,
 } from "../../../server/knowledge/availability";
@@ -52,12 +57,19 @@ export async function POST(request: NextRequest) {
     return reply({ error: "consent_required" }, 428);
   const parsed = parseKnowledgeRequest(input);
   if (!parsed) return reply({ error: "invalid_request" }, 400);
-  // Vercel replaces this header at its trusted ingress. Local testing shares one visitor bucket.
-  const ip =
-    process.env.VERCEL === "1"
-      ? request.headers.get("x-vercel-forwarded-for")?.split(",")[0] ||
-        "unknown"
-      : "local";
+  const admission = await getKnowledgeAdmission(request, parsed.message);
+  if (!admission.allowed)
+    return reply({
+      ...knowledgeFallback(parsed.locale),
+      mode: "fallback",
+      availability: {
+        available: false,
+        verified: false,
+        retryAt: admission.retryAt,
+      },
+    });
+  const ip = knowledgeClientAddress(request);
+  if (!ip) return reply({ error: "unavailable" }, 503);
   const circuit = knowledgeAvailability();
   let mode: "answer" | "fallback" = "answer";
   const answer = await circuit.run(
@@ -73,8 +85,11 @@ export async function POST(request: NextRequest) {
       mode = "fallback";
       return knowledgeFallback(parsed.locale);
     },
-    (error) =>
-      !request.signal.aborted && !(error instanceof KnowledgeQuotaError),
+    (error) => {
+      if (error instanceof KnowledgeQuotaError)
+        after(() => recordKnowledgeAdmission("quota").catch(() => {}));
+      return !request.signal.aborted && !(error instanceof KnowledgeQuotaError);
+    },
   );
   if (!circuit.status().available)
     after(() => circuit.probe(probeKnowledgeServices));
