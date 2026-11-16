@@ -40,3 +40,36 @@ export const getGlitchState = (timeSec: number): GlitchState => {
   const burst = 0.35 + 0.65 * hash11(seed * 7.13);
   return { burst, seed };
 };
+
+/** Change the pace of calm periods without speeding up the bursts themselves. */
+export const createGlitchClock = () => {
+  let timeline = 0;
+  let previousTime = 0;
+  return {
+    sample(timeSec: number, frequency = 1): GlitchState {
+      // Ignore long gaps while a tab is hidden or animation is paused.
+      let remaining = Math.min(0.25, Math.max(0, timeSec - previousTime));
+      previousTime = timeSec;
+      while (remaining > 1e-9) {
+        const slot = Math.floor(timeline / PLASMA_GLITCH_INTERVAL);
+        const start =
+          slot * PLASMA_GLITCH_INTERVAL +
+          hash11(slot) * (PLASMA_GLITCH_INTERVAL - PLASMA_GLITCH_DURATION);
+        const end = start + PLASMA_GLITCH_DURATION;
+        const inBurst = timeline >= start - 1e-9 && timeline < end - 1e-9;
+        const boundary =
+          timeline < start - 1e-9
+            ? start
+            : inBurst
+              ? end
+              : (slot + 1) * PLASMA_GLITCH_INTERVAL;
+        const rate = inBurst ? 1 : Math.max(0.1, frequency);
+        const untilBoundary = (boundary - timeline) / rate;
+        const step = Math.min(remaining, untilBoundary);
+        timeline = step === untilBoundary ? boundary : timeline + step * rate;
+        remaining -= step;
+      }
+      return getGlitchState(timeline);
+    },
+  };
+};

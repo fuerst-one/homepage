@@ -41,13 +41,13 @@ function preview() {
   return { timer, changes, controller };
 }
 
-test("the hero stays on its wordmark until interaction and returns after ten idle seconds", () => {
+test("the hero stays on its wordmark until interaction and returns after three idle seconds", () => {
   const { timer, changes, controller } = preview();
   timer.advance(20000);
   assert.deepEqual(changes, []);
   controller.touch();
   assert.deepEqual(changes, [true]);
-  timer.advance(9999);
+  timer.advance(2999);
   assert.deepEqual(changes, [true]);
   timer.advance(1);
   assert.deepEqual(changes, [true, false]);
@@ -56,11 +56,11 @@ test("the hero stays on its wordmark until interaction and returns after ten idl
 test("new interactions restart the idle period without reactivating the icon", () => {
   const { timer, changes, controller } = preview();
   controller.touch();
-  timer.advance(8000);
-  controller.touch();
   timer.advance(2000);
+  controller.touch();
+  timer.advance(2999);
   assert.deepEqual(changes, [true]);
-  timer.advance(8000);
+  timer.advance(1);
   assert.deepEqual(changes, [true, false]);
 });
 
@@ -70,7 +70,9 @@ test("dragging holds the icon until release, then starts a fresh idle period", (
   timer.advance(20000);
   assert.deepEqual(changes, [true]);
   controller.release();
-  timer.advance(10000);
+  timer.advance(2999);
+  assert.deepEqual(changes, [true]);
+  timer.advance(1);
   assert.deepEqual(changes, [true, false]);
 });
 

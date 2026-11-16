@@ -36,6 +36,8 @@ import { LabelOverlay } from "../Plasma/LabelOverlay";
 import { getLabelPlacementAtPoint } from "../Plasma/getLabelGroupPlacements";
 import { useResponsiveMetrics } from "../Plasma/useResponsiveMetrics";
 import { createHeroPreviewController } from "./createHeroPreviewController";
+import { getDistanceReaction } from "./getDistanceReaction";
+import { NEUTRAL_PLASMA_MOTION } from "../Plasma/motion";
 import {
   LandingCommand,
   resolveExplicitCommand,
@@ -81,10 +83,13 @@ export const PlasmaLanding = ({
   const SUGGESTIONS = useMemo(() => getLocalizedSuggestions(locale), [locale]);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<PlasmaCanvasHandle>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
   const { cellSize, fontPx } = useResponsiveMetrics();
   const lensOriginRef = useRef({ x: 0, y: 0 });
   const lensTargetRef = useRef<{ x: number; y: number } | null>(null);
   const lensPositionRef = useRef<{ x: number; y: number } | null>(null);
+  const distanceCursorRef = useRef<{ x: number; y: number } | null>(null);
+  const motionRef = useRef({ ...NEUTRAL_PLASMA_MOTION });
   const [showIcon, setShowIcon] = useState(false);
   const [shapeMounted, setShapeMounted] = useState(false);
   const [shapeReady, setShapeReady] = useState(false);
@@ -176,8 +181,32 @@ export const PlasmaLanding = ({
     lensPositionRef.current = position;
     handle.setLensScale(PLASMA_LANDING_LENS_SCALE);
     handle.setCursor(position.x, position.y);
-    handle.renderPlasma();
-  }, [reducedMotion]);
+    const motion =
+      bounds && !showIcon && !reducedMotion && isPlaying
+        ? getDistanceReaction({
+            cursor: distanceCursorRef.current,
+            origin: lensOriginRef.current,
+            bounds,
+            calmRadius: Math.max(12, 100 / cellSize),
+          })
+        : NEUTRAL_PLASMA_MOTION;
+    const smoothed = motionRef.current;
+    const reactionDisabled = showIcon || reducedMotion || !isPlaying;
+    for (const key of ["glitchFrequency", "brightness"] as const) {
+      if (reactionDisabled) {
+        smoothed[key] = NEUTRAL_PLASMA_MOTION[key];
+        continue;
+      }
+      smoothed[key] += (motion[key] - smoothed[key]) * 0.12;
+      if (Math.abs(motion[key] - smoothed[key]) < 0.001)
+        smoothed[key] = motion[key];
+    }
+    backdropRef.current?.style.setProperty(
+      "--plasma-brightness",
+      String(smoothed.brightness),
+    );
+    handle.renderPlasma(smoothed);
+  }, [reducedMotion, bounds, showIcon, isPlaying, cellSize]);
   const onBackdropReady = useCallback(
     (canvas: HTMLCanvasElement | null) => {
       if (canvas) renderBackdrop();
@@ -373,8 +402,19 @@ export const PlasmaLanding = ({
       data-searching={showResults}
       data-hero={isShapeMode ? "shape" : "brand"}
       data-shape-mounted={shapeMounted}
+      onPointerMove={(event) => {
+        if (event.pointerType === "touch" || reducedMotion) return;
+        const rect = event.currentTarget.getBoundingClientRect();
+        distanceCursorRef.current = {
+          x: (event.clientX - rect.left) / cellSize,
+          y: (event.clientY - rect.top) / cellSize,
+        };
+      }}
+      onPointerLeave={() => {
+        distanceCursorRef.current = null;
+      }}
     >
-      <div className="landing-backdrop" aria-hidden="true">
+      <div ref={backdropRef} className="landing-backdrop" aria-hidden="true">
         {bounds && (
           <PlasmaCanvas
             ref={canvasRef}

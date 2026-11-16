@@ -12,6 +12,7 @@
   color: #eeece8;
 }
 .landing-backdrop {
+  filter: brightness(var(--plasma-brightness, 1));
   position: absolute;
   inset: 0;
   z-index: -1;

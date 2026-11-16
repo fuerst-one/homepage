@@ -1,4 +1,4 @@
-const IDLE_MS = 10_000;
+const IDLE_MS = 3_000;
 type Timers = {
   schedule: (callback: () => void, delay: number) => number;
   cancel: (id: number) => void;

@@ -45,10 +45,11 @@ import {
   POST_VERTEX_SHADER,
   VERTEX_SHADER,
 } from "./shaders";
-import { getGlitchState, GlitchState } from "./getGlitchState";
+import { createGlitchClock, GlitchState } from "./getGlitchState";
+import { NEUTRAL_PLASMA_MOTION, PlasmaMotion } from "../motion";
 
 export type PlasmaCanvasGLHandle = {
-  renderPlasma: () => void;
+  renderPlasma: (motion?: PlasmaMotion) => void;
   renderLuminance: (
     luminance: Uint8Array,
     width: number,
@@ -145,6 +146,8 @@ type GLState = {
   sceneFbo: WebGLFramebuffer;
   sceneSize: { width: number; height: number };
   timeOrigin: number;
+  glitchClock: ReturnType<typeof createGlitchClock>;
+  glitchFrequency: number;
   reducedMotion: MediaQueryList | null;
   rampLength: number;
   lastRampSignature: string;
@@ -333,6 +336,8 @@ const setupGL = async (
     sceneFbo,
     sceneSize: { width: 0, height: 0 },
     timeOrigin: performance.now(),
+    glitchClock: createGlitchClock(),
+    glitchFrequency: 1,
     reducedMotion:
       typeof window === "undefined"
         ? null
@@ -450,7 +455,10 @@ const ensureSceneTarget = (state: GLState, width: number, height: number) => {
 // Current glitch amplitude/seed for this canvas, gated by reduced motion.
 const currentGlitch = (state: GLState): GlitchState => {
   if (state.reducedMotion?.matches) return { burst: 0, seed: 0 };
-  return getGlitchState((performance.now() - state.timeOrigin) / 1000);
+  return state.glitchClock.sample(
+    (performance.now() - state.timeOrigin) / 1000,
+    state.glitchFrequency,
+  );
 };
 
 const bindAndDraw = (
@@ -620,9 +628,10 @@ export const PlasmaCanvasGL = forwardRef<
   useImperativeHandle(
     ref,
     () => ({
-      renderPlasma: () => {
+      renderPlasma: (motion = NEUTRAL_PLASMA_MOTION) => {
         const state = stateRef.current;
         if (!state) return;
+        state.glitchFrequency = motion.glitchFrequency;
         const { gl, uniforms } = state;
         gl.useProgram(state.program);
         const randomFactor = 0.5 + Math.random();

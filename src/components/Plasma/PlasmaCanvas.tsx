@@ -16,9 +16,10 @@ import { PlasmaCanvasJS } from "./JS/PlasmaCanvasJS";
 import { getAnimationFrame } from "./JS/getAnimationFrame";
 import { getLuminanceFrame } from "./JS/getLuminanceFrame";
 import { PLASMA_COMPLEXITY, PLASMA_SPEED, PLASMA_ZOOM } from "./constants";
+import { PlasmaMotion } from "./motion";
 
 export type PlasmaCanvasHandle = {
-  renderPlasma: () => void;
+  renderPlasma: (motion?: PlasmaMotion) => void;
   renderLuminance: (
     luminance: Uint8Array,
     width: number,
@@ -118,9 +119,9 @@ export const PlasmaCanvas = forwardRef<PlasmaCanvasHandle, PlasmaCanvasProps>(
     useImperativeHandle(
       ref,
       () => ({
-        renderPlasma: () => {
+        renderPlasma: (motion) => {
           if (supportsGL) {
-            glRef.current?.renderPlasma();
+            glRef.current?.renderPlasma(motion);
             return;
           }
           if (supportsGL === false) {
