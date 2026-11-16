@@ -15,8 +15,8 @@ test("German command chips and aliases resolve to localized destinations", () =>
     assert.equal(resolveExplicitCommand(chip.label, "de")?.href, chip.href);
   }
   for (const [query, href] of [
-    ["Zeig mir deine Projekte!", "/de/cv"],
-    ["Über mich", "/de/cv"],
+    ["Zeig mir deine Projekte!", "/de/projects"],
+    ["Über mich", "/de/projects"],
     ["Wie kann ich dich kontaktieren?", "/de/contact"],
     ["Lebenslauf downloaden", "/de/contact"],
     ["Mit dir arbeiten", "/de/hire"],
@@ -48,9 +48,12 @@ test("suggestions resolve to their advertised destinations or controls", () => {
 });
 
 test("natural navigation phrases ignore case and punctuation", () => {
-  assert.equal(resolveCommand("  Show me your PROJECTS! ")?.href, "/cv");
+  assert.equal(resolveCommand("  Show me your PROJECTS! ")?.href, "/projects");
   assert.equal(resolveCommand("How can I get in touch?")?.href, "/contact");
-  assert.equal(resolveCommand("Tell me about your experience")?.href, "/cv");
+  assert.equal(
+    resolveCommand("Tell me about your experience")?.href,
+    "/projects",
+  );
   assert.equal(resolveCommand("Download my CV")?.href, "/contact");
 });
 
@@ -72,14 +75,14 @@ test("unknown and empty messages do not navigate or guess", () => {
   }
 });
 
-test("explore projects opens the experience page and surprise is removed", () => {
+test("explore projects opens the project page and surprise is removed", () => {
   assert.equal(SUGGESTIONS[0].label, "Explore projects");
-  assert.equal(SUGGESTIONS[0].href, "/cv");
+  assert.equal(SUGGESTIONS[0].href, "/projects");
   assert.equal(
     SUGGESTIONS.filter((item) => item.label === "Explore projects").length,
     1,
   );
-  assert.ok(SUGGESTIONS.every((item) => item.href !== "/projects"));
+  assert.ok(SUGGESTIONS.every((item) => item.href !== "/cv"));
   assert.equal(resolveCommand("Surprise me"), null);
 });
 
@@ -87,9 +90,15 @@ test("explicit navigation wins over incidental project search matches", () => {
   for (const suggestion of SUGGESTIONS) {
     assert.equal(resolveExplicitCommand(suggestion.label)?.id, suggestion.id);
   }
-  assert.equal(resolveExplicitCommand("experience")?.href, "/cv");
-  assert.equal(resolveExplicitCommand("Show me your projects!")?.href, "/cv");
-  assert.equal(resolveExplicitCommand("Explore my experience")?.href, "/cv");
+  assert.equal(resolveExplicitCommand("experience")?.href, "/projects");
+  assert.equal(
+    resolveExplicitCommand("Show me your projects!")?.href,
+    "/projects",
+  );
+  assert.equal(
+    resolveExplicitCommand("Explore my experience")?.href,
+    "/projects",
+  );
   assert.equal(resolveExplicitCommand("pause plasma")?.action, "pause");
   assert.equal(resolveExplicitCommand("resume")?.action, "play");
   for (const query of [

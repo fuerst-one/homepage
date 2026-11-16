@@ -227,7 +227,7 @@ export const buildProjectSearchIndex = (
     const pathname = new URL(item.webUrl, "https://fuerst.one").pathname;
     const href = /^\/(?:en\/|de\/)?projects\//.test(pathname)
       ? pathname
-      : "/en/cv";
+      : "/en/projects";
     return {
       id: item.id,
       name: item.name,

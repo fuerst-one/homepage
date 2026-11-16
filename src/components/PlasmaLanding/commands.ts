@@ -14,7 +14,7 @@ const COMMANDS: LandingCommand[] = [
     label: "Explore projects",
     caption: "The people, products, and pixels along the way.",
     shape: 0,
-    href: "/cv",
+    href: "/projects",
   },
   {
     id: "contact",

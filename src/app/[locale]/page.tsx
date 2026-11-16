@@ -70,7 +70,12 @@ export default async function Home({ params }: LocaleParams) {
         </div>
         <div className="home-about-links">
           <nav aria-label="Explore my work" className="flex flex-wrap gap-4">
-            <Button prefetch={false} href="/cv" className="max-w-full" arrow>
+            <Button
+              prefetch={false}
+              href="/projects"
+              className="max-w-full"
+              arrow
+            >
               {locale === "de" ? "Projekte entdecken" : "Explore projects"}
             </Button>
             <Button
@@ -84,7 +89,7 @@ export default async function Home({ params }: LocaleParams) {
           </nav>
           <p className="home-about-elsewhere">
             {locale === "de" ? "Entdecke den " : "Explore the "}
-            <Link prefetch={false} href="/cv" className="underline">
+            <Link prefetch={false} href="/projects" className="underline">
               {locale === "de" ? "interaktiven Lebenslauf" : "interactive CV"}
             </Link>{" "}
             {locale === "de" ? "oder den " : "or the "}

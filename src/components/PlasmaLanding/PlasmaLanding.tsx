@@ -62,7 +62,7 @@ const BRAND_PLACEMENTS = [
     startCol: 0,
     label: {
       label: "FUERST.ONE",
-      href: "/cv",
+      href: "/projects",
       glitch: true,
       style: { fontWeight: 700 },
     },

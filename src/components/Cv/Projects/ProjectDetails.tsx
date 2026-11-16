@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { FaExternalLinkAlt } from "@react-icons/all-files/fa/FaExternalLinkAlt";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 import { FaChartLine } from "@react-icons/all-files/fa/FaChartLine";
 import Link from "@/components/i18n/LocalizedLink";
@@ -97,16 +96,6 @@ export const ProjectDetails = ({
               locale={locale}
             />
           </span>
-          {websiteUrl && (
-            <Link
-              href={websiteUrl}
-              target="_blank"
-              className="inline-flex items-center gap-2 border border-white/30 px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white"
-            >
-              Website
-              <FaExternalLinkAlt className="text-xs" />
-            </Link>
-          )}
           {githubUrl && (
             <Link
               href={githubUrl}
@@ -129,10 +118,26 @@ export const ProjectDetails = ({
             {description}
           </div>
         )}
-        {hasCaseStudy && (
-          <Button href={`${path}/case-study`} prefetch={false} arrow>
-            {locale === "de" ? "Fallstudie lesen" : "Read case study"}
-          </Button>
+        {(hasCaseStudy || websiteUrl) && (
+          <div className="flex flex-wrap items-center gap-3">
+            {hasCaseStudy && (
+              <Button href={`${path}/case-study`} prefetch={false} arrow>
+                {locale === "de"
+                  ? "Vollständige Fallstudie lesen"
+                  : "Read full case study"}
+              </Button>
+            )}
+            {websiteUrl && (
+              <Button
+                href={websiteUrl}
+                target="_blank"
+                className="border-white/30 bg-transparent text-neutral-200 hover:border-white hover:bg-transparent hover:text-white"
+                arrow
+              >
+                {locale === "de" ? "Live-Website öffnen" : "Visit live site"}
+              </Button>
+            )}
+          </div>
         )}
         <ProjectMetaTable
           project={project}

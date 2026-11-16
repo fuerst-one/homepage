@@ -26,7 +26,12 @@ test("both locale homepages render their language, canonical and reciprocal alte
 test("legacy URLs permanently redirect to the matching English page and preserve query filters", async () => {
   for (const [path, destination] of [
     ["/", "/en"],
-    ["/cv?tools=React", "/en/cv?tools=React"],
+    ["/cv?tools=React", "/en/projects?tools=React"],
+    [
+      "/en/cv?id=project-a&focus=project-a",
+      "/en/projects?id=project-a&focus=project-a",
+    ],
+    ["/de/cv?all=1&tools=React", "/de/projects?all=1&tools=React"],
     ["/projects", "/en/projects"],
     ["/contact", "/en/contact"],
   ]) {
@@ -42,6 +47,26 @@ test("legacy URLs permanently redirect to the matching English page and preserve
 test("unsupported locales do not create indexable English copies", async () => {
   assert.equal((await get("/fr/cv")).response.status, 404);
 });
+test("localized projects pages expose the interactive portfolio at their canonical URLs", async () => {
+  for (const locale of ["en", "de"]) {
+    const { response, body } = await get(`/${locale}/projects`);
+    assert.equal(response.status, 200);
+    assert.ok(
+      body.includes(
+        `rel="canonical" href="https://fuerst.one/${locale}/projects"`,
+      ),
+    );
+    for (const language of ["en", "de"])
+      assert.ok(
+        body.includes(
+          `hrefLang="${language}" href="https://fuerst.one/${language}/projects"`,
+        ),
+      );
+    assert.match(body, /<article\b/);
+    assert.ok(body.includes(`href="/${locale}/projects"`));
+    assert.ok(!body.includes(`href="/${locale}/cv"`));
+  }
+});
 test("sitemap advertises only locale-prefixed public pages and both published languages", async () => {
   const { response, body } = await get("/sitemap.xml");
   assert.equal(response.status, 200);
@@ -54,7 +79,9 @@ test("sitemap advertises only locale-prefixed public pages and both published la
     urls.every((url) => /^https:\/\/fuerst\.one\/(en|de)(\/|$)/.test(url)),
   );
   assert.ok(body.includes('hreflang="de"'));
-  assert.ok(!urls.some((url) => /cv\.pdf|pdf-content/.test(url)));
+  assert.ok(
+    !urls.some((url) => /\/cv(?:$|[/?])|cv\.pdf|pdf-content/.test(url)),
+  );
 });
 
 test("German API results retain their locale in detail links and do not expose translation drafts", async () => {

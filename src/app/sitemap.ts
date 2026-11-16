@@ -12,12 +12,11 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getCachedCvProjects();
   return [
-    ...["/", "/cv", "/projects", "/contact", "/hire", "/plasma"].flatMap(
-      (path) =>
-        locales.map((locale) => ({
-          url: `${SITE_URL}${localizedPath(path, locale)}`,
-          alternates: { languages: languageAlternates(path) },
-        })),
+    ...["/", "/projects", "/contact", "/hire", "/plasma"].flatMap((path) =>
+      locales.map((locale) => ({
+        url: `${SITE_URL}${localizedPath(path, locale)}`,
+        alternates: { languages: languageAlternates(path) },
+      })),
     ),
     ...["/legal-notice", "/privacy"].flatMap((path) =>
       locales.map((locale) => ({

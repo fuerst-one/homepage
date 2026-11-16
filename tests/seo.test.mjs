@@ -36,7 +36,7 @@ test("the homepage exposes its identity and navigation without JavaScript", asyn
   const { response, body } = await get("/en");
   assert.equal(response.status, 200);
   assert.match(body, /<h1\b[^>]*>[^<]*Alexander F(?:ue|ü)rst/);
-  for (const path of ["/en/cv", "/en/contact", "/en/plasma"]) {
+  for (const path of ["/en/projects", "/en/contact", "/en/plasma"]) {
     assert.ok(
       body.includes(`href="${path}"`),
       `Missing server-rendered ${path} link`,
@@ -48,13 +48,7 @@ test("the homepage exposes its identity and navigation without JavaScript", asyn
 
 test("public pages have unique titles and matching canonical and social URLs", async () => {
   const titles = new Set();
-  for (const path of [
-    "/en",
-    "/en/cv",
-    "/en/projects",
-    "/en/contact",
-    "/en/plasma",
-  ]) {
+  for (const path of ["/en", "/en/projects", "/en/contact", "/en/plasma"]) {
     const { response, body } = await get(path);
     assert.equal(response.status, 200);
     const title = body.match(/<title>(.*?)<\/title>/s)?.[1];
@@ -99,20 +93,13 @@ test("all public projects have discoverable HTML pages with real content and str
   const { response, body } = await get("/sitemap.xml");
   assert.equal(response.status, 200);
   const urls = [...body.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
-  for (const path of [
-    "/en",
-    "/en/cv",
-    "/en/projects",
-    "/en/contact",
-    "/en/plasma",
-  ]) {
+  for (const path of ["/en", "/en/projects", "/en/contact", "/en/plasma"]) {
     assert.ok(urls.includes(`${canonicalOrigin}${path}`));
   }
   assert.ok(
     urls.every((url) => url.startsWith(canonicalOrigin) && !url.includes("?")),
   );
   assert.ok(!urls.some((url) => /pdf-content|cv\.pdf|\/api\//.test(url)));
-  const cv = await get("/en/cv");
   const directory = await get("/en/projects");
   assert.equal(directory.response.status, 200);
   assert.match(directory.body, /<h1\b/);
@@ -129,10 +116,6 @@ test("all public projects have discoverable HTML pages with real content and str
     );
     const path = new URL(project.webUrl).pathname;
     assert.ok(urls.includes(project.webUrl), `Missing project ${project.name}`);
-    assert.ok(
-      cv.body.includes(`href="${path}"`),
-      `No HTML link to ${project.name}`,
-    );
     assert.ok(
       directory.body.includes(`href="${path}"`),
       `Missing directory link for ${project.name}`,
@@ -168,8 +151,8 @@ test("all public projects have discoverable HTML pages with real content and str
   );
 });
 
-test("the CV describes the same public person in HTML and JSON-LD", async () => {
-  const { body } = await get("/en/cv");
+test("the projects page describes the same public person in HTML and JSON-LD", async () => {
+  const { body } = await get("/en/projects");
   assert.match(body, /<h1\b/);
   const data = structuredData(body);
   const graph = data.flatMap((item) => item["@graph"] || [item]);
@@ -188,7 +171,6 @@ test("AI discovery includes the public profile, HTML pages, and existing API", a
   const { response, body } = await get("/llms.txt");
   assert.equal(response.status, 200);
   for (const path of [
-    "/en/cv",
     "/en/contact",
     "/en/hire",
     "/en/services/product-interfaces",
@@ -214,9 +196,12 @@ test("retired print content is gone and excluded from indexing", async () => {
 
 test("legacy portfolio URLs redirect to matching current content", async () => {
   for (const [path, destination] of [
+    ["/cv", "/en/projects"],
+    ["/en/cv", "/en/projects"],
+    ["/de/cv", "/de/projects"],
     ["/contact", "/en/contact"],
     ["/team-up", "/en/contact"],
-    ["/learn-more", "/en/cv"],
+    ["/learn-more", "/en/projects"],
     ["/privacy-policy", "/en/privacy"],
     ["/legal-notice", "/en/legal-notice"],
   ]) {

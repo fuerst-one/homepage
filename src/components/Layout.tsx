@@ -93,8 +93,8 @@ export async function Layout({
             aria-label={locale === "de" ? "Hauptnavigation" : "Main navigation"}
             className="flex flex-wrap gap-6 text-xs uppercase tracking-[0.2em] [&>a]:flex [&>a]:items-center"
           >
-            <Link href="/cv" className="hover:text-white">
-              CV
+            <Link href="/projects" className="hover:text-white">
+              {locale === "de" ? "Projekte" : "Projects"}
             </Link>
             <Link href="/contact" className="hover:text-white">
               {locale === "de" ? "Kontakt" : "Contact"}

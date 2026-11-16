@@ -19,7 +19,9 @@ const nextConfig = {
     return [
       ...[
         ["/", "/en"],
-        ["/cv", "/en/cv"],
+        ["/cv", "/en/projects"],
+        ["/en/cv", "/en/projects"],
+        ["/de/cv", "/de/projects"],
         ["/projects", "/en/projects"],
         ["/contact", "/en/contact"],
         ["/hire", "/en/hire"],
@@ -35,7 +37,13 @@ const nextConfig = {
         permanent: true,
       })),
       { source: "/", destination: "/en", permanent: true },
-      ...["cv", "projects", "contact", "hire", "plasma"].map((page) => ({
+      { source: "/cv", destination: "/en/projects", permanent: true },
+      {
+        source: "/:locale(en|de)/cv",
+        destination: "/:locale/projects",
+        permanent: true,
+      },
+      ...["projects", "contact", "hire", "plasma"].map((page) => ({
         source: `/${page}`,
         destination: `/en/${page}`,
         permanent: true,
@@ -72,7 +80,7 @@ const nextConfig = {
         permanent: true,
       },
       ...[
-        ["/learn-more", "/cv"],
+        ["/learn-more", "/projects"],
         ["/team-up", "/contact"],
         ["/hire-me", "/contact"],
         ["/privacy-policy", "/privacy"],

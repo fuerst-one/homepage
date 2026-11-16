@@ -13,8 +13,8 @@ test("language links change the prefix while preserving filters and anchors", ()
   const { localizedPath } = getI18n();
   assert.equal(localizedPath("/", "en"), "/en");
   assert.equal(
-    localizedPath("/en/cv?tools=React#projects", "de"),
-    "/de/cv?tools=React#projects",
+    localizedPath("/en/projects?tools=React#projects", "de"),
+    "/de/projects?tools=React#projects",
   );
   assert.equal(
     localizedPath("/de/projects/konfig", "en"),
@@ -67,7 +67,7 @@ test("German landing commands resolve to localized destinations", () => {
   );
   assert.equal(
     commands.resolveExplicitCommand("Projekte", "de")?.href,
-    "/de/cv",
+    "/de/projects",
   );
   assert.equal(
     commands.resolveExplicitCommand("Lebenslauf herunterladen", "de")?.href,
