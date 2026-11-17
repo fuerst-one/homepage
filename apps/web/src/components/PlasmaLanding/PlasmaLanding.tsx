@@ -106,7 +106,12 @@ export const PlasmaLanding = ({
   const submittedTurn = useRef(0);
   const suppressChatResume = useRef(false);
   const [bounds, setBounds] = useState<FrameBounds | null>(null);
-  const [brandOffset, setBrandOffset] = useState({ x: 0, y: 0 });
+  const [backdropReady, setBackdropReady] = useState(false);
+  const [introStep, setIntroStep] = useState(0);
+  const [brandOffset, setBrandOffset] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [interactionTarget, setInteractionTarget] =
     useState<HTMLDivElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -222,6 +227,32 @@ export const PlasmaLanding = ({
       : "";
   const paused = !isPlaying;
   const isShapeMode = showIcon && shapeReady;
+  const brandPositioned = brandOffset !== null;
+  const brandRevealed = introStep >= 1;
+  const uiRevealed = introStep >= 2;
+  useEffect(() => {
+    if (!backdropReady || !brandPositioned) return;
+    if (reducedMotion) {
+      setIntroStep(2);
+      return;
+    }
+    const brandTimer = window.setTimeout(
+      () => setIntroStep((step) => Math.max(step, 1)),
+      180,
+    );
+    const uiTimer = window.setTimeout(() => setIntroStep(2), 760);
+    return () => {
+      window.clearTimeout(brandTimer);
+      window.clearTimeout(uiTimer);
+    };
+  }, [backdropReady, brandPositioned, reducedMotion]);
+  useEffect(() => {
+    if (backdropReady) return;
+    // Decorative graphics must never indefinitely block navigation or search.
+    const timer = window.setTimeout(() => setBackdropReady(true), 4000);
+    return () => window.clearTimeout(timer);
+  }, [backdropReady]);
+  const onBackdropFirstFrame = useCallback(() => setBackdropReady(true), []);
   const renderBackdrop = useCallback(() => {
     const handle = canvasRef.current;
     if (!handle) return;
@@ -552,6 +583,15 @@ export const PlasmaLanding = ({
       data-chat={chatMode}
       data-hero={isShapeMode ? "shape" : "brand"}
       data-shape-mounted={shapeMounted}
+      data-intro={
+        uiRevealed
+          ? "ready"
+          : brandRevealed
+            ? "brand"
+            : backdropReady
+              ? "background"
+              : "loading"
+      }
       onPointerMove={(event) => {
         if (event.pointerType === "touch" || reducedMotion) return;
         const rect = event.currentTarget.getBoundingClientRect();
@@ -582,11 +622,17 @@ export const PlasmaLanding = ({
           }}
         />
       )}
-      <div ref={backdropRef} className="landing-backdrop" aria-hidden="true">
+      <div
+        ref={backdropRef}
+        className="landing-backdrop"
+        data-ready={backdropReady}
+        aria-hidden="true"
+      >
         {bounds && (
           <PlasmaCanvas
             ref={canvasRef}
             onCanvasReady={onBackdropReady}
+            onFirstFrame={onBackdropFirstFrame}
             ramp={LANDING_CHARACTERS}
             cellSize={cellSize}
             cellWidth={cellSize}
@@ -597,7 +643,7 @@ export const PlasmaLanding = ({
           />
         )}
       </div>
-      <header className="landing-header">
+      <header className="landing-header" inert={!uiRevealed}>
         <Link
           href="/"
           prefetch={false}
@@ -672,14 +718,16 @@ export const PlasmaLanding = ({
         >
           <div
             className="landing-brand"
-            aria-hidden={isShapeMode}
-            inert={isShapeMode}
+            data-positioned={brandPositioned && brandRevealed}
+            aria-hidden={isShapeMode || !brandRevealed}
+            inert={isShapeMode || !brandRevealed}
           >
             <div
               style={{
                 position: "absolute",
-                left: brandOffset.x,
-                top: brandOffset.y,
+                left: brandOffset?.x ?? "50%",
+                top: brandOffset?.y ?? "50%",
+                transform: brandOffset ? undefined : "translate(-50%, -50%)",
                 width: cellSize * BRAND_PLACEMENTS[0].label.label.length,
                 height: cellSize,
               }}
@@ -744,6 +792,7 @@ export const PlasmaLanding = ({
         </div>
         <div
           className="landing-console"
+          inert={!uiRevealed}
           onKeyDown={(event) => {
             if (event.key === "Escape" && !event.defaultPrevented) {
               event.preventDefault();

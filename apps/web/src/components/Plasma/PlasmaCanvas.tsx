@@ -61,6 +61,8 @@ export type PlasmaCanvasProps = {
    * consumers binding pointer interactions silently degrade there.
    */
   onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+  /** Runs once after the renderer has drawn its first frame. */
+  onFirstFrame?: () => void;
 };
 
 export const PlasmaCanvas = forwardRef<PlasmaCanvasHandle, PlasmaCanvasProps>(
@@ -78,6 +80,7 @@ export const PlasmaCanvas = forwardRef<PlasmaCanvasHandle, PlasmaCanvasProps>(
       postProcess,
       onTextFrame,
       onCanvasReady,
+      onFirstFrame,
     } = props;
     const resolvedCellWidth = cellWidth ?? cellSize;
     const cellAspect = resolvedCellWidth / cellSize;
@@ -115,6 +118,10 @@ export const PlasmaCanvas = forwardRef<PlasmaCanvasHandle, PlasmaCanvasProps>(
       },
       [ramp],
     );
+
+    useEffect(() => {
+      if (supportsGL === false) renderPlasmaJS();
+    }, [supportsGL, renderPlasmaJS]);
 
     useImperativeHandle(
       ref,
@@ -172,6 +179,7 @@ export const PlasmaCanvas = forwardRef<PlasmaCanvasHandle, PlasmaCanvasProps>(
           style={style}
           postProcess={postProcess}
           onCanvasReady={onCanvasReady}
+          onFirstFrame={onFirstFrame}
         />
       );
     }
@@ -184,6 +192,7 @@ export const PlasmaCanvas = forwardRef<PlasmaCanvasHandle, PlasmaCanvasProps>(
         fontPx={fontPx}
         className={className}
         style={style}
+        onFirstFrame={onFirstFrame}
       />
     );
   },

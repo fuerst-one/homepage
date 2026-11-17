@@ -536,7 +536,7 @@
   .landing .landing-stage,
   .landing[data-searching="true"] .landing-stage {
     position: absolute;
-    top: calc(var(--landing-view) / 3);
+    top: calc(var(--landing-view) / 3 + 24px);
     left: 50%;
     width: min(1100px, calc(100% - 64px));
     height: clamp(300px, calc(var(--landing-view) * 0.56), 640px);
@@ -546,12 +546,12 @@
   }
   .landing-eyebrow {
     position: absolute;
-    top: calc(var(--landing-view) * 0.72 - 66px);
+    top: calc(var(--landing-view) * 0.72 - 58px);
   }
   .landing .landing-intro,
   .landing[data-searching="true"] .landing-intro {
     position: absolute;
-    top: calc(var(--landing-view) * 0.72 - 44px);
+    top: calc(var(--landing-view) * 0.72 - 36px);
     width: min(640px, calc(100% - 64px));
     margin: 0;
   }
@@ -590,6 +590,21 @@
 .landing[data-hero="shape"] .landing-backdrop {
   opacity: 0.22;
 }
+.landing .landing-backdrop[data-ready="false"] {
+  opacity: 0;
+}
+.landing-header,
+.landing-intro,
+.landing-console {
+  transition: opacity 650ms ease;
+}
+.landing:not([data-intro="ready"]) .landing-header,
+.landing:not([data-intro="ready"]) .landing-eyebrow,
+.landing:not([data-intro="ready"]) .landing-intro,
+.landing:not([data-intro="ready"]) .landing-console {
+  opacity: 0;
+  visibility: hidden;
+}
 .landing-header,
 .landing-eyebrow,
 .landing-intro,
@@ -626,6 +641,10 @@
   transform: scale(1);
   z-index: 1;
 }
+.landing-brand[data-positioned="false"] {
+  opacity: 0;
+  visibility: hidden;
+}
 .landing-sculpture {
   opacity: 0;
   transform: translateY(16px) scale(0.92);
@@ -658,7 +677,9 @@
 
 .landing-eyebrow {
   padding: 4px 8px;
-  transition: background-color 650ms ease;
+  transition:
+    background-color 650ms ease,
+    opacity 650ms ease;
 }
 .landing[data-hero="brand"] .landing-eyebrow {
   background: #050505d9;

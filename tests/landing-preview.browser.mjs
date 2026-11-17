@@ -32,6 +32,7 @@ test("rapid keyboard navigation updates rendered geometry before navigation stop
       timeout: 90000,
     });
     await page.waitForSelector(".landing-backdrop canvas");
+    await page.waitForSelector("#landing-command", { visible: true });
     await page.type("#landing-command", "ai");
     await page.waitForSelector(
       ".landing-discovery-panel a.landing-search-result",

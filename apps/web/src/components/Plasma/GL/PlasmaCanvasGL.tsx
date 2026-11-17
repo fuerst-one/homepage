@@ -3,6 +3,7 @@
 import {
   CSSProperties,
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -88,6 +89,7 @@ export type PlasmaCanvasGLProps = {
    * function) — the effect's cleanup re-fires whenever the prop changes.
    */
   onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+  onFirstFrame?: () => void;
 };
 
 const BG_DEFAULT: [number, number, number] = [0, 0, 0];
@@ -543,12 +545,19 @@ export const PlasmaCanvasGL = forwardRef<
     style,
     postProcess = false,
     onCanvasReady,
+    onFirstFrame,
   },
   ref,
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stateRef = useRef<GLState | null>(null);
   const [initialized, setInitialized] = useState(false);
+  const hasDrawn = useRef(false);
+  const notifyFirstFrame = useCallback(() => {
+    if (hasDrawn.current) return;
+    hasDrawn.current = true;
+    onFirstFrame?.();
+  }, [onFirstFrame]);
 
   const widthPx = gridWidth * cellWidth;
   const heightPx = gridHeight * cellSize;
@@ -696,6 +705,7 @@ export const PlasmaCanvasGL = forwardRef<
           bgColor,
           postProcess,
         );
+        notifyFirstFrame();
       },
       renderLuminance: (luminance, width, height) => {
         const state = stateRef.current;
@@ -714,6 +724,7 @@ export const PlasmaCanvasGL = forwardRef<
           bgColor,
           postProcess,
         );
+        notifyFirstFrame();
       },
       setCursor: (cellX, cellY) => {
         const state = stateRef.current;
@@ -765,6 +776,7 @@ export const PlasmaCanvasGL = forwardRef<
       cellSize,
       atlasScale,
       postProcess,
+      notifyFirstFrame,
     ],
   );
 

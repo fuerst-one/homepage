@@ -12,6 +12,7 @@ type PlasmaCanvasJSProps = {
   fontFamily?: string;
   className?: string;
   style?: CSSProperties;
+  onFirstFrame?: () => void;
 };
 
 const DEFAULT_FONT_FAMILY = "Menlo, var(--font-plex), monospace";
@@ -29,10 +30,12 @@ export const PlasmaCanvasJS = ({
   fontFamily = DEFAULT_FONT_FAMILY,
   className,
   style,
+  onFirstFrame,
 }: PlasmaCanvasJSProps) => {
   const cw = cellWidth ?? cellSize;
   const ch = cellSize;
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hasDrawn = useRef(false);
   const [fontReady, setFontReady] = useState(isFontsApiReady);
 
   useEffect(() => {
@@ -105,6 +108,10 @@ export const PlasmaCanvasJS = ({
         ctx.fillText(glyph.character, x * cw + cw / 2, cy);
       }
     }
+    if (!hasDrawn.current) {
+      hasDrawn.current = true;
+      onFirstFrame?.();
+    }
   }, [
     frame,
     cw,
@@ -115,6 +122,7 @@ export const PlasmaCanvasJS = ({
     fontReady,
     widthPx,
     heightPx,
+    onFirstFrame,
   ]);
 
   return (
