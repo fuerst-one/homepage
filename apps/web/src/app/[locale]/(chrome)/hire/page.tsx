@@ -4,6 +4,7 @@ import { getLocale } from "../../../../server/i18n/getLocale";
 import { getSiteCopy } from "../../../../server/content/getSiteCopy";
 import { type LocaleParams } from "@homepage/content/i18n";
 import { Layout } from "../../../../components/Layout";
+import { PageEyebrow } from "../../../../components/PageEyebrow";
 import { IconLink } from "../../../../components/IconLink";
 import { Button } from "../../../../components/Button";
 import { FaEnvelope } from "@react-icons/all-files/fa/FaEnvelope";
@@ -29,12 +30,12 @@ export default async function HirePage({ params }: LocaleParams) {
   return (
     <Layout locale={locale}>
       <div className="space-y-10">
-        <header className="space-y-4">
-          <p className="text-[0.65rem] uppercase tracking-[0.25em] text-neutral-400">
+        <header className="space-y-3">
+          <PageEyebrow>
             {locale === "de"
               ? "Gute Arbeit beginnt mit einem Gespräch"
               : "Good work starts with a conversation"}
-          </p>
+          </PageEyebrow>
           <h1 className="text-3xl font-semibold tracking-tight text-white">
             {locale === "de" ? "Zusammenarbeiten" : "Work with me"}
           </h1>

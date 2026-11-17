@@ -2,6 +2,7 @@ import { getLocale } from "../../../../server/i18n/getLocale";
 import { getSiteCopy } from "../../../../server/content/getSiteCopy";
 import { localizedPath, type LocaleParams } from "@homepage/content/i18n";
 import { Layout } from "../../../../components/Layout";
+import { PageEyebrow } from "../../../../components/PageEyebrow";
 import { ProjectsClientView } from "../../../../components/Cv/Projects/ProjectsClientView";
 import { ProjectAnalysisTabs } from "../../../../components/Cv/Projects/ProjectAnalysisTabs";
 import { LogoMarquee } from "../../../../components/Cv/Projects/LogoMarquee";
@@ -49,6 +50,7 @@ export default async function ProjectsPage({ params }: LocaleParams) {
   return (
     <Layout
       locale={locale}
+      sidebarPositionOnMobile="after"
       sidebarContent={
         <>
           <Intro locale={locale} text={copy["cv.sidebar"]} />
@@ -59,6 +61,11 @@ export default async function ProjectsPage({ params }: LocaleParams) {
       sidebarAfter={<ProjectAnalysisTabs projects={projects} />}
     >
       <header className="space-y-3">
+        <PageEyebrow>
+          {locale === "de"
+            ? "Von der ersten Idee bis zum Einsatz"
+            : "From first idea to real-world use"}
+        </PageEyebrow>
         <h1 className="text-3xl font-semibold text-white">
           {copy["cv.heading"]}
         </h1>

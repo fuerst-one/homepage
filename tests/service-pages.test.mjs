@@ -26,6 +26,19 @@ for (const offer of offers) {
       assert.equal(response.status, 200);
       const html = await response.text();
       assert.ok(html.includes(offer[lang]));
+      const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/)?.[1];
+      assert.ok(article);
+      assert.doesNotMatch(
+        article,
+        /<nav\b[^>]*aria-label="(?:Page language|Seitensprache)"/,
+        "The shared page header provides language navigation",
+      );
+      const hero = article.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)?.[1];
+      const preHeadline = hero?.match(/<p\b[^>]*>([\s\S]*?)<\/p>/)?.[1];
+      assert.ok(
+        preHeadline?.includes(offer[lang]),
+        "Service label introduces its headline",
+      );
       assert.match(html, new RegExp(`<html[^>]*lang="${lang}"`));
       assert.ok(
         html.includes(`rel="canonical" href="https://fuerst.one${path}"`),

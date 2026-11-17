@@ -3,6 +3,7 @@ import { type LocaleParams } from "@homepage/content/i18n";
 import { pageMetadata } from "../../../../lib/seo";
 import Link from "../../../../components/i18n/LocalizedLink";
 import { Layout } from "../../../../components/Layout";
+import { PageEyebrow } from "../../../../components/PageEyebrow";
 import { EnquiryFlow } from "../../../../components/Enquiry/EnquiryFlow";
 import {
   ENQUIRY_INTENTS,
@@ -51,6 +52,11 @@ export default async function ContactPage({
     <Layout locale={locale}>
       <div className="space-y-10">
         <header className="space-y-3">
+          <PageEyebrow>
+            {locale === "de"
+              ? "Erzähl mir, was du vorhast"
+              : "Tell me what you have in mind"}
+          </PageEyebrow>
           <h1 className="text-3xl font-semibold tracking-tight text-white">
             {locale === "de"
               ? "Lass uns über dein Vorhaben sprechen"

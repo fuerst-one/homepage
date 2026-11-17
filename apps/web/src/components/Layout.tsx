@@ -10,20 +10,57 @@ import "./content-header.css";
 export async function Layout({
   sidebarContent,
   sidebarAfter,
+  sidebarPositionOnMobile = "before",
   children,
   locale = "en",
   availableLocales,
 }: {
   sidebarContent?: ReactNode;
   sidebarAfter?: ReactNode;
+  sidebarPositionOnMobile?: "before" | "after";
   locale?: Locale;
   availableLocales?: Locale[];
   children: ReactNode;
 }) {
   const owner = await getCachedCvOwnerPublic(locale);
+  const sidebarBelowContent = sidebarPositionOnMobile === "after";
+  const sidebarPanel = (
+    <div
+      className={`glass-panel relative space-y-6 border border-white/30 p-8 ${sidebarBelowContent ? "mt-6 lg:order-1 lg:mt-0" : ""}`}
+    >
+      {sidebarContent}
+    </div>
+  );
+  const sidebarExtra = sidebarAfter && (
+    <div className={sidebarBelowContent ? "lg:order-2 lg:mt-6" : "mt-6"}>
+      {sidebarAfter}
+    </div>
+  );
+  const sidebar = (
+    <aside
+      className={`flex flex-col ${sidebarBelowContent ? "lg:col-start-1 lg:row-start-1" : ""}`}
+    >
+      {sidebarBelowContent ? sidebarExtra : sidebarPanel}
+      {sidebarBelowContent ? sidebarPanel : sidebarExtra}
+      <div className="hidden flex-1 lg:order-3 lg:flex">
+        <div className="sticky bottom-4 mt-auto flex w-full justify-end pt-6">
+          <BackToTopButton />
+        </div>
+      </div>
+    </aside>
+  );
+  const mainContent = (
+    <main
+      className={`min-w-0 flex-1 ${sidebarBelowContent ? "lg:col-start-2 lg:row-start-1 lg:pb-24" : "pb-24"}`}
+    >
+      <div className="mx-auto w-full max-w-3xl space-y-12">
+        <Suspense>{children}</Suspense>
+      </div>
+    </main>
+  );
   return (
     <div className="relative z-10 min-h-screen max-w-full">
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col px-2 pb-12 pt-6 sm:px-4 sm:pt-8 lg:px-6 lg:pt-10">
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col px-4 pb-12 pt-6 sm:px-6 sm:pt-8 md:px-8 lg:px-6 lg:pt-10">
         <header className="content-header text-neutral-300">
           <Link href="/" className="content-header-identity">
             <div className="content-header-portrait">
@@ -91,26 +128,12 @@ export async function Layout({
 
         {sidebarContent ? (
           <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-[360px,1fr] lg:gap-8 xl:gap-16">
-            <aside className="flex flex-col">
-              <div className="glass-panel relative space-y-6 border border-white/30 p-8">
-                {sidebarContent}
-              </div>
-              {sidebarAfter && <div className="mt-6">{sidebarAfter}</div>}
-              <div className="hidden flex-1 lg:flex">
-                <div className="sticky bottom-4 mt-auto flex w-full justify-end pt-6">
-                  <BackToTopButton />
-                </div>
-              </div>
-            </aside>
-            <main className="min-w-0 flex-1 pb-24">
-              <div className="mx-auto w-full max-w-3xl space-y-12">
-                <Suspense>{children}</Suspense>
-              </div>
-            </main>
+            {sidebarBelowContent ? mainContent : sidebar}
+            {sidebarBelowContent ? sidebar : mainContent}
           </div>
         ) : (
           <>
-            <main className="min-w-0 flex-1 pb-24 pt-6">
+            <main className="min-w-0 flex-1 pb-24">
               <div className="mx-auto w-full max-w-3xl space-y-12">
                 <Suspense>{children}</Suspense>
               </div>

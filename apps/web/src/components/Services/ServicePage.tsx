@@ -20,7 +20,6 @@ import styles from "./services.module.css";
 
 const ui = {
   en: {
-    language: "Page language",
     work: "Selected work",
     evidence: "Built, not just proposed.",
     cases: "Explore the case study",
@@ -45,11 +44,9 @@ const ui = {
     screenshot: "Product screenshot",
     includes: "What you get",
     jump: "See the work",
-    role: "UX + engineering, together",
     by: "With Alexander Fuerst · Würzburg, Germany",
   },
   de: {
-    language: "Seitensprache",
     work: "Ausgewählte Arbeiten",
     evidence: "Gebaut. Nicht nur vorgeschlagen.",
     cases: "Zum Projekt",
@@ -75,7 +72,6 @@ const ui = {
     screenshot: "Produkt-Screenshot",
     includes: "Das bekommst du",
     jump: "Arbeiten ansehen",
-    role: "UX + Entwicklung, gemeinsam gedacht",
     by: "Mit Alexander Fuerst · Würzburg, Deutschland",
   },
 };
@@ -138,24 +134,8 @@ export async function ServicePage({
             __html: serializeJsonLd(serviceSchema(slug, locale)),
           }}
         />
-        <nav aria-label={t.language} className={styles.language}>
-          <span>01 / {copy.label}</span>
-          <div>
-            {(["en", "de"] as const).map((language) => (
-              <Link
-                key={language}
-                href={servicePath(slug, language)}
-                hrefLang={language}
-                lang={language}
-                aria-current={language === locale ? "page" : undefined}
-              >
-                {language === "en" ? "English" : "Deutsch"}
-              </Link>
-            ))}
-          </div>
-        </nav>
-        <header className={styles.hero}>
-          <p className={styles.eyebrow}>{t.role}</p>
+        <header className={`${styles.hero} ${styles.serviceHero}`}>
+          <p className={styles.eyebrow}>01 / {copy.label}</p>
           <h1>{copy.headline}</h1>
           <p className={styles.intro}>{copy.intro}</p>
           <div className={styles.actions}>
