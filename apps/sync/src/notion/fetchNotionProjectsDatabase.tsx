@@ -18,6 +18,7 @@ import {
   UrlField,
 } from "./types";
 import { flattenNotionProperty } from "./utils/flattenNotionObject";
+import { getNotionProjectTitle } from "./projectTitle";
 
 export type NotionProjectRaw = PageObjectResponse & {
   id: string;
@@ -166,6 +167,10 @@ export const fetchNotionProjectsDatabase = async (
         const value = flattenNotionProperty(property);
         notionProject[key] = value as NotionProject[typeof key];
       },
+    );
+    notionProject.name = getNotionProjectTitle(
+      projectRaw.properties,
+      notionProject.name,
     );
     return notionProject;
   });

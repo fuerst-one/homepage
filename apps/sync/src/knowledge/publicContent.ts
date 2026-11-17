@@ -2,6 +2,7 @@ import { readPublicProjectCase } from "@homepage/content/projectCase";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import type { Locale } from "@homepage/content/i18n";
 import { hasGermanTranslation } from "@homepage/content/localizeContent";
+import { getNotionProjectTitle } from "../notion/projectTitle";
 
 export type KnowledgeSeed = {
   id: string;
@@ -38,7 +39,7 @@ export function publicKnowledgeSeeds(
     return [];
   const profile = readPublicProjectCase(page);
   if (!profile) return [];
-  const title = rich(p.Name).slice(0, 200);
+  const title = getNotionProjectTitle(p).slice(0, 200);
   if (!title) return [];
   const seeds: KnowledgeSeed[] = [];
   for (const locale of ["en", "de"] as const) {
