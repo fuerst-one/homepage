@@ -54,7 +54,7 @@ for (const locale of ["en", "de"]) {
         document
           .querySelector("aside [role=region]")
           ?.getAttribute("aria-label")
-          .endsWith(": Graph"),
+          .endsWith(": 3D Scatter"),
       );
       await page.waitForSelector("aside [role=region] canvas");
       assert.ok(await page.$("main .filter-active-summary"));
