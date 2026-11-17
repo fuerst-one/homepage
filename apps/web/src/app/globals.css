@@ -5,8 +5,8 @@
 @layer components {
   .glass-panel {
     background: transparent;
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
   }
 
   /* Nested cards share their outer panel's blur instead of blurring it again. */

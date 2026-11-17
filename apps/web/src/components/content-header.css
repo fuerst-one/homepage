@@ -1,0 +1,216 @@
+.content-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "identity identity"
+    "availability languages"
+    "navigation navigation";
+  column-gap: 12px;
+  row-gap: 12px;
+  margin-bottom: 40px;
+}
+
+.content-header-identity {
+  grid-area: identity;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.content-header-portrait {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  border: 1px solid #ffffff4d;
+  background: #000;
+  padding: 3px;
+}
+
+.content-header-person {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.content-header-brand {
+  color: #a3a3a3;
+  font-size: 0.625rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.content-header-name {
+  color: #fff;
+  font-size: clamp(1.125rem, 5vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.content-header-role {
+  color: #d4d4d4;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+}
+
+.content-header-availability {
+  grid-area: availability;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  justify-self: start;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-underline-offset: 4px;
+}
+
+.content-header-availability:hover {
+  text-decoration: underline;
+}
+
+.content-header-languages {
+  grid-area: languages;
+  align-self: center;
+}
+
+.content-header-languages nav {
+  gap: 8px;
+}
+
+.content-header-languages a {
+  justify-content: center;
+  min-height: 36px;
+  min-width: 32px;
+  font-size: 0.6875rem;
+}
+
+.content-header-navigation {
+  grid-area: navigation;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid #ffffff33;
+  border-bottom: 1px solid #ffffff33;
+  padding: 0;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+}
+
+.content-header-primary,
+.content-header-services {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr);
+}
+
+.content-header-services {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid #ffffff1a;
+  color: #a3a3a3;
+}
+
+.content-header-navigation a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 36px;
+  padding: 4px;
+  text-align: center;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+  transition: background-color 150ms ease;
+}
+
+.content-header-navigation a:focus-visible {
+  background-color: rgb(255 255 255 / 7%);
+}
+
+.content-header-navigation a[aria-current] {
+  background-color: rgb(255 255 255 / 10%);
+  color: #fff;
+  box-shadow: inset 0 -2px 0 rgb(255 255 255 / 60%);
+}
+
+.content-header-navigation a[aria-current]:focus-visible {
+  background-color: rgb(255 255 255 / 14%);
+}
+
+@media (hover: hover) {
+  .content-header-navigation a:hover {
+    background-color: rgb(255 255 255 / 7%);
+  }
+
+  .content-header-navigation a[aria-current]:hover {
+    background-color: rgb(255 255 255 / 14%);
+  }
+}
+
+.content-header-navigation a + a {
+  border-left: 1px solid #ffffff1a;
+}
+
+.content-header a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+@media (min-width: 768px) {
+  .content-header {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "identity availability languages"
+      "navigation navigation navigation";
+    column-gap: 24px;
+    row-gap: 10px;
+  }
+
+  .content-header-portrait {
+    flex-basis: 80px;
+    width: 80px;
+    height: 80px;
+  }
+
+  .content-header-identity {
+    gap: 16px;
+  }
+
+  .content-header-name {
+    font-size: 1.5rem;
+  }
+
+  .content-header-role {
+    font-size: 0.75rem;
+  }
+
+  .content-header-availability {
+    align-self: center;
+    font-size: 0.75rem;
+  }
+
+  .content-header-navigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 10px;
+    font-size: 0.75rem;
+  }
+
+  .content-header-services {
+    border-top: 0;
+    border-left: 1px solid #ffffff1a;
+  }
+
+  .content-header-navigation a {
+    padding: 4px 8px;
+    overflow-wrap: normal;
+  }
+
+  .content-header-navigation a,
+  .content-header-availability,
+  .content-header-languages a {
+    min-height: 44px;
+  }
+}
