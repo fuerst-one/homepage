@@ -21,14 +21,18 @@ function ButtonInner({
 export function Button({
   className,
   arrow,
+  variant = "default",
   children,
   ...props
-}: { arrow?: boolean } & (
+}: { arrow?: boolean; variant?: "default" | "cta" } & (
   | React.ComponentPropsWithoutRef<typeof Link>
   | ({ href?: undefined } & React.ComponentPropsWithoutRef<"button">)
 )) {
   className = cn(
-    "inline-flex flex-none items-center justify-center overflow-hidden border border-white bg-white text-black transition hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+    "inline-flex flex-none items-center justify-center overflow-hidden border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+    variant === "cta"
+      ? "border-primary bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:ring-primary"
+      : "border-white bg-white text-black hover:bg-neutral-200 focus-visible:ring-white",
     className,
   );
 

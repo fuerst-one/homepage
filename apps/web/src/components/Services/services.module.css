@@ -347,13 +347,12 @@
 .closingButton {
   margin-top: 1.75rem;
   max-width: 100%;
-  border-color: #111;
-  background: #111;
-  color: #fff;
+  border-color: hsl(var(--primary-foreground));
   text-align: left;
 }
-.closingButton:hover {
-  background: #333;
+.closingButton:focus-visible {
+  --tw-ring-color: hsl(var(--primary-foreground));
+  --tw-ring-offset-color: #efefeb;
 }
 .closingButton > span {
   padding: 0.85rem 1rem;

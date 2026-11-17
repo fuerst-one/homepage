@@ -86,6 +86,7 @@ export default async function Home({ params }: LocaleParams) {
             <Button
               prefetch={false}
               href="/contact"
+              variant="cta"
               className="max-w-full"
               arrow
             >

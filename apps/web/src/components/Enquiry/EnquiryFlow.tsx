@@ -636,7 +636,7 @@ export function EnquiryFlow({
                   {copy.back}
                 </button>
               )}
-              <Button type="submit" className="max-w-full">
+              <Button type="submit" variant="cta" className="max-w-full">
                 {sending
                   ? copy.sending
                   : standard || step === 5

@@ -8,7 +8,9 @@ export function SiteFooter({ locale = "en" }: { locale?: Locale }) {
     <footer data-site-footer className="glass-panel site-footer">
       <div className="site-footer-inner">
         <p className="site-footer-identity">
-          <span>Fuerst.one · Alexander Fürst</span>
+          <Link href="/" prefetch={false}>
+            Fuerst.one · Alexander Fürst
+          </Link>
           <span className="site-footer-role">UX+AI Engineer</span>
         </p>
         <nav

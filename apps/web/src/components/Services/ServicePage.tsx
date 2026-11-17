@@ -139,7 +139,12 @@ export async function ServicePage({
           <h1>{copy.headline}</h1>
           <p className={styles.intro}>{copy.intro}</p>
           <div className={styles.actions}>
-            <Button href={enquiry} arrow className={styles.primary}>
+            <Button
+              href={enquiry}
+              variant="cta"
+              arrow
+              className={styles.primary}
+            >
               {copy.cta}
             </Button>
             <a href="#work" className={styles.textLink}>
@@ -334,7 +339,12 @@ export async function ServicePage({
           </p>
           <h2 id="enquiry-heading">{copy.closing}</h2>
           <p>{copy.closingText}</p>
-          <Button href={enquiry} arrow className={styles.closingButton}>
+          <Button
+            href={enquiry}
+            variant="cta"
+            arrow
+            className={styles.closingButton}
+          >
             {copy.cta}
           </Button>
           <div className={styles.directEmail}>

@@ -30,6 +30,9 @@
 .site-footer-role {
   color: #aaa7a1;
 }
+.site-footer .site-footer-identity a {
+  min-height: 0;
+}
 .site-footer nav {
   display: flex;
   flex-wrap: wrap;
@@ -44,16 +47,19 @@
   text-underline-offset: 4px;
 }
 .site-footer .site-footer-contact {
-  color: #dfc993;
+  color: hsl(var(--primary));
 }
 .site-footer a:hover,
 .site-footer button:hover {
   color: #fff;
   text-decoration: underline;
 }
+.site-footer .site-footer-contact:hover {
+  color: hsl(var(--primary-hover));
+}
 .site-footer a:focus-visible,
 .site-footer button:focus-visible {
-  outline: 1px solid #dfc993;
+  outline: 1px solid currentColor;
   outline-offset: 4px;
 }
 @media (max-width: 359px) {

@@ -87,7 +87,12 @@ export async function ServiceProductPage({
           <h1>{copy.headline}</h1>
           <p className={styles.intro}>{copy.intro}</p>
           <div className={styles.actions}>
-            <Button href={enquiry} arrow className={styles.primary}>
+            <Button
+              href={enquiry}
+              variant="cta"
+              arrow
+              className={styles.primary}
+            >
               {copy.cta}
             </Button>
             <a href="#deliverables" className={styles.textLink}>
@@ -294,7 +299,12 @@ export async function ServiceProductPage({
               ? "Ein Link oder ein paar Sätze reichen. Du sprichst direkt mit mir; wir klären Ziel und Umfang, bevor du die Arbeit beauftragst."
               : "A link or a few sentences is enough. You will speak directly with me; we establish the goal and scope before you commission the work."}
           </p>
-          <Button href={enquiry} arrow className={styles.closingButton}>
+          <Button
+            href={enquiry}
+            variant="cta"
+            arrow
+            className={styles.closingButton}
+          >
             {copy.cta}
           </Button>
           <div className={styles.directEmail}>

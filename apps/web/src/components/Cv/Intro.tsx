@@ -14,7 +14,12 @@ export function Intro({
         {text ??
           "Building immersive interfaces that fuse rigorous systems with intuitive design."}
       </p>
-      <Button href="/contact" arrow className="mt-8 w-full justify-center">
+      <Button
+        href="/contact"
+        variant="cta"
+        arrow
+        className="mt-8 w-full justify-center"
+      >
         {locale === "de" ? "Kontakt aufnehmen" : "Get in touch"}
       </Button>
       <Contact />

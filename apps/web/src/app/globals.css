@@ -27,7 +27,9 @@
     --popover: 30 7.5% 4%;
     --popover-foreground: 30 7.5% 96%;
 
-    --primary: 30 7.5% 96%;
+    /* Reserved for primary enquiry CTAs; general UI stays neutral. */
+    --primary: 81.21 68.75% 71.76%;
+    --primary-hover: 81.21 68.75% 78%;
     --primary-foreground: 30 7.5% 4%;
 
     --secondary: 30 7.5% 12%;

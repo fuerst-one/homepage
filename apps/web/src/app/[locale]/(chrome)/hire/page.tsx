@@ -55,6 +55,7 @@ export default async function HirePage({ params }: LocaleParams) {
             </h2>
             <Button
               href={enquiryPath({ source: "hire", intent: "explore" }, locale)}
+              variant="cta"
               arrow
             >
               {locale === "de" ? "Projektanfrage" : "Project enquiry"}
@@ -143,7 +144,7 @@ export default async function HirePage({ params }: LocaleParams) {
             >
               alexander@fuerst.one
             </IconLink>
-            <Button href="/contact" arrow>
+            <Button href="/contact" variant="cta" arrow>
               {locale === "de" ? "Kontakt aufnehmen" : "Get in touch"}
             </Button>
           </div>

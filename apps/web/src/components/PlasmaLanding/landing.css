@@ -192,9 +192,10 @@
   flex-shrink: 0;
   width: 36px;
   height: 36px;
-  background: #eeece8;
-  color: #111;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   transition:
+    background 180ms,
     opacity 180ms,
     transform 180ms;
 }
@@ -213,7 +214,11 @@
   }
 }
 .landing-submit:not(:disabled):hover {
+  background: hsl(var(--primary-hover));
   transform: translateY(-2px);
+}
+.landing .landing-submit:focus-visible {
+  outline-color: hsl(var(--primary));
 }
 .landing-suggestions {
   display: flex;
