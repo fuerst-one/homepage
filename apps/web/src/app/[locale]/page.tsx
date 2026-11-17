@@ -103,17 +103,6 @@ export default async function Home({ params }: LocaleParams) {
                 ? "interaktiven Plasma-Spielplatz"
                 : "interactive plasma playground"}
             </Link>
-            {locale === "de" ? ", finde mich auf " : ", find me on "}
-            <a href="https://github.com/fuerst-one" className="underline">
-              GitHub
-            </a>{" "}
-            {locale === "de" ? "oder " : "or "}
-            <a
-              href="https://www.linkedin.com/in/fuerst-one/"
-              className="underline"
-            >
-              LinkedIn
-            </a>
             .
           </p>
         </div>

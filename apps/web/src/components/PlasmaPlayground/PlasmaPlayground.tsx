@@ -11,7 +11,6 @@ import {
 import { useInterval } from "../Plasma/useInterval";
 import { getIsReducedMotion } from "../Plasma/getIsReducedMotion";
 import { KnobDropdown } from "./KnobDropdown";
-import { LegalFooter } from "../Plasma/LegalFooter";
 import { useLocale } from "../i18n/LocaleProvider";
 import {
   PLAYGROUND_REMEMBER_KEY,
@@ -819,7 +818,6 @@ export const PlasmaPlayground = () => {
           ? "Darstellung auf diesem Gerät merken (freiwillig)"
           : "Remember visual settings on this device (optional)"}
       </label>
-      <LegalFooter />
       <video
         ref={videoRef}
         playsInline

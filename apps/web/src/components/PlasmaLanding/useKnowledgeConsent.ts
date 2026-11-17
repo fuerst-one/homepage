@@ -5,6 +5,7 @@ import {
   KNOWLEDGE_AVAILABILITY_KEY,
   KNOWLEDGE_CONSENT_KEY,
   KNOWLEDGE_CONSENT_VERSION,
+  KNOWLEDGE_CONSENT_CHANGE_EVENT,
   parseKnowledgeConsent,
   parseKnowledgeDecision,
   type KnowledgeDecision,
@@ -62,8 +63,17 @@ export function useKnowledgeConsent(enabled: boolean | undefined) {
       if (!saved?.allowed) clearChat();
       setReceipt(saved);
     };
+    const changedHere = (event: Event) => {
+      const saved = parseKnowledgeDecision((event as CustomEvent).detail);
+      if (!saved?.allowed) clearChat();
+      setReceipt(saved);
+    };
     window.addEventListener("storage", changed);
-    return () => window.removeEventListener("storage", changed);
+    window.addEventListener(KNOWLEDGE_CONSENT_CHANGE_EVENT, changedHere);
+    return () => {
+      window.removeEventListener("storage", changed);
+      window.removeEventListener(KNOWLEDGE_CONSENT_CHANGE_EVENT, changedHere);
+    };
   }, [enabled, forget, clearChat]);
   useEffect(() => {
     if (!receipt) return;
@@ -81,7 +91,8 @@ export function useKnowledgeConsent(enabled: boolean | undefined) {
     };
   }, [receipt, forget]);
   const choose = (allowed: boolean, remember = false) => {
-    if (!enabled) return;
+    // Withdrawal must also work in the global settings panel without AI admission.
+    if (allowed && !enabled) return;
     if (!allowed) clearChat();
     const next = {
       version: KNOWLEDGE_CONSENT_VERSION,
@@ -95,6 +106,9 @@ export function useKnowledgeConsent(enabled: boolean | undefined) {
     } catch {
       /* Choice lasts only on this page when storage is blocked. */
     }
+    window.dispatchEvent(
+      new CustomEvent(KNOWLEDGE_CONSENT_CHANGE_EVENT, { detail: next }),
+    );
   };
   return {
     receipt: parseKnowledgeConsent(receipt),

@@ -2,7 +2,7 @@
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr;
   grid-template-columns: minmax(0, 1fr);
   width: 100%;
   min-height: 680px;
@@ -48,8 +48,7 @@
   height: 32px;
   border: 1px solid #ffffff24;
 }
-.landing-header-actions a:hover,
-.landing-footer a:hover {
+.landing-header-actions a:hover {
   color: white;
 }
 .landing-content {
@@ -312,21 +311,6 @@
   line-height: 1.6;
   text-align: center;
 }
-.landing-footer {
-  padding: 32px 20px 18px;
-}
-.landing-footer nav {
-  display: flex;
-  justify-content: center;
-  gap: 26px;
-  margin-bottom: 18px;
-  font-size: 10px;
-  color: #aaa7a1;
-}
-.landing-footer footer {
-  font-size: 8px;
-  opacity: 0.75;
-}
 .landing a:focus-visible,
 .landing button:focus-visible {
   outline: 1px solid #eeece8;
@@ -392,18 +376,6 @@
   .landing-input-box input {
     font-size: 16px;
     letter-spacing: -0.06em;
-  }
-  .landing-footer {
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-  }
-  .landing-footer nav {
-    gap: 24px;
-    margin-bottom: 16px;
-  }
-  .landing-footer footer {
-    gap: 8px;
-    font-size: 7px;
-    letter-spacing: 0;
   }
   .landing-chip {
     min-height: 44px;
@@ -624,8 +596,7 @@
 .landing-stage-index,
 .landing-stage-hint,
 .landing-console-meta,
-.landing-status,
-.landing-footer {
+.landing-status {
   text-shadow:
     0 1px 2px #000,
     0 0 5px #000,

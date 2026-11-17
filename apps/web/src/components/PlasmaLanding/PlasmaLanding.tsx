@@ -24,7 +24,6 @@ import {
   PLASMA_LANDING_LENS_SCALE,
 } from "../Plasma/constants";
 import { PlasmaCanvas, PlasmaCanvasHandle } from "../Plasma/PlasmaCanvas";
-import { LegalFooter } from "../Plasma/LegalFooter";
 import { LabelOverlay } from "../Plasma/LabelOverlay";
 import { getLabelPlacementAtPoint } from "../Plasma/getLabelGroupPlacements";
 import { useResponsiveMetrics } from "../Plasma/useResponsiveMetrics";
@@ -1088,16 +1087,6 @@ export const PlasmaLanding = ({
             {progress || status}
           </p>
         </div>
-      </div>
-      <div className="landing-footer">
-        <nav id="landing-contact" tabIndex={-1} aria-label="Social links">
-          <a href="https://github.com/fuerst-one">GitHub ↗</a>
-          <a href="https://www.linkedin.com/in/fuerst-one/">LinkedIn ↗</a>
-          <Link href="/contact" prefetch={false}>
-            {de ? "Hallo sagen ↗" : "Say hello ↗"}
-          </Link>
-        </nav>
-        <LegalFooter />
       </div>
     </div>
   );

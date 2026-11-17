@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { LocaleProvider } from "../../components/i18n/LocaleProvider";
 import { isLocale, locales } from "@homepage/content/i18n";
 import { SITE_DESCRIPTION, SITE_URL } from "../../lib/seo";
+import { SiteFooter } from "../../components/SiteFooter";
 
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -51,13 +52,14 @@ export default async function RootLayout({
     <html lang={locale}>
       <body
         className={cn(
-          "bg-background text-foreground relative flex min-h-full flex-col antialiased",
+          "bg-background text-foreground relative flex min-h-svh flex-col antialiased",
           plexMono.variable,
         )}
         style={{ fontFamily: "Menlo, var(--font-plex), monospace" }}
       >
         <LocaleProvider key={locale} locale={locale}>
           {children}
+          <SiteFooter locale={locale} />
         </LocaleProvider>
       </body>
     </html>

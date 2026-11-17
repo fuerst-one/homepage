@@ -2,7 +2,6 @@ import { ReactNode, Suspense } from "react";
 import Link from "./i18n/LocalizedLink";
 import { LanguageSwitcher } from "./i18n/LanguageSwitcher";
 import type { Locale } from "@homepage/content/i18n";
-import { SiteFooter } from "./SiteFooter";
 import { BackToTopButton } from "./BackToTopButton";
 import { getCachedCvOwnerPublic } from "../server/content/getCachedCvOwner";
 
@@ -119,13 +118,10 @@ export async function Layout({
         </header>
 
         {sidebarContent ? (
-          <div className="grid grid-cols-1 lg:grid-cols-[360px,1fr] lg:gap-8 xl:gap-16">
+          <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-[360px,1fr] lg:gap-8 xl:gap-16">
             <aside className="flex flex-col">
               <div className="relative space-y-6 border border-white/30 bg-black/85 p-8">
                 {sidebarContent}
-                <div className="border-t border-white/20 pt-6 text-xs text-neutral-500">
-                  <SiteFooter locale={locale} />
-                </div>
               </div>
               <div className="hidden flex-1 lg:flex">
                 <div className="sticky bottom-4 mt-auto flex w-full justify-end pt-6">
@@ -146,9 +142,6 @@ export async function Layout({
                 <Suspense>{children}</Suspense>
               </div>
             </main>
-            <footer className="mt-12 border-t border-white/20 pt-6 text-xs text-neutral-500">
-              <SiteFooter locale={locale} />
-            </footer>
           </>
         )}
       </div>
