@@ -26,7 +26,7 @@ export function MaltTerms({
     : null;
   return (
     <section
-      className="space-y-3 border border-white/25 bg-black/80 p-5 text-sm text-neutral-300"
+      className="glass-panel space-y-3 border border-white/25 p-5 text-sm text-neutral-300"
       aria-label={de ? "Honorar und Verfügbarkeit" : "Rate and availability"}
     >
       <h2 className="text-base text-white">

@@ -3,6 +3,7 @@ import { getSiteCopy } from "../../../../server/content/getSiteCopy";
 import { localizedPath, type LocaleParams } from "@homepage/content/i18n";
 import { Layout } from "../../../../components/Layout";
 import { ProjectsClientView } from "../../../../components/Cv/Projects/ProjectsClientView";
+import { ProjectAnalysisTabs } from "../../../../components/Cv/Projects/ProjectAnalysisTabs";
 import { LogoMarquee } from "../../../../components/Cv/Projects/LogoMarquee";
 import { getCachedCvProjects } from "../../../../server/content/getCachedCvProjects";
 import { getPublicProjectCases } from "../../../../server/content/getEnquiryEvidence";
@@ -55,6 +56,7 @@ export default async function ProjectsPage({ params }: LocaleParams) {
           <OwnerFacts owner={owner} locale={locale} />
         </>
       }
+      sidebarAfter={<ProjectAnalysisTabs projects={projects} />}
     >
       <header className="space-y-3">
         <h1 className="text-3xl font-semibold text-white">

@@ -473,7 +473,7 @@ export function EnquiryFlow({
   return (
     <section
       id="enquiry-flow"
-      className="space-y-6 border border-white/30 bg-black/85 p-5 sm:p-8"
+      className="glass-panel space-y-6 border border-white/30 p-5 sm:p-8"
       aria-label={locale === "de" ? "Projektanfrage" : "Project enquiry"}
     >
       <Dialog.Root open={confirmDetails} onOpenChange={setConfirmDetails}>

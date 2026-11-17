@@ -25,7 +25,7 @@ export function EnquiryStart({ locale }: { locale: Locale }) {
           <Link
             key={intent}
             href={enquiryPath({ source: "home", intent }, locale)}
-            className="flex min-h-16 items-center justify-between gap-4 border border-white/30 bg-black/80 px-5 py-4 text-sm text-neutral-200 transition hover:border-white hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            className="glass-panel flex min-h-16 items-center justify-between gap-4 border border-white/30 px-5 py-4 text-sm text-neutral-200 transition hover:border-white hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             {intentLabels[locale][intent]}
             <span aria-hidden="true">↗</span>

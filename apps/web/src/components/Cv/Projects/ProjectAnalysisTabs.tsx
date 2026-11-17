@@ -3,7 +3,6 @@
 import { useLocale } from "../../i18n/LocaleProvider";
 import { useId, useMemo, useState } from "react";
 import { CvProject } from "@homepage/content/models";
-import { cn } from "../../../lib/utils";
 import { ProjectGraph3D } from "./ProjectGraph3D";
 import { useFiltersStore } from "./filtersStore";
 import { filterProjects } from "./Filter/utils";
@@ -30,7 +29,8 @@ export const ProjectAnalysisTabs = ({
     [projects, filterParams],
   );
 
-  const tabListId = useId();
+  const selectorId = useId();
+  const panelId = `${selectorId}-panel`;
   const tabs: { id: TabId; label: string }[] = [
     { id: GRAPH_TAB_ID, label: "Graph" },
     ...filterConfigs.map((c) => ({
@@ -54,40 +54,32 @@ export const ProjectAnalysisTabs = ({
 
   return (
     <div>
-      <div
-        role="tablist"
-        aria-label={locale === "de" ? "Projektanalyse" : "Project analysis"}
-        className="flex flex-wrap gap-1.5"
-      >
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              id={`${tabListId}-tab-${tab.id}`}
-              aria-selected={isActive}
-              aria-controls={`${tabListId}-panel-${tab.id}`}
-              tabIndex={isActive ? 0 : -1}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "-mb-px border px-3 py-1 text-[0.6rem] uppercase tracking-[0.2em] transition",
-                isActive
-                  ? "border-white bg-white text-black"
-                  : "border-white/30 bg-black/40 text-neutral-300 hover:border-white hover:text-white",
-              )}
-            >
+      <div className="glass-panel flex items-center border border-white/30 pr-3">
+        <label
+          htmlFor={selectorId}
+          className="shrink-0 pl-3 text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400"
+        >
+          {locale === "de" ? "Ansicht" : "View"}
+        </label>
+        <select
+          id={selectorId}
+          value={activeTab}
+          aria-controls={panelId}
+          onChange={(event) => setActiveTab(event.target.value)}
+          className="min-h-11 min-w-0 flex-1 bg-transparent px-3 py-2 text-xs text-white outline-none [color-scheme:dark] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
+        >
+          {tabs.map((tab) => (
+            <option key={tab.id} value={tab.id} className="bg-neutral-950">
               {tab.label}
-            </button>
-          );
-        })}
+            </option>
+          ))}
+        </select>
       </div>
       <div
-        role="tabpanel"
-        id={`${tabListId}-panel-${activeTab}`}
-        aria-labelledby={`${tabListId}-tab-${activeTab}`}
-        className="relative h-[30vh] w-full overflow-hidden border border-white/30 bg-black/50"
+        role="region"
+        id={panelId}
+        aria-label={`${locale === "de" ? "Projektanalyse" : "Project analysis"}: ${tabs.find((tab) => tab.id === activeTab)?.label}`}
+        className="glass-panel relative -mt-px h-[30vh] w-full overflow-hidden border border-white/30"
       >
         {activeTab === GRAPH_TAB_ID ? (
           <ProjectGraph3D projects={projects} />

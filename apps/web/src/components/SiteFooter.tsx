@@ -5,7 +5,7 @@ import "./site-footer.css";
 
 export function SiteFooter({ locale = "en" }: { locale?: Locale }) {
   return (
-    <footer data-site-footer className="site-footer">
+    <footer data-site-footer className="glass-panel site-footer">
       <div className="site-footer-inner">
         <p className="site-footer-identity">
           <span>Fuerst.one · Alexander Fürst</span>

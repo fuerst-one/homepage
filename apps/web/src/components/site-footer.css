@@ -3,9 +3,6 @@
   z-index: 30;
   margin-top: auto;
   border-top: 1px solid #ffffff24;
-  background: transparent;
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
   /* Cover rubber-band overscroll without adding scrollable page height. */
   box-shadow: 0 100vmax 0 100vmax #0b0b0a;
   clip-path: inset(0 0 -100vmax);

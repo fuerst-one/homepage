@@ -204,7 +204,7 @@ export const FilterSqlConsole = ({
   const loweredQuery = searchQuery.toLowerCase();
 
   return (
-    <div className="border border-white/20 bg-black/85 p-5">
+    <div className="glass-panel border border-white/20 p-5">
       <div className="flex flex-wrap items-center gap-2">
         {CV_PRESET_ORDER.map((id) => {
           const preset = localizePreset(CV_PRESETS[id], locale);
@@ -247,60 +247,66 @@ export const FilterSqlConsole = ({
           </span>
         </button>
       </div>
-      <div
-        className="filter-active-summary mt-4 flex flex-wrap items-center gap-2 border-t border-white/20 pt-4 text-xs text-neutral-300"
-        role="region"
-        aria-label={de ? "Aktive Filter" : "Active filters"}
+      <span
+        className="sr-only"
+        role="status"
+        aria-label={de ? "Projektergebnisse" : "Project results"}
       >
-        <span className="text-[0.65rem] uppercase tracking-[0.2em] text-neutral-400">
-          {activeFilters.length
-            ? de
-              ? "Aktive Filter"
-              : "Active filters"
-            : de
-              ? "Alle Projekte"
-              : "All projects"}
-        </span>
-        {activeFilters.map(({ key, label, value, displayValue }) => (
-          <button
-            key={`${key}-${value}`}
-            type="button"
-            aria-label={`${de ? "Entfernen" : "Remove"} ${label}: ${displayValue}`}
-            className="inline-flex min-h-11 max-w-full items-center gap-2 border border-white/40 bg-white/5 px-3 py-1.5 text-left text-xs text-neutral-100 transition hover:border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            onClick={() => {
-              const next = { ...filterParams };
-              const filterKey = key as keyof FilterParams;
-              const remaining = next[filterKey]?.filter(
-                (item) => item !== value,
-              );
-              if (remaining?.length) next[filterKey] = remaining;
-              else delete next[filterKey];
-              setFilters(next);
-            }}
-          >
-            <span className="min-w-0 break-words">
-              {label}: <span className="text-white">{displayValue}</span>
-            </span>
-            <span aria-hidden="true">×</span>
-          </button>
-        ))}
-        <span
-          className="whitespace-nowrap text-[0.65rem] text-neutral-400"
-          role="status"
+        {resultsCount} {de ? "Ergebnisse" : "results"}
+      </span>
+      {activePresetId === null && (
+        <div
+          className="filter-active-summary mt-4 flex flex-wrap items-center gap-2 border-t border-white/20 pt-4 text-xs text-neutral-300"
+          role="region"
+          aria-label={de ? "Aktive Filter" : "Active filters"}
         >
-          {resultsCount} {de ? "Ergebnisse" : "results"}
-        </span>
-        {!!activeFilters.length && (
-          <button
-            type="button"
-            data-clear-filters
-            onClick={resetFilters}
-            className="min-h-11 px-2 text-xs text-neutral-300 underline underline-offset-4 hover:text-white"
-          >
-            {de ? "Alle Filter löschen" : "Clear all filters"}
-          </button>
-        )}
-      </div>
+          <span className="text-[0.65rem] uppercase tracking-[0.2em] text-neutral-400">
+            {activeFilters.length
+              ? de
+                ? "Aktive Filter"
+                : "Active filters"
+              : de
+                ? "Alle Projekte"
+                : "All projects"}
+          </span>
+          {activeFilters.map(({ key, label, value, displayValue }) => (
+            <button
+              key={`${key}-${value}`}
+              type="button"
+              aria-label={`${de ? "Entfernen" : "Remove"} ${label}: ${displayValue}`}
+              className="inline-flex min-h-11 max-w-full items-center gap-2 border border-white/40 bg-white/5 px-3 py-1.5 text-left text-xs text-neutral-100 transition hover:border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              onClick={() => {
+                const next = { ...filterParams };
+                const filterKey = key as keyof FilterParams;
+                const remaining = next[filterKey]?.filter(
+                  (item) => item !== value,
+                );
+                if (remaining?.length) next[filterKey] = remaining;
+                else delete next[filterKey];
+                setFilters(next);
+              }}
+            >
+              <span className="min-w-0 break-words">
+                {label}: <span className="text-white">{displayValue}</span>
+              </span>
+              <span aria-hidden="true">×</span>
+            </button>
+          ))}
+          <span className="whitespace-nowrap text-[0.65rem] text-neutral-400">
+            {resultsCount} {de ? "Ergebnisse" : "results"}
+          </span>
+          {!!activeFilters.length && (
+            <button
+              type="button"
+              data-clear-filters
+              onClick={resetFilters}
+              className="min-h-11 px-2 text-xs text-neutral-300 underline underline-offset-4 hover:text-white"
+            >
+              {de ? "Alle Filter löschen" : "Clear all filters"}
+            </button>
+          )}
+        </div>
+      )}
       <div
         id={panelId}
         className={clsx(
@@ -330,7 +336,7 @@ export const FilterSqlConsole = ({
                 </button>
               </div>
             </div>
-            <div className="mt-4 border border-white/20 bg-black p-4 text-[0.8rem] leading-relaxed text-neutral-100">
+            <div className="glass-panel mt-4 border border-white/20 p-4 text-[0.8rem] leading-relaxed text-neutral-100">
               <span className="mr-2 text-neutral-500">&gt;</span>
               <pre className="inline whitespace-pre-wrap break-words text-neutral-100">
                 {sqlStatement}
@@ -362,7 +368,7 @@ export const FilterSqlConsole = ({
                 return (
                   <div
                     key={key}
-                    className="border border-white/20 bg-black/60 p-3"
+                    className="glass-panel border border-white/20 p-3"
                   >
                     <div className="mb-2 flex items-center justify-between text-[0.7rem] uppercase tracking-[0.3em] text-neutral-300">
                       <span>{label}</span>

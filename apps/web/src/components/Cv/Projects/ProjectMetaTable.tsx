@@ -48,14 +48,14 @@ export const ProjectMetaTable = ({
   }
 
   return (
-    <div className="space-y-3 border border-white/20 bg-black/60 p-4 text-sm text-neutral-200">
+    <div className="glass-panel space-y-3 border border-white/20 p-4 text-sm text-neutral-200">
       {filteredFields.map(({ label, projectKey, value }) => {
         const preview = formatPreviewValue(value);
 
         return (
           <details
             key={projectKey}
-            className="group border border-white/15 bg-black/60 p-3"
+            className="glass-panel group border border-white/15 p-3"
           >
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-left text-[0.7rem] uppercase tracking-[0.3em] text-neutral-300 [&::-webkit-details-marker]:hidden">
               <span>{label}</span>

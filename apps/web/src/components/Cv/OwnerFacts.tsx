@@ -29,7 +29,7 @@ export const OwnerFacts = ({
       <span className="text-[0.65rem] uppercase tracking-[0.3em] text-neutral-400">
         {locale === "de" ? "Profil" : "Profile"}
       </span>
-      <div className="space-y-3 rounded-lg border border-neutral-800/80 bg-neutral-900/40 p-3">
+      <div className="glass-panel space-y-3 rounded-lg border border-neutral-800/80 p-3">
         {statusLine && <FactRow label="Status">{statusLine}</FactRow>}
         {owner.languages && (
           <FactRow label={locale === "de" ? "Sprachen" : "Languages"}>

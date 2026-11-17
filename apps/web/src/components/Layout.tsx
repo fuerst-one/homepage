@@ -7,11 +7,13 @@ import { getCachedCvOwnerPublic } from "../server/content/getCachedCvOwner";
 
 export async function Layout({
   sidebarContent,
+  sidebarAfter,
   children,
   locale = "en",
   availableLocales,
 }: {
   sidebarContent?: ReactNode;
+  sidebarAfter?: ReactNode;
   locale?: Locale;
   availableLocales?: Locale[];
   children: ReactNode;
@@ -120,9 +122,10 @@ export async function Layout({
         {sidebarContent ? (
           <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-[360px,1fr] lg:gap-8 xl:gap-16">
             <aside className="flex flex-col">
-              <div className="relative space-y-6 border border-white/30 bg-black/85 p-8">
+              <div className="glass-panel relative space-y-6 border border-white/30 p-8">
                 {sidebarContent}
               </div>
+              {sidebarAfter && <div className="mt-6">{sidebarAfter}</div>}
               <div className="hidden flex-1 lg:flex">
                 <div className="sticky bottom-4 mt-auto flex w-full justify-end pt-6">
                   <BackToTopButton />

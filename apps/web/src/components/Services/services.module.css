@@ -1,9 +1,9 @@
 .page {
+  composes: glass-panel from global;
   --line: rgba(255, 255, 255, 0.22);
   --muted: #b8b8b8;
   min-width: 0;
   color: #f5f5f5;
-  background: rgba(0, 0, 0, 0.94);
   border: 1px solid var(--line);
   padding: clamp(1.1rem, 4vw, 3rem);
 }
@@ -209,10 +209,10 @@
   font-size: 0.62rem;
 }
 .case {
+  composes: glass-panel from global;
   margin-top: 2.25rem;
   border: 1px solid var(--line);
   padding: clamp(1rem, 3vw, 1.75rem);
-  background: #080808;
 }
 .caseHeader {
   display: flex;
@@ -298,8 +298,8 @@
   color: #aaa;
 }
 .fit {
+  composes: glass-panel from global;
   margin-top: 2.5rem;
-  background: #141414;
   border-left: 2px solid #ddd;
   padding: 1.5rem;
 }
@@ -412,11 +412,11 @@
   text-underline-offset: 0.3rem;
 }
 .startingOffer {
+  composes: glass-panel from global;
   margin-top: 3rem;
   padding: clamp(1.25rem, 4vw, 2rem);
   border: 1px solid var(--line);
   border-left: 3px solid #eee;
-  background: #111;
 }
 .startingOffer h2 {
   margin-top: 0.7rem;

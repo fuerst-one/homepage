@@ -56,7 +56,7 @@ export const ProjectDetails = ({
       className={
         inDialog
           ? "flex max-h-[90vh] flex-col"
-          : "flex flex-col border border-white/30 bg-black/85"
+          : "glass-panel flex flex-col border border-white/30"
       }
     >
       <div className="space-y-3 border-b border-white/15 p-6">

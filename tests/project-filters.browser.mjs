@@ -2,6 +2,81 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import puppeteer from "puppeteer";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
+
+for (const locale of ["en", "de"]) {
+  test(`${locale}: exact presets hide the active-filter summary and custom filters restore it`, async () => {
+    const browser = await puppeteer.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1280, height: 900 });
+      await page.goto(`${base}/${locale}/projects`, {
+        waitUntil: "networkidle2",
+        timeout: 90000,
+      });
+      await page.waitForSelector("main button[aria-pressed=true]");
+      const presetCount = await page.$$eval(
+        "main button[aria-pressed]",
+        (buttons) => buttons.length,
+      );
+      assert.equal(presetCount, 6);
+      for (let index = 0; index < presetCount; index++) {
+        const presets = await page.$$("main button[aria-pressed]");
+        await presets[index].click();
+        await page.waitForFunction(
+          (index) =>
+            document
+              .querySelectorAll("main button[aria-pressed]")
+              [index]?.getAttribute("aria-pressed") === "true",
+          {},
+          index,
+        );
+        assert.equal(
+          await page.$(".filter-active-summary"),
+          null,
+          "the selected preset already describes the filters",
+        );
+        assert.ok(
+          await page.$('main [role="status"]'),
+          "result-count announcements remain available when the visual summary is hidden",
+        );
+      }
+      await page.goto(
+        `${base}/${locale}/projects?experiences=AI+Engineering&tools=React.js`,
+        { waitUntil: "domcontentloaded", timeout: 90000 },
+      );
+      await page.waitForSelector(".filter-active-summary");
+      assert.equal(
+        await page.$$eval(
+          "main button[aria-pressed=true]",
+          (buttons) => buttons.length,
+        ),
+        0,
+      );
+      assert.equal(
+        await page.$$eval(
+          '.filter-active-summary button[aria-label^="Remove"], .filter-active-summary button[aria-label^="Entfernen"]',
+          (buttons) => buttons.length,
+        ),
+        2,
+      );
+      await page.click(".filter-active-summary [data-clear-filters]");
+      await page.waitForFunction(
+        () => !document.querySelector(".filter-active-summary"),
+      );
+      assert.ok(await page.$("main button[aria-pressed=true]"));
+      // Restoring this exact preset through the URL has the same compact state.
+      await page.goto(`${base}/${locale}/projects?featured=true`, {
+        waitUntil: "domcontentloaded",
+        timeout: 90000,
+      });
+      await page.waitForSelector("main button[aria-pressed=true]");
+      assert.equal(await page.$(".filter-active-summary"), null);
+    } finally {
+      await browser.close();
+    }
+  });
+}
+
 test("named filters remain visible and removable with the filter console collapsed", async () => {
   const browser = await puppeteer.launch({ headless: true });
   try {
@@ -92,7 +167,7 @@ test("named filters remain visible and removable with the filter console collaps
     await page.waitForFunction(
       (expected) =>
         document
-          .querySelector(".filter-active-summary [role=status]")
+          .querySelector('main [role=status][aria-label="Project results"]')
           ?.textContent.trim() === `${expected} results`,
       {},
       matching,

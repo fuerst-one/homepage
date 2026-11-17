@@ -16,7 +16,6 @@ import {
   normalizeFilters,
   localizePreset,
 } from "../cvPresets";
-import { ProjectAnalysisTabs } from "./ProjectAnalysisTabs";
 import { useProjectFocusStore } from "./projectFocusStore";
 
 const SLICE_DEFAULT = 8;
@@ -56,20 +55,19 @@ export function ProjectsClientView({ projects }: { projects: CvProject[] }) {
         <FiltersUrlSync />
       </Suspense>
       <ProjectDetailDialog projects={projects} />
-      <div className="pl-1 pr-1 lg:pl-4 lg:pr-4">
+      <div>
         <div className="mb-8">
           <FilterSqlConsole filterParams={filterParams} projects={projects} />
         </div>
         <div className="mb-12 space-y-5">
-          <h2 className="text-3xl font-semibold text-white">{headline}</h2>
+          <h2 className="text-xl font-medium leading-snug text-white">
+            {headline}
+          </h2>
           <p className="max-w-2xl text-sm leading-relaxed text-neutral-400">
             {locale === "de"
               ? "Entdecke ausgewählte Projekte mit durchdachter Gestaltung und technischer Tiefe. Mit den Analysewerkzeugen kannst du Projekte filtern, vergleichen und die Zusammenarbeit, Technologien und Ergebnisse dahinter erkunden."
               : "Explore a curated collection of recent projects, each showcasing thoughtful design and technical depth. Use the analysis tools to filter, compare, and discover the collaborations, technologies, and results that drive real impact."}
           </p>
-        </div>
-        <div className="mb-8">
-          <ProjectAnalysisTabs projects={projects} />
         </div>
         <div className="space-y-6">
           {featuredProjects.map((project) => (

@@ -50,7 +50,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
 
   return (
-    <article className="group relative grid grid-cols-1 gap-5 border border-white/30 bg-black/85 p-5 transition hover:border-white md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
+    <article className="glass-panel group relative grid grid-cols-1 gap-5 border border-white/30 p-5 transition hover:border-white md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
       <button
         type="button"
         onClick={openDialog}
