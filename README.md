@@ -58,6 +58,8 @@ worker deploys separately on Coolify. Both follow `main` automatically on push.
 Vercel's ignored-build override must remain unset, and the Coolify worker must
 follow the branch tip rather than a pinned commit. AI rollout and spending
 controls remain independent of deployment settings.
+See [automatic deployments](docs/automatic-deployments.md) for trigger,
+verification and release-hold details.
 
 Migrations 005/006 and the `website-v2` seed are complete. Preserve the old
 publication tables and grants for rollback, then explicitly retire them after
