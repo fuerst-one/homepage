@@ -12,6 +12,7 @@ import { FaImage } from "@react-icons/all-files/fa/FaImage";
 import { FaExternalLinkAlt } from "@react-icons/all-files/fa/FaExternalLinkAlt";
 import { FaChartLine } from "@react-icons/all-files/fa/FaChartLine";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
+import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 import { getProjectLogoSources } from "./getProjectLogoSources";
 import { ProjectLogo } from "./ProjectLogo";
 import { colors } from "./colors";
@@ -50,7 +51,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
 
   return (
-    <article className="glass-panel group relative grid grid-cols-1 gap-5 border border-white/30 p-5 transition hover:border-white md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
+    <article className="glass-panel group relative grid grid-cols-1 gap-5 border border-white/30 p-5 transition hover:border-white md:grid-cols-[16rem_minmax(0,1fr)] md:gap-6">
       <button
         type="button"
         onClick={openDialog}
@@ -68,7 +69,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
           onClick={openDialog}
           screenshotCount={screenshots?.length ?? 0}
         />
-        {(websiteUrl || githubUrl) && (
+        {(websiteUrl || githubUrl || hasCaseStudy) && (
           <div className="pointer-events-auto flex flex-wrap items-center gap-2">
             {websiteUrl && (
               <Link
@@ -79,6 +80,19 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
                 Website
                 <FaExternalLinkAlt className="text-xs print:hidden" />
                 <span className="hidden print:inline">: {websiteUrl}</span>
+              </Link>
+            )}
+            {hasCaseStudy && (
+              <Link
+                href={`${path}/case-study`}
+                prefetch={false}
+                className="inline-flex items-center gap-2 border border-white/30 px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white print:ml-0 print:block"
+              >
+                {locale === "de" ? "Fallstudie" : "Case study"}
+                <FaArrowRight
+                  className="text-xs print:hidden"
+                  aria-hidden="true"
+                />
               </Link>
             )}
             {githubUrl && (
@@ -93,15 +107,6 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
               </Link>
             )}
           </div>
-        )}
-        {hasCaseStudy && (
-          <Link
-            href={`${path}/case-study`}
-            prefetch={false}
-            className="pointer-events-auto self-start text-sm text-neutral-200 underline underline-offset-4 hover:text-white"
-          >
-            {locale === "de" ? "Fallstudie lesen" : "Read case study"} →
-          </Link>
         )}
         {kpis && (
           <div className="flex items-start gap-2 text-sm text-white">

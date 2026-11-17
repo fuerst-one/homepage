@@ -13,7 +13,7 @@ const get = async (path) => {
 
 for (const locale of ["en", "de"]) {
   const path = `/${locale}/projects/${slug}`;
-  const label = locale === "de" ? "Fallstudie lesen" : "Read case study";
+  const label = locale === "de" ? "Fallstudie" : "Case study";
 
   test(`${locale} interactive project cards expose a direct public case study link`, async () => {
     const html = await get(`/${locale}/projects`);
