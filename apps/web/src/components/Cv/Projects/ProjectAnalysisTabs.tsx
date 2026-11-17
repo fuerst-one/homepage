@@ -32,7 +32,7 @@ export const ProjectAnalysisTabs = ({
   const selectorId = useId();
   const panelId = `${selectorId}-panel`;
   const tabs: { id: TabId; label: string }[] = [
-    { id: GRAPH_TAB_ID, label: "Graph" },
+    { id: GRAPH_TAB_ID, label: "3D Scatter" },
     ...filterConfigs.map((c) => ({
       id: c.projectKey,
       label:
