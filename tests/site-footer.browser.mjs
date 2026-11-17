@@ -132,6 +132,11 @@ test("footer privacy settings withdraw permission in the active page without sen
     assert.equal(questions, 0);
     await page.keyboard.press("Escape");
     assert.equal(await page.$('[role="dialog"]'), null);
+    await page.waitForFunction(
+      () =>
+        document.querySelector("[data-privacy-settings]") ===
+        document.activeElement,
+    );
     assert.equal(
       await page.$eval(
         "[data-privacy-settings]",
@@ -190,7 +195,13 @@ test("opening privacy settings preserves memory-only permission when storage is 
       timeout: 90000,
     });
     await page.waitForSelector(".knowledge-privacy");
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "Which work would suit my idea?");
+    await page.waitForFunction(
+      () => !document.querySelector(".landing-submit").disabled,
+    );
     await page.keyboard.press("Enter");
     await page.waitForSelector("[data-ai-consent]");
     await page.click("[data-ai-allow]");

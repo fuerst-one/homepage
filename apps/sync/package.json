@@ -11,15 +11,15 @@
     "notion:status": "tsx scripts/notion.ts status"
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.14",
-    "lodash": "^4.17.21",
-    "umap-js": "^1.4.0",
     "@homepage/content": "workspace:*",
     "@homepage/database": "workspace:*",
     "@homepage/knowledge": "workspace:*",
-    "tsx": "^4.23.15"
+    "@notionhq/client": "^2.3.0",
+    "lodash": "^4.18.1",
+    "tsx": "^4.23.15",
+    "umap-js": "^1.4.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.24"
+    "@types/lodash": "^4.17.27"
   }
 }

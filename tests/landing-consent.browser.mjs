@@ -37,6 +37,9 @@ test("unavailable AI shows project suggestions without asking for consent", asyn
       waitUntil: "networkidle2",
       timeout: 90000,
     });
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "Tell me about your work");
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,
@@ -109,6 +112,9 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
       ),
       null,
     );
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "Which work would suit my idea?");
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,
@@ -126,6 +132,9 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
     assert.equal(
       await page.$eval("#landing-command", (e) => e.value),
       "Which work would suit my idea?",
+    );
+    await page.waitForFunction(
+      () => document.activeElement?.id === "landing-command",
     );
     await page.keyboard.press("Enter");
     await page.waitForSelector("[data-ai-consent]");
@@ -165,6 +174,9 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
     );
     assert.equal(posts, 1);
     await page.reload({ waitUntil: "networkidle2" });
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     assert.deepEqual(
       await page.evaluate(() =>
         JSON.parse(localStorage.getItem("fuerst-one:knowledge-consent:v1")),
@@ -176,6 +188,9 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
     await page.waitForSelector("[data-ai-consent]");
     await page.click("#remember-ai-chat");
     await page.click("[data-ai-allow]");
+    await page.waitForFunction(
+      () => document.activeElement?.id === "landing-command",
+    );
     await page.type("#landing-command", "Tell me about design work");
     await page.keyboard.press("Enter");
     await page.waitForSelector(".knowledge-answer");
@@ -187,6 +202,9 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
       ),
     );
     await page.reload({ waitUntil: "networkidle2" });
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.click("#landing-command");
     await page.waitForSelector(".knowledge-answer");
     assert.equal(
@@ -219,6 +237,9 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
       null,
     );
     await page.goto(base + "/de", { waitUntil: "networkidle2" });
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "Welche Arbeit passt zu meiner Idee?");
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,

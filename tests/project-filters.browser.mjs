@@ -86,7 +86,7 @@ test("named filters remain visible and removable with the filter console collaps
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 900 });
     await page.goto(`${base}/en/projects?experiences=AI+Engineering`, {
-      waitUntil: "networkidle2",
+      waitUntil: "domcontentloaded",
       timeout: 90000,
     });
     await page.waitForSelector(".filter-active-summary", { timeout: 5000 });
@@ -119,7 +119,7 @@ test("named filters remain visible and removable with the filter console collaps
     );
     await page.goto(
       `${base}/en/projects?experiences=AI+Engineering&tools=React.js`,
-      { waitUntil: "networkidle2", timeout: 90000 },
+      { waitUntil: "domcontentloaded", timeout: 90000 },
     );
     await page.waitForFunction(
       () =>
@@ -137,7 +137,7 @@ test("named filters remain visible and removable with the filter console collaps
     );
     const legacyProject = data.results[0];
     await page.goto(`${base}/en/projects?id=${legacyProject.id}`, {
-      waitUntil: "networkidle2",
+      waitUntil: "domcontentloaded",
       timeout: 90000,
     });
     await page.waitForFunction(
@@ -157,7 +157,7 @@ test("named filters remain visible and removable with the filter console collaps
       false,
     );
     await page.goto(`${base}/en/projects?buyerNeeds=Add+AI+capabilities`, {
-      waitUntil: "networkidle2",
+      waitUntil: "domcontentloaded",
       timeout: 90000,
     });
     const matching = data.results.filter((project) =>
@@ -182,7 +182,7 @@ test("named filters remain visible and removable with the filter console collaps
     await page.screenshot({ path: "/tmp/homepage-active-filters-desktop.png" });
     await page.setViewport({ width: 390, height: 844 });
     await page.goto(`${base}/de/projects?experiences=AI+Engineering`, {
-      waitUntil: "networkidle2",
+      waitUntil: "domcontentloaded",
       timeout: 90000,
     });
     await page.waitForSelector(".filter-active-summary");
