@@ -53,15 +53,18 @@ docker build -f ops/knowledge/Dockerfile -t homepage-sync .
 
 ## Rollout
 
-The current release is `218922b` on Vercel (`apps/web`) and Coolify, with Malt
-refresh owned by the worker. Public AI
-remains disabled and automatic deployments remain held; releases are manual while
-the separate privacy work is reconciled. Migrations 005/006 and the `website-v2`
-seed are complete. Preserve the old publication tables and grants for rollback,
-then explicitly retire them after that window.
+The web application deploys on Vercel from `apps/web`; the knowledge and Malt
+worker deploys separately on Coolify. Both follow `main` automatically on push.
+Vercel's ignored-build override must remain unset, and the Coolify worker must
+follow the branch tip rather than a pinned commit. AI rollout and spending
+controls remain independent of deployment settings.
+
+Migrations 005/006 and the `website-v2` seed are complete. Preserve the old
+publication tables and grants for rollback, then explicitly retire them after
+that window.
 
 See [the Malt worker rollout receipt](docs/malt-worker-rollout-2026-11-16.md)
-for current deployment IDs, live verification and rollback details. The
+for that release's deployment IDs, live verification and rollback details. The
 [initial split rollout](docs/web-sync-split-rollout-2026-11-16.md) records the
 underlying web/content migration.
 
