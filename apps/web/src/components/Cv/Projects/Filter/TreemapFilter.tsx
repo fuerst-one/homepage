@@ -34,15 +34,16 @@ export const TreemapFilter = ({
 
   const data = useMemo(() => {
     return [
-      ...itemCounts.slice(0, itemsLength).map(({ itemKey, count }) => ({
+      ...itemCounts.slice(0, itemsLength).map(({ itemKey, count, color }) => ({
         name: itemKey,
         value: count,
+        ...(color ? { itemStyle: { color } } : {}),
       })),
     ];
   }, [itemCounts, itemsLength]);
 
   return (
-    <div className="flex h-[120px] w-full items-start justify-center">
+    <div className="h-full min-h-0 w-full">
       <div className="h-full w-full overflow-hidden">
         <ClientChartWrapper
           projectKey={projectKey}
@@ -53,6 +54,7 @@ export const TreemapFilter = ({
                 formatter: "{b}: {c}",
                 backgroundColor: "#000",
                 borderColor: "#fff",
+                confine: true,
                 textStyle: { color: "#fff" },
               },
               color: Array.from(
@@ -61,10 +63,12 @@ export const TreemapFilter = ({
               ),
               series: [
                 {
-                  name: "Project Types",
+                  name: filterConfig.label,
                   type: "treemap",
                   data: data,
                   roam: false,
+                  left: 0,
+                  top: 0,
                   width: "100%",
                   height: "100%",
                   itemStyle: {

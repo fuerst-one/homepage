@@ -1,0 +1,1195 @@
+{
+  "version": 1,
+  "sourceFetchedAt": "2026-11-17T19:24:02.818Z",
+  "scope": {
+    "totalRecords": 45,
+    "publicRecords": 42,
+    "excludedRecords": 3
+  },
+  "policy": "Browser UI edits only. Reuse Project Domains, Product type, Target market and Experiences. Sector is project-owned; client industry rollups are metadata, never classification. No changes to metrics, ownership, AI claims, lifecycle or hidden record values.",
+  "newFields": {
+    "Sector": "select",
+    "Usage context": "multi_select",
+    "Delivery model": "select"
+  },
+  "projects": [
+    {
+      "id": "41a86514-f736-8085-81c5-c242b8b576eb",
+      "name": "Glyphstone",
+      "sourceEditedAt": "2026-11-17T18:01:00.000Z",
+      "basis": "Translate a generative web animation into a small standalone physical display, connecting creative coding, small-screen typography, embedded interaction and enclosure design.",
+      "before": {
+        "Industries": ["Consulting", "E-Commerce", "Marketing"],
+        "Project Domains": [
+          "Embedded systems",
+          "Entertainment",
+          "Brand and portfolio"
+        ],
+        "Product type": ["Hardware / embedded", "Interactive experience"],
+        "Target market": ["Personal", "Experimental"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Media & entertainment",
+        "Project Domains": ["Interactive art"],
+        "Product type": ["Hardware / embedded", "Interactive experience"],
+        "Target market": [],
+        "Usage context": ["Personal", "Experimental"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "41786514-f736-8003-86e9-fb3a9fd4248a",
+      "name": "Pigeon Turret",
+      "sourceEditedAt": "2026-11-17T17:58:00.000Z",
+      "basis": "Camera-guided bird-deterrent prototype connecting firmware, detection, a dashboard and custom hardware.",
+      "before": {
+        "Industries": ["Consulting", "E-Commerce", "Marketing"],
+        "Project Domains": ["Embedded systems"],
+        "Product type": ["Hardware / embedded", "Web app"],
+        "Target market": ["Personal", "Experimental"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": ["Computer vision"],
+        "AI Capabilities": ["Computer vision detection"]
+      },
+      "after": {
+        "Sector": "Home & garden",
+        "Project Domains": ["Animal deterrence"],
+        "Product type": ["Hardware / embedded", "Web app"],
+        "Target market": [],
+        "Usage context": ["Personal", "Experimental"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "41786514-f736-80ab-bead-e2ccd429b958",
+      "name": "Page Control",
+      "sourceEditedAt": "2026-11-17T18:00:00.000Z",
+      "basis": "Embeddable assistant combining grounded answers with visible, interruptible browser actions and approval before submissions.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Developer tooling", "Brand and portfolio"],
+        "Product type": ["SaaS", "Web app", "Chatbot"],
+        "Target market": ["B2B"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": ["AI product feature"],
+        "AI Capabilities": [
+          "Knowledge retrieval",
+          "Conversational assistance",
+          "Browser automation"
+        ]
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Website assistance", "Knowledge retrieval"],
+        "Product type": ["Web app", "Chatbot"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": "SaaS"
+      }
+    },
+    {
+      "id": "41786514-f736-8074-8dcb-dd79f906d12a",
+      "name": "Business Hub",
+      "sourceEditedAt": "2026-11-17T18:01:00.000Z",
+      "basis": "Project-oriented workspace bringing messages, appointments, tasks, documents, time and finances into one overview.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Personal productivity"],
+        "Product type": ["Web app"],
+        "Target market": ["Personal"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Internal use"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Business operations", "Personal productivity"],
+        "Product type": ["Web app"],
+        "Target market": [],
+        "Usage context": ["Internal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "35686514-f736-8019-921c-e5d8d77e7f23",
+      "name": "Test Flow",
+      "sourceEditedAt": "2026-11-17T17:59:00.000Z",
+      "basis": "Local browser-agent testing tool that turns natural-language user flows into end-to-end checks.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Developer tooling"],
+        "Product type": ["Developer tool", "Web app"],
+        "Target market": ["Personal", "Experimental"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Internal use"],
+        "AI Usage": ["AI-powered developer tool"],
+        "AI Capabilities": ["Browser automation"]
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Developer tooling", "Software testing"],
+        "Product type": ["Web app"],
+        "Target market": [],
+        "Usage context": ["Internal", "Experimental"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "35486514-f736-803d-ae01-dc666a99d11c",
+      "name": "RoadTrippin",
+      "sourceEditedAt": "2026-11-17T17:58:00.000Z",
+      "basis": "Collaborative map-based trip planner with generated trip ideas, day trips and editable itineraries.",
+      "before": {
+        "Industries": ["Consulting", "E-Commerce", "Marketing"],
+        "Project Domains": ["Tourism and travel"],
+        "Product type": ["Web app", "Mobile app"],
+        "Target market": ["B2C", "Personal"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Production (restricted access)"],
+        "AI Usage": [],
+        "AI Capabilities": [
+          "Conversational assistance",
+          "Geo suggestion",
+          "Trip planning"
+        ]
+      },
+      "after": {
+        "Sector": "Travel & tourism",
+        "Project Domains": ["Travel planning"],
+        "Product type": ["Web app", "Mobile app"],
+        "Target market": ["B2C"],
+        "Usage context": ["Personal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "35486514-f736-8020-bde8-e0f741a1a77a",
+      "name": "build-manager",
+      "sourceEditedAt": "2026-11-17T17:59:00.000Z",
+      "basis": "Local multi-agent development harness with staged workflows, steering and status dashboards.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Developer tooling"],
+        "Product type": ["Developer tool", "Web app"],
+        "Target market": ["Personal"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Internal use"],
+        "AI Usage": ["AI-powered developer tool"],
+        "AI Capabilities": ["Agent orchestration"]
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Developer tooling", "Development automation"],
+        "Product type": ["Web app"],
+        "Target market": [],
+        "Usage context": ["Internal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "35486514-f736-8087-86dd-f41b80c8b0ad",
+      "name": "mem0.one",
+      "sourceEditedAt": "2026-11-17T17:57:00.000Z",
+      "basis": "Agent-memory system combining graph and vector storage with LLM-assisted memorization and retrieval.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Developer tooling"],
+        "Product type": ["API", "Developer tool", "Web app"],
+        "Target market": ["Personal", "Experimental"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Internal use", "Production"],
+        "AI Usage": ["AI product feature"],
+        "AI Capabilities": ["Knowledge retrieval", "Agent memory"]
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Developer tooling", "Knowledge retrieval"],
+        "Product type": ["API", "Web app"],
+        "Target market": [],
+        "Usage context": ["Internal", "Experimental"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "21886514-f736-80c5-88f4-c37e60968f21",
+      "name": "Fuerst.one Glyph Plasma",
+      "sourceEditedAt": "2026-11-17T18:03:00.000Z",
+      "basis": "Generative ASCII plasma animation for a personal brand landing page.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Brand and portfolio"],
+        "Product type": ["Website", "Interactive experience"],
+        "Target market": ["Personal"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Media & entertainment",
+        "Project Domains": ["Brand and portfolio", "Interactive art"],
+        "Product type": ["Website", "Interactive experience"],
+        "Target market": [],
+        "Usage context": ["Personal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "1eb86514-f736-80bf-87ae-e4e5ec9e9424",
+      "name": "Buchstabiene",
+      "sourceEditedAt": "2026-11-17T18:01:00.000Z",
+      "basis": "German word puzzle built around a mandatory letter and six optional letters.",
+      "before": {
+        "Industries": ["Consulting", "E-Commerce", "Marketing"],
+        "Project Domains": ["Entertainment", "Education"],
+        "Product type": ["Web app", "Game"],
+        "Target market": ["B2C", "Personal"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Media & entertainment",
+        "Project Domains": ["Games and entertainment"],
+        "Product type": ["Web app", "Game"],
+        "Target market": ["B2C"],
+        "Usage context": ["Personal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "15b86514-f736-803e-b9b7-e47ebc2406d1",
+      "name": "Konfig",
+      "sourceEditedAt": "2026-11-17T17:52:00.000Z",
+      "basis": "Motorcycle-decal design product with user editing and an implemented AI design-generation chat, support, API-based product-data creation/maintenance, analytics evaluation and translation, according to the owner.",
+      "before": {
+        "Industries": [
+          "Consumer Products",
+          "E-Commerce",
+          "Automotive",
+          "Packaging",
+          "E-Commerce",
+          "Artificial Intelligence",
+          "Business Development",
+          "Software / IT"
+        ],
+        "Project Domains": ["E-commerce", "Automotive"],
+        "Product type": ["SaaS", "Web app", "Configurator"],
+        "Target market": ["B2B2C"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Production", "Ongoing maintenance"],
+        "AI Usage": ["AI product feature"],
+        "AI Capabilities": [
+          "Design generation",
+          "Conversational assistance",
+          "Customer support",
+          "Product data management",
+          "Analytics interpretation",
+          "Translation"
+        ]
+      },
+      "after": {
+        "Sector": "Automotive & mobility",
+        "Project Domains": ["E-commerce", "Product configuration"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": "SaaS"
+      }
+    },
+    {
+      "id": "11d86514-f736-80ed-935c-e6fe30b59d42",
+      "name": "Conversion Y",
+      "sourceEditedAt": "2026-11-17T17:58:00.000Z",
+      "basis": "B2B survey product covering creation, website embedding and analysis, with implemented AI translation, automated survey evaluation and survey creation, according to the owner.",
+      "before": {
+        "Industries": [
+          "Consulting",
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Intelligence"
+        ],
+        "Project Domains": ["Marketing and research"],
+        "Product type": ["SaaS", "Web app"],
+        "Target market": ["B2B"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["MVP", "Ongoing maintenance"],
+        "AI Usage": ["AI product feature"],
+        "AI Capabilities": [
+          "Translation",
+          "Survey analysis",
+          "Survey generation"
+        ]
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Marketing and research"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": "SaaS"
+      }
+    },
+    {
+      "id": "d33ded3a-755e-47bc-87ff-6fd496774a18",
+      "name": "ORA",
+      "sourceEditedAt": "2026-11-17T18:06:00.000Z",
+      "basis": "Container GPS tracking and lifecycle visualization to identify port-efficiency opportunities.",
+      "before": {
+        "Industries": ["Marine Shipping", "Artificial Intelligence"],
+        "Project Domains": ["Logistics and maritime"],
+        "Product type": ["Hardware / embedded", "Web app"],
+        "Target market": ["B2B"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Maritime & logistics",
+        "Project Domains": ["Logistics operations", "Geospatial analysis"],
+        "Product type": ["Hardware / embedded", "Web app"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "47579682-9325-4e9a-b014-e4fb424bb0bb",
+      "name": "World Vision",
+      "sourceEditedAt": "2026-11-17T17:59:00.000Z",
+      "basis": "Conversion-optimization consulting for World Vision.",
+      "before": {
+        "Industries": ["Consulting"],
+        "Project Domains": ["Nonprofit"],
+        "Product type": ["Website", "CRO Consulting", "A/B-Testing"],
+        "Target market": ["B2C"],
+        "Project Type": "Employed",
+        "Delivery Stages": ["Improvement"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Public & nonprofit",
+        "Project Domains": ["Marketing and research"],
+        "Product type": ["Website"],
+        "Target market": ["B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "6a549850-e00b-47fa-9fda-d2609c40431d",
+      "name": "Bags’n Boxes Chatbot",
+      "sourceEditedAt": "2026-11-17T18:09:00.000Z",
+      "basis": "Packaging-configuration conversation implemented as a TypeForm story tree.",
+      "before": {
+        "Industries": ["Packaging", "E-Commerce", "Logistics"],
+        "Project Domains": ["E-commerce"],
+        "Product type": ["Chatbot", "Configurator"],
+        "Target market": ["B2B"],
+        "Project Type": "Employed",
+        "Delivery Stages": ["Retired"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Manufacturing & packaging",
+        "Project Domains": ["E-commerce", "Product configuration"],
+        "Product type": ["Chatbot"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "6bce7ee2-3d3b-4f7d-8c31-a7159b49a301",
+      "name": "Fuerst.one Homepage",
+      "sourceEditedAt": "2026-11-17T18:51:00.000Z",
+      "basis": "Notion-backed portfolio that displays and adapts professional project information.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Brand and portfolio"],
+        "Product type": ["Website", "Web app"],
+        "Target market": ["Personal"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Brand and portfolio"],
+        "Product type": ["Website", "Web app"],
+        "Target market": [],
+        "Usage context": ["Personal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "b6b27ca7-bf93-4162-966f-635187376722",
+      "name": "Silo-Yolo",
+      "sourceEditedAt": "2026-11-17T18:02:00.000Z",
+      "basis": "Experimental satellite-imagery object detection presented on a live map.",
+      "before": {
+        "Industries": ["Marine Shipping", "Logistics", "Intelligence"],
+        "Project Domains": ["Geospatial analysis"],
+        "Product type": ["Web app"],
+        "Target market": ["Personal", "Experimental"],
+        "Project Type": "Pro Bono",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": ["Computer vision"],
+        "AI Capabilities": ["Computer vision detection"]
+      },
+      "after": {
+        "Sector": "Maritime & logistics",
+        "Project Domains": ["Geospatial analysis"],
+        "Product type": ["Web app"],
+        "Target market": [],
+        "Usage context": ["Personal", "Experimental"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "d5bd0050-2efd-4aba-a168-3ce1a1e539c6",
+      "name": "Public Searoutes",
+      "sourceEditedAt": "2026-11-17T18:44:00.000Z",
+      "basis": "Excel plugin extending maritime route calculation into a familiar planning workflow.",
+      "before": {
+        "Industries": ["Marine Shipping", "Logistics", "Intelligence"],
+        "Project Domains": ["Logistics and maritime"],
+        "Product type": ["Plugin / integration"],
+        "Target market": ["B2B"],
+        "Project Type": "Pro Bono",
+        "Delivery Stages": ["Retired"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Maritime & logistics",
+        "Project Domains": ["Route planning"],
+        "Product type": ["Plugin / integration"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "c6a3f4a3-9387-475b-a3af-bb5512846d9e",
+      "name": "LockBot",
+      "sourceEditedAt": "2026-11-17T18:07:00.000Z",
+      "basis": "Telegram notifications reducing the need to check government lockdown-news pages manually.",
+      "before": {
+        "Industries": ["Health", "Intelligence"],
+        "Project Domains": ["Personal productivity", "Public sector"],
+        "Product type": ["Chatbot"],
+        "Target market": ["B2C", "Personal"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Retired"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Healthcare",
+        "Project Domains": ["Public information", "Health information"],
+        "Product type": ["Chatbot"],
+        "Target market": ["B2C"],
+        "Usage context": ["Personal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "d1420991-70e5-4b5a-a1f7-06d27b902cde",
+      "name": "Bubble-UI",
+      "sourceEditedAt": "2026-11-17T18:07:00.000Z",
+      "basis": "Small React experiment recreating the Apple Watch bubble interface.",
+      "before": {
+        "Industries": ["Consulting", "E-Commerce", "Marketing"],
+        "Project Domains": ["Brand and portfolio"],
+        "Product type": ["Web app", "Interactive experience"],
+        "Target market": ["Personal", "Experimental"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Interface exploration"],
+        "Product type": ["Web app", "Interactive experience"],
+        "Target market": [],
+        "Usage context": ["Personal", "Experimental"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "e3884152-6e82-4d93-a596-ddce91e6bfd0",
+      "name": "Kinoa Lists",
+      "sourceEditedAt": "2026-11-17T18:07:00.000Z",
+      "basis": "Recipe and grocery-list application that began as a hobby project.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Personal productivity"],
+        "Product type": ["Web app"],
+        "Target market": ["B2C"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Food & lifestyle",
+        "Project Domains": [
+          "Recipe and shopping planning",
+          "Personal productivity"
+        ],
+        "Product type": ["Web app"],
+        "Target market": ["B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "153487a4-4b86-48b2-998c-3675a85bfd8e",
+      "name": "Web Strategy Toolbox",
+      "sourceEditedAt": "2026-11-17T18:03:00.000Z",
+      "basis": "Beta toolbox for website analysis, prioritization and A/B-test management.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Marketing and research"],
+        "Product type": ["SaaS", "Web app"],
+        "Target market": ["B2B"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Marketing and research"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": "SaaS"
+      }
+    },
+    {
+      "id": "129bf87c-e0d6-4217-9c16-c320eeb0e29b",
+      "name": "Zooplus E-Food",
+      "sourceEditedAt": "2026-11-17T18:05:00.000Z",
+      "basis": "Five-person university collaboration exploring an online pet-food shopping concept with prototypes and usability testing.",
+      "before": {
+        "Industries": ["E-Commerce", "Education", "Marketing", "Pets"],
+        "Project Domains": ["Education", "E-commerce"],
+        "Product type": ["Mobile app", "E-commerce"],
+        "Target market": ["B2C"],
+        "Project Type": "Student",
+        "Delivery Stages": ["Discovery", "Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Retail & consumer goods",
+        "Project Domains": ["E-commerce"],
+        "Product type": ["Mobile app"],
+        "Target market": ["B2C"],
+        "Usage context": ["Learning"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "afd09462-172e-40a9-8011-d2f6af5f5859",
+      "name": "Bags’n Boxes Online-Shop",
+      "sourceEditedAt": "2026-11-17T18:02:00.000Z",
+      "basis": "Packaging configurator work involving interface design, CRM API integration and delivery pipelines.",
+      "before": {
+        "Industries": ["Packaging", "E-Commerce", "Logistics"],
+        "Project Domains": ["E-commerce"],
+        "Product type": ["E-commerce", "Configurator"],
+        "Target market": ["B2B"],
+        "Project Type": "Employed",
+        "Delivery Stages": ["Improvement"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Manufacturing & packaging",
+        "Project Domains": ["E-commerce", "Product configuration"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "30f6e7c0-b762-4f33-adf0-2f433ec05090",
+      "name": "Dres. Stähler",
+      "sourceEditedAt": "2026-11-17T18:08:00.000Z",
+      "basis": "Paid dentist brand-website project applying usability and consumer-psychology principles.",
+      "before": {
+        "Industries": ["Health"],
+        "Project Domains": ["Healthcare"],
+        "Product type": ["Website"],
+        "Target market": ["B2C"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Healthcare",
+        "Project Domains": ["Brand and portfolio"],
+        "Product type": ["Website"],
+        "Target market": ["B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "10bcfe51-e86d-44dc-a247-0c542f9996be",
+      "name": "Kleiner als Raute",
+      "sourceEditedAt": "2026-11-17T18:07:00.000Z",
+      "basis": "Clothing venture that expanded from making products for friends into sales channels and production pipelines.",
+      "before": {
+        "Industries": ["Consumer Products", "Fashion"],
+        "Project Domains": ["E-commerce"],
+        "Product type": ["E-commerce", "Physical product"],
+        "Target market": ["B2C"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Retired"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Retail & consumer goods",
+        "Project Domains": ["E-commerce", "Physical product design"],
+        "Product type": ["Physical product"],
+        "Target market": ["B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "23b40e8e-626f-4fcf-9c04-83684b404adb",
+      "name": "Mobile.de Financing",
+      "sourceEditedAt": "2026-11-17T18:34:00.000Z",
+      "basis": "Financing-signup optimization through consulting, consumer psychology and A/B-testing pipelines at mobile.de.",
+      "before": {
+        "Industries": ["Consulting", "Automotive"],
+        "Project Domains": ["Automotive", "Marketing and research"],
+        "Product type": ["Website", "CRO Consulting", "A/B-Testing"],
+        "Target market": ["B2C"],
+        "Project Type": "Employed",
+        "Delivery Stages": ["Improvement"],
+        "AI Usage": [],
+        "AI Capabilities": [],
+        "Experiences": [
+          "Conversion Rate Optimization",
+          "Consulting",
+          "Conception",
+          "Expert Research",
+          "User Testing",
+          "Leadership",
+          "Finance",
+          "Business Administration",
+          "Online-Marketing",
+          "Prototyping",
+          "UI-Design",
+          "Data Analysis",
+          "Site Audit",
+          "Reporting",
+          "Workshop",
+          "Data Visualization",
+          "Behaviour Psychology",
+          "Usability"
+        ]
+      },
+      "after": {
+        "Sector": "Automotive & mobility",
+        "Project Domains": ["Marketing and research"],
+        "Product type": ["Website"],
+        "Target market": ["B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null,
+        "Experiences": [
+          "Conversion Rate Optimization",
+          "Consulting",
+          "Conception",
+          "Expert Research",
+          "User Testing",
+          "Leadership",
+          "Finance",
+          "Business Administration",
+          "Online-Marketing",
+          "Prototyping",
+          "UI-Design",
+          "Data Analysis",
+          "Site Audit",
+          "Reporting",
+          "Workshop",
+          "Data Visualization",
+          "Behaviour Psychology",
+          "Usability",
+          "A/B-Testing"
+        ]
+      }
+    },
+    {
+      "id": "b6ea7e71-2e97-42f2-8644-a57545c20d59",
+      "name": "ROLLT!",
+      "sourceEditedAt": "2026-11-17T18:34:00.000Z",
+      "basis": "Logistics innovation workshop and hackathon conducted with Bundeswehr users.",
+      "before": {
+        "Industries": [
+          "Design",
+          "Consulting",
+          "Business Development",
+          "Defense",
+          "Military"
+        ],
+        "Project Domains": ["Logistics and maritime", "Public sector"],
+        "Product type": ["Web app"],
+        "Target market": ["B2G"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Discovery", "Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Public & nonprofit",
+        "Project Domains": ["Logistics operations"],
+        "Product type": ["Web app"],
+        "Target market": ["B2G"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "d53554cf-ec81-4e1c-a46a-6da27179ba7c",
+      "name": "E-Smart Control",
+      "sourceEditedAt": "2026-11-17T18:08:00.000Z",
+      "basis": "Five-person study concept for visualizing solar-energy income and EV-charging output.",
+      "before": {
+        "Industries": ["E-Commerce", "Education", "Marketing"],
+        "Project Domains": ["Education", "Sustainability", "Automotive"],
+        "Product type": ["Mobile app"],
+        "Target market": ["B2C"],
+        "Project Type": "Student",
+        "Delivery Stages": ["Discovery", "Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Automotive & mobility",
+        "Project Domains": ["EV charging planning"],
+        "Product type": ["Mobile app"],
+        "Target market": ["B2C"],
+        "Usage context": ["Learning"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "9d4999cb-5ee7-4fc3-a99e-9ee7fbadce5d",
+      "name": "Burger Loop",
+      "sourceEditedAt": "2026-11-17T18:43:00.000Z",
+      "basis": "University tutorial using a burger-building metaphor to explain programming basics.",
+      "before": {
+        "Industries": ["E-Commerce", "Education", "Marketing"],
+        "Project Domains": ["Education", "Entertainment"],
+        "Product type": ["Web app", "Educational app"],
+        "Target market": ["B2C"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Education",
+        "Project Domains": ["Learning"],
+        "Product type": ["Web app"],
+        "Target market": ["B2C"],
+        "Usage context": ["Learning"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "f139765e-8589-4978-b7fd-86f8bfefc376",
+      "name": "Nautic Internet",
+      "sourceEditedAt": "2026-11-17T18:09:00.000Z",
+      "basis": "Brand website supporting an open-source maritime-software initiative.",
+      "before": {
+        "Industries": ["Marine Shipping", "Logistics", "Intelligence"],
+        "Project Domains": ["Logistics and maritime", "Brand and portfolio"],
+        "Product type": ["Website"],
+        "Target market": ["B2B"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Retired"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Maritime & logistics",
+        "Project Domains": ["Brand and portfolio"],
+        "Product type": ["Website"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "94b5c46b-abd4-4eec-9a4a-19a07654db84",
+      "name": "Public Searoutes",
+      "sourceEditedAt": "2026-11-17T18:03:00.000Z",
+      "basis": "Open-source maritime route-planning alternative to commercial routing services.",
+      "before": {
+        "Industries": ["Marine Shipping", "Logistics", "Intelligence"],
+        "Project Domains": ["Logistics and maritime"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B"],
+        "Project Type": "Pro Bono",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Maritime & logistics",
+        "Project Domains": ["Route planning"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "b77109b3-803c-4132-a07b-44b9b9ccc5df",
+      "name": "NuMobility",
+      "sourceEditedAt": "2026-11-17T18:04:00.000Z",
+      "basis": "Mobility database and blog helping readers compare transport choices.",
+      "before": {
+        "Industries": ["Automotive", "Marketing", "Education"],
+        "Project Domains": ["Automotive", "Sustainability"],
+        "Product type": ["Website"],
+        "Target market": ["B2C"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Automotive & mobility",
+        "Project Domains": ["Product comparison", "Public information"],
+        "Product type": ["Website"],
+        "Target market": ["B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "7c7ab543-4c3c-4744-b070-bf3c030d5d6a",
+      "name": "Gemeinde-App",
+      "sourceEditedAt": "2026-11-17T18:06:00.000Z",
+      "basis": "Local-tourism and public-information app enabling communes to create regional tours and communicate with visitors.",
+      "before": {
+        "Industries": ["Government", "Tourism", "Entertainment"],
+        "Project Domains": ["Tourism and travel", "Public sector"],
+        "Product type": ["Mobile app"],
+        "Target market": ["B2G", "B2C"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Public & nonprofit",
+        "Project Domains": ["Travel planning", "Public information"],
+        "Product type": ["Mobile app"],
+        "Target market": ["B2G", "B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "765dfa64-20ea-431b-a507-fd90cf18a015",
+      "name": "PortCheck",
+      "sourceEditedAt": "2026-11-17T18:07:00.000Z",
+      "basis": "Port-planning interface aggregating AIS and schedule data to estimate arrivals and emissions.",
+      "before": {
+        "Industries": [
+          "Marine Shipping",
+          "Artificial Intelligence",
+          "Marine Shipping",
+          "Logistics",
+          "Intelligence"
+        ],
+        "Project Domains": ["Logistics and maritime"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Maritime & logistics",
+        "Project Domains": ["Logistics operations", "Geospatial analysis"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "e315ebfb-d36f-4b62-8f7c-f58eaacf7806",
+      "name": "Playlist-Stats",
+      "sourceEditedAt": "2026-11-17T18:06:00.000Z",
+      "basis": "Spotify API integration visualizing playlist artists, release dates and other metadata.",
+      "before": {
+        "Industries": ["Consulting", "E-Commerce", "Marketing"],
+        "Project Domains": ["Entertainment"],
+        "Product type": ["Web app"],
+        "Target market": ["B2C", "Personal"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Production (restricted access)"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Media & entertainment",
+        "Project Domains": ["Music discovery", "Data exploration"],
+        "Product type": ["Web app"],
+        "Target market": ["B2C"],
+        "Usage context": ["Personal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "f9cc2539-c940-4864-8ff0-8424ed0d9fb9",
+      "name": "Playlist-Canvas",
+      "sourceEditedAt": "2026-11-17T18:03:00.000Z",
+      "basis": "Spotify artwork editor allowing drag, rotation, arrangement and export of album-art collages.",
+      "before": {
+        "Industries": ["Consulting", "E-Commerce", "Marketing"],
+        "Project Domains": ["Entertainment"],
+        "Product type": ["Web app"],
+        "Target market": ["B2C", "Personal"],
+        "Project Type": "Hobby",
+        "Delivery Stages": ["Production (restricted access)"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Media & entertainment",
+        "Project Domains": ["Creative editing"],
+        "Product type": ["Web app"],
+        "Target market": ["B2C"],
+        "Usage context": ["Personal"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "153f6668-f4d6-490a-8345-0b999b35305a",
+      "name": "Seabo",
+      "sourceEditedAt": "2026-11-17T17:58:00.000Z",
+      "basis": "Maritime chartering interface covering voyage calculation, competitor analysis, route monitoring and negotiation.",
+      "before": {
+        "Industries": [
+          "Marine Shipping",
+          "Logistics",
+          "Intelligence",
+          "Marine Shipping",
+          "Artificial Intelligence"
+        ],
+        "Project Domains": ["Logistics and maritime"],
+        "Product type": ["SaaS", "Web app"],
+        "Target market": ["B2B"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Production", "Improvement"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Maritime & logistics",
+        "Project Domains": ["Logistics operations", "Route planning"],
+        "Product type": ["Web app"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": "SaaS"
+      }
+    },
+    {
+      "id": "510f3492-1e77-4788-8ef5-73754af2d2e2",
+      "name": "Sophisticates",
+      "sourceEditedAt": "2026-11-17T18:08:00.000Z",
+      "basis": "Brand-website work for a custom-business-software consultancy.",
+      "before": {
+        "Industries": ["Consulting"],
+        "Project Domains": ["Brand and portfolio"],
+        "Product type": ["Website"],
+        "Target market": ["B2B"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Brand and portfolio"],
+        "Product type": ["Website"],
+        "Target market": ["B2B"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "cdd10e91-b9ef-4232-8378-14db1a67bc15",
+      "name": "Fuerst.one Playground",
+      "sourceEditedAt": "2026-11-17T18:51:00.000Z",
+      "basis": "Personal portfolio and e-commerce learning playground developed during studies.",
+      "before": {
+        "Industries": [
+          "Marketing",
+          "Artificial Intelligence",
+          "E-Commerce",
+          "Education",
+          "Design",
+          "Entertainment"
+        ],
+        "Project Domains": ["Brand and portfolio", "Education"],
+        "Product type": ["Website", "E-commerce"],
+        "Target market": ["Personal", "Experimental"],
+        "Project Type": "Startup",
+        "Delivery Stages": ["Retired"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Software & business services",
+        "Project Domains": ["Brand and portfolio", "E-commerce", "Learning"],
+        "Product type": ["Website"],
+        "Target market": [],
+        "Usage context": ["Personal", "Experimental"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "482c21e0-0e0d-436b-8858-a338875ee4bd",
+      "name": "FAAREN",
+      "sourceEditedAt": "2026-11-17T18:02:00.000Z",
+      "basis": "Early-stage car-subscription frontend built in a startup team using rapid prototyping and design thinking.",
+      "before": {
+        "Industries": ["Automotive", "Logistics", "E-Commerce"],
+        "Project Domains": ["Automotive", "E-commerce"],
+        "Product type": ["Web app", "E-commerce", "Configurator"],
+        "Target market": ["B2C"],
+        "Project Type": "Freelance",
+        "Delivery Stages": ["Prototype", "Production"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Automotive & mobility",
+        "Project Domains": ["E-commerce", "Product configuration"],
+        "Product type": ["Web app"],
+        "Target market": ["B2C"],
+        "Usage context": ["Commercial"],
+        "Delivery model": null
+      }
+    },
+    {
+      "id": "a2e00fd0-11cd-4128-ad63-76c98bae2010",
+      "name": "Druckpanda",
+      "sourceEditedAt": "2026-11-17T18:08:00.000Z",
+      "basis": "Four-person study project integrating optional CO2 certificates into a Shopware checkout flow.",
+      "before": {
+        "Industries": ["E-Commerce", "Education", "Marketing"],
+        "Project Domains": ["Education", "E-commerce", "Sustainability"],
+        "Product type": ["Plugin / integration", "E-commerce"],
+        "Target market": ["B2B2C"],
+        "Project Type": "Student",
+        "Delivery Stages": ["Prototype"],
+        "AI Usage": [],
+        "AI Capabilities": []
+      },
+      "after": {
+        "Sector": "Retail & consumer goods",
+        "Project Domains": ["E-commerce", "Sustainability reporting"],
+        "Product type": ["Plugin / integration"],
+        "Target market": ["B2B2C"],
+        "Usage context": ["Learning"],
+        "Delivery model": null
+      }
+    }
+  ]
+}

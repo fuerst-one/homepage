@@ -1,4 +1,5 @@
 import { FilterParams } from "../../components/Cv/Projects/Filter/utils";
+import { CASE_VOCABULARY } from "@homepage/content/projectCase";
 import {
   ApiFilterParams,
   SORT_ORDERS,
@@ -9,11 +10,16 @@ import {
 const CATEGORICAL_KEYS = [
   "tools",
   "industries",
+  "productTypes",
+  "targetMarket",
+  "usageContext",
+  "deliveryModel",
   "experiences",
   "languages",
   "projectType",
   "workplace",
   "featured",
+  ...Object.keys(CASE_VOCABULARY),
 ] as const;
 
 type CategoricalKey = (typeof CATEGORICAL_KEYS)[number];
@@ -29,7 +35,7 @@ export const parseListParams = (searchParams: URLSearchParams): ParseResult => {
     if (values.length) {
       const validation = validateCategorical(key, values);
       if (!validation.ok) return validation;
-      categorical[key] = values;
+      categorical[key as keyof FilterParams] = values;
     }
   }
 

@@ -15,9 +15,8 @@ import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 import { getProjectLogoSources } from "./getProjectLogoSources";
 import { ProjectLogo } from "./ProjectLogo";
-import { colors } from "./colors";
+import { ProjectIndustry } from "./ProjectIndustry";
 import { useProjectFocusStore } from "./projectFocusStore";
-import { cn } from "../../../lib/utils";
 import { projectPath } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
@@ -45,7 +44,6 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const logos = getProjectLogoSources(project);
   const primaryLogo = logos[0];
   const thumbnail = screenshots?.[0];
-  const color = colors.projectType?.[projectType];
   const openDialog = () => setFocused(id);
   const path = projectPath(project, locale);
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
@@ -118,21 +116,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
       <div className="pointer-events-none relative z-10 flex min-w-0 flex-col gap-3">
         <header className="space-y-1">
           <div className="flex items-center justify-between gap-3">
-            <span
-              className={cn(
-                "inline-flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.2em]",
-                color?.text,
-              )}
-            >
-              <span
-                className={cn(
-                  "inline-block size-2 shrink-0 rounded-[50%] border",
-                  color?.background,
-                  color?.border,
-                )}
-              />
-              {projectType}
-            </span>
+            <ProjectIndustry project={project} locale={locale} />
             {primaryLogo && (
               <ProjectLogo src={primaryLogo} alt={`${name} logo`} />
             )}
@@ -143,6 +127,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
             </Link>
           </h3>
           <p className="text-xs text-neutral-400">
+            {projectType} ·{" "}
             <DateRange
               startDate={startDate}
               endDate={endDate}

@@ -5,7 +5,13 @@ import { Billboard, Html, OrbitControls } from "@react-three/drei";
 import { Suspense, useMemo, useState } from "react";
 import * as THREE from "three";
 import { CvProject } from "@homepage/content/models";
-import { colors } from "./colors";
+import {
+  projectSector,
+  sectorColor,
+  sectorLabel,
+} from "@homepage/content/projectTaxonomy";
+import type { Locale } from "@homepage/content/i18n";
+import { useLocale } from "../../i18n/LocaleProvider";
 import { useFiltersStore } from "./filtersStore";
 import { filterProjects } from "./Filter/utils";
 import { useProjectFocusStore } from "./projectFocusStore";
@@ -14,14 +20,10 @@ const SCENE_SCALE = 1.5;
 const RADIUS_AT_WOW_10 = 0.16;
 const RING_INNER_RATIO = 0.85;
 const HIT_TARGET_MIN_RADIUS = 0.1;
-const FALLBACK_HEX = "#888888";
 const AXIS_EXTENT = SCENE_SCALE * 1.1;
 const RECENCY_FILL_MAX = 0.7;
 const RECENCY_RAMP_DAYS = 365 * 3;
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-const getProjectColor = (projectType: string) =>
-  colors.projectType?.[projectType]?.hex ?? FALLBACK_HEX;
 
 const getProjectRadius = (wowFactor: number) => {
   const clamped = Math.max(0, Math.min(10, wowFactor));
@@ -29,6 +31,7 @@ const getProjectRadius = (wowFactor: number) => {
 };
 
 export const ProjectGraph3D = ({ projects }: { projects: CvProject[] }) => {
+  const locale = useLocale();
   const filterParams = useFiltersStore((s) => s.filters);
   const highlightedIds = useMemo(() => {
     return new Set(filterProjects(projects, filterParams).map((p) => p.id));
@@ -78,6 +81,7 @@ export const ProjectGraph3D = ({ projects }: { projects: CvProject[] }) => {
             <ProjectSphere
               key={project.id}
               project={project}
+              locale={locale}
               isHighlighted={highlightedIds.has(project.id)}
               isHovered={hoveredId === project.id}
               isFocused={focusedId === project.id}
@@ -92,33 +96,63 @@ export const ProjectGraph3D = ({ projects }: { projects: CvProject[] }) => {
           ))}
         </Suspense>
       </Canvas>
-      <ProjectTypeLegend />
+      <IndustryLegend projects={projects} locale={locale} />
       <button
         type="button"
         onClick={() => setShowLabels((v) => !v)}
         className="absolute bottom-3 right-3 z-10 inline-flex items-center gap-1.5 border border-white/30 bg-black/70 px-2 py-1 text-[0.6rem] uppercase tracking-[0.2em] text-neutral-300 transition hover:border-white hover:text-white"
       >
-        {showLabels ? "Hide labels" : "Show labels"}
+        {locale === "de"
+          ? showLabels
+            ? "Namen ausblenden"
+            : "Namen anzeigen"
+          : showLabels
+            ? "Hide labels"
+            : "Show labels"}
       </button>
     </div>
   );
 };
 
-const ProjectTypeLegend = () => {
-  const entries = Object.entries(colors.projectType ?? {});
+const IndustryLegend = ({
+  projects,
+  locale,
+}: {
+  projects: CvProject[];
+  locale: Locale;
+}) => {
+  const entries = [...new Set(projects.map(projectSector))].sort((a, b) =>
+    (a ?? "").localeCompare(b ?? ""),
+  );
   if (entries.length === 0) return null;
   return (
-    <div className="absolute bottom-3 left-3 z-10 flex flex-col gap-1 border border-white/30 bg-black/70 px-2 py-1.5 text-[0.55rem] uppercase tracking-[0.15em] text-neutral-300">
-      {entries.map(([name, config]) => (
-        <div key={name} className="flex items-center gap-2">
-          <span
-            className="inline-block h-2 w-2 rounded-full"
-            style={{ background: config.hex }}
-          />
-          <span>{name}</span>
-        </div>
-      ))}
-    </div>
+    <details className="absolute bottom-3 left-3 z-10 max-w-[calc(100%-7rem)] border border-white/30 bg-black/90 px-2 py-1.5 text-[0.55rem] uppercase tracking-[0.15em] text-neutral-300">
+      <summary className="cursor-pointer">
+        {locale === "de" ? "Farbe: Branche" : "Color: industry"} (
+        {entries.length})
+      </summary>
+      <div
+        className="mt-2 flex max-h-[18vh] flex-col gap-1 overflow-y-auto"
+        aria-label={locale === "de" ? "Branchenlegende" : "Industry legend"}
+      >
+        {entries.map((name) => (
+          <div key={name ?? "unclassified"} className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="inline-block h-2 w-2 shrink-0 rounded-full"
+              style={{ background: sectorColor(name) }}
+            />
+            <span>
+              {name
+                ? sectorLabel(name, locale)
+                : locale === "de"
+                  ? "Nicht zugeordnet"
+                  : "Unclassified"}
+            </span>
+          </div>
+        ))}
+      </div>
+    </details>
   );
 };
 
@@ -177,6 +211,7 @@ const AxisLine = ({
 };
 
 type ProjectSphereProps = {
+  locale: Locale;
   project: CvProject;
   isHighlighted: boolean;
   isHovered: boolean;
@@ -189,6 +224,7 @@ type ProjectSphereProps = {
 };
 
 const ProjectSphere = ({
+  locale,
   project,
   isHighlighted,
   isHovered,
@@ -209,7 +245,8 @@ const ProjectSphere = ({
   );
 
   const radius = getProjectRadius(project.wowFactor);
-  const color = getProjectColor(project.projectType);
+  const sector = projectSector(project);
+  const color = sectorColor(sector);
 
   const isDimmed = isAnyFocused ? !isFocused : !isHighlighted && !isHovered;
   const ringOpacity = isDimmed
@@ -293,6 +330,13 @@ const ProjectSphere = ({
         >
           <div className="-translate-y-1/2 translate-x-2 whitespace-nowrap rounded-sm border border-white/15 bg-black/75 px-1.5 py-px text-[8px] font-medium tracking-wide text-white backdrop-blur-sm">
             {truncatedName}
+            <span className="block text-neutral-300">
+              {sector
+                ? sectorLabel(sector, locale)
+                : locale === "de"
+                  ? "Branche nicht zugeordnet"
+                  : "Industry unclassified"}
+            </span>
           </div>
         </Html>
       )}

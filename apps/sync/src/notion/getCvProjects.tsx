@@ -1,4 +1,5 @@
 import type { ProjectCase } from "@homepage/content/projectCase";
+import type { ProjectTaxonomy } from "@homepage/content/projectTaxonomy";
 
 import {
   fetchNotionProjectsDatabase,
@@ -24,7 +25,7 @@ const toProxyUrls = (
   );
 };
 
-export type CvProject = {
+export type CvProject = ProjectTaxonomy & {
   matching?: ProjectCase;
   id: string;
   name: string;
@@ -117,8 +118,8 @@ const mergeProjectData = (
   const filteredProjects = projects.filter((project) => !project.hidden);
 
   return filteredProjects.map((project) => {
-    const mappedClients = project.clients.map(
-      (relation) => publicClients.find((client) => client.id === relation.id)!,
+    const mappedClients = project.clients.map((relation) =>
+      publicClients.find((client) => client.id === relation.id)!,
     );
     return {
       ...project,

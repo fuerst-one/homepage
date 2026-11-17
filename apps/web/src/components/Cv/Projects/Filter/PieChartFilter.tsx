@@ -35,7 +35,7 @@ export const PieChartFilter = ({
   const seriesColors = data.map((d) => d.itemStyle.color);
 
   return (
-    <div className="flex h-[120px] w-full items-start justify-center">
+    <div className="h-full min-h-0 w-full">
       <ClientChartWrapper
         projectKey={projectKey}
         chartProps={{
@@ -46,11 +46,12 @@ export const PieChartFilter = ({
               formatter: "{b}: {c} ({d}%)",
               backgroundColor: "#000",
               borderColor: "#fff",
+              confine: true,
               textStyle: { color: "#fff" },
             },
             series: [
               {
-                name: "Project Types",
+                name: filterConfig.label,
                 type: "pie",
                 colorBy: "data",
                 color: seriesColors,

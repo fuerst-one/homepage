@@ -88,6 +88,11 @@ const buildHaystack = (project: CvProject): string => {
     project.industries.join(" "),
     project.experiences.join(" "),
     project.languages.join(" "),
+    ...(project.productTypes ?? []),
+    ...(project.targetMarket ?? []),
+    ...(project.usageContext ?? []),
+    ...(project.matching?.domains ?? []),
+    project.deliveryModel ?? "",
     project.projectType,
     project.workplace,
   ]

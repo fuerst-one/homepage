@@ -13,6 +13,10 @@ export type ClientFacet = FacetCount & {
 export type Facets = {
   tools: FacetCount[];
   industries: FacetCount[];
+  productTypes: FacetCount[];
+  targetMarket: FacetCount[];
+  usageContext: FacetCount[];
+  deliveryModels: FacetCount[];
   experiences: FacetCount[];
   languages: FacetCount[];
   projectTypes: FacetCount[];
@@ -24,6 +28,10 @@ export type Facets = {
 export const computeFacets = (projects: CvProject[]): Facets => ({
   tools: countMultiSelect(projects, "tools"),
   industries: countMultiSelect(projects, "industries"),
+  productTypes: countMultiSelect(projects, "productTypes"),
+  targetMarket: countMultiSelect(projects, "targetMarket"),
+  usageContext: countMultiSelect(projects, "usageContext"),
+  deliveryModels: countSingle(projects, "deliveryModel"),
   experiences: countMultiSelect(projects, "experiences"),
   languages: countMultiSelect(projects, "languages"),
   projectTypes: countSingle(projects, "projectType"),
@@ -34,15 +42,24 @@ export const computeFacets = (projects: CvProject[]): Facets => ({
 
 const countMultiSelect = (
   projects: CvProject[],
-  key: "tools" | "industries" | "experiences" | "languages",
+  key:
+    | "tools"
+    | "industries"
+    | "experiences"
+    | "languages"
+    | "productTypes"
+    | "targetMarket"
+    | "usageContext",
 ): FacetCount[] => {
-  const counts = countBy(projects.flatMap((project) => project[key]));
+  const counts = countBy(
+    projects.flatMap((project) => [...new Set(project[key] ?? [])]),
+  );
   return toSortedFacets(counts);
 };
 
 const countSingle = (
   projects: CvProject[],
-  key: "projectType" | "workplace",
+  key: "projectType" | "workplace" | "deliveryModel",
 ): FacetCount[] => {
   const counts = countBy(
     projects.map((project) => project[key]).filter(Boolean),

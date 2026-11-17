@@ -7,15 +7,20 @@ import {
   selectEnquiryEvidence,
   projectCaseAliases,
 } from "@homepage/content/enquiryEvidence";
+import { sectorLabel } from "@homepage/content/projectTaxonomy";
 import type { Locale } from "@homepage/content/i18n";
 import type { ProjectListItem } from "../../server/api/projectListItem";
 import { getKeywordIconShape, getProjectIconShape } from "./iconCatalog";
 
 const FILTER_GROUPS = [
+  { field: "productTypes", label: "Product format", shape: 0 },
+  { field: "targetMarket", label: "Customer market", shape: 0 },
+  { field: "usageContext", label: "Usage context", shape: 0 },
+  { field: "deliveryModel", label: "Delivery model", shape: 0 },
   { field: "buyerNeeds", label: "Buyer need", shape: 2 },
   { field: "aiCapabilities", label: "AI capability", shape: 5 },
   { field: "stages", label: "Delivery stage", shape: 2 },
-  { field: "domains", label: "Project domain", shape: 0 },
+  { field: "domains", label: "Use case", shape: 0 },
   { field: "ownership", label: "Ownership", shape: 2 },
   { field: "maintenance", label: "Engagement status", shape: 2 },
   { field: "aiUsage", label: "AI use", shape: 5 },
@@ -138,7 +143,11 @@ const isCaseField = (
 const facetAliases = (field: SearchField, value: string) =>
   isCaseField(field)
     ? projectCaseAliases(field, value)
-    : [value, ...(GERMAN_FACETS[field]?.[value] ?? [])];
+    : [
+        value,
+        ...(field === "industries" ? [sectorLabel(value, "de")] : []),
+        ...(GERMAN_FACETS[field]?.[value] ?? []),
+      ];
 export type SearchFilter = { field: SearchField; value: string };
 
 /** Exact destinations take priority over a paid assistant question. */
@@ -277,6 +286,10 @@ export const buildProjectSearchIndex = (
         tools: item.tools,
         experiences: item.experiences,
         industries: item.industries,
+        productTypes: item.productTypes ?? [],
+        targetMarket: item.targetMarket ?? [],
+        usageContext: item.usageContext ?? [],
+        deliveryModel: item.deliveryModel ? [item.deliveryModel] : [],
         languages: item.languages,
         projectType: item.projectType ? [item.projectType] : [],
         workplace: item.workplace ? [item.workplace] : [],
@@ -294,7 +307,11 @@ export const buildProjectSearchIndex = (
               buyerNeeds: "Bedarf",
               aiCapabilities: "KI-Funktion",
               stages: "Umsetzungsstand",
-              domains: "Projektbereich",
+              domains: "Anwendungsfall",
+              productTypes: "Produktformat",
+              targetMarket: "Zielmarkt",
+              usageContext: "Nutzungskontext",
+              deliveryModel: "Bereitstellung",
               ownership: "Verantwortung",
               maintenance: "Zusammenarbeit",
               aiUsage: "KI-Einsatz",
@@ -322,7 +339,11 @@ export const buildProjectSearchIndex = (
         locale === "de"
           ? isCaseField(group.field)
             ? caseLabel(value, locale)
-            : (GERMAN_FACETS[group.field]?.[value]?.[0] ?? value)
+            : group.field === "industries"
+              ? sectorLabel(value, locale) !== value
+                ? sectorLabel(value, locale)
+                : (GERMAN_FACETS.industries?.[value]?.[0] ?? value)
+              : (GERMAN_FACETS[group.field]?.[value]?.[0] ?? value)
           : value;
       keywords.push({
         id: `${group.field}:${value}`,
@@ -436,7 +457,14 @@ export const searchProjectIndex = (
                 ),
             ),
           )
-            ? [{ ...project, caseStudy: project.matching }]
+            ? [
+                {
+                  ...project,
+                  industries: project.facets.industries,
+                  productTypes: project.facets.productTypes,
+                  caseStudy: project.matching,
+                },
+              ]
             : [],
         ),
         { intent: "explore", situation: "", outcome: query, context: {} },

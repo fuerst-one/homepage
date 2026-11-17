@@ -116,18 +116,16 @@ const ChartTabContent = ({
 
   const { displayType } = filterConfig;
   return (
-    <div className="flex h-full w-full items-center justify-center p-4">
-      <div className="w-full max-w-3xl">
-        {displayType === "bar" && (
-          <BarChartFilter filterConfig={filterConfig} projects={projects} />
-        )}
-        {displayType === "pie" && (
-          <PieChartFilter filterConfig={filterConfig} projects={projects} />
-        )}
-        {displayType === "treemap" && (
-          <TreemapFilter filterConfig={filterConfig} projects={projects} />
-        )}
-      </div>
+    <div className="h-full min-h-0 w-full p-2">
+      {displayType === "bar" && (
+        <BarChartFilter filterConfig={filterConfig} projects={projects} />
+      )}
+      {displayType === "pie" && (
+        <PieChartFilter filterConfig={filterConfig} projects={projects} />
+      )}
+      {displayType === "treemap" && (
+        <TreemapFilter filterConfig={filterConfig} projects={projects} />
+      )}
     </div>
   );
 };

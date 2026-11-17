@@ -4,8 +4,12 @@ import { CvProject } from "@homepage/content/models";
 import { RichTextField } from "@homepage/content/models";
 import { API_BASE_URL } from "./baseUrl";
 import { projectPath, SITE_URL } from "../../lib/seo";
+import {
+  publicProjectTaxonomy,
+  type ProjectTaxonomy,
+} from "@homepage/content/projectTaxonomy";
 
-export type ProjectListItem = {
+export type ProjectListItem = ProjectTaxonomy & {
   matching?: ProjectCase;
   id: string;
   name: string;
@@ -38,6 +42,7 @@ export const toProjectListItem = (
   oneLineSummary: deriveOneLineSummary(project.description),
   tools: project.tools,
   industries: project.industries,
+  ...publicProjectTaxonomy(project),
   experiences: project.experiences,
   languages: project.languages,
   projectType: project.projectType,

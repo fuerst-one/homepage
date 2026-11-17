@@ -1,3 +1,4 @@
+import { publicProjectTaxonomy } from "@homepage/content/projectTaxonomy";
 import {
   CASE_VOCABULARY,
   type ProjectCase,
@@ -184,6 +185,7 @@ export function preparePublication(value: unknown): PublicPublication {
         websiteUrl: safeCaseStudyLink(text(p.websiteUrl)),
         githubUrl: safeCaseStudyLink(text(p.githubUrl)),
         industries: strings(p.industries),
+        ...publicProjectTaxonomy(p),
         experiences: strings(p.experiences),
         tools: strings(p.tools),
         languages: strings(p.languages),
@@ -228,6 +230,8 @@ export function preparePublication(value: unknown): PublicPublication {
               .join("")
               .slice(0, 600),
           summaryLocale: profile.summary ? "en" : p.contentLocale,
+          industries: p.industries,
+          productTypes: p.productTypes,
           caseStudy: { ...profile, summary: "" },
         };
       }),

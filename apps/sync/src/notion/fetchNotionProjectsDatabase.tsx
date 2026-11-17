@@ -19,6 +19,10 @@ import {
 } from "./types";
 import { flattenNotionProperty } from "./utils/flattenNotionObject";
 import { getNotionProjectTitle } from "./projectTitle";
+import {
+  readNotionProjectTaxonomy,
+  type ProjectTaxonomy,
+} from "@homepage/content/projectTaxonomy";
 
 export type NotionProjectRaw = PageObjectResponse & {
   id: string;
@@ -57,7 +61,7 @@ export type NotionProjectPropertiesRaw = {
   References: RollupField;
 };
 
-export type NotionProject = {
+export type NotionProject = ProjectTaxonomy & {
   id: string;
   name: string;
   logo: string[];
@@ -172,6 +176,7 @@ export const fetchNotionProjectsDatabase = async (
       projectRaw.properties,
       notionProject.name,
     );
+    Object.assign(notionProject, readNotionProjectTaxonomy(projectRaw));
     return notionProject;
   });
 

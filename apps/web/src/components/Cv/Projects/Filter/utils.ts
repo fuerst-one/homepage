@@ -2,6 +2,7 @@ import { CvProject } from "@homepage/content/models";
 import countBy from "lodash/countBy";
 import { colors } from "../colors";
 import { CASE_VOCABULARY } from "@homepage/content/projectCase";
+import { matchesLegacyTaxonomy } from "@homepage/content/projectTaxonomy";
 
 type FilterKey =
   | keyof Omit<
@@ -24,7 +25,16 @@ export const getFilterOptionCounts = (
   projects: CvProject[],
   key: keyof CvProject,
 ) => {
-  const countsByKey = countBy(projects.map((project) => project[key]).flat());
+  const countsByKey = countBy(
+    projects.flatMap<unknown>((project) => {
+      const value = project[key];
+      return Array.isArray(value)
+        ? [...new Set<unknown>(value)]
+        : value == null
+          ? []
+          : [value];
+    }),
+  );
   const countsSorted = Object.entries(countsByKey).sort((a, b) => b[1] - a[1]);
   return countsSorted.map(([itemKey, count]) => ({
     itemKey,
@@ -47,7 +57,11 @@ export const filterProjects = (
       const value = Object.hasOwn(CASE_VOCABULARY, key)
         ? project.matching?.[key as keyof typeof CASE_VOCABULARY]
         : project[key as keyof CvProject];
-      return getIsMatchingProject(value, searchValues);
+      return searchValues.some(
+        (searchValue) =>
+          getIsMatchingProject(value, [searchValue]) ||
+          matchesLegacyTaxonomy(project, key, searchValue),
+      );
     });
   });
 };

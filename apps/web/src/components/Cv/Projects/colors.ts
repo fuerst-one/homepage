@@ -1,51 +1,13 @@
-import { CvProject } from "@homepage/content/models";
-
-type ColorConfig = {
-  background: string;
-  border: string;
-  text: string;
-  hex: string;
-};
+import type { CvProject } from "@homepage/content/models";
+import { SECTORS } from "@homepage/content/projectTaxonomy";
 
 export const colors: Partial<
-  Record<keyof CvProject, Record<string, ColorConfig>>
+  Record<keyof CvProject, Record<string, { hex: string }>>
 > = {
-  projectType: {
-    "Pro Bono": {
-      background: "bg-green-500/50",
-      border: "border-green-500",
-      text: "text-green-500",
-      hex: "#10B981",
-    },
-    Hobby: {
-      background: "bg-blue-500/30",
-      border: "border-blue-500",
-      text: "text-blue-500",
-      hex: "#3B82F6",
-    },
-    Employed: {
-      background: "bg-yellow-500/30",
-      border: "border-yellow-500",
-      text: "text-yellow-500",
-      hex: "#FBBF24",
-    },
-    Freelance: {
-      background: "bg-orange-500/30",
-      border: "border-orange-500",
-      text: "text-orange-500",
-      hex: "#F97316",
-    },
-    Startup: {
-      background: "bg-red-500/30",
-      border: "border-red-500",
-      text: "text-red-500",
-      hex: "#EF4444",
-    },
-    Student: {
-      background: "bg-purple-500/30",
-      border: "border-purple-500",
-      text: "text-purple-500",
-      hex: "#a855f7",
-    },
-  },
+  industries: Object.fromEntries(
+    Object.entries(SECTORS).map(([sector, config]) => [
+      sector,
+      { hex: config.color },
+    ]),
+  ),
 };

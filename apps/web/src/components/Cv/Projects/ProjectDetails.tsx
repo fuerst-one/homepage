@@ -12,8 +12,7 @@ import { ProjectMetaTable } from "./ProjectMetaTable";
 import { getJsxFormattedTextFromTextBlock } from "./getJsxFormattedTextFromTextBlock";
 import { getProjectLogoSources } from "./getProjectLogoSources";
 import { ProjectLogo } from "./ProjectLogo";
-import { colors } from "./colors";
-import { cn } from "../../../lib/utils";
+import { ProjectIndustry } from "./ProjectIndustry";
 import { projectPath, SITE_URL } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
@@ -47,7 +46,6 @@ export const ProjectDetails = ({
   const kpis = getJsxFormattedTextFromTextBlock(project.kpis);
   const logos = getProjectLogoSources(project);
   const primaryLogo = logos[0];
-  const color = colors.projectType?.[projectType];
   const path = projectPath(project, locale);
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
 
@@ -61,21 +59,7 @@ export const ProjectDetails = ({
     >
       <div className="space-y-3 border-b border-white/15 p-6">
         <div className="-mt-2 flex items-center justify-between gap-3 pr-12">
-          <span
-            className={cn(
-              "inline-flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.2em]",
-              color?.text,
-            )}
-          >
-            <span
-              className={cn(
-                "inline-block size-2 shrink-0 rounded-[50%] border",
-                color?.background,
-                color?.border,
-              )}
-            />
-            {projectType}
-          </span>
+          <ProjectIndustry project={project} locale={locale} />
           {primaryLogo && (
             <ProjectLogo src={primaryLogo} alt={`${name} logo`} size="detail" />
           )}
@@ -90,6 +74,7 @@ export const ProjectDetails = ({
         )}
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs text-neutral-400">
+            {projectType} ·{" "}
             <DateRange
               startDate={startDate}
               endDate={endDate}

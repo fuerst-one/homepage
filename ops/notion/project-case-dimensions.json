@@ -135,6 +135,78 @@
           },
           {
             "name": "Geospatial analysis"
+          },
+          {
+            "name": "Interactive art"
+          },
+          {
+            "name": "Animal deterrence"
+          },
+          {
+            "name": "Website assistance"
+          },
+          {
+            "name": "Knowledge retrieval"
+          },
+          {
+            "name": "Business operations"
+          },
+          {
+            "name": "Software testing"
+          },
+          {
+            "name": "Travel planning"
+          },
+          {
+            "name": "Development automation"
+          },
+          {
+            "name": "Games and entertainment"
+          },
+          {
+            "name": "Product configuration"
+          },
+          {
+            "name": "Logistics operations"
+          },
+          {
+            "name": "Route planning"
+          },
+          {
+            "name": "Public information"
+          },
+          {
+            "name": "Health information"
+          },
+          {
+            "name": "Interface exploration"
+          },
+          {
+            "name": "Recipe and shopping planning"
+          },
+          {
+            "name": "Physical product design"
+          },
+          {
+            "name": "EV charging planning"
+          },
+          {
+            "name": "Learning"
+          },
+          {
+            "name": "Product comparison"
+          },
+          {
+            "name": "Music discovery"
+          },
+          {
+            "name": "Data exploration"
+          },
+          {
+            "name": "Creative editing"
+          },
+          {
+            "name": "Sustainability reporting"
           }
         ]
       }
@@ -322,7 +394,7 @@
       "fields": {
         "Buyer Needs": ["Connect software and hardware"],
         "Delivery Stages": ["Prototype"],
-        "Project Domains": ["Embedded systems"],
+        "Project Domains": ["Animal deterrence"],
         "AI Usage": ["Computer vision"],
         "Personal Contribution": "",
         "Case Context": "Camera-guided bird-deterrent prototype connecting firmware, detection, a dashboard and custom hardware.",
@@ -361,7 +433,7 @@
       "fields": {
         "Buyer Needs": ["Add AI capabilities", "Automate repetitive work"],
         "Delivery Stages": ["Prototype"],
-        "Project Domains": ["Developer tooling", "Brand and portfolio"],
+        "Project Domains": ["Website assistance", "Knowledge retrieval"],
         "AI Usage": ["AI product feature"],
         "Personal Contribution": "",
         "Case Context": "Embeddable assistant combining grounded answers with visible, interruptible browser actions and approval before submissions.",
@@ -400,7 +472,7 @@
           "Make data actionable"
         ],
         "Delivery Stages": ["Internal use"],
-        "Project Domains": ["Personal productivity"],
+        "Project Domains": ["Business operations", "Personal productivity"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Project-oriented workspace bringing messages, appointments, tasks, documents, time and finances into one overview.",
@@ -455,7 +527,7 @@
       "fields": {
         "Buyer Needs": ["Build internal tooling", "Automate repetitive work"],
         "Delivery Stages": ["Internal use"],
-        "Project Domains": ["Developer tooling"],
+        "Project Domains": ["Developer tooling", "Software testing"],
         "AI Usage": ["AI-powered developer tool"],
         "Personal Contribution": "Delivered the entire project solo, covering product, design and implementation.",
         "Case Context": "Local browser-agent testing tool that turns natural-language user flows into end-to-end checks.",
@@ -526,7 +598,7 @@
           "Automate repetitive work"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Tourism and travel"],
+        "Project Domains": ["Travel planning"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Collaborative map-based trip planner with generated trip ideas, day trips and editable itineraries.",
@@ -567,7 +639,7 @@
       "fields": {
         "Buyer Needs": ["Build internal tooling", "Automate repetitive work"],
         "Delivery Stages": ["Internal use"],
-        "Project Domains": ["Developer tooling"],
+        "Project Domains": ["Developer tooling", "Development automation"],
         "AI Usage": ["AI-powered developer tool"],
         "Personal Contribution": "Delivered the entire project solo, covering product, design and implementation.",
         "Case Context": "Local multi-agent development harness with staged workflows, steering and status dashboards.",
@@ -629,7 +701,7 @@
       "fields": {
         "Buyer Needs": ["Add AI capabilities", "Build internal tooling"],
         "Delivery Stages": [],
-        "Project Domains": ["Developer tooling"],
+        "Project Domains": ["Developer tooling", "Knowledge retrieval"],
         "AI Usage": ["AI product feature"],
         "Personal Contribution": "",
         "Case Context": "Agent-memory system combining graph and vector storage with LLM-assisted memorization and retrieval.",
@@ -665,7 +737,7 @@
           "Create a public website"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Brand and portfolio"],
+        "Project Domains": ["Brand and portfolio", "Interactive art"],
         "AI Usage": [],
         "Personal Contribution": "Designed a generative ASCII plasma animation, as stated in the first-person project description.",
         "Case Context": "Generative ASCII plasma animation for a personal brand landing page.",
@@ -698,7 +770,7 @@
       "fields": {
         "Buyer Needs": ["Create an interactive experience"],
         "Delivery Stages": [],
-        "Project Domains": ["Entertainment", "Education"],
+        "Project Domains": ["Games and entertainment"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "German word puzzle built around a mandatory letter and six optional letters.",
@@ -758,7 +830,7 @@
           "Automate repetitive work"
         ],
         "Delivery Stages": ["Production", "Ongoing maintenance"],
-        "Project Domains": ["E-commerce", "Automotive"],
+        "Project Domains": ["E-commerce", "Product configuration"],
         "AI Usage": ["AI product feature"],
         "Personal Contribution": "Owned product engineering across frontend and backend, UX/UI design, client communication and organization. Built the product with a business partner who focused on motorcycle-decal industry expertise and marketing.",
         "Case Context": "Motorcycle-decal design product with user editing and an implemented AI design-generation chat, support, API-based product-data creation/maintenance, analytics evaluation and translation, according to the owner.",
@@ -917,7 +989,7 @@
           "Connect software and hardware"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Logistics and maritime"],
+        "Project Domains": ["Logistics operations", "Geospatial analysis"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Container GPS tracking and lifecycle visualization to identify port-efficiency opportunities.",
@@ -955,7 +1027,7 @@
       "fields": {
         "Buyer Needs": ["Improve conversion"],
         "Delivery Stages": ["Improvement"],
-        "Project Domains": ["Nonprofit"],
+        "Project Domains": ["Marketing and research"],
         "AI Usage": [],
         "Personal Contribution": "Worked as a student consultant through KonversionsKRAFT, as stated in the source.",
         "Case Context": "Conversion-optimization consulting for World Vision.",
@@ -992,7 +1064,7 @@
           "Automate repetitive work"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["E-commerce"],
+        "Project Domains": ["E-commerce", "Product configuration"],
         "AI Usage": [],
         "Personal Contribution": "Built the TypeForm story tree described in the first-person project account.",
         "Case Context": "Packaging-configuration conversation implemented as a TypeForm story tree.",
@@ -1112,7 +1184,7 @@
           "Deliver an industry-specific workflow"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Logistics and maritime"],
+        "Project Domains": ["Route planning"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Excel plugin extending maritime route calculation into a familiar planning workflow.",
@@ -1146,7 +1218,7 @@
           "Integrate business systems"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Personal productivity", "Public sector"],
+        "Project Domains": ["Public information", "Health information"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Telegram notifications reducing the need to check government lockdown-news pages manually.",
@@ -1174,7 +1246,7 @@
           "Validate a product idea"
         ],
         "Delivery Stages": ["Prototype"],
-        "Project Domains": ["Brand and portfolio"],
+        "Project Domains": ["Interface exploration"],
         "AI Usage": [],
         "Personal Contribution": "Tried to clone the bubble-style watch interface in a React app, as stated in the first-person record.",
         "Case Context": "Small React experiment recreating the Apple Watch bubble interface.",
@@ -1207,7 +1279,10 @@
       "fields": {
         "Buyer Needs": ["Create an interactive experience"],
         "Delivery Stages": [],
-        "Project Domains": ["Personal productivity"],
+        "Project Domains": [
+          "Recipe and shopping planning",
+          "Personal productivity"
+        ],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Recipe and grocery-list application that began as a hobby project.",
@@ -1290,7 +1365,7 @@
           "Improve a complex interface"
         ],
         "Delivery Stages": ["Discovery", "Prototype"],
-        "Project Domains": ["Education", "E-commerce"],
+        "Project Domains": ["E-commerce"],
         "AI Usage": [],
         "Personal Contribution": "Participated in a five-person team that conceptualized and managed the study project; individual responsibilities remain unspecified.",
         "Case Context": "Five-person university collaboration exploring an online pet-food shopping concept with prototypes and usability testing.",
@@ -1330,7 +1405,7 @@
           "Join an existing team"
         ],
         "Delivery Stages": ["Improvement"],
-        "Project Domains": ["E-commerce"],
+        "Project Domains": ["E-commerce", "Product configuration"],
         "AI Usage": [],
         "Personal Contribution": "Served as the team's frontend and e-commerce specialist, implementing interface design and functionality on an existing Shopware theme.",
         "Case Context": "Packaging configurator work involving interface design, CRM API integration and delivery pipelines.",
@@ -1366,7 +1441,7 @@
       "fields": {
         "Buyer Needs": ["Create a public website", "Improve conversion"],
         "Delivery Stages": [],
-        "Project Domains": ["Healthcare"],
+        "Project Domains": ["Brand and portfolio"],
         "AI Usage": [],
         "Personal Contribution": "Delivered a paid website side project during studies; the source does not break down design, implementation and maintenance responsibilities.",
         "Case Context": "Paid dentist brand-website project applying usability and consumer-psychology principles.",
@@ -1405,7 +1480,7 @@
       "fields": {
         "Buyer Needs": [],
         "Delivery Stages": [],
-        "Project Domains": ["E-commerce"],
+        "Project Domains": ["E-commerce", "Physical product design"],
         "AI Usage": [],
         "Personal Contribution": "Initiated the venture and later brought in two friends, as stated in the project account.",
         "Case Context": "Clothing venture that expanded from making products for friends into sales channels and production pipelines.",
@@ -1454,7 +1529,7 @@
           "Join an existing team"
         ],
         "Delivery Stages": ["Improvement"],
-        "Project Domains": ["Automotive", "Marketing and research"],
+        "Project Domains": ["Marketing and research"],
         "AI Usage": [],
         "Personal Contribution": "Consulted the financing unit through KonversionsKRAFT and implemented test pipelines with the agency team.",
         "Case Context": "Financing-signup optimization through consulting, consumer psychology and A/B-testing pipelines at mobile.de.",
@@ -1492,7 +1567,7 @@
           "Deliver an industry-specific workflow"
         ],
         "Delivery Stages": ["Discovery", "Prototype"],
-        "Project Domains": ["Logistics and maritime", "Public sector"],
+        "Project Domains": ["Logistics operations"],
         "AI Usage": [],
         "Personal Contribution": "The project title identifies a hackathon team-lead role; the narrative describes collaboration with soldiers and a prize-winning team idea.",
         "Case Context": "Logistics innovation workshop and hackathon conducted with Bundeswehr users.",
@@ -1527,7 +1602,7 @@
           "Create an interactive experience"
         ],
         "Delivery Stages": ["Discovery", "Prototype"],
-        "Project Domains": ["Education", "Sustainability", "Automotive"],
+        "Project Domains": ["EV charging planning"],
         "AI Usage": [],
         "Personal Contribution": "Worked with four study colleagues on the product concept and mobile UI; individual responsibilities remain unspecified.",
         "Case Context": "Five-person study concept for visualizing solar-energy income and EV-charging output.",
@@ -1566,7 +1641,7 @@
           "Make data actionable"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Education"],
+        "Project Domains": ["Learning"],
         "AI Usage": [],
         "Personal Contribution": "Created the university tutoring project with one colleague; individual implementation and teaching responsibilities remain unspecified.",
         "Case Context": "University tutorial using a burger-building metaphor to explain programming basics.",
@@ -1597,7 +1672,7 @@
       "fields": {
         "Buyer Needs": ["Create a public website"],
         "Delivery Stages": [],
-        "Project Domains": ["Logistics and maritime", "Brand and portfolio"],
+        "Project Domains": ["Brand and portfolio"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Brand website supporting an open-source maritime-software initiative.",
@@ -1634,7 +1709,7 @@
           "Make data actionable"
         ],
         "Delivery Stages": ["Production"],
-        "Project Domains": ["Logistics and maritime"],
+        "Project Domains": ["Route planning"],
         "AI Usage": [],
         "Personal Contribution": "Developed in a two-person maritime-industry team; individual component ownership remains unspecified.",
         "Case Context": "Open-source maritime route-planning alternative to commercial routing services.",
@@ -1681,7 +1756,7 @@
       "fields": {
         "Buyer Needs": ["Make data actionable", "Create a public website"],
         "Delivery Stages": ["Production"],
-        "Project Domains": ["Automotive", "Sustainability"],
+        "Project Domains": ["Product comparison", "Public information"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Mobility database and blog helping readers compare transport choices.",
@@ -1725,7 +1800,7 @@
           "Create an interactive experience"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Tourism and travel", "Public sector"],
+        "Project Domains": ["Travel planning", "Public information"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Local-tourism and public-information app enabling communes to create regional tours and communicate with visitors.",
@@ -1767,7 +1842,7 @@
           "Validate a product idea"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Logistics and maritime"],
+        "Project Domains": ["Logistics operations", "Geospatial analysis"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Port-planning interface aggregating AIS and schedule data to estimate arrivals and emissions.",
@@ -1801,7 +1876,7 @@
       "fields": {
         "Buyer Needs": ["Make data actionable", "Integrate business systems"],
         "Delivery Stages": [],
-        "Project Domains": ["Entertainment"],
+        "Project Domains": ["Music discovery", "Data exploration"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Spotify API integration visualizing playlist artists, release dates and other metadata.",
@@ -1835,7 +1910,7 @@
           "Integrate business systems"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Entertainment"],
+        "Project Domains": ["Creative editing"],
         "AI Usage": [],
         "Personal Contribution": "",
         "Case Context": "Spotify artwork editor allowing drag, rotation, arrangement and export of album-art collages.",
@@ -1887,7 +1962,7 @@
           "Join an existing team"
         ],
         "Delivery Stages": ["Production", "Improvement"],
-        "Project Domains": ["Logistics and maritime"],
+        "Project Domains": ["Logistics operations", "Route planning"],
         "AI Usage": [],
         "Personal Contribution": "Contributed UX/UI design and frontend development, plus some backend work, within a team of five to ten developers.",
         "Case Context": "Maritime chartering interface covering voyage calculation, competitor analysis, route monitoring and negotiation.",
@@ -1984,7 +2059,7 @@
           "Create an interactive experience"
         ],
         "Delivery Stages": [],
-        "Project Domains": ["Brand and portfolio", "Education"],
+        "Project Domains": ["Brand and portfolio", "E-commerce", "Learning"],
         "AI Usage": [],
         "Personal Contribution": "Started and expanded the website during studies, applying growing knowledge of professional online businesses.",
         "Case Context": "Personal portfolio and e-commerce learning playground developed during studies.",
@@ -2017,7 +2092,7 @@
       "fields": {
         "Buyer Needs": ["Launch a new product", "Improve a complex interface"],
         "Delivery Stages": ["Prototype"],
-        "Project Domains": ["Automotive", "E-commerce"],
+        "Project Domains": ["E-commerce", "Product configuration"],
         "AI Usage": [],
         "Personal Contribution": "Worked as part of the early FAAREN team; individual responsibility beyond the reported frontend work remains unspecified.",
         "Case Context": "Early-stage car-subscription frontend built in a startup team using rapid prototyping and design thinking.",
@@ -2051,7 +2126,7 @@
           "Validate a product idea"
         ],
         "Delivery Stages": ["Prototype"],
-        "Project Domains": ["Education", "E-commerce", "Sustainability"],
+        "Project Domains": ["E-commerce", "Sustainability reporting"],
         "AI Usage": [],
         "Personal Contribution": "Participated in a four-person study team with a technical and project-management focus; individual responsibilities remain unspecified.",
         "Case Context": "Four-person study project integrating optional CO2 certificates into a Shopware checkout flow.",
@@ -2075,5 +2150,10 @@
       "quote": "Seabo finished 7/26",
       "normalization": "First day represents the owner-confirmed end month; exact end day was not supplied."
     }
-  ]
+  ],
+  "taxonomyMigration": {
+    "date": "2026-11-17",
+    "manifest": "ops/notion/taxonomy/project-taxonomy-2026-11-17.json",
+    "note": "Project Domains now contains use cases only. Market sectors come from the project-owned Sector select; original client-industry rollups are not project classifications."
+  }
 }

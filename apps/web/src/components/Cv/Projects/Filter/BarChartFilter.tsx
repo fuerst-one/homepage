@@ -19,14 +19,14 @@ export const BarChartFilter = ({
 
   if (!itemCounts.length || maxCount === 0) {
     return (
-      <div className="flex h-[215px] w-full items-center justify-center text-xs text-neutral-500">
+      <div className="flex h-full w-full items-center justify-center text-xs text-neutral-500">
         No data available yet
       </div>
     );
   }
 
   return (
-    <div className="h-[215px] w-full overflow-y-auto pr-1">
+    <div className="h-full min-h-0 w-full overflow-y-auto pr-1">
       <div className="flex flex-col gap-2 text-xs text-neutral-200">
         {itemCounts.map(({ itemKey, count }) => (
           <Fragment key={itemKey}>

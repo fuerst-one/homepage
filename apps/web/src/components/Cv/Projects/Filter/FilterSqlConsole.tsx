@@ -5,6 +5,7 @@ import { useLocale } from "../../../i18n/LocaleProvider";
 import { useFiltersStore } from "../filtersStore";
 import clsx from "clsx";
 import { caseLabel } from "@homepage/content/projectCase";
+import { sectorLabel } from "@homepage/content/projectTaxonomy";
 import { CvProject } from "@homepage/content/models";
 import { FilterParams, filterProjects } from "./utils";
 import {
@@ -19,6 +20,9 @@ import {
 
 const ARRAY_COLUMNS: (keyof FilterParams)[] = [
   "industries",
+  "productTypes",
+  "targetMarket",
+  "usageContext",
   "experiences",
   "tools",
   "languages",
@@ -35,7 +39,12 @@ type CliFilterKey =
   | "projectType"
   | "tools"
   | "languages"
-  | "featured";
+  | "featured"
+  | "productTypes"
+  | "targetMarket"
+  | "usageContext"
+  | "deliveryModel"
+  | "domains";
 
 type CliFilterOption = {
   value: string;
@@ -49,6 +58,11 @@ type CliFilterGroup = {
 };
 
 const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
+  { key: "domains", label: "Use cases" },
+  { key: "productTypes", label: "Product formats" },
+  { key: "targetMarket", label: "Customer market" },
+  { key: "usageContext", label: "Usage context" },
+  { key: "deliveryModel", label: "Delivery model" },
   {
     key: "featured",
     label: "Featured",
@@ -76,6 +90,11 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
 ];
 
 const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
+  domains: "Anwendungsfälle",
+  productTypes: "Produktformate",
+  targetMarket: "Zielmarkt",
+  usageContext: "Nutzungskontext",
+  deliveryModel: "Bereitstellung",
   featured: "Ausgewählt",
   experiences: "Fachgebiete",
   industries: "Branchen",
@@ -88,7 +107,7 @@ const EXTRA_FILTER_LABELS: Record<string, [string, string]> = {
   id: ["Project", "Projekt"],
   buyerNeeds: ["Buyer need", "Bedarf"],
   stages: ["Delivery stage", "Umsetzungsstand"],
-  domains: ["Project domain", "Projektbereich"],
+  domains: ["Use case", "Anwendungsfall"],
   aiCapabilities: ["AI capability", "KI-Funktion"],
   aiUsage: ["AI use", "KI-Einsatz"],
   ownership: ["Contribution", "Verantwortung"],
@@ -196,7 +215,9 @@ export const FilterSqlConsole = ({
                 : de
                   ? "Nein"
                   : "No"
-              : caseLabel(value, locale),
+              : key === "industries"
+                ? sectorLabel(value, locale)
+                : caseLabel(value, locale),
       })),
     );
   }, [normalizedFilters, de, locale, projects]);
@@ -362,7 +383,13 @@ export const FilterSqlConsole = ({
                   if (activeValues.has(option.value)) {
                     return true;
                   }
-                  return option.value.toLowerCase().includes(loweredQuery);
+                  const label =
+                    key === "industries"
+                      ? sectorLabel(option.value, locale)
+                      : caseLabel(option.value, locale);
+                  return [option.value, label].some((value) =>
+                    value.toLowerCase().includes(loweredQuery),
+                  );
                 });
 
                 return (
@@ -402,7 +429,9 @@ export const FilterSqlConsole = ({
                                     {isSelected ? "▣" : "▢"}
                                   </span>
                                   <span className="whitespace-normal break-words text-left">
-                                    {option.value}
+                                    {key === "industries"
+                                      ? sectorLabel(option.value, locale)
+                                      : caseLabel(option.value, locale)}
                                   </span>
                                 </span>
                                 <span className="text-[0.65rem] text-neutral-500">
@@ -470,10 +499,10 @@ const buildOptionsForKey = (
   const counts = new Map<string, number>();
 
   projects.forEach((project) => {
-    const value = project[key];
+    const value = key === "domains" ? project.matching?.domains : project[key];
 
     if (Array.isArray(value)) {
-      value.filter(Boolean).forEach((item) => {
+      [...new Set(value.filter(Boolean))].forEach((item) => {
         const normalized = item.trim();
         if (!normalized) {
           return;

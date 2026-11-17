@@ -36,6 +36,11 @@ export const buildOpenApiSpec = () => ({
             "Filter by tool name (comma-separated, repeatable).",
           ),
           listParam("industries", "string", "Filter by industry."),
+          listParam("productTypes", "string", "Filter by product format."),
+          listParam("targetMarket", "string", "Filter by customer market."),
+          listParam("usageContext", "string", "Filter by usage context."),
+          listParam("deliveryModel", "string", "Filter by delivery model."),
+          listParam("domains", "string", "Filter by project use case."),
           listParam("experiences", "string", "Filter by experience tag."),
           listParam("languages", "string", "Filter by language."),
           listParam("projectType", "string", "Filter by project type."),
@@ -186,6 +191,10 @@ export const buildOpenApiSpec = () => ({
           "oneLineSummary",
           "tools",
           "industries",
+          "productTypes",
+          "targetMarket",
+          "usageContext",
+          "deliveryModel",
           "experiences",
           "languages",
           "projectType",
@@ -224,6 +233,10 @@ export const buildOpenApiSpec = () => ({
           oneLineSummary: { type: "string" },
           tools: { type: "array", items: { type: "string" } },
           industries: { type: "array", items: { type: "string" } },
+          productTypes: { type: "array", items: { type: "string" } },
+          targetMarket: { type: "array", items: { type: "string" } },
+          usageContext: { type: "array", items: { type: "string" } },
+          deliveryModel: { type: ["string", "null"] },
           experiences: { type: "array", items: { type: "string" } },
           languages: { type: "array", items: { type: "string" } },
           projectType: { type: "string" },
@@ -336,6 +349,22 @@ export const buildOpenApiSpec = () => ({
       Facets: {
         type: "object",
         properties: {
+          productTypes: {
+            type: "array",
+            items: { $ref: "#/components/schemas/FacetCount" },
+          },
+          targetMarket: {
+            type: "array",
+            items: { $ref: "#/components/schemas/FacetCount" },
+          },
+          usageContext: {
+            type: "array",
+            items: { $ref: "#/components/schemas/FacetCount" },
+          },
+          deliveryModels: {
+            type: "array",
+            items: { $ref: "#/components/schemas/FacetCount" },
+          },
           tools: {
             type: "array",
             items: { $ref: "#/components/schemas/FacetCount" },

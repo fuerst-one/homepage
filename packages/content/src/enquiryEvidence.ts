@@ -1,4 +1,5 @@
 import type { Enquiry } from "@homepage/content/enquiry";
+import { SECTORS, matchesLegacyTaxonomy, sectorLabel } from "./projectTaxonomy";
 import {
   CASE_VOCABULARY,
   type ProjectCase,
@@ -10,6 +11,8 @@ export type EnquiryEvidence = {
   href: string;
   summary: string;
   summaryLocale?: "en" | "de";
+  industries?: string[];
+  productTypes?: string[];
   caseStudy: ProjectCase;
 };
 type Brief = Pick<Enquiry, "intent" | "situation" | "outcome" | "context">;
@@ -205,12 +208,18 @@ export const projectCaseAliases = (
   [
     value,
     (CASE_VOCABULARY[field] as Record<string, string>)[value],
+    ...(field === "domains" ? [sectorLabel(value, "de")] : []),
     ...(aliases[value] ?? []),
   ].filter(Boolean);
 const topics: Signal[] = (
   ["buyerNeeds", "domains", "aiCapabilities"] as const
 ).flatMap((field) =>
-  Object.keys(CASE_VOCABULARY[field]).map((value) => ({ field, value })),
+  [
+    ...new Set([
+      ...Object.keys(CASE_VOCABULARY[field]),
+      ...(field === "domains" ? Object.keys(SECTORS) : []),
+    ]),
+  ].map((value) => ({ field, value })),
 );
 const hasPhrase = (text: string, phrase: string) =>
   ` ${text} `.includes(` ${phrase} `);
@@ -290,7 +299,21 @@ export function selectEnquiryEvidence(
     .flatMap((project) => {
       const data = project.caseStudy;
       const selected = project.id === brief.context.projectId;
-      const matches = signals.filter((signal) => supports(data, signal));
+      const matches = signals.filter(
+        (signal) =>
+          supports(data, signal) ||
+          (signal.field === "domains" &&
+            (project.industries?.includes(signal.value) ||
+              matchesLegacyTaxonomy(
+                {
+                  industries: project.industries,
+                  productTypes: project.productTypes,
+                  matching: data,
+                },
+                "domains",
+                signal.value,
+              ))),
+      );
       const matchedNeeds = needs.filter((value) =>
         supports(data, { field: "buyerNeeds", value }),
       );

@@ -1,6 +1,7 @@
 import type { EnquiryEvidence } from "./enquiryEvidence";
 import type { Locale } from "@homepage/content/i18n";
 import type { ProjectCase } from "@homepage/content/projectCase";
+import type { ProjectTaxonomy } from "./projectTaxonomy";
 
 /** Public rendering format. It has no provider SDK or source-record fields. */
 export type RichTextContent = {
@@ -20,7 +21,7 @@ export type RichTextContent = {
 export type TitleField = { type: "title"; title: RichTextContent[] };
 export type RichTextField = { type: "rich_text"; rich_text: RichTextContent[] };
 export type CvClient = { id: string; name: string; url: string | null };
-export type CvProject = {
+export type CvProject = ProjectTaxonomy & {
   id: string;
   name: string;
   logo: string[] | null;

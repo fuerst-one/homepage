@@ -1,4 +1,5 @@
 import type { Locale } from "@homepage/content/i18n";
+import { sectorLabel } from "./projectTaxonomy";
 
 // This allowlist is the public matching vocabulary, not the full editorial record.
 export const CASE_VOCABULARY = {
@@ -32,6 +33,30 @@ export const CASE_VOCABULARY = {
     "Ongoing maintenance": "Laufende Betreuung",
   },
   domains: {
+    "Interactive art": "Interaktive Kunst",
+    "Animal deterrence": "Tierabwehr",
+    "Website assistance": "Website-Assistenz",
+    "Knowledge retrieval": "Wissensabruf",
+    "Business operations": "Geschäftsabläufe",
+    "Software testing": "Softwaretests",
+    "Travel planning": "Reiseplanung",
+    "Development automation": "Entwicklungsautomatisierung",
+    "Games and entertainment": "Spiele und Unterhaltung",
+    "Product configuration": "Produktkonfiguration",
+    "Logistics operations": "Logistikabläufe",
+    "Route planning": "Routenplanung",
+    "Public information": "Öffentliche Informationen",
+    "Health information": "Gesundheitsinformationen",
+    "Interface exploration": "Interface-Experimente",
+    "Recipe and shopping planning": "Rezept- und Einkaufsplanung",
+    "Physical product design": "Gestaltung physischer Produkte",
+    "EV charging planning": "Ladeplanung für Elektrofahrzeuge",
+    Learning: "Lernen",
+    "Product comparison": "Produktvergleich",
+    "Music discovery": "Musik entdecken",
+    "Data exploration": "Daten erkunden",
+    "Creative editing": "Kreative Bearbeitung",
+    "Sustainability reporting": "Nachhaltigkeitsnachweise",
     "Developer tooling": "Entwicklerwerkzeuge",
     "Logistics and maritime": "Logistik und Schifffahrt",
     "E-commerce": "E-Commerce",
@@ -141,5 +166,7 @@ const germanLabels: Record<string, string> = Object.assign(
   ...Object.values(CASE_VOCABULARY),
 );
 export function caseLabel(value: string, locale: Locale) {
-  return locale === "de" ? (germanLabels[value] ?? value) : value;
+  return locale === "de"
+    ? (germanLabels[value] ?? sectorLabel(value, locale))
+    : value;
 }

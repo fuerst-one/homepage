@@ -1,9 +1,14 @@
 import { CvProject } from "@homepage/content/models";
+import { sectorLabel } from "@homepage/content/projectTaxonomy";
 import { Tag } from "./Tag";
 
 const ROW_LABELS: Partial<Record<keyof CvProject, string>> = {
   clients: "Clients",
   industries: "Industries",
+  productTypes: "Product formats",
+  targetMarket: "Customer market",
+  usageContext: "Usage context",
+  deliveryModel: "Delivery model",
   experiences: "Experiences",
   tools: "Tools",
   languages: "Languages",
@@ -24,7 +29,7 @@ export const ProjectMetaTable = ({
       if (Array.isArray(value)) {
         return value.length > 0;
       }
-      return value !== null;
+      return value !== null && value !== undefined && value !== "";
     })
     .map(([key, label]) => ({
       label:
@@ -33,6 +38,10 @@ export const ProjectMetaTable = ({
               {
                 clients: "Kunden",
                 industries: "Branchen",
+                productTypes: "Produktformate",
+                targetMarket: "Zielmarkt",
+                usageContext: "Nutzungskontext",
+                deliveryModel: "Bereitstellung",
                 experiences: "Erfahrungen",
                 tools: "Tools",
                 languages: "Sprachen",
@@ -50,7 +59,11 @@ export const ProjectMetaTable = ({
   return (
     <div className="glass-panel space-y-3 border border-white/20 p-4 text-sm text-neutral-200">
       {filteredFields.map(({ label, projectKey, value }) => {
-        const preview = formatPreviewValue(value);
+        const preview = formatPreviewValue(
+          projectKey === "industries" && Array.isArray(value)
+            ? (value as string[]).map((item) => sectorLabel(item, locale))
+            : value,
+        );
 
         return (
           <details
@@ -76,6 +89,7 @@ export const ProjectMetaTable = ({
                 projectKey={projectKey}
                 value={value}
                 filterable={filterable}
+                locale={locale}
               />
             </div>
           </details>
@@ -89,10 +103,12 @@ const Property = <TKey extends keyof CvProject>({
   projectKey,
   value,
   filterable,
+  locale,
 }: {
   projectKey: TKey;
   value: CvProject[TKey];
   filterable: boolean;
+  locale: "en" | "de";
 }) => {
   if (projectKey === "clients") {
     return (
@@ -114,13 +130,20 @@ const Property = <TKey extends keyof CvProject>({
             searchParamKey={filterable ? projectKey : undefined}
             value={i}
           >
-            {i}
+            {projectKey === "industries" ? sectorLabel(i, locale) : i}
           </Tag>
         ))}
       </div>
     );
   }
-  return <span className="text-neutral-200">{value as string}</span>;
+  return (
+    <Tag
+      searchParamKey={filterable ? projectKey : undefined}
+      value={value as string}
+    >
+      {value as string}
+    </Tag>
+  );
 };
 
 const formatPreviewValue = (value: CvProject[keyof CvProject]) => {
