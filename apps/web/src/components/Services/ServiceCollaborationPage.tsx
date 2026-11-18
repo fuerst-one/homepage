@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import Link from "next/link";
 import { Layout } from "../Layout";
 import { Button } from "../Button";
@@ -109,7 +110,7 @@ export async function ServiceCollaborationPage({
             provider: {
               "@type": "Person",
               "@id": PERSON_ID,
-              name: "Alexander Fuerst",
+              name: personName(locale),
             },
             isRelatedTo: {
               "@type": "Service",

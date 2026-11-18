@@ -64,7 +64,7 @@ export const serviceCollaborations: Record<
       teaser:
         "Einen Konfigurator, Editor oder ein Dateninterface vom Konzept in Code bringen oder euer Team mit UX und Frontend-Entwicklung verstärken.",
       description:
-        "UX und Frontend-Umsetzung für Konfiguratoren, visuelle Editoren und datenreiche Produkte. Vereinbare ein Projekt mit Alexander Fuerst oder hole ihn in dein Team.",
+        "UX und Frontend-Umsetzung für Konfiguratoren, visuelle Editoren und datenreiche Produkte. Vereinbare ein Projekt mit Alexander Fürst oder hole ihn in dein Team.",
       intro:
         "Ich verbinde Interaktionsdesign und Umsetzung für Produktteams, die ein komplexes Interface entwickeln oder verbessern wollen. Wir vereinbaren einen Umsetzungsschritt oder eine Rolle an der Seite eurer Designer und Entwickler. Ein Interface-Review hilft, wenn der passende Einstieg noch unklar ist.",
       project: {
@@ -140,7 +140,7 @@ export const serviceCollaborations: Record<
       teaser:
         "Eine Datenpipeline oder Automatisierung umsetzen oder euer Team bei der Entwicklung seiner Abläufe unterstützen.",
       description:
-        "Datenpipelines, Tool-Integrationen und Automatisierungen mit Alexander Fuerst umsetzen. Als vereinbartes Projekt oder als Unterstützung in deinem bestehenden Team.",
+        "Datenpipelines, Tool-Integrationen und Automatisierungen mit Alexander Fürst umsetzen. Als vereinbartes Projekt oder als Unterstützung in deinem bestehenden Team.",
       intro:
         "Ich unterstütze Teams dabei, wiederkehrende Handarbeit in verbundene Software zu überführen. Wir setzen einen Ablauf von der Quelle bis zum Ergebnis um oder arbeiten gemeinsam an euren bestehenden Systemen. Das Workflow-Assessment ist ein möglicher Einstieg, wenn der passende Ansatz noch untersucht werden muss.",
       project: {
@@ -216,7 +216,7 @@ export const serviceCollaborations: Record<
       teaser:
         "Eine sinnvolle KI-Funktion erkunden und integrieren, mit Produktdenken, Interaktionsdesign und Engineering an der Seite eures Teams.",
       description:
-        "KI-Produktfunktionen mit Alexander Fuerst erkunden, testen und integrieren. Produktdenken, UX und Engineering als Projekt oder in deinem bestehenden Team verbinden.",
+        "KI-Produktfunktionen mit Alexander Fürst erkunden, testen und integrieren. Produktdenken, UX und Engineering als Projekt oder in deinem bestehenden Team verbinden.",
       intro:
         "Ich arbeite mit Gründern und Produktteams daran, KI eine sinnvolle Aufgabe im Produkt zu geben. Wir können eine erste Idee testen, eine Funktion integrieren oder eine längerfristige Mitarbeit in eurem Team vereinbaren.",
       project: {

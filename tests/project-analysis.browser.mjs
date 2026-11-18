@@ -5,73 +5,129 @@ import puppeteer from "puppeteer";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6894";
 
 for (const locale of ["en", "de"]) {
-  test(`${locale}: sidebar view selector switches analysis and keeps chart filters connected`, async () => {
+  test(`${locale}: sidebar Explorer shows cluster and project hover cards without controls`, async () => {
     const browser = await puppeteer.launch({ headless: true });
     try {
       const page = await browser.newPage();
-      await page.setViewport({ width: 390, height: 844 });
-      await page.goto(
-        `${base}/${locale}/projects?capabilities=AI+Engineering`,
-        {
-          waitUntil: "networkidle2",
-          timeout: 90000,
-        },
+      const errors = [];
+      page.on("pageerror", (error) => errors.push(error.message));
+      await page.setViewport({ width: 1280, height: 900 });
+      await page.goto(`${base}/${locale}/projects?tools=React.js`, {
+        waitUntil: "domcontentloaded",
+        timeout: 90000,
+      });
+      await page.screenshot({
+        path: `/tmp/homepage-navigation-${locale}-desktop.png`,
+      });
+      const preview = await page.waitForSelector(
+        "aside [data-explorer-preview]",
       );
-      const selector = "aside select";
-      await page.waitForSelector(selector, { timeout: 3000 });
-      assert.deepEqual(
-        await page.$$eval(`${selector} option`, (options) =>
-          options.map((option) => option.value),
+      await preview.scrollIntoView();
+      const canvas = await page.waitForSelector(
+        "[data-explorer-preview] canvas",
+      );
+      assert.equal(
+        await page.$("[data-explorer-preview] :is(button,select,input)"),
+        null,
+      );
+      assert.equal(
+        await page.$(`header nav a[href="/${locale}/explorer"]`),
+        null,
+      );
+      const education = locale === "de" ? "Ausbildung" : "Education";
+      assert.ok(
+        !(await page.$eval("aside", (aside) => aside.textContent)).includes(
+          education,
         ),
-        [
-          "graph",
-          "capabilities",
-          "methods",
-          "industries",
-          "projectType",
-          "tools",
-        ],
+        "profile facts have moved out of the projects sidebar",
       );
-      assert.equal(
-        await page.$eval(selector, (select) => select.value),
-        "graph",
+      const href = await page.$eval("[data-explorer-preview] a", (link) =>
+        link.getAttribute("href"),
       );
-      const panelId = await page.$eval(selector, (select) =>
-        select.getAttribute("aria-controls"),
+      assert.equal(href, `/${locale}/explorer`);
+      assert.equal(new URL(page.url()).searchParams.get("tools"), "React.js");
+
+      const bounds = await canvas.boundingBox();
+      const found = new Set();
+      for (let y = 16; y < bounds.height - 16 && found.size < 2; y += 12) {
+        for (let x = 16; x < bounds.width - 16 && found.size < 2; x += 12) {
+          await page.mouse.move(bounds.x + x, bounds.y + y);
+          const hover = await page.evaluate(() => {
+            const tooltip = document.querySelector(
+              "[data-explorer-preview] [role=tooltip]",
+            );
+            return (
+              tooltip && {
+                kind: tooltip.getAttribute("data-space-tooltip"),
+                text: tooltip.textContent,
+              }
+            );
+          });
+          if (hover) {
+            assert.ok(hover.text.trim());
+            assert.doesNotMatch(hover.text, /Click to explore|Anklicken/);
+            if (!found.has(hover.kind))
+              await page.screenshot({
+                path: `/tmp/homepage-explorer-preview-${locale}-${hover.kind}-hover.png`,
+              });
+            found.add(hover.kind);
+          }
+        }
+      }
+      assert.deepEqual([...found].sort(), ["cluster", "project"]);
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(
+        () => !document.querySelector("[data-explorer-preview] [role=tooltip]"),
       );
-      assert.ok(panelId);
-      await page.select(selector, "tools");
-      const tool = await page.waitForSelector(
-        "aside [role=region] [role=progressbar]",
+      await page.screenshot({
+        path: `/tmp/homepage-explorer-preview-${locale}-desktop.png`,
+      });
+      await page.setViewport({ width: 320, height: 740 });
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.screenshot({
+        path: `/tmp/homepage-navigation-${locale}-mobile.png`,
+      });
+      await preview.scrollIntoView();
+      await page.screenshot({
+        path: `/tmp/homepage-explorer-preview-${locale}-mobile.png`,
+      });
+      await page.click("[data-explorer-preview] a");
+      await page.waitForSelector("#atlas-explore-title", { timeout: 60000 });
+      assert.equal(new URL(page.url()).pathname, `/${locale}/explorer`);
+      await page.goto(`${base}/${locale}`, {
+        waitUntil: "domcontentloaded",
+        timeout: 90000,
+      });
+      await page.waitForSelector(".home-about-heading");
+      const profileText = await page.$eval(
+        'section[aria-labelledby="home-about-title"]',
+        (section) => section.textContent,
       );
-      assert.equal(
-        await page.$eval("aside [role=region]", (panel) => panel.id),
-        panelId,
+      assert.ok(
+        profileText.includes(education),
+        "homepage profile includes the moved facts",
       );
-      const toolRow = await tool.evaluateHandle(
-        (element) => element.parentElement,
+      assert.ok(
+        profileText.includes(locale === "de" ? "Sprachen" : "Languages"),
       );
-      await toolRow.asElement().click();
-      await page.waitForFunction(() =>
-        new URLSearchParams(location.search).has("tools"),
+      const profile = await page.$(
+        'section[aria-labelledby="home-about-title"]',
       );
-      assert.equal(
-        new URL(page.url()).searchParams.get("capabilities"),
-        "AI Engineering",
+      const profileHeading = await profile.$(".home-about-heading");
+      await profileHeading.evaluate((element) =>
+        element.scrollIntoView({ block: "start" }),
       );
-      await page.select(selector, "graph");
-      await page.waitForFunction(() =>
-        document
-          .querySelector("aside [role=region]")
-          ?.getAttribute("aria-label")
-          .endsWith(": 3D Scatter"),
+      await page.screenshot({
+        path: `/tmp/homepage-profile-${locale}-mobile.png`,
+      });
+      await page.setViewport({ width: 1280, height: 900 });
+      await profileHeading.evaluate((element) =>
+        element.scrollIntoView({ block: "start" }),
       );
-      await page.waitForSelector("aside [role=region] canvas");
-      assert.ok(await page.$("main .filter-active-summary"));
-      assert.equal(
-        await page.$$eval("aside select", (elements) => elements.length),
-        1,
-      );
+      await page.screenshot({
+        path: `/tmp/homepage-profile-${locale}-desktop.png`,
+      });
+      assert.deepEqual(errors, []);
     } finally {
       await browser.close();
     }

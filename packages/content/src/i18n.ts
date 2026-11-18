@@ -47,3 +47,10 @@ export function languageAlternates(path: string) {
     "x-default": `https://fuerst.one${localizedPath(path, "en")}`,
   };
 }
+
+/** Canonical public spelling follows the language of the page. */
+export const personName = (locale: Locale) =>
+  locale === "de" ? "Alexander Fürst" : "Alexander Fuerst";
+
+export const localizePersonName = (text: string, locale: Locale) =>
+  text.replace(/Alexander F(?:ue|ü)rst/g, personName(locale));

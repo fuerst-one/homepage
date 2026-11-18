@@ -4,9 +4,9 @@
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: 48px 80px;
-  width: min(1120px, 100%);
+  width: 100%;
   margin: 0 auto;
-  padding: 96px 32px 100px;
+  padding: 96px var(--site-section-gutter) 100px;
   border-top: 1px solid #ffffff1a;
 }
 .home-about-eyebrow {
@@ -32,28 +32,18 @@
   filter: grayscale(1);
 }
 .home-about h1 {
-  max-width: 12ch;
   color: #eeece8;
-  font-size: clamp(28px, 3.1vw, 44px);
+  font-size: clamp(24px, 3.1vw, 44px);
   font-weight: 500;
   line-height: 1.25;
   letter-spacing: -0.065em;
-  text-wrap: balance;
+  white-space: nowrap;
 }
-.home-about-location {
+.home-about-facts {
   margin-top: 24px;
-  color: #99968f;
-  font-size: 11px;
-  line-height: 1.8;
-}
-.home-about-role {
-  margin-top: 18px;
-  color: #eeece8;
-  font-size: 12px;
-  line-height: 1.8;
-  letter-spacing: 0.1em;
 }
 .home-about-copy {
+  max-width: 64ch;
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -68,7 +58,7 @@
   letter-spacing: -0.04em;
 }
 .home-about-links {
-  grid-column: 2;
+  margin-top: 8px;
 }
 .home-about-elsewhere {
   margin-top: 28px;
@@ -86,16 +76,12 @@
   .home-about {
     grid-template-columns: minmax(0, 1fr);
     gap: 32px;
-    padding: 64px 24px 72px;
+    padding: 64px var(--site-section-gutter) 72px;
   }
   .home-about-portrait {
     width: 180px;
   }
   .home-about h1 {
-    max-width: 18ch;
-    font-size: clamp(28px, 6vw, 38px);
-  }
-  .home-about-links {
-    grid-column: 1;
+    font-size: clamp(24px, 6vw, 38px);
   }
 }

@@ -6,7 +6,7 @@ import { enquiryCopy, intentLabels } from "./enquiryCopy";
 export function EnquiryStart({ locale }: { locale: Locale }) {
   return (
     <section
-      className="mx-auto w-full max-w-4xl space-y-6 px-6 py-16"
+      className="w-full space-y-6 py-16"
       aria-labelledby="enquiry-start-title"
     >
       <p className="text-xs uppercase tracking-[0.15em] text-neutral-400">

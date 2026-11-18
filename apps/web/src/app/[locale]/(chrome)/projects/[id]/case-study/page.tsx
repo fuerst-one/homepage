@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import { cache } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import Link from "../../../../../../components/i18n/LocalizedLink";
@@ -57,7 +58,7 @@ export async function generateMetadata({ params }: Props) {
   );
   const metadata = pageMetadata(
     `${projectPath(project, locale)}/case-study`,
-    `${project.name} — ${locale === "de" ? "Fallstudie" : "Case study"} | Fuerst.one`,
+    `${project.name} — ${locale === "de" ? "Fallstudie" : "Case study"} | FUERST.ONE`,
     caseStudyDescription(project, blocks),
     { locale, availableLocales },
   );
@@ -99,7 +100,7 @@ export default async function CaseStudyPage({ params }: Props) {
     locale,
   );
   return (
-    <Layout locale={locale} availableLocales={availableLocales}>
+    <Layout locale={locale} availableLocales={availableLocales} wide>
       <nav aria-label="Breadcrumb" className="mb-6 text-sm text-neutral-400">
         <Link href="/projects" className="underline">
           {locale === "de" ? "Projekte" : "Projects"}
@@ -115,19 +116,17 @@ export default async function CaseStudyPage({ params }: Props) {
       </nav>
       <article
         data-profile-project={project.id}
-        className="mx-auto w-full max-w-3xl border border-white/30 bg-black/85 p-5 sm:p-8"
+        className="content-detail content-page"
       >
-        <header className="mb-8 space-y-3 border-b border-white/20 pb-6">
+        <header className="content-page-heading mb-8 border-b border-white/20 pb-6">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
             {locale === "de" ? "Fallstudie" : "Case study"}
           </p>
-          <h1 className="text-3xl font-semibold text-white sm:text-4xl">
-            {project.name}
-          </h1>
+          <h1 className="content-page-title">{project.name}</h1>
           <p className="text-sm text-neutral-300">
             {locale === "de" ? "Von" : "By"}{" "}
             <Link href="/" rel="author" className="underline">
-              Alexander Fuerst
+              {personName(locale)}
             </Link>
           </p>
           <ContentUpdatedAt

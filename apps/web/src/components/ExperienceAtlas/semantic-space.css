@@ -888,6 +888,35 @@
 .vs-project-tooltip dd {
   margin: 0;
 }
+.vs-space-3d.is-compact .vs-spatial-tooltip {
+  top: 10px;
+  right: 10px;
+  width: min(210px, calc(100% - 20px));
+  padding: 8px 10px;
+  font:
+    10px/1.5 ui-monospace,
+    monospace;
+}
+.vs-space-3d.is-compact[data-tooltip-corner="top-left"] .vs-spatial-tooltip {
+  left: 10px;
+  right: auto;
+}
+.vs-space-3d.is-compact[data-tooltip-corner="bottom-right"]
+  .vs-spatial-tooltip {
+  top: auto;
+  bottom: 10px;
+}
+.vs-space-3d.is-compact .vs-spatial-tooltip strong {
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+.vs-space-3d.is-compact .vs-project-tooltip p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin: 0;
+}
 .vs-cluster-detail {
   margin-top: 24px;
 }

@@ -137,9 +137,9 @@ export const serviceCopy: Record<
     de: {
       label: "Komplexe Produktinterfaces",
       title:
-        "Konfiguratoren, visuelle Editoren & Produktinterfaces — Alexander Fuerst",
+        "Konfiguratoren, visuelle Editoren & Produktinterfaces — Alexander Fürst",
       description:
-        "Komplexe Produkte verständlich bedienbar machen: UX und Entwicklung für Konfiguratoren, visuelle Editoren und datenreiche Anwendungen mit Alexander Fuerst.",
+        "Komplexe Produkte verständlich bedienbar machen: UX und Entwicklung für Konfiguratoren, visuelle Editoren und datenreiche Anwendungen mit Alexander Fürst.",
       headline: "Dein Produkt ist komplex. Die Bedienung muss es nicht sein.",
       intro:
         "Kunden sollen sicher konfigurieren können. Fachleute sollen ihre Daten überblicken. Ich gestalte und entwickle Interfaces, die anspruchsvolle Aufgaben beherrschbar machen — vom ersten Klick bis zu den Details, auf die es im Alltag ankommt.",
@@ -298,9 +298,9 @@ export const serviceCopy: Record<
     de: {
       label: "KI-Automatisierung & Prototypen",
       title:
-        "KI-Automatisierung, Datenpipelines & Browser-Agenten — Alexander Fuerst",
+        "KI-Automatisierung, Datenpipelines & Browser-Agenten — Alexander Fürst",
       description:
-        "Daten sammeln und strukturieren, Tools verbinden und Browser-Abläufe automatisieren. Praktische KI und Automatisierung mit Projektbeispielen von Alexander Fuerst.",
+        "Daten sammeln und strukturieren, Tools verbinden und Browser-Abläufe automatisieren. Praktische KI und Automatisierung mit Projektbeispielen von Alexander Fürst.",
       headline: "Daten nutzbar machen. Abläufe verbinden.",
       intro:
         "Ich entwickle Datenpipelines, Tool-Anbindungen und Browser-Automatisierungen für wiederkehrende Aufgaben. KI kommt dort zum Einsatz, wo sie der Aufgabe hilft.",

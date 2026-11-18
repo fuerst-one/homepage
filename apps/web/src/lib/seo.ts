@@ -1,3 +1,4 @@
+import { personName, localizePersonName } from "@homepage/content/i18n";
 import {
   localizedPath,
   languageAlternates,
@@ -18,7 +19,7 @@ import {
 
 // Keep canonical identity independent of local/preview API origins.
 export const SITE_URL = "https://fuerst.one";
-export const SITE_NAME = "Fuerst.one";
+export const SITE_NAME = "FUERST.ONE";
 export const PERSON_ID = `${SITE_URL}/#person`;
 export const PROFILE_LINKS = [
   ...new Set([
@@ -36,6 +37,14 @@ export function pageMetadata(
   options: { locale?: Locale; availableLocales?: Locale[] } = {},
 ): Metadata {
   const locale = options.locale ?? localeFromPath(path);
+  title = localizePersonName(title, locale).replace(
+    /Fuerst\.one/g,
+    "FUERST.ONE",
+  );
+  description = localizePersonName(description, locale).replace(
+    /Fuerst\.one/g,
+    "FUERST.ONE",
+  );
   const url = `${SITE_URL}${localizedPath(path, locale)}`;
   const languages = languageAlternates(path);
   if (options.availableLocales && !options.availableLocales.includes("de"))
@@ -54,10 +63,10 @@ export function pageMetadata(
       description,
       images: [
         {
-          url: `${SITE_URL}/opengraph-image`,
+          url: `${SITE_URL}/${locale}/opengraph-image`,
           width: 1200,
           height: 630,
-          alt: "Alexander Fuerst — UX+AI Engineer",
+          alt: `${personName(locale)} — UX+AI Engineer`,
         },
       ],
     },
@@ -65,7 +74,7 @@ export function pageMetadata(
       card: "summary_large_image",
       title,
       description,
-      images: [`${SITE_URL}/opengraph-image`],
+      images: [`${SITE_URL}/${locale}/opengraph-image`],
     },
   };
 }
@@ -74,13 +83,12 @@ export function personSchema(owner?: CvOwnerPublic, locale: Locale = "en") {
   return {
     "@type": "Person",
     "@id": PERSON_ID,
-    name: owner?.name || "Alexander Fuerst",
-    alternateName: ["Alexander Fuerst", "Alexander Fürst"],
+    name: personName(locale),
     url: `${SITE_URL}${localizedPath("/", locale)}`,
     jobTitle: owner?.position || "UX+AI Engineer",
     description:
       locale === "de"
-        ? "Alexander Fuerst entwickelt UX-Interfaces, KI-Automatisierung, Datenvisualisierungen und E-Commerce-Erlebnisse in Würzburg."
+        ? "Alexander Fürst entwickelt UX-Interfaces, KI-Automatisierung, Datenvisualisierungen und E-Commerce-Erlebnisse in Würzburg."
         : SITE_DESCRIPTION,
     sameAs: PROFILE_LINKS,
     ...(owner?.city && {

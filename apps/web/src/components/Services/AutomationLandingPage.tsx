@@ -45,7 +45,7 @@ const ui = {
     other: "Also working on",
   },
   de: {
-    by: "Mit Alexander Fuerst · UX + Engineering",
+    by: "Mit Alexander Fürst · UX + Engineering",
     jump: "Arbeiten ansehen",
     proof: "Verschiedene Aufgaben. Funktionierende Software.",
     proofIntro:

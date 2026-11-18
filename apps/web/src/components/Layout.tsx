@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import { ReactNode, Suspense } from "react";
 import Link from "./i18n/LocalizedLink";
 import { LanguageSwitcher } from "./i18n/LanguageSwitcher";
@@ -55,16 +56,16 @@ export async function Layout({
     <main
       className={`min-w-0 flex-1 ${sidebarBelowContent ? "lg:col-start-2 lg:row-start-1 lg:pb-24" : "pb-24"}`}
     >
-      <div className="mx-auto w-full max-w-3xl space-y-12">
+      <div
+        className={`mx-auto w-full ${wide ? "max-w-none" : "max-w-3xl"} space-y-12`}
+      >
         <Suspense>{children}</Suspense>
       </div>
     </main>
   );
   return (
     <div className="relative z-10 min-h-screen max-w-full">
-      <div
-        className={`relative mx-auto flex w-full ${wide ? "max-w-[1440px]" : "max-w-6xl"} flex-col px-4 pb-12 pt-6 sm:px-6 sm:pt-8 md:px-8 lg:px-6 lg:pt-10`}
-      >
+      <div className="site-container relative flex flex-col pb-12 pt-6 sm:pt-8 lg:pt-10">
         <header className="content-header text-neutral-300">
           <Link href="/" className="content-header-identity">
             <div className="content-header-portrait">
@@ -80,8 +81,8 @@ export async function Layout({
               )}
             </div>
             <div className="content-header-person">
-              <span className="content-header-brand">fuerst.one</span>
-              <span className="content-header-name">Alexander Fuerst</span>
+              <span className="content-header-brand">FUERST.ONE</span>
+              <span className="content-header-name">{personName(locale)}</span>
               <span className="content-header-role">UX+AI Engineer</span>
             </div>
           </Link>
@@ -129,7 +130,6 @@ export async function Layout({
               <ContentNavLink href="/services/ai-products">
                 {locale === "de" ? "Produkte mit KI" : "AI products"}
               </ContentNavLink>
-              <ContentNavLink href="/explorer">Explorer</ContentNavLink>
             </div>
           </nav>
         </header>

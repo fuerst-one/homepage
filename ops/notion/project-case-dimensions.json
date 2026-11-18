@@ -410,7 +410,7 @@
       "id": "41786514-f736-80ab-bead-e2ccd429b958",
       "source": {
         "name": "Page Control – AI Website Assistant",
-        "description": "An embeddable AI website assistant that answers from site content, documents and selected Notion knowledge, then helps visitors navigate pages and fill forms. Visible pointer and typing feedback show each action, with approval before submissions and interruption controls. React/TypeScript widget, Laravel workspace, PostgreSQL/pgvector and OpenRouter. Invite-only organizations manage websites, knowledge, team access and encrypted AI credentials. In active development; real chat and project navigation verified on the local Fuerst.one homepage.",
+        "description": "An embeddable AI website assistant that answers from site content, documents and selected Notion knowledge, then helps visitors navigate pages and fill forms. Visible pointer and typing feedback show each action, with approval before submissions and interruption controls. React/TypeScript widget, Laravel workspace, PostgreSQL/pgvector and OpenRouter. Invite-only organizations manage websites, knowledge, team access and encrypted AI credentials. In active development; real chat and project navigation verified on the local FUERST.ONE homepage.",
         "kpis": "",
         "experiences": [
           "AI Engineering",
@@ -716,7 +716,7 @@
     {
       "id": "21886514-f736-80c5-88f4-c37e60968f21",
       "source": {
-        "name": "Fuerst.one ASCII Plasma",
+        "name": "FUERST.ONE ASCII Plasma",
         "description": "For my brand landing page, I designed a fully generative plasma animation rendered entirely in ASCII characters. The piece blends retro computing aesthetics with modern creative coding techniques, creating a living digital canvas that feels both nostalgic and futuristic. ",
         "kpis": "",
         "experiences": [
@@ -2030,7 +2030,7 @@
     {
       "id": "cdd10e91-b9ef-4232-8378-14db1a67bc15",
       "source": {
-        "name": "Fuerst.one E-Commerce Playground",
+        "name": "FUERST.ONE E-Commerce Playground",
         "description": "This website was more or less my first big project. It was started during my study at THWS and in the beginning it was planned to only inhabit the most basic infos. As my study continued and I learned more about professional online businesses, I also included more ways to project that knowledge onto my website as part of my hobby. In the end the project turned out far more feature-rich as I would have imagined and the basic principles I show there still stand to this day.",
         "kpis": "",
         "experiences": [

@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import type { Metadata } from "next";
 import { pageMetadata, PERSON_ID, SITE_URL } from "../../lib/seo";
 import { languageAlternates } from "@homepage/content/i18n";
@@ -36,7 +37,7 @@ export function serviceSchema(slug: ServiceSlug, locale: ServiceLocale) {
     provider: {
       "@type": "Person",
       "@id": PERSON_ID,
-      name: "Alexander Fuerst",
+      name: personName(locale),
       url: SITE_URL,
     },
   };

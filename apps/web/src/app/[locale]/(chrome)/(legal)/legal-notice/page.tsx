@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Legal Notice | Fuerst.one",
+  title: "Legal Notice | FUERST.ONE",
   description:
-    "Legal notice for Fuerst.one — Webdesign & E-Commerce, Alexander Fürst.",
+    "Legal notice for FUERST.ONE — Webdesign & E-Commerce, Alexander Fuerst.",
   alternates: {
     canonical: "https://fuerst.one/en/legal-notice",
     languages: {
@@ -29,9 +29,9 @@ export default function LegalNoticePage() {
         </span>
       </h2>
       <p>
-        Alexander Fürst
+        Alexander Fuerst
         <br />
-        Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst
+        FUERST.ONE — Webdesign &amp; E-Commerce, Alexander Fuerst
         <br />
         Grombühlstraße 37
         <br />

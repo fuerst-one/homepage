@@ -519,7 +519,7 @@
 .page.landing {
   --line: #ffffff2b;
   --muted: #b9beb4;
-  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --gutter: var(--site-section-gutter);
   padding: 0;
   border: 1px solid var(--line);
   background: #090b08ed;

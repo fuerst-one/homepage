@@ -276,6 +276,7 @@ test("bilingual service reuse preserves every approved intent despite identical 
       "portfolio-answer-v1",
       "portfolio-answer-v2-strict-intents",
       "portfolio-answer-v3-strict-intents",
+      "portfolio-answer-v4-strict-intents-image-observations",
     ];
     for (const version of oldVersions) {
       const legacyScope = createHash("sha256")

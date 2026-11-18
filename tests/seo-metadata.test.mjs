@@ -133,3 +133,37 @@ test("visible update dates are localized, machine-readable and omitted when unkn
   assert.equal(render(undefined, "en"), "");
   assert.equal(render("invalid", "en"), "");
 });
+
+test("person identity and page metadata use the page language", () => {
+  assert.equal(seo.personSchema(undefined, "en").name, "Alexander Fuerst");
+  assert.equal(seo.personSchema(undefined, "de").name, "Alexander Fürst");
+  const metadata = seo.pageMetadata(
+    "/",
+    "Alexander Fuerst | FUERST.ONE",
+    "Work by Alexander Fuerst",
+    { locale: "de" },
+  );
+  assert.equal(metadata.title, "Alexander Fürst | FUERST.ONE");
+  assert.equal(metadata.description, "Work by Alexander Fürst");
+});
+
+test("published identity copy normalizes branding and names without changing links", () => {
+  const { localizePublicIdentity } = loadTs(
+    new URL("../packages/content/src/publicIdentity.ts", import.meta.url),
+  );
+  assert.deepEqual(
+    localizePublicIdentity(
+      {
+        title: "Fuerst.one — Alexander Fuerst",
+        url: "https://fuerst.one/de",
+        email: "alexander@fuerst.one",
+      },
+      "de",
+    ),
+    {
+      title: "FUERST.ONE — Alexander Fürst",
+      url: "https://fuerst.one/de",
+      email: "alexander@fuerst.one",
+    },
+  );
+});

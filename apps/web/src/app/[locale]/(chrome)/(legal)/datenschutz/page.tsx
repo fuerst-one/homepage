@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { getSiteFeatures } from "@/server/siteFeatures";
 
 export const metadata: Metadata = {
-  title: "Datenschutz | Fuerst.one",
-  description: "Datenschutzerklärung von Fuerst.one — Alexander Fürst.",
+  title: "Datenschutz | FUERST.ONE",
+  description: "Datenschutzerklärung von FUERST.ONE — Alexander Fürst.",
   alternates: {
     canonical: "https://fuerst.one/de/datenschutz",
     languages: {
@@ -27,7 +27,7 @@ export default function DatenschutzPage() {
       </p>
       <p>
         Diese Erklärung beschreibt, wie personenbezogene Daten beim Besuch von
-        fuerst.one und bei der Kontaktaufnahme verarbeitet werden. Der Besuch
+        FUERST.ONE und bei der Kontaktaufnahme verarbeitet werden. Der Besuch
         dieser Website stellt keine Einwilligung in eine Datenverarbeitung dar.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
@@ -36,7 +36,7 @@ export default function DatenschutzPage() {
       <p>
         Alexander Fürst
         <br />
-        Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst
+        FUERST.ONE — Webdesign &amp; E-Commerce, Alexander Fürst
         <br />
         Grombühlstraße 37
         <br />

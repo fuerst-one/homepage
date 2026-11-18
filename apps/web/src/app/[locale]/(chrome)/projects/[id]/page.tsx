@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import { enquiryPath } from "@homepage/content/enquiry";
 import { getLocale } from "../../../../../server/i18n/getLocale";
 import { hasGermanTranslation } from "@homepage/content/localizeContent";
@@ -63,7 +64,7 @@ export async function generateMetadata({ params }: Props) {
   const { project } = await getProject((await params).id, locale);
   return pageMetadata(
     projectPath(project, locale),
-    `${project.name} — Alexander Fuerst | Fuerst.one`,
+    `${project.name} — ${personName(locale)} | FUERST.ONE`,
     projectDescription(project),
     {
       locale,
@@ -87,6 +88,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <Layout
       locale={locale}
+      wide
       availableLocales={hasGermanTranslation(project) ? ["en", "de"] : ["en"]}
     >
       <nav aria-label="Breadcrumb" className="text-sm text-neutral-400">
@@ -99,54 +101,56 @@ export default async function ProjectPage({ params }: Props) {
         </Link>{" "}
         / <span aria-current="page">{project.name}</span>
       </nav>
-      <article>
-        <ProjectDetails
+      <div className="content-detail space-y-12">
+        <article>
+          <ProjectDetails
+            project={project}
+            locale={locale}
+            initialDescriptions={imageDescriptions}
+            casePreview={casePreview}
+            brief={<ProjectBrief project={project} locale={locale} />}
+          />
+        </article>
+        <p className="text-sm text-neutral-300">
+          <Link
+            href={`${localizedPath("/explorer", locale)}?project=${encodeURIComponent(project.id)}`}
+            className="underline underline-offset-4"
+          >
+            {locale === "de"
+              ? "Dieses Projekt im Explorer einordnen ↗"
+              : "See this project in Explorer ↗"}
+          </Link>
+        </p>
+        <ExplorerProjectConnections
           project={project}
+          projects={projects}
           locale={locale}
-          initialDescriptions={imageDescriptions}
-          casePreview={casePreview}
-          brief={<ProjectBrief project={project} locale={locale} />}
         />
-      </article>
-      <p className="text-sm text-neutral-300">
-        <Link
-          href={`${localizedPath("/explorer", locale)}?project=${encodeURIComponent(project.id)}`}
-          className="underline underline-offset-4"
-        >
+        <RelatedExperience
+          project={project}
+          projects={projects}
+          locale={locale}
+        />
+        <p className="text-sm text-neutral-300">
           {locale === "de"
-            ? "Dieses Projekt im Explorer einordnen ↗"
-            : "See this project in Explorer ↗"}
-        </Link>
-      </p>
-      <ExplorerProjectConnections
-        project={project}
-        projects={projects}
-        locale={locale}
-      />
-      <RelatedExperience
-        project={project}
-        projects={projects}
-        locale={locale}
-      />
-      <p className="text-sm text-neutral-300">
-        {locale === "de"
-          ? "Interesse an einer ähnlichen Zusammenarbeit? "
-          : "Interested in similar work? "}
-        <Link
-          href={enquiryPath(
-            { source: "project", projectId: project.id },
-            locale,
-          )}
-          className="underline"
-        >
+            ? "Interesse an einer ähnlichen Zusammenarbeit? "
+            : "Interested in similar work? "}
+          <Link
+            href={enquiryPath(
+              { source: "project", projectId: project.id },
+              locale,
+            )}
+            className="underline"
+          >
+            {locale === "de"
+              ? "Alexander Fürst kontaktieren"
+              : "Contact Alexander Fuerst"}
+          </Link>{" "}
           {locale === "de"
-            ? "Alexander Fuerst kontaktieren"
-            : "Contact Alexander Fuerst"}
-        </Link>{" "}
-        {locale === "de"
-          ? "für dein Projekt oder dein Team."
-          : "to discuss your project or team opportunity."}
-      </p>
+            ? "für dein Projekt oder dein Team."
+            : "to discuss your project or team opportunity."}
+        </p>
+      </div>
       <StructuredData
         data={{
           "@context": "https://schema.org",

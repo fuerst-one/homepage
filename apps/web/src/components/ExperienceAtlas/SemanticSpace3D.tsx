@@ -299,6 +299,7 @@ function SpaceScene({
   onProjectHover,
   onClusterSelect,
   onInteraction,
+  compact = false,
 }: {
   nodes: SpaceNode[];
   viewport: RefObject<SpaceViewport>;
@@ -310,11 +311,12 @@ function SpaceScene({
   labels: boolean;
   hulls: boolean;
   axes: AxisDescription[];
-  onSelect: (id: string) => void;
+  onSelect?: (id: string) => void;
   onClusterHover: (group: number | null) => void;
   onProjectHover: (id: string | null) => void;
-  onClusterSelect: (index: number) => void;
+  onClusterSelect?: (index: number) => void;
   onInteraction: (active: boolean) => void;
+  compact?: boolean;
 }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const hoverProject = (id: string | null) => {
@@ -427,7 +429,7 @@ function SpaceScene({
             onHover={(hovered) =>
               onClusterHover(hovered ? cluster.group : null)
             }
-            onSelect={() => onClusterSelect(cluster.group)}
+            onSelect={() => onClusterSelect?.(cluster.group)}
           />
         ))}
       <mesh>
@@ -456,23 +458,27 @@ function SpaceScene({
               dashSize={0.06}
               gapSize={0.09}
             />
-            <SpaceLabel
-              text={
-                axes[axis]?.label ??
-                `${axisEndLabel(axes[axis]?.positive ?? null)} (+${"XYZ"[axis]})`
-              }
-              position={to}
-              height={0.17}
-            />
-            <SpaceLabel
-              text={
-                axes[axis]?.label
-                  ? `−${"XYZ"[axis]}`
-                  : `${axisEndLabel(axes[axis]?.negative ?? null)} (−${"XYZ"[axis]})`
-              }
-              position={from}
-              height={0.17}
-            />
+            {!compact && (
+              <SpaceLabel
+                text={
+                  axes[axis]?.label ??
+                  `${axisEndLabel(axes[axis]?.positive ?? null)} (+${"XYZ"[axis]})`
+                }
+                position={to}
+                height={0.17}
+              />
+            )}
+            {!compact && (
+              <SpaceLabel
+                text={
+                  axes[axis]?.label
+                    ? `−${"XYZ"[axis]}`
+                    : `${axisEndLabel(axes[axis]?.negative ?? null)} (−${"XYZ"[axis]})`
+                }
+                position={from}
+                height={0.17}
+              />
+            )}
           </group>
         );
       })}
@@ -509,7 +515,7 @@ function SpaceScene({
               onClick={(e) => {
                 e.stopPropagation();
                 if (e.delta > 4) return;
-                onSelect(node.id);
+                onSelect?.(node.id);
               }}
               onPointerOver={(e) => {
                 e.stopPropagation();
@@ -544,20 +550,21 @@ function SpaceScene({
                 </mesh>
               </Billboard>
             )}
-            {(labels ||
-              selected ||
-              near.has(node.id) ||
-              hovered === node.id) && (
-              <SpaceLabel
-                text={node.name}
-                position={[0, radius + 0.07, 0]}
-                selected={selected}
-                onSelect={() => onSelect(node.id)}
-                onHover={(active) => {
-                  hoverProject(active ? node.id : null);
-                }}
-              />
-            )}
+            {!compact &&
+              (labels ||
+                selected ||
+                near.has(node.id) ||
+                hovered === node.id) && (
+                <SpaceLabel
+                  text={node.name}
+                  position={[0, radius + 0.07, 0]}
+                  selected={selected}
+                  onSelect={onSelect ? () => onSelect(node.id) : undefined}
+                  onHover={(active) => {
+                    hoverProject(active ? node.id : null);
+                  }}
+                />
+              )}
           </group>
         );
       })}
@@ -581,6 +588,8 @@ function SpaceScene({
         minDistance={4}
         maxDistance={22}
         zoomSpeed={0.65}
+        enablePan={!compact}
+        enableZoom={!compact}
       />
     </>
   );
@@ -641,7 +650,7 @@ export default function SemanticSpace3D(
   }));
   return (
     <div
-      className="vs-space-3d"
+      className={`vs-space-3d${props.compact ? " is-compact" : ""}`}
       data-tooltip-corner={corner}
       onPointerDownCapture={(event) => {
         pointerStart.current = [event.clientX, event.clientY];
@@ -730,12 +739,16 @@ export default function SemanticSpace3D(
       </Canvas>
       {!hideTooltip &&
         (projectPreview ? (
-          <SpaceProjectTooltip details={projectPreview} />
+          <SpaceProjectTooltip
+            details={projectPreview}
+            compact={props.compact}
+          />
         ) : (
           preview && (
             <SpaceClusterTooltip
               group={preview}
               className="vs-spatial-tooltip"
+              compact={props.compact}
             />
           )
         ))}

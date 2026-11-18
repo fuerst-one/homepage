@@ -36,27 +36,36 @@ export function SpaceClusterTooltip({
   group,
   id,
   className = "",
+  compact = false,
 }: {
   group: SpaceConnections["groups"][number];
   id?: string;
   className?: string;
+  compact?: boolean;
 }) {
   const { locale, t, term } = useAtlasCopy();
   return (
-    <div className={`vs-cluster-tooltip ${className}`} role="tooltip" id={id}>
+    <div
+      className={`vs-cluster-tooltip ${className}`}
+      role="tooltip"
+      id={id}
+      data-space-tooltip="cluster"
+    >
       <strong>{term(group.label)}</strong>
       <span>
-        {atlasCount(locale, group.ids.length)} · {t("recorded traits")}
+        {atlasCount(locale, group.ids.length)}
+        {!compact && <> · {t("recorded traits")}</>}
       </span>
-      {group.terms.slice(0, 4).map((item) => (
-        <span key={item.term}>
-          {term(item.term)}
-          <b>
-            {item.count}/{item.total}
-          </b>
-        </span>
-      ))}
-      <small>{t("Click to explore this cluster")}</small>
+      {!compact &&
+        group.terms.slice(0, 4).map((item) => (
+          <span key={item.term}>
+            {term(item.term)}
+            <b>
+              {item.count}/{item.total}
+            </b>
+          </span>
+        ))}
+      {!compact && <small>{t("Click to explore this cluster")}</small>}
     </div>
   );
 }

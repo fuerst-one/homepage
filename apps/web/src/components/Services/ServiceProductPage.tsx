@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import { enquiryPath } from "@homepage/content/enquiry";
 import Link from "next/link";
 import { Layout } from "../Layout";
@@ -64,7 +65,7 @@ export async function ServiceProductPage({
             provider: {
               "@type": "Person",
               "@id": PERSON_ID,
-              name: "Alexander Fuerst",
+              name: personName(locale),
             },
             isRelatedTo: {
               "@type": "Service",
@@ -83,7 +84,9 @@ export async function ServiceProductPage({
           <span>{copy.label}</span>
         </nav>
         <header className={styles.hero}>
-          <p className={styles.eyebrow}>{copy.label} · Alexander Fuerst</p>
+          <p className={styles.eyebrow}>
+            {copy.label} · {personName(locale)}
+          </p>
           <h1>{copy.headline}</h1>
           <p className={styles.intro}>{copy.intro}</p>
           <div className={styles.actions}>

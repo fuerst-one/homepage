@@ -4,17 +4,15 @@ import { localizedPath, type LocaleParams } from "@homepage/content/i18n";
 import { Layout } from "../../../../components/Layout";
 import { PageEyebrow } from "../../../../components/PageEyebrow";
 import { ProjectsClientView } from "../../../../components/Cv/Projects/ProjectsClientView";
-import { ProjectAnalysisTabs } from "../../../../components/Cv/Projects/ProjectAnalysisTabs";
+import { ProjectExplorerPreview } from "../../../../components/ExperienceAtlas/ProjectExplorerPreview";
 import { LogoMarquee } from "../../../../components/Cv/Projects/LogoMarquee";
 import { getCachedCvProjects } from "../../../../server/content/getCachedCvProjects";
 import { getPublicProjectCases } from "../../../../server/content/getEnquiryEvidence";
 import { getCachedCvOwnerPublic } from "../../../../server/content/getCachedCvOwner";
 import { Intro } from "../../../../components/Cv/Intro";
-import { OwnerFacts } from "../../../../components/Cv/OwnerFacts";
 import Link from "../../../../components/i18n/LocalizedLink";
 import { StructuredData } from "../../../../components/StructuredData";
 import { getSiteFeatures } from "../../../../server/siteFeatures";
-import { PortfolioExplorerLinks } from "../../../../components/PortfolioExplorerLinks";
 import {
   pageMetadata,
   personSchema,
@@ -52,30 +50,29 @@ export default async function ProjectsPage({ params }: LocaleParams) {
   return (
     <Layout
       locale={locale}
+      wide
       sidebarPositionOnMobile="after"
       sidebarContent={
         <>
           <Intro locale={locale} text={copy["cv.sidebar"]} />
           <LogoMarquee projects={projects} />
-          <OwnerFacts owner={owner} locale={locale} />
         </>
       }
-      sidebarAfter={<ProjectAnalysisTabs projects={projects} />}
+      sidebarAfter={
+        <ProjectExplorerPreview projects={projects} locale={locale} />
+      }
     >
-      <header className="space-y-3">
+      <header className="content-page-heading">
         <PageEyebrow>
           {locale === "de"
             ? "Von der ersten Idee bis zum Einsatz"
             : "From first idea to real-world use"}
         </PageEyebrow>
-        <h1 className="text-3xl font-semibold text-white">
-          {copy["cv.heading"]}
-        </h1>
+        <h1 className="content-page-title">{copy["cv.heading"]}</h1>
         <p className="text-sm leading-relaxed text-neutral-300">
           {copy["cv.intro"]}
         </p>
       </header>
-      <PortfolioExplorerLinks locale={locale} />
       <ProjectsClientView
         projects={projects}
         semanticEnabled={getSiteFeatures().assistantEnabled}

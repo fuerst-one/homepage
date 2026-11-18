@@ -5,14 +5,7 @@ import { useAtlasCopy } from "./useAtlasCopy";
 import Link from "../i18n/LocalizedLink";
 
 import dynamic from "next/dynamic";
-import {
-  Component,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -26,7 +19,6 @@ import {
 } from "lucide-react";
 import type { AtlasProject } from "./model";
 import {
-  SPACE_COLORS,
   SPACE_RECIPES,
   type SemanticDataset,
   type SpaceLens,
@@ -34,8 +26,8 @@ import {
   type SemanticSpace,
 } from "./spaceTypes";
 import { SemanticSpaceCharts, type SpaceNode } from "./SemanticSpaceCharts";
-import { bubbleDiameter } from "./bubbleSize";
-import { projectHoverDetails } from "./projectHover";
+import { spaceNodes } from "./spaceNodes";
+import { SpaceBoundary } from "./SpaceBoundary";
 import { SpaceClusterGrid } from "./SpaceClusterGrid";
 import { describeSpaceAxes } from "./spaceAxes";
 import {
@@ -84,19 +76,6 @@ const VIEWS = [
   { id: "network", name: "Neighbour network", icon: GitBranch },
 ] as const;
 
-class SpaceBoundary extends Component<
-  { children: ReactNode; fallback: ReactNode },
-  { failed: boolean }
-> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
-  }
-}
-
 export function SemanticSpaceWorkbench({
   data,
   projects,
@@ -107,6 +86,7 @@ export function SemanticSpaceWorkbench({
   onView,
   onSelect,
   experimentsEnabled = false,
+  wheelZoomRequiresShift = false,
 }: {
   data?: SemanticDataset;
   projects: AtlasProject[];
@@ -117,6 +97,7 @@ export function SemanticSpaceWorkbench({
   onView: (view: SpaceView) => void;
   onSelect: (id: string) => void;
   experimentsEnabled?: boolean;
+  wheelZoomRequiresShift?: boolean;
 }) {
   const { locale, t, term } = useAtlasCopy();
   const [labels, setLabels] = useState(false);
@@ -207,33 +188,8 @@ export function SemanticSpaceWorkbench({
   );
   const selected = projectById.get(selectedId);
   const nodes = useMemo<SpaceNode[]>(
-    () =>
-      space?.ids.flatMap((id, index) => {
-        const project = projectById.get(id);
-        const group = space.groups.findIndex((g) => g.ids.includes(id));
-        return project
-          ? [
-              {
-                id,
-                name: project.name,
-                label: project.label,
-                color: SPACE_COLORS[group] ?? SPACE_COLORS[0],
-                wowFactor: project.wowFactor,
-                diameter: bubbleDiameter(project.wowFactor),
-                hover: projectHoverDetails(
-                  project,
-                  group,
-                  space.groups[group]?.ids.length ?? 0,
-                  locale,
-                ),
-                group,
-                xy: space.positions2d[index],
-                xyz: space.positions3d[index],
-              },
-            ]
-          : [];
-      }) ?? [],
-    [space, projectById, locale],
+    () => (space ? spaceNodes(space, projects, locale) : []),
+    [space, projects, locale],
   );
   const connections = useMemo(
     () =>
@@ -493,6 +449,14 @@ export function SemanticSpaceWorkbench({
             className="vs-canvas"
             role="group"
             aria-label={t(VIEWS.find((v) => v.id === view)?.name ?? "")}
+            onWheelCapture={
+              wheelZoomRequiresShift
+                ? (event) => {
+                    // Keep the browser's scroll default, but bypass map zoom handlers.
+                    if (!event.shiftKey) event.stopPropagation();
+                  }
+                : undefined
+            }
           >
             {!space ||
             nodes.length < 2 ||
@@ -622,11 +586,17 @@ export function SemanticSpaceWorkbench({
           <div className="vs-plot-footer">
             <span>
               {view === "3d"
-                ? t("Drag to orbit · scroll to zoom · click a project")
+                ? t(
+                    wheelZoomRequiresShift
+                      ? "Drag to orbit · Shift + scroll to zoom · click a project"
+                      : "Drag to orbit · scroll to zoom · click a project",
+                  )
                 : view === "2d"
                   ? t("Hover to identify · click a project")
                   : t(
-                      "Drag a node to pull · drag background to pan · scroll to zoom",
+                      wheelZoomRequiresShift
+                        ? "Drag a node to pull · drag background to pan · Shift + scroll to zoom"
+                        : "Drag a node to pull · drag background to pan · scroll to zoom",
                     )}
             </span>
             <span>

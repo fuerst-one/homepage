@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { getSiteFeatures } from "@/server/siteFeatures";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Fuerst.one",
-  description: "Privacy policy for Fuerst.one — Alexander Fürst.",
+  title: "Privacy Policy | FUERST.ONE",
+  description: "Privacy policy for FUERST.ONE — Alexander Fuerst.",
   alternates: {
     canonical: "https://fuerst.one/en/privacy",
     languages: {
@@ -27,16 +27,16 @@ export default function PrivacyPage() {
       </p>
       <p>
         This policy explains how personal data is processed when you visit
-        fuerst.one or contact us. Visiting this website does not constitute
+        FUERST.ONE or contact us. Visiting this website does not constitute
         consent to data processing.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Controller and contact
       </h2>
       <p>
-        Alexander Fürst
+        Alexander Fuerst
         <br />
-        Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst
+        FUERST.ONE — Webdesign &amp; E-Commerce, Alexander Fuerst
         <br />
         Grombühlstraße 37
         <br />

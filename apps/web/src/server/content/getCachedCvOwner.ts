@@ -13,5 +13,5 @@ export const getCachedCvOwnerPublic = async (locale: Locale = "en") => {
     getCachedCvOwner(locale),
     getMaltMirror(),
   ]);
-  return { ...toPublicOwner(owner), available: malt.available, malt };
+  return { ...toPublicOwner(owner, locale), available: malt.available, malt };
 };

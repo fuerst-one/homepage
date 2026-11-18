@@ -9,8 +9,8 @@ function ButtonInner({
   children: React.ReactNode;
 }) {
   return (
-    <span className="relative flex items-center gap-3 px-5 py-2">
-      <span className="text-[0.7rem] font-semibold uppercase tracking-[0.2em]">
+    <span className="relative flex min-w-0 items-center gap-3 px-5 py-2">
+      <span className="min-w-0 text-[0.7rem] font-semibold uppercase tracking-[0.2em]">
         {children}
       </span>
       {arrow ? <span aria-hidden="true">↗</span> : null}
@@ -29,7 +29,7 @@ export function Button({
   | ({ href?: undefined } & React.ComponentPropsWithoutRef<"button">)
 )) {
   className = cn(
-    "inline-flex flex-none items-center justify-center overflow-hidden border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+    "inline-flex max-w-full flex-none items-center justify-center overflow-hidden border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
     variant === "cta"
       ? "border-primary bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:ring-primary"
       : "border-white bg-white text-black hover:bg-neutral-200 focus-visible:ring-white",

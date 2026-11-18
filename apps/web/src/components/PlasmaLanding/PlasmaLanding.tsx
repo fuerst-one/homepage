@@ -648,7 +648,7 @@ export const PlasmaLanding = ({
           href="/"
           prefetch={false}
           className="landing-wordmark"
-          aria-label="Fuerst.one home"
+          aria-label="FUERST.ONE home"
         >
           FUERST.ONE<span aria-hidden="true">_</span>
         </Link>

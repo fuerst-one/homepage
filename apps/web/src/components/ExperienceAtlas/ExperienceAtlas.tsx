@@ -23,11 +23,13 @@ export function ExperienceAtlas({
   semanticData,
   experimentsEnabled = false,
   embedded = false,
+  wheelZoomRequiresShift = false,
 }: {
   projects: AtlasProject[];
   semanticData?: SemanticDataset;
   experimentsEnabled?: boolean;
   embedded?: boolean;
+  wheelZoomRequiresShift?: boolean;
 }) {
   const { locale, t } = useAtlasCopy();
   const searchParams = useSearchParams();
@@ -99,6 +101,7 @@ export function ExperienceAtlas({
           view={view}
           onView={(view) => navigate({ view })}
           onSelect={select}
+          wheelZoomRequiresShift={wheelZoomRequiresShift}
         />
       </section>
 
