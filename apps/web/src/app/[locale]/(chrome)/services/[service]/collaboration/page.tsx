@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import { notFound } from "next/navigation";
 import { isLocale, locales } from "@homepage/content/i18n";
 import { isServiceSlug, serviceSlugs } from "../../../../../../data/services";
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: Props) {
   const copy = serviceCollaborations[service][locale];
   return pageMetadata(
     serviceCollaborationPath(service, locale),
-    `${copy.label} — Alexander Fuerst`,
+    `${copy.label} — ${personName(locale)}`,
     copy.description,
     { locale },
   );

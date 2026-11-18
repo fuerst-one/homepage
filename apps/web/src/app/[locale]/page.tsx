@@ -1,9 +1,11 @@
+import { personName } from "@homepage/content/i18n";
 import { getLocale } from "../../server/i18n/getLocale";
 import { getSiteCopy } from "../../server/content/getSiteCopy";
 import { localizedPath, type LocaleParams } from "@homepage/content/i18n";
 import Link from "../../components/i18n/LocalizedLink";
 import Image from "next/image";
 import { getCachedCvOwnerPublic } from "../../server/content/getCachedCvOwner";
+import { OwnerFacts } from "../../components/Cv/OwnerFacts";
 import { PlasmaLanding } from "../../components/PlasmaLanding/PlasmaLanding";
 import { HomeActions } from "../../components/HomeWork/HomeActions";
 import { HomeWork } from "../../components/HomeWork/HomeWork";
@@ -23,8 +25,8 @@ export async function generateMetadata({ params }: LocaleParams) {
   return pageMetadata(
     "/",
     locale === "de"
-      ? "Alexander Fuerst — UX- & KI-Engineer | Fuerst.one"
-      : "Alexander Fuerst — UX+AI Engineer | Fuerst.one",
+      ? "Alexander Fürst — UX- & KI-Engineer | FUERST.ONE"
+      : "Alexander Fuerst — UX+AI Engineer | FUERST.ONE",
     copy["home.description"],
     { locale },
   );
@@ -45,60 +47,65 @@ export default async function Home({ params }: LocaleParams) {
         headline={copy["home.eyebrow"]}
         assistantEnabled={assistantEnabled}
       />
-      <section className="home-about" aria-labelledby="home-about-title">
-        <div className="home-about-heading">
-          <p className="home-about-eyebrow">{copy["home.eyebrow"]}</p>
-          {owner.avatarUrl && (
-            <div className="home-about-portrait">
-              <Image
-                src={owner.avatarUrl}
-                alt={
-                  locale === "de"
-                    ? "Porträt von Alexander Fuerst"
-                    : "Portrait of Alexander Fuerst"
-                }
-                width={240}
-                height={240}
-                sizes="(max-width: 767px) 180px, 220px"
-                loading="lazy"
-              />
+      <div className="site-container">
+        <section className="home-about" aria-labelledby="home-about-title">
+          <div className="home-about-heading">
+            <p className="home-about-eyebrow">{copy["home.eyebrow"]}</p>
+            {owner.avatarUrl && (
+              <div className="home-about-portrait">
+                <Image
+                  src={owner.avatarUrl}
+                  alt={
+                    locale === "de"
+                      ? "Porträt von Alexander Fürst"
+                      : "Portrait of Alexander Fuerst"
+                  }
+                  width={240}
+                  height={240}
+                  sizes="(max-width: 767px) 180px, 220px"
+                  loading="lazy"
+                />
+              </div>
+            )}
+            <h1 id="home-about-title">{personName(locale)}</h1>
+            <div className="home-about-facts">
+              <OwnerFacts owner={owner} locale={locale} />
             </div>
-          )}
-          <h1 id="home-about-title">Alexander Fuerst</h1>
-          <p className="home-about-role">{copy["home.role"]}</p>
-          <p className="home-about-location">{copy["home.location"]}</p>
-        </div>
-        <div className="home-about-copy">
-          <p className="home-about-lead">{copy["home.lead"]}</p>
-          <p>{copy["home.p1"]}</p>
-          <p>{copy["home.p2"]}</p>
-          <p>{copy["home.p3"]}</p>
-        </div>
-        <div className="home-about-links">
-          <HomeActions locale={locale} />
-          <p className="home-about-elsewhere">
-            {locale === "de" ? "Entdecke den " : "Explore the "}
-            <Link prefetch={false} href="/projects" className="underline">
-              {locale === "de" ? "interaktiven Lebenslauf" : "interactive CV"}
-            </Link>{" "}
-            {locale === "de" ? "oder den " : "or the "}
-            <Link prefetch={false} href="/plasma" className="underline">
-              {locale === "de"
-                ? "interaktiven Plasma-Spielplatz"
-                : "interactive plasma playground"}
-            </Link>
-            .
-          </p>
-        </div>
-      </section>
-      <HomeWork projects={projects} github={github} locale={locale} />
-      <div className="home-closing">
-        <EnquiryStart locale={locale} />
-        <div className="mx-auto w-full max-w-4xl px-6 pb-12">
-          <MaltTerms locale={locale} mirror={owner.malt} />
-        </div>
-        <div className="home-closing-actions">
-          <HomeActions locale={locale} closing />
+          </div>
+          <div className="home-about-copy">
+            <p className="home-about-lead">{copy["home.lead"]}</p>
+            <p>{copy["home.p1"]}</p>
+            <p>{copy["home.p2"]}</p>
+            <p>{copy["home.p3"]}</p>
+            <div className="home-about-links">
+              <HomeActions locale={locale} />
+              <p className="home-about-elsewhere">
+                {locale === "de" ? "Entdecke den " : "Explore the "}
+                <Link prefetch={false} href="/projects" className="underline">
+                  {locale === "de"
+                    ? "interaktiven Lebenslauf"
+                    : "interactive CV"}
+                </Link>{" "}
+                {locale === "de" ? "oder den " : "or the "}
+                <Link prefetch={false} href="/plasma" className="underline">
+                  {locale === "de"
+                    ? "interaktiven Plasma-Spielplatz"
+                    : "interactive plasma playground"}
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+        </section>
+        <HomeWork projects={projects} github={github} locale={locale} />
+        <div className="home-closing">
+          <EnquiryStart locale={locale} />
+          <div className="w-full pb-12">
+            <MaltTerms locale={locale} mirror={owner.malt} />
+          </div>
+          <div className="home-closing-actions">
+            <HomeActions locale={locale} closing />
+          </div>
         </div>
       </div>
       <StructuredData
@@ -110,7 +117,7 @@ export default async function Home({ params }: LocaleParams) {
               "@type": "WebSite",
               "@id": `${SITE_URL}/#website`,
               url: `${SITE_URL}${localizedPath("/", locale)}`,
-              name: "Fuerst.one",
+              name: "FUERST.ONE",
               description: copy["home.description"],
               publisher: { "@id": PERSON_ID },
               inLanguage: locale,

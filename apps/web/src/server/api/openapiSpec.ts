@@ -13,7 +13,7 @@ const LOCALE_PARAMETER = {
 export const buildOpenApiSpec = () => ({
   openapi: "3.1.0",
   info: {
-    title: "Fuerst.one CV Projects API",
+    title: "FUERST.ONE CV Projects API",
     version: "1.0.0",
     description:
       "Read-only public API for querying Alexander Fuerst's CV projects. " +

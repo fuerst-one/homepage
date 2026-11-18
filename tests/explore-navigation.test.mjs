@@ -3,9 +3,9 @@ import { test } from "node:test";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 const query =
   "?project=15b86514-f736-803e-b9b7-e47ebc2406d1&lens=practice&view=2d";
-for (const [locale, slug, title] of [
-  ["en", "explorer", "Explorer"],
-  ["de", "explorer", "Explorer"],
+for (const [locale, slug, title, author] of [
+  ["en", "explorer", "Explorer", "Alexander Fuerst"],
+  ["de", "explorer", "Explorer", "Alexander Fürst"],
 ]) {
   test(`${locale} Explorer is canonical, localized and linked to its selected project`, async () => {
     const response = await fetch(`${base}/${locale}/${slug}${query}`, {
@@ -14,7 +14,7 @@ for (const [locale, slug, title] of [
     assert.equal(response.status, 200);
     const html = await response.text();
     assert.ok(
-      html.includes(`<title>${title} — Alexander Fuerst | Fuerst.one</title>`),
+      html.includes(`<title>${title} — ${author} | FUERST.ONE</title>`),
     );
     assert.ok(html.includes(`href="https://fuerst.one/${locale}/${slug}"`));
     assert.ok(

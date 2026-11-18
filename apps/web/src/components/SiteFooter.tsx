@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import Link from "./i18n/LocalizedLink";
 import type { Locale } from "@homepage/content/i18n";
 import { PrivacySettings } from "./PrivacySettings";
@@ -9,7 +10,7 @@ export function SiteFooter({ locale = "en" }: { locale?: Locale }) {
       <div className="site-footer-inner">
         <p className="site-footer-identity">
           <Link href="/" prefetch={false}>
-            Fuerst.one · Alexander Fürst
+            FUERST.ONE · {personName(locale)}
           </Link>
           <span className="site-footer-role">UX+AI Engineer</span>
         </p>

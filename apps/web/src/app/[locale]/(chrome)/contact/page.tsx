@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: LocaleParams) {
   return pageMetadata(
     "/contact",
     locale === "de"
-      ? "Kontakt — Alexander Fuerst"
+      ? "Kontakt — Alexander Fürst"
       : "Contact — Alexander Fuerst",
     locale === "de"
-      ? "Beschreibe dein Projekt oder die gewünschte Zusammenarbeit mit Alexander Fuerst. Passende Erfahrung, Kontext und ein klarer nächster Schritt."
+      ? "Beschreibe dein Projekt oder die gewünschte Zusammenarbeit mit Alexander Fürst. Passende Erfahrung, Kontext und ein klarer nächster Schritt."
       : "Discuss your project or collaboration with Alexander Fuerst. Explore relevant work, share your context, and send a brief with a clear next step.",
     { locale },
   );
@@ -49,15 +49,15 @@ export default async function ContactPage({
     : "";
 
   return (
-    <Layout locale={locale}>
-      <div className="space-y-10">
-        <header className="space-y-3">
+    <Layout locale={locale} wide>
+      <article className="content-page">
+        <header className="content-page-heading">
           <PageEyebrow>
             {locale === "de"
               ? "Erzähl mir, was du vorhast"
               : "Tell me what you have in mind"}
           </PageEyebrow>
-          <h1 className="text-3xl font-semibold tracking-tight text-white">
+          <h1 className="content-page-title">
             {locale === "de"
               ? "Lass uns über dein Vorhaben sprechen"
               : "Let’s discuss your project"}
@@ -69,63 +69,67 @@ export default async function ContactPage({
           </p>
         </header>
 
-        <EnquiryFlow
-          locale={locale}
-          projects={projects}
-          initialContext={context}
-          initialIntent={intent}
-        />
-        <noscript>
-          <p>
-            {locale === "de"
-              ? "Für das geführte Formular wird JavaScript benötigt. Schreibe mir alternativ eine E-Mail."
-              : "The guided form needs JavaScript. You can email me directly instead."}
-          </p>
-        </noscript>
-
-        <section className="space-y-4 border-t border-white/20 pt-8">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-neutral-400">
-            {locale === "de"
-              ? "Weitere Kontaktmöglichkeiten"
-              : "Other ways to reach me"}
-          </h2>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <IconLink
-              href="mailto:alexander@fuerst.one"
-              icon={FaEnvelope}
-              className="flex-none"
-            >
-              alexander@fuerst.one
-            </IconLink>
-            <IconLink
-              href="https://github.com/fuerst-one"
-              icon={FaGithub}
-              className="flex-none"
-            >
-              GitHub
-            </IconLink>
-            <IconLink
-              href="https://www.linkedin.com/in/fuerst-one/"
-              icon={FaLinkedin}
-              className="flex-none"
-            >
-              LinkedIn
-            </IconLink>
+        <div className="content-page-grid">
+          <div>
+            <EnquiryFlow
+              locale={locale}
+              projects={projects}
+              initialContext={context}
+              initialIntent={intent}
+            />
+            <noscript>
+              <p>
+                {locale === "de"
+                  ? "Für das geführte Formular wird JavaScript benötigt. Schreibe mir alternativ eine E-Mail."
+                  : "The guided form needs JavaScript. You can email me directly instead."}
+              </p>
+            </noscript>
           </div>
-          <p className="text-xs text-neutral-400">
-            {locale === "de"
-              ? "Lieber über eine Plattform? Du findest mich auf "
-              : "Prefer a hiring platform? Find me on "}
-            <Link
-              href="/hire"
-              className="underline underline-offset-4 hover:text-white"
-            >
-              Malt, freelancermap, and LinkedIn ↗
-            </Link>
-            .
-          </p>
-        </section>
-      </div>
+
+          <section className="contact-page-details space-y-4">
+            <h2 className="text-xs uppercase tracking-[0.3em] text-neutral-400">
+              {locale === "de"
+                ? "Weitere Kontaktmöglichkeiten"
+                : "Other ways to reach me"}
+            </h2>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 lg:flex-col lg:items-start">
+              <IconLink
+                href="mailto:alexander@fuerst.one"
+                icon={FaEnvelope}
+                className="flex-none"
+              >
+                alexander@fuerst.one
+              </IconLink>
+              <IconLink
+                href="https://github.com/fuerst-one"
+                icon={FaGithub}
+                className="flex-none"
+              >
+                GitHub
+              </IconLink>
+              <IconLink
+                href="https://www.linkedin.com/in/fuerst-one/"
+                icon={FaLinkedin}
+                className="flex-none"
+              >
+                LinkedIn
+              </IconLink>
+            </div>
+            <p className="text-xs text-neutral-400">
+              {locale === "de"
+                ? "Lieber über eine Plattform? Du findest mich auf "
+                : "Prefer a hiring platform? Find me on "}
+              <Link
+                href="/hire"
+                className="underline underline-offset-4 hover:text-white"
+              >
+                Malt, freelancermap, and LinkedIn ↗
+              </Link>
+              .
+            </p>
+          </section>
+        </div>
+      </article>
     </Layout>
   );
 }

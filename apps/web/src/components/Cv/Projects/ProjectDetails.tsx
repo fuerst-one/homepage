@@ -54,18 +54,18 @@ export const ProjectDetails = ({
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
 
   return (
-    <div className="glass-panel flex flex-col border border-white/30">
-      <div className="space-y-3 border-b border-white/15 p-6">
+    <div className="content-surface flex flex-col">
+      <div className="content-page-inset space-y-3 border-b border-white/15">
         <div className="-mt-2 flex items-center justify-between gap-3 pr-12">
           <ProjectIndustry project={project} locale={locale} />
           {primaryLogo && (
             <ProjectLogo src={primaryLogo} alt={`${name} logo`} size="detail" />
           )}
         </div>
-        <h1 className="text-3xl font-semibold text-white">{name}</h1>
+        <h1 className="content-page-title">{name}</h1>
         <ContentUpdatedAt date={project.updatedAt} locale={locale} />
       </div>
-      <div className="space-y-6 p-6">
+      <div className="content-page-inset space-y-6">
         {brief}
         {screenshots && screenshots.length > 0 && (
           <ProjectScreenshots
@@ -103,7 +103,7 @@ export const ProjectDetails = ({
           </div>
         )}
         {description && (
-          <div className="space-y-2 text-sm leading-relaxed text-neutral-200">
+          <div className="content-reading space-y-2 text-sm leading-relaxed text-neutral-200">
             {description}
           </div>
         )}
@@ -117,7 +117,7 @@ export const ProjectDetails = ({
         )}
         {casePreview.length > 0 && (
           <section
-            className="space-y-5 border-t border-white/15 pt-6"
+            className="content-reading space-y-5 border-t border-white/15 pt-6"
             aria-labelledby="project-work-title"
           >
             <h2

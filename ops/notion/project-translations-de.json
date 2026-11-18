@@ -7,7 +7,7 @@
   },
   "41786514-f736-80ab-bead-e2ccd429b958": {
     "description": [
-      "Ein einbettbarer KI-Website-Assistent, der Fragen anhand von Website-Inhalten, Dokumenten und ausgewähltem Notion-Wissen beantwortet und Besucher anschließend beim Navigieren und Ausfüllen von Formularen unterstützt. Ein sichtbarer Mauszeiger und Tipp-Feedback zeigen jede Aktion; vor dem Absenden ist eine Freigabe erforderlich, Aktionen können unterbrochen werden. React-/TypeScript-Widget, Laravel-Workspace, PostgreSQL/pgvector und OpenRouter. Organisationen mit Zugang auf Einladung verwalten Websites, Wissen, Teamzugriffe und verschlüsselte KI-Zugangsdaten. In aktiver Entwicklung; echter Chat und Projektnavigation wurden auf der lokalen Fuerst.one-Homepage geprüft."
+      "Ein einbettbarer KI-Website-Assistent, der Fragen anhand von Website-Inhalten, Dokumenten und ausgewähltem Notion-Wissen beantwortet und Besucher anschließend beim Navigieren und Ausfüllen von Formularen unterstützt. Ein sichtbarer Mauszeiger und Tipp-Feedback zeigen jede Aktion; vor dem Absenden ist eine Freigabe erforderlich, Aktionen können unterbrochen werden. React-/TypeScript-Widget, Laravel-Workspace, PostgreSQL/pgvector und OpenRouter. Organisationen mit Zugang auf Einladung verwalten Websites, Wissen, Teamzugriffe und verschlüsselte KI-Zugangsdaten. In aktiver Entwicklung; echter Chat und Projektnavigation wurden auf der lokalen FUERST.ONE-Homepage geprüft."
     ],
     "kpis": []
   },

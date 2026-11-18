@@ -31,7 +31,7 @@ export function DeferredExplorer(
 ) {
   return (
     <DeferredWorkView fallback={<ExplorerLoading />}>
-      <Explorer {...data} embedded />
+      <Explorer {...data} embedded wheelZoomRequiresShift />
     </DeferredWorkView>
   );
 }

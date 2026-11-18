@@ -1,3 +1,4 @@
+import { localizePublicIdentity } from "@homepage/content/publicIdentity";
 import { knowledgeDatabase } from "./database";
 import { PUBLICATION_KEY, type WebsiteContent } from "@homepage/content/models";
 import type { Locale } from "@homepage/content/i18n";
@@ -15,7 +16,7 @@ export async function readWebsiteSection<K extends keyof WebsiteContent>(
     await sql`SELECT payload->'locales'->${locale}::text->${section}::text AS value FROM public_content WHERE key=${PUBLICATION_KEY} AND payload->>'version'='3'`;
   if (row?.value === null || row?.value === undefined)
     throw new Error("Website content unavailable; run the initial worker sync");
-  return row.value as WebsiteContent[K];
+  return localizePublicIdentity(row.value as WebsiteContent[K], locale);
 }
 
 /** Related sections are selected from one publication in one SQL statement. */
@@ -31,7 +32,7 @@ export async function readWebsiteSections<K extends keyof WebsiteContent>(
     sections.some((section) => row.value[section] === undefined)
   )
     throw new Error("Website content unavailable; run the initial worker sync");
-  return row.value as Pick<WebsiteContent, K>;
+  return localizePublicIdentity(row.value as Pick<WebsiteContent, K>, locale);
 }
 export async function readWebsiteAsset(key: string, sql = knowledgeDatabase()) {
   const [row] =

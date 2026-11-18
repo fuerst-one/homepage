@@ -110,7 +110,7 @@ if (apply && !copyDatabaseId) {
     db.parent.type === "page_id" ? db.parent.page_id : ownerId;
   const created = await n.databases.create({
     parent: { type: "page_id", page_id: parentPageId },
-    title: rich("Fuerst.one · Site Copy"),
+    title: rich("FUERST.ONE · Site Copy"),
     properties: {
       Key: { title: {} },
       English: { rich_text: {} },

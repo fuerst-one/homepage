@@ -29,7 +29,11 @@ for (const locale of ["en", "de"]) {
     );
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.ok(html.includes(`href="${explorePath}"`));
+    assert.ok(
+      html.includes(
+        `href="${explorePath}?project=15b86514-f736-803e-b9b7-e47ebc2406d1"`,
+      ),
+    );
     assert.ok(!html.includes('href="/en/lab/projects"'));
     assert.ok(html.includes('id="related-experience-title"'));
     assert.ok(html.includes('id="project-work-title"'));

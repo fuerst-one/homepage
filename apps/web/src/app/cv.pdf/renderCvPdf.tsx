@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import {
   Page,
   Text,
@@ -32,9 +33,9 @@ const CvPdf = ({
   summary,
 }: CvPdfProps) => (
   <Document
-    title={`${owner.name} — CV`}
-    author={owner.name}
-    creator="fuerst.one"
+    title={`${personName(locale)} — CV`}
+    author={personName(locale)}
+    creator="FUERST.ONE"
     language={locale}
   >
     <Page size="A4" style={styles.page}>
@@ -51,7 +52,7 @@ const CvPdf = ({
         </View>
       </View>
       <View style={styles.footer} fixed>
-        <Text>fuerst.one</Text>
+        <Text>FUERST.ONE</Text>
         <Text
           render={({ pageNumber, totalPages }) =>
             `${pageNumber} / ${totalPages}`

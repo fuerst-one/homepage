@@ -1,0 +1,98 @@
+:root {
+  --site-content-width: 1440px;
+  --site-gutter: 1rem;
+  --site-section-gutter: clamp(1.25rem, 4vw, 4rem);
+}
+
+.site-container {
+  width: 100%;
+  max-width: var(--site-content-width);
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
+}
+
+.content-page,
+.content-page-inset {
+  padding: clamp(2rem, 5vw, 5rem) var(--site-section-gutter);
+}
+
+.content-page,
+.content-surface {
+  min-width: 0;
+  border: 1px solid #ffffff2b;
+  background: #090b08ed;
+}
+
+.content-detail {
+  width: 100%;
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.content-reading {
+  max-width: 80ch;
+}
+
+.content-page-heading {
+  display: grid;
+  gap: 1rem;
+}
+
+.content-page-title {
+  max-width: 24ch;
+  color: #f5f5f5;
+  font-size: clamp(2.25rem, 4vw, 4rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.065em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.content-page-grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+  margin-top: clamp(2.5rem, 4vw, 4rem);
+}
+
+.content-page-grid > * {
+  min-width: 0;
+}
+
+.contact-page-details,
+.hire-page-direct {
+  padding-top: 2rem;
+  border-top: 1px solid #ffffff2b;
+}
+
+.hire-page-direct {
+  margin-top: clamp(2.5rem, 4vw, 4rem);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --site-gutter: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --site-gutter: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --site-gutter: 1.5rem;
+  }
+
+  .content-page-grid {
+    grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.8fr);
+  }
+
+  .contact-page-details {
+    padding-top: 0;
+    border-top: 0;
+  }
+}

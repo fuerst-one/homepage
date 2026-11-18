@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Impressum | Fuerst.one",
+  title: "Impressum | FUERST.ONE",
   description:
-    "Impressum von Fuerst.one — Webdesign & E-Commerce, Alexander Fürst.",
+    "Impressum von FUERST.ONE — Webdesign & E-Commerce, Alexander Fürst.",
   alternates: {
     canonical: "https://fuerst.one/de/impressum",
     languages: {
@@ -30,7 +30,7 @@ export default function ImpressumPage() {
       <p>
         Alexander Fürst
         <br />
-        Fuerst.one — Webdesign &amp; E-Commerce, Alexander Fürst
+        FUERST.ONE — Webdesign &amp; E-Commerce, Alexander Fürst
         <br />
         Grombühlstraße 37
         <br />

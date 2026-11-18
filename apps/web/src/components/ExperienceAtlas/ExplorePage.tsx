@@ -1,3 +1,4 @@
+import { personName } from "@homepage/content/i18n";
 import { localizedPath, type Locale } from "@homepage/content/i18n";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
@@ -21,7 +22,7 @@ export async function exploreMetadata({ params }: ExplorePageProps) {
   const locale = await getLocale(params);
   return pageMetadata(
     localizedPath("/explorer", locale),
-    `${atlasText(locale, "Explorer")} — Alexander Fuerst | Fuerst.one`,
+    `${atlasText(locale, "Explorer")} — ${personName(locale)} | FUERST.ONE`,
     atlasText(
       locale,
       "Explore the connections between my projects, skills and industries. Select a project to see the work in context.",

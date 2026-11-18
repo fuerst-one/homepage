@@ -92,9 +92,9 @@ export const aiProductsCopy: Record<Locale, ServiceCopy> = {
   },
   de: {
     label: "Produkte mit KI",
-    title: "KI-Produktentwicklung & Integration — Alexander Fuerst",
+    title: "KI-Produktentwicklung & Integration — Alexander Fürst",
     description:
-      "Sinnvolle KI-Funktionen für dein Produkt oder interne Tools finden und umsetzen. Alexander Fuerst verbindet Produktideen, UX, Prototypen und KI-Integration.",
+      "Sinnvolle KI-Funktionen für dein Produkt oder interne Tools finden und umsetzen. Alexander Fürst verbindet Produktideen, UX, Prototypen und KI-Integration.",
     headline: "Was könnte dein Produkt mit KI?",
     intro:
       "Kunden beim Gestalten, Planen und Entdecken unterstützen. Deinem Team bessere Wege zu seinem Wissen geben. Ich finde mit dir sinnvolle Möglichkeiten und entwickle daraus funktionierende Produktfunktionen — von der ersten Idee bis zur Integration.",

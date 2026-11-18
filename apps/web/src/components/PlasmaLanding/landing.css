@@ -24,7 +24,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 28px 36px;
+  width: 100%;
+  max-width: var(--site-content-width);
+  margin-inline: auto;
+  padding: 28px var(--site-gutter);
   font-size: 11px;
 }
 .landing-wordmark {
@@ -345,7 +348,7 @@
     min-height: 620px;
   }
   .landing-header {
-    padding: 20px;
+    padding: 20px var(--site-gutter);
   }
   .landing-header-actions {
     gap: 16px;

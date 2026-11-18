@@ -74,7 +74,7 @@ const ui = {
     portfolio: "Portfolio ansehen",
     includes: "Das bekommst du",
     jump: "Arbeiten ansehen",
-    by: "Mit Alexander Fuerst · Würzburg, Deutschland",
+    by: "Mit Alexander Fürst · Würzburg, Deutschland",
   },
 };
 
@@ -209,7 +209,7 @@ export async function ServicePage({
               const personal =
                 project.projectType === "Hobby" ||
                 project.clients.every((client) =>
-                  client.startsWith("Fuerst.one"),
+                  client.toLowerCase().startsWith("fuerst.one"),
                 );
               return (
                 <article className={styles.case} key={project.id}>

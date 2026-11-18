@@ -61,11 +61,11 @@ test("one shared localized footer replaces the landing, sidebar and playground f
           ]) {
             assert.equal(
               await page.$$eval(
-                `a[href="${profile}"]`,
+                `footer[data-site-footer] a[href="${profile}"]`,
                 (elements) => elements.length,
               ),
               1,
-              "homepage social links appear once",
+              "footer social links appear once",
             );
           }
         }

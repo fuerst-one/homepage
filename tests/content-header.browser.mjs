@@ -43,10 +43,12 @@ for (const locale of ["en", "de"]) {
       ];
       for (const [path, href, current] of cases) {
         const response = await page.goto(`${base}/${locale}${path}`, {
-          waitUntil: "networkidle2",
+          // Optional image descriptions can keep loading after the header is usable.
+          waitUntil: "domcontentloaded",
           timeout: 90000,
         });
         assert.equal(response.status(), 200, path);
+        await page.waitForSelector(".content-header-navigation");
         assert.deepEqual(
           await activeLinks(),
           href ? [{ href: `/${locale}${href}`, current }] : [],

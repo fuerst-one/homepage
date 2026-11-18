@@ -1,7 +1,9 @@
+import { personName, localizePersonName } from "@homepage/content/i18n";
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import { cn } from "../../lib/utils";
 import "../globals.css";
+import "../../components/content-layout.css";
 import { notFound } from "next/navigation";
 import { LocaleProvider } from "../../components/i18n/LocaleProvider";
 import { isLocale, locales } from "@homepage/content/i18n";
@@ -16,11 +18,11 @@ const plexMono = IBM_Plex_Mono({
   variable: "--font-plex",
 });
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Alexander Fuerst — UX+AI Engineer | Fuerst.one",
+  title: "Alexander Fuerst — UX+AI Engineer | FUERST.ONE",
   description: SITE_DESCRIPTION,
-  applicationName: "Fuerst.one",
+  applicationName: "FUERST.ONE",
   authors: [{ name: "Alexander Fuerst", url: SITE_URL }],
   robots: {
     index: true,
@@ -34,6 +36,21 @@ export const metadata: Metadata = {
     },
   },
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  return {
+    ...baseMetadata,
+    title: `${personName(locale)} — UX+AI Engineer | FUERST.ONE`,
+    description: localizePersonName(SITE_DESCRIPTION, locale),
+    authors: [{ name: personName(locale), url: SITE_URL }],
+  };
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

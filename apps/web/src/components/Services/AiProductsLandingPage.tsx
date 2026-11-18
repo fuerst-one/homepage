@@ -55,7 +55,7 @@ const ui = {
   },
   de: {
     jump: "Möglichkeiten entdecken",
-    by: "Mit Alexander Fuerst · Produktdenken, UX & Entwicklung",
+    by: "Mit Alexander Fürst · Produktdenken, UX & Entwicklung",
     example: "Ein Beispiel für einen Reisewunsch",
     brief:
       "Eine Woche raus. Bergstraßen, gutes Essen und ruhige Orte. Mit Platz zum Entdecken.",

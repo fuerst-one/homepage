@@ -86,7 +86,7 @@ export const serviceProducts: Record<
       de: {
         label: "Produktinterface-Review",
         title:
-          "UX-Review für Konfiguratoren & visuelle Editoren — Alexander Fuerst",
+          "UX-Review für Konfiguratoren & visuelle Editoren — Alexander Fürst",
         description:
           "Ein fokussiertes UX- und Frontend-Review für einen wichtigen Produktablauf: kommentierte Befunde, klare Prioritäten und ein Briefing für die nächste Umsetzung.",
         headline: "Erst wissen, was hilft. Dann neu gestalten.",
@@ -180,7 +180,7 @@ export const serviceProducts: Record<
       de: {
         label: "Workflow- und Automatisierungs-Assessment",
         title:
-          "Workflow- und Automatisierungs-Assessment & Automatisierungsplanung — Alexander Fuerst",
+          "Workflow- und Automatisierungs-Assessment & Automatisierungsplanung — Alexander Fürst",
         description:
           "Den richtigen Einstieg in die Automatisierung finden: einen Ablauf prüfen, KI mit klassischen Lösungen vergleichen und Umsetzung sowie Erfolgskriterien konkret planen.",
         headline: "Finde den richtigen Ablauf für die erste Automatisierung.",

@@ -8,7 +8,7 @@ export async function fetchMaltProfile() {
     signal: AbortSignal.timeout(12_000),
     headers: {
       Accept: "text/html",
-      "User-Agent": "Fuerst.one profile mirror (+https://fuerst.one)",
+      "User-Agent": "FUERST.ONE profile mirror (+https://fuerst.one)",
     },
   });
   if (response.status !== 200) {

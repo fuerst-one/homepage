@@ -1,9 +1,9 @@
 .home-work-section {
   position: relative;
   z-index: 1;
-  width: min(1240px, 100%);
+  width: 100%;
   margin: 0 auto;
-  padding: 88px 32px;
+  padding: 88px var(--site-section-gutter);
   border-top: 1px solid #ffffff1a;
   color: #e8e6df;
 }
@@ -710,12 +710,13 @@
   z-index: 1;
   border-top: 1px solid #ffffff1a;
   margin-inline: auto;
-  width: min(1240px, 100%);
+  width: 100%;
+  padding-inline: var(--site-section-gutter);
 }
 .home-closing-actions {
-  width: min(896px, 100%);
+  width: 100%;
   margin: 0 auto;
-  padding: 0 24px 80px;
+  padding-bottom: 80px;
 }
 @media (max-width: 1000px) {
   .home-selected-body {
@@ -760,7 +761,7 @@
     grid-template-columns: 1fr;
   }
   .home-work-section {
-    padding: 64px 24px;
+    padding: 64px var(--site-section-gutter);
   }
   .home-work-heading {
     grid-template-columns: 1fr;

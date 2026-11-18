@@ -23,9 +23,9 @@ export const GET = async (request: NextRequest) => {
   const rateLimit = checkRateLimit(request);
   if (!rateLimit.allowed) return buildRateLimitedResponse(rateLimit);
 
-  const body = `# Fuerst.one — Alexander Fuerst
+  const body = `# FUERST.ONE — Alexander Fuerst
 
-> Alexander Fuerst (Alexander Fürst) is a UX+AI Engineer based in Würzburg, Germany. His work covers frontend development, UX design, AI engineering and automation, data visualization, e-commerce, and conversion rate optimization.
+> Alexander Fuerst is a UX+AI Engineer based in Würzburg, Germany. His work covers frontend development, UX design, AI engineering and automation, data visualization, e-commerce, and conversion rate optimization.
 
 ## Website
 

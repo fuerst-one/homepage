@@ -415,10 +415,14 @@ export const ATLAS_DE: Record<string, string> = {
   "NN / CONNECT": "NN / NETZ",
   "Drag to orbit · scroll to zoom · click a project":
     "Ziehen zum Drehen · Scrollen zum Zoomen · Gruppe oder Projekt anklicken",
+  "Drag to orbit · Shift + scroll to zoom · click a project":
+    "Ziehen zum Drehen · Umschalt + Scrollen zum Zoomen · Gruppe oder Projekt anklicken",
   "Hover to identify · click a project":
     "Bewegen für Details · Gruppe oder Projekt anklicken",
   "Drag a node to pull · drag background to pan · scroll to zoom":
     "Punkt ziehen · Hintergrund verschieben · Scrollen zum Zoomen",
+  "Drag a node to pull · drag background to pan · Shift + scroll to zoom":
+    "Punkt ziehen · Hintergrund verschieben · Umschalt + Scrollen zum Zoomen",
   "All projects · choose a cluster or a point":
     "Alle Projekte · Gruppe oder Punkt auswählen",
   "Selected project + other cluster members":
