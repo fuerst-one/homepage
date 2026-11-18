@@ -14,12 +14,14 @@ export async function Layout({
   children,
   locale = "en",
   availableLocales,
+  wide = false,
 }: {
   sidebarContent?: ReactNode;
   sidebarAfter?: ReactNode;
   sidebarPositionOnMobile?: "before" | "after";
   locale?: Locale;
   availableLocales?: Locale[];
+  wide?: boolean;
   children: ReactNode;
 }) {
   const owner = await getCachedCvOwnerPublic(locale);
@@ -122,6 +124,9 @@ export async function Layout({
               <ContentNavLink href="/services/ai-automation">
                 {locale === "de" ? "KI & Automatisierung" : "AI & automation"}
               </ContentNavLink>
+              <ContentNavLink href="/en/lab/experience">
+                Experience atlas{locale === "de" ? " (EN)" : ""}
+              </ContentNavLink>
             </div>
           </nav>
         </header>
@@ -134,7 +139,9 @@ export async function Layout({
         ) : (
           <>
             <main className="min-w-0 flex-1 pb-24">
-              <div className="mx-auto w-full max-w-3xl space-y-12">
+              <div
+                className={`mx-auto w-full ${wide ? "max-w-none" : "max-w-3xl"} space-y-12`}
+              >
                 <Suspense>{children}</Suspense>
               </div>
             </main>

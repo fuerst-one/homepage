@@ -8,9 +8,11 @@ import { cn } from "../../../lib/utils";
 export const ProjectScreenshots = ({
   screenshots,
   projectName,
+  compact = false,
 }: {
   screenshots: string[];
   projectName: string;
+  compact?: boolean;
 }) => {
   const sanitizedScreenshots = useMemo(
     () => screenshots.filter(Boolean),
@@ -48,7 +50,12 @@ export const ProjectScreenshots = ({
   return (
     <div className="group/screenshot mt-4 select-none print:hidden">
       <div className="relative overflow-hidden border border-white/20 bg-black">
-        <div className="relative aspect-video w-full">
+        <div
+          className={cn(
+            "relative w-full",
+            compact ? "h-[28vh] min-h-32" : "aspect-video",
+          )}
+        >
           {sanitizedScreenshots.map((src, index) => (
             <Fragment key={`${src}-${index}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -57,7 +64,8 @@ export const ProjectScreenshots = ({
                 alt={`${projectName} screenshot ${index + 1}`}
                 loading="lazy"
                 className={cn(
-                  "absolute inset-0 h-full w-full object-cover transition-opacity duration-500",
+                  "absolute inset-0 h-full w-full transition-opacity duration-500",
+                  compact ? "object-contain" : "object-cover",
                   index === activeIndex
                     ? "opacity-100"
                     : "pointer-events-none opacity-0",

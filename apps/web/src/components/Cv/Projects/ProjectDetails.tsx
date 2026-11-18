@@ -13,10 +13,12 @@ import { getJsxFormattedTextFromTextBlock } from "./getJsxFormattedTextFromTextB
 import { getProjectLogoSources } from "./getProjectLogoSources";
 import { ProjectLogo } from "./ProjectLogo";
 import { ProjectIndustry } from "./ProjectIndustry";
-import { projectPath, SITE_URL } from "../../../lib/seo";
+import { projectPath } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { Button } from "../../Button";
+import { caseLabel } from "@homepage/content/projectCase";
+import type { CaseStudyExcerpt } from "./projectDiscovery";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -26,11 +28,13 @@ export const ProjectDetails = ({
   heading,
   inDialog = false,
   locale = "en",
+  casePreview = [],
 }: {
   project: CvProject;
   heading?: ReactNode;
   inDialog?: boolean;
   locale?: "en" | "de";
+  casePreview?: CaseStudyExcerpt[];
 }) => {
   const {
     name,
@@ -49,6 +53,51 @@ export const ProjectDetails = ({
   const path = projectPath(project, locale);
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
 
+  const actions = (inDialog || hasCaseStudy || websiteUrl) && (
+    <div className="flex flex-wrap items-center gap-3">
+      {inDialog && (
+        <Button href={path} arrow>
+          {locale === "de" ? "Projekt im Detail ansehen" : "View full project"}
+        </Button>
+      )}
+      {hasCaseStudy &&
+        (inDialog ? (
+          <Link
+            href={`${path}/case-study`}
+            prefetch={false}
+            className="text-sm text-neutral-200 underline underline-offset-4"
+          >
+            {locale === "de" ? "Fallstudie lesen" : "Read case study"}
+          </Link>
+        ) : (
+          <Button href={`${path}/case-study`} prefetch={false} arrow>
+            {locale === "de"
+              ? "Vollständige Fallstudie lesen"
+              : "Read full case study"}
+          </Button>
+        ))}
+      {websiteUrl &&
+        (inDialog ? (
+          <Link
+            href={websiteUrl}
+            target="_blank"
+            className="text-sm text-neutral-200 underline underline-offset-4"
+          >
+            {locale === "de" ? "Live-Website öffnen" : "Visit live site"}
+          </Link>
+        ) : (
+          <Button
+            href={websiteUrl}
+            target="_blank"
+            className="border-white/30 bg-transparent text-neutral-200 hover:border-white hover:bg-transparent hover:text-white"
+            arrow
+          >
+            {locale === "de" ? "Live-Website öffnen" : "Visit live site"}
+          </Button>
+        ))}
+    </div>
+  );
+
   return (
     <div
       className={
@@ -57,7 +106,7 @@ export const ProjectDetails = ({
           : "glass-panel flex flex-col border border-white/30"
       }
     >
-      <div className="space-y-3 border-b border-white/15 p-6">
+      <div className="shrink-0 space-y-3 border-b border-white/15 p-6">
         <div className="-mt-2 flex items-center justify-between gap-3 pr-12">
           <ProjectIndustry project={project} locale={locale} />
           {primaryLogo && (
@@ -68,9 +117,15 @@ export const ProjectDetails = ({
           <h1 className="text-3xl font-semibold text-white">{name}</h1>
         )}
       </div>
-      <div className="flex-1 space-y-6 overflow-y-auto p-6">
+      <div
+        className={`min-h-0 flex-1 space-y-6 p-6 ${inDialog ? "overflow-y-auto" : ""}`}
+      >
         {screenshots && screenshots.length > 0 && (
-          <ProjectScreenshots screenshots={screenshots} projectName={name} />
+          <ProjectScreenshots
+            screenshots={screenshots}
+            projectName={name}
+            compact={inDialog}
+          />
         )}
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs text-neutral-400">
@@ -92,52 +147,73 @@ export const ProjectDetails = ({
             </Link>
           )}
         </div>
-        {kpis && (
+        {!inDialog && kpis && (
           <div className="flex items-start gap-2 text-sm text-white">
             <FaChartLine className="mt-1 shrink-0 text-base" />
             <span>{kpis}</span>
           </div>
         )}
         {description && (
-          <div className="space-y-2 text-sm leading-relaxed text-neutral-200">
+          <div
+            className={`space-y-2 text-sm leading-relaxed text-neutral-200 ${inDialog ? "line-clamp-4" : ""}`}
+          >
             {description}
           </div>
         )}
-        {(hasCaseStudy || websiteUrl) && (
-          <div className="flex flex-wrap items-center gap-3">
-            {hasCaseStudy && (
-              <Button href={`${path}/case-study`} prefetch={false} arrow>
-                {locale === "de"
-                  ? "Vollständige Fallstudie lesen"
-                  : "Read full case study"}
-              </Button>
-            )}
-            {websiteUrl && (
-              <Button
-                href={websiteUrl}
-                target="_blank"
-                className="border-white/30 bg-transparent text-neutral-200 hover:border-white hover:bg-transparent hover:text-white"
-                arrow
-              >
-                {locale === "de" ? "Live-Website öffnen" : "Visit live site"}
-              </Button>
-            )}
-          </div>
+        {project.matching?.ownership && (
+          <p className="text-sm text-neutral-300">
+            <span className="text-neutral-500">
+              {locale === "de" ? "Meine Rolle: " : "My role: "}
+            </span>
+            {caseLabel(project.matching.ownership, locale)}
+          </p>
         )}
-        <ProjectMetaTable
-          project={project}
-          filterable={inDialog}
-          locale={locale}
-        />
+        {!inDialog && casePreview.length > 0 && (
+          <section
+            className="space-y-5 border-t border-white/15 pt-6"
+            aria-labelledby="project-work-title"
+          >
+            <h2
+              id="project-work-title"
+              className="text-xl font-semibold text-white"
+            >
+              {locale === "de"
+                ? "Einblick in die Umsetzung"
+                : "Inside the work"}
+            </h2>
+            {casePreview.map(({ title, text }) => (
+              <div key={title} className="space-y-2">
+                <h3 className="text-base font-medium text-white">{title}</h3>
+                <p className="text-sm leading-relaxed text-neutral-300">
+                  {text}
+                </p>
+              </div>
+            ))}
+          </section>
+        )}
+        {!inDialog && actions}
+        {!inDialog && (
+          <details className="border-t border-white/15 pt-5">
+            <summary className="cursor-pointer text-sm font-medium text-neutral-300">
+              {locale === "de"
+                ? "Projektdaten & Technologien"
+                : "Project facts & technologies"}
+            </summary>
+            <div className="mt-4">
+              <ProjectMetaTable
+                project={project}
+                filterable={false}
+                locale={locale}
+              />
+            </div>
+          </details>
+        )}
       </div>
-      <div className="flex shrink-0 flex-col items-start gap-3 border-t border-white/15 p-6 text-sm">
-        <Link
-          href={path}
-          className="break-all text-xs text-neutral-400 underline underline-offset-4"
-        >
-          {`${SITE_URL.replace("https://", "")}${path}`}
-        </Link>
-      </div>
+      {inDialog && (
+        <div className="shrink-0 border-t border-white/15 bg-black p-5">
+          {actions}
+        </div>
+      )}
     </div>
   );
 };

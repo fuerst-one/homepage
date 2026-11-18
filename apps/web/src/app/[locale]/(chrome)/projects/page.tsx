@@ -13,6 +13,7 @@ import { Intro } from "../../../../components/Cv/Intro";
 import { OwnerFacts } from "../../../../components/Cv/OwnerFacts";
 import Link from "../../../../components/i18n/LocalizedLink";
 import { StructuredData } from "../../../../components/StructuredData";
+import { PortfolioExplorerLinks } from "../../../../components/PortfolioExplorerLinks";
 import {
   pageMetadata,
   personSchema,
@@ -73,6 +74,7 @@ export default async function ProjectsPage({ params }: LocaleParams) {
           {copy["cv.intro"]}
         </p>
       </header>
+      <PortfolioExplorerLinks locale={locale} />
       <ProjectsClientView projects={projects} />
       <section className="space-y-4 border-t border-white/20 pt-8">
         <h2 className="text-xl font-semibold text-white">

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev -p 6894",
+    "dev": "next dev --hostname 127.0.0.1 -p 6895",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit"
@@ -30,6 +30,7 @@
     "echarts-for-react": "^3.1.0",
     "lodash": "^4.18.1",
     "lucide-react": "^1.74.0",
+    "ml-matrix": "6.15.1",
     "motion": "^10.18.0",
     "next": "16.4.6",
     "react": "^19.3.1",
