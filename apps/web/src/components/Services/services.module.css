@@ -238,15 +238,6 @@
   margin-top: 0.2rem;
   color: #dedede;
 }
-.caseImage {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 26rem;
-  object-fit: contain;
-  background: #111;
-  border: 1px solid var(--line);
-}
 .results {
   margin-top: 1.5rem;
   padding-left: 1rem;

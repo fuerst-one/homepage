@@ -25,15 +25,8 @@
   margin-top: 1rem;
   color: #cbe996;
 }
-.preview a,
-.visual {
+.preview a {
   display: block;
-}
-.preview img,
-.visual img {
-  display: block;
-  width: 100%;
-  height: auto;
 }
 .preview figcaption {
   padding: 0.85rem 1.25rem;
@@ -119,11 +112,6 @@
   font-size: 0.75rem;
   line-height: 1.9;
   overflow-wrap: anywhere;
-}
-.visual {
-  border: 1px solid var(--line);
-  background: #101010;
-  margin-top: 1.5rem;
 }
 @media (max-width: 540px) {
   .audiences,

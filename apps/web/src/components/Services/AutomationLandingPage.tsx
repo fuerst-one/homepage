@@ -15,6 +15,7 @@ import type { selectServiceEvidence } from "./serviceEvidence";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
 import shared from "./services.module.css";
 import styles from "./automation.module.css";
+import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 
 const ui = {
   en: {
@@ -40,7 +41,6 @@ const ui = {
       "A useful starting point: where the information comes from, how often the task repeats and where the result should go.",
     email: "Or email me directly",
     other: "Also working on",
-    screenshot: "Product screenshot",
   },
   de: {
     by: "Mit Alexander Fuerst · UX + Engineering",
@@ -65,7 +65,6 @@ const ui = {
       "Ein guter Einstieg: Woher kommen die Informationen, wie oft wiederholt sich die Aufgabe und wohin soll das Ergebnis gehen?",
     email: "Oder schreib mir direkt",
     other: "Außerdem unterstütze ich bei",
-    screenshot: "Produkt-Screenshot",
   },
 };
 
@@ -160,23 +159,11 @@ export function AutomationLandingPage({
                     {project.name.split(" – ")[0]}
                   </p>
                   <p className={styles.context}>{story.context}</p>
-                  {project.screenshot && (
-                    <Link
-                      href={project.href}
-                      aria-label={`${t.read}: ${project.name}`}
-                      className={styles.visual}
-                    >
-                      {/* Publication-backed assets use the existing authenticated image proxy. */}
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={project.screenshot}
-                        alt={`${t.screenshot}: ${project.name}`}
-                        width={1440}
-                        height={900}
-                        loading="lazy"
-                      />
-                    </Link>
-                  )}
+                  <ServiceProjectVisuals
+                    visuals={project.visuals}
+                    projectName={project.name}
+                    locale={locale}
+                  />
                   <details className={styles.caseDetails}>
                     <summary>
                       {t.details}

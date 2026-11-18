@@ -2,9 +2,9 @@ import { enquiryPath } from "@homepage/content/enquiry";
 import Link from "next/link";
 import { Layout } from "../Layout";
 import { Button } from "../Button";
-import { getCachedCvProjects } from "../../server/content/getCachedCvProjects";
+import { getServiceEvidence } from "../../server/content/getServiceEvidence";
 import { flattenRichText } from "../../app/cv.pdf/flattenRichText";
-import { projectPath, serializeJsonLd } from "../../lib/seo";
+import { serializeJsonLd } from "../../lib/seo";
 import { localizedPath } from "@homepage/content/i18n";
 import {
   serviceCopy,
@@ -13,11 +13,11 @@ import {
   type ServiceLocale,
   type ServiceSlug,
 } from "../../data/services";
-import { selectServiceEvidence } from "./serviceEvidence";
 import { serviceSchema } from "./serviceMetadata";
 import { AutomationLandingPage } from "./AutomationLandingPage";
 import { AiProductsLandingPage } from "./AiProductsLandingPage";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
+import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import styles from "./services.module.css";
 
 const ui = {
@@ -43,7 +43,6 @@ const ui = {
     unavailable:
       "Project details are temporarily unavailable. You can still explore my portfolio or get in touch.",
     portfolio: "View portfolio",
-    screenshot: "Product screenshot",
     includes: "What you get",
     jump: "See the work",
     by: "With Alexander Fuerst · Würzburg, Germany",
@@ -71,7 +70,6 @@ const ui = {
     unavailable:
       "Projektdetails sind gerade nicht verfügbar. Du kannst mein Portfolio ansehen oder mir direkt schreiben.",
     portfolio: "Portfolio ansehen",
-    screenshot: "Produkt-Screenshot",
     includes: "Das bekommst du",
     jump: "Arbeiten ansehen",
     by: "Mit Alexander Fuerst · Würzburg, Deutschland",
@@ -110,12 +108,11 @@ export async function ServicePage({
   const other =
     slug === "product-interfaces" ? "ai-automation" : "product-interfaces";
   // The offer and contact path remain useful during a temporary upstream outage.
-  const projects = await getCachedCvProjects(locale).catch((error: unknown) => {
-    console.error("Service portfolio evidence unavailable", error);
-    return [];
-  });
-  const evidence = selectServiceEvidence(projects, slug, (project) =>
-    projectPath(project, locale),
+  const evidence = await getServiceEvidence(slug, locale).catch(
+    (error: unknown) => {
+      console.error("Service portfolio evidence unavailable", error);
+      return [];
+    },
   );
   if (slug === "ai-products") {
     return <AiProductsLandingPage locale={locale} evidence={evidence} />;
@@ -123,7 +120,7 @@ export async function ServicePage({
   if (slug === "ai-automation") {
     return <AutomationLandingPage locale={locale} evidence={evidence} />;
   }
-  const hero = evidence.find((project) => project.screenshot);
+  const hero = evidence.find((project) => project.heroVisuals.length);
 
   return (
     <Layout locale={locale}>
@@ -154,7 +151,7 @@ export async function ServicePage({
           <p className={styles.micro}>{copy.reassurance}</p>
           <p className={styles.signature}>{t.by}</p>
         </header>
-        {hero?.screenshot && (
+        {hero && (
           <figure className={styles.heroVisual}>
             <div className={styles.windowBar} aria-hidden="true">
               <span>● ● ●</span>
@@ -165,8 +162,8 @@ export async function ServicePage({
               {/* The existing Notion image proxy serves authenticated, cached portfolio assets. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={hero.screenshot}
-                alt={`${t.screenshot}: ${hero.name}`}
+                src={hero.heroVisuals[0].src}
+                alt={hero.heroVisuals[0].alt}
                 width={1440}
                 height={900}
                 fetchPriority="high"
@@ -237,22 +234,11 @@ export async function ServicePage({
                     <dt>{t.client}</dt>
                     <dd lang="en">{project.clients.join(" · ")}</dd>
                   </dl>
-                  {project.screenshot && (
-                    <Link
-                      href={project.href}
-                      aria-label={`${t.cases}: ${project.name}`}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={project.screenshot}
-                        alt={`${t.screenshot}: ${project.name}`}
-                        loading="lazy"
-                        width={1440}
-                        height={900}
-                        className={styles.caseImage}
-                      />
-                    </Link>
-                  )}
+                  <ServiceProjectVisuals
+                    visuals={project.visuals}
+                    projectName={project.name}
+                    locale={locale}
+                  />
                   {kpis && (
                     <div className={styles.results}>
                       <p className={styles.eyebrow}>

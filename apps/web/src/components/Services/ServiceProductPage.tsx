@@ -11,9 +11,9 @@ import {
   type ServiceProductSlug,
 } from "../../data/serviceProducts";
 import { localizedPath, type Locale } from "@homepage/content/i18n";
-import { PERSON_ID, SITE_URL, projectPath } from "../../lib/seo";
-import { getCachedCvProjects } from "../../server/content/getCachedCvProjects";
-import { selectServiceEvidence } from "./serviceEvidence";
+import { PERSON_ID, SITE_URL } from "../../lib/seo";
+import { getServiceEvidence } from "../../server/content/getServiceEvidence";
+import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import styles from "./services.module.css";
 
 export async function ServiceProductPage({
@@ -35,13 +35,15 @@ export async function ServiceProductPage({
     },
     locale,
   );
-  const projects = await getCachedCvProjects(locale).catch((error: unknown) => {
-    console.error("Starting-offer evidence unavailable", error);
-    return [];
-  });
-  const evidence = selectServiceEvidence(projects, slug, (project) =>
-    projectPath(project, locale),
-  ).filter((project) => slug !== "ai-automation" || project.story?.featured);
+  const selected = await getServiceEvidence(slug, locale, "offer").catch(
+    (error: unknown) => {
+      console.error("Starting-offer evidence unavailable", error);
+      return [];
+    },
+  );
+  const evidence = selected.filter(
+    (project) => slug !== "ai-automation" || project.story?.featured,
+  );
   const url = `${SITE_URL}${serviceProductPath(slug, locale)}`;
   const commercial = de
     ? "Das ist ein bezahlter, klar begrenzter Auftrag. Nach einem ersten Austausch vereinbaren wir Umfang, Format der Übergabe, Zeitplan und Honorar, bevor die Arbeit beginnt."
@@ -211,22 +213,11 @@ export async function ServiceProductPage({
                   {project.story[locale].summary}
                 </p>
               )}
-              {project.screenshot && (
-                <Link
-                  href={project.href}
-                  aria-label={`${de ? "Projekt ansehen" : "View project"}: ${project.name}`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    className={styles.caseImage}
-                    src={project.screenshot}
-                    alt={`${de ? "Produkt-Screenshot" : "Product screenshot"}: ${project.name}`}
-                    width={1440}
-                    height={900}
-                    loading="lazy"
-                  />
-                </Link>
-              )}
+              <ServiceProjectVisuals
+                visuals={project.visuals}
+                projectName={project.name}
+                locale={locale}
+              />
               <Link href={project.href} className={styles.textLink}>
                 {de
                   ? "Projekt und Ergebnisse ansehen"

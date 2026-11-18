@@ -13,6 +13,7 @@ import {
 import { serializeJsonLd } from "../../lib/seo";
 import { serviceSchema } from "./serviceMetadata";
 import type { selectServiceEvidence } from "./serviceEvidence";
+import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import shared from "./services.module.css";
 import styles from "./ai-products.module.css";
 
@@ -23,7 +24,6 @@ const ui = {
     example: "An example trip brief",
     brief:
       "A week away. Mountain roads, good food and quieter places. Leave room to explore.",
-    caption: "RoadTrippin · product screenshot",
     visualLink: "Explore RoadTrippin",
     customer: "For your customers",
     customerText:
@@ -49,7 +49,6 @@ const ui = {
     unavailable:
       "Project details are temporarily unavailable. You can still explore the portfolio or tell me about your product.",
     portfolio: "Explore the portfolio",
-    screenshot: "Product screenshot",
   },
   de: {
     jump: "Möglichkeiten entdecken",
@@ -57,7 +56,6 @@ const ui = {
     example: "Ein Beispiel für einen Reisewunsch",
     brief:
       "Eine Woche raus. Bergstraßen, gutes Essen und ruhige Orte. Mit Platz zum Entdecken.",
-    caption: "RoadTrippin · Produkt-Screenshot",
     visualLink: "RoadTrippin entdecken",
     customer: "Für deine Kunden",
     customerText:
@@ -83,7 +81,6 @@ const ui = {
     unavailable:
       "Projektdetails sind gerade nicht verfügbar. Du kannst trotzdem das Portfolio ansehen oder mir von deinem Produkt erzählen.",
     portfolio: "Portfolio ansehen",
-    screenshot: "Produkt-Screenshot",
   },
 };
 
@@ -136,25 +133,22 @@ export function AiProductsLandingPage({
           <p className={shared.signature}>{t.by}</p>
         </header>
 
-        {roadtrippin?.screenshot && (
+        {!!roadtrippin?.heroVisuals.length && (
           <figure className={styles.preview}>
             <div className={styles.brief}>
               <p className={shared.eyebrow}>{t.example}</p>
               <blockquote>{t.brief}</blockquote>
               <span aria-hidden="true">↓</span>
             </div>
-            <Link href={roadtrippin.href} aria-label={t.visualLink}>
-              {/* Publication-backed images follow the same proxy as the other service pages. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={roadtrippin.screenshot}
-                alt={`${t.screenshot}: RoadTrippin`}
-                width={1440}
-                height={900}
-                fetchPriority="high"
-              />
-            </Link>
-            <figcaption>{t.caption}</figcaption>
+            <ServiceProjectVisuals
+              visuals={roadtrippin.heroVisuals}
+              projectName={roadtrippin.name}
+              locale={locale}
+              priority
+            />
+            <figcaption>
+              <Link href={roadtrippin.href}>{t.visualLink} ↗</Link>
+            </figcaption>
           </figure>
         )}
 
@@ -213,21 +207,15 @@ export function AiProductsLandingPage({
                     <dd>{story.result}</dd>
                   </div>
                 </dl>
-                {project.screenshot && project.id !== roadtrippin?.id && (
-                  <Link
-                    href={project.href}
-                    className={styles.visual}
-                    aria-label={`${t.read}: ${project.name}`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={project.screenshot}
-                      alt={`${t.screenshot}: ${project.name}`}
-                      width={1440}
-                      height={900}
-                      loading="lazy"
-                    />
-                  </Link>
+                {(project.id !== roadtrippin?.id ||
+                  project.visuals.some(
+                    (visual) => visual.kind === "illustration",
+                  )) && (
+                  <ServiceProjectVisuals
+                    visuals={project.visuals}
+                    projectName={project.name}
+                    locale={locale}
+                  />
                 )}
                 <Link href={project.href} className={shared.textLink}>
                   {t.read} <span aria-hidden="true">↗</span>

@@ -79,17 +79,6 @@
   color: var(--muted);
   font-size: 0.65rem;
 }
-.visual {
-  display: block;
-  margin-top: 1.5rem;
-  border: 1px solid var(--line);
-  background: #101010;
-}
-.visual img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
 .supporting {
   padding: 1.5rem;
   border: 1px solid var(--line);
