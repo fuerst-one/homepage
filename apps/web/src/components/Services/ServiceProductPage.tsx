@@ -44,7 +44,7 @@ export async function ServiceProductPage({
   });
   const evidence = selectServiceEvidence(projects, slug, (project) =>
     projectPath(project, locale),
-  );
+  ).filter((project) => slug !== "ai-automation" || project.story?.featured);
   const url = `${SITE_URL}${serviceProductPath(slug, locale)}`;
   const commercial = de
     ? "Das ist ein bezahlter, klar begrenzter Auftrag. Nach einem ersten Austausch vereinbaren wir Umfang, Format der Übergabe, Zeitplan und Honorar, bevor die Arbeit beginnt."

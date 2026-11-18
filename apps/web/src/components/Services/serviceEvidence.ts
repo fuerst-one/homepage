@@ -12,17 +12,21 @@ export function selectServiceEvidence(
   return serviceProjects[slug].flatMap((id) => {
     const project = projects.find((item) => item.id === id);
     if (!project) return [];
+    const story =
+      slug === "ai-automation"
+        ? (automationCases.find((item) => item.id === project.id) ?? null)
+        : null;
     return [
       {
         id: project.id,
-        story:
-          slug === "ai-automation"
-            ? (automationCases.find((item) => item.id === project.id) ?? null)
-            : null,
+        story,
         href: projectHref(project),
         contentLocale: project.contentLocale ?? "en",
         name: project.name.trim(),
-        screenshot: project.screenshots?.[0] || null,
+        screenshot:
+          project.screenshots?.[story?.screenshotIndex ?? 0] ||
+          project.screenshots?.[0] ||
+          null,
         tools: project.tools.slice(0, 6),
         clients: project.clients.map((client) => client.name),
         projectType: project.projectType,

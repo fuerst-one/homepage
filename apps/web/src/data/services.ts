@@ -226,7 +226,7 @@ export const serviceCopy: Record<
       reassurance:
         "Start with one repetitive task or one product question. No technical specification needed.",
       evidenceIntro:
-        "Multi-source data pipelines, browser-agent testing and AI-supported survey analysis. Concrete examples with their scope, contribution and project stage made explicit.",
+        "Browser-agent testing, multi-source data pipelines and connected business systems. Three examples with their project context made explicit.",
       workHeading: "Start with the work. Build what helps.",
       workIntro:
         "The useful question is where your team loses time or your idea needs evidence. That determines what to automate, where AI fits and what needs a person’s judgment.",
@@ -304,7 +304,7 @@ export const serviceCopy: Record<
       reassurance:
         "Eine wiederkehrende Aufgabe oder eine Produktfrage reicht. Ein technisches Konzept brauchst du dafür noch nicht.",
       evidenceIntro:
-        "Datenpipelines mit mehreren Quellen, Tests mit Browser-Agenten und KI-gestützte Umfrageauswertung. Konkrete Beispiele mit klar benanntem Umfang, Beitrag und Projektstand.",
+        "Tests mit Browser-Agenten, Datenpipelines mit mehreren Quellen und verbundene Business-Systeme. Drei Beispiele mit klar benanntem Projektkontext.",
       workHeading: "Bei der Arbeit anfangen. Bauen, was hilft.",
       workIntro:
         "Wo verliert dein Team Zeit? Welche Annahme muss deine Idee erst beweisen? Daraus ergibt sich, was wir automatisieren, wo KI hilft und wo menschliches Urteil nötig bleibt.",

@@ -21,6 +21,17 @@ for (const locale of ["en", "de"]) {
     assert.ok(
       html.includes(`href="#case-35686514-f736-8019-921c-e5d8d77e7f23"`),
     );
+    assert.ok(html.includes(`/${locale}/projects/business-hub`));
+    assert.deepEqual(
+      [...html.matchAll(/href="#case-([a-f0-9-]+)"/g)].map((match) => match[1]),
+      [
+        "35686514-f736-8019-921c-e5d8d77e7f23",
+        "b77109b3-803c-4132-a07b-44b9b9ccc5df",
+        "41786514-f736-8074-8dcb-dd79f906d12a",
+      ],
+    );
+    assert.ok(!html.includes('id="case-11d86514-f736-80ed-935c-e6fe30b59d42"'));
+    assert.match(html, locale === "en" ? /How it works/ : /So funktioniert es/);
     assert.match(
       html,
       locale === "en"
@@ -72,6 +83,7 @@ test("featured case links resolve to actual public project pages", async () => {
     "test-flow",
     "numobility-mobility-database-blog",
     "conversion-y-ai-powered-surveys-for-b2b",
+    "business-hub-connected-business-management-driver-41786514-f736-8074-8dcb-dd79f906d12a",
     "build-manager",
   ]) {
     assert.equal((await get(`/en/projects/${slug}`)).status, 200, slug);

@@ -88,8 +88,7 @@
 .visual img {
   width: 100%;
   height: auto;
-  max-height: 19rem;
-  object-fit: contain;
+  display: block;
 }
 .supporting {
   padding: 1.5rem;
@@ -143,4 +142,36 @@
 
 .page .prompt {
   color: #464646;
+}
+
+.projectName {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  color: #efefeb;
+}
+.caseDetails {
+  margin-top: 1.25rem;
+  border-block: 1px solid var(--line);
+}
+.caseDetails summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.9rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+.caseDetails summary::-webkit-details-marker {
+  display: none;
+}
+.caseDetails[open] summary > span {
+  transform: rotate(45deg);
+}
+.caseDetails .summary {
+  margin-top: 0.5rem;
+}
+.caseDetails .flow {
+  margin-bottom: 1.25rem;
 }

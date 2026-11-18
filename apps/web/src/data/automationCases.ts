@@ -1,5 +1,6 @@
 type CaseStory = {
   label: string;
+  headline?: string;
   context: string;
   summary: string;
   input: string;
@@ -10,38 +11,17 @@ type CaseStory = {
 export const automationCases: readonly {
   id: string;
   featured: boolean;
+  screenshotIndex?: number;
   en: CaseStory;
   de: CaseStory;
 }[] = [
   {
-    id: "b77109b3-803c-4132-a07b-44b9b9ccc5df",
-    featured: true,
-    en: {
-      label: "Data pipelines",
-      context:
-        "Startup project · pipeline contribution within a team · historical implementation",
-      summary:
-        "Vehicle information from several sources, brought into a shared data model. My contribution included source-specific parsing, field mapping, normalization and background refresh workers.",
-      input: "Vehicle specifications, ratings and source-specific page formats",
-      output:
-        "Structured records in NocoDB, with age-based refresh and a publishing workflow",
-    },
-    de: {
-      label: "Datenpipelines",
-      context:
-        "Startup-Projekt · Pipeline-Beitrag im Team · historische Umsetzung",
-      summary:
-        "Fahrzeuginformationen aus mehreren Quellen in einem gemeinsamen Datenmodell. Mein Beitrag umfasste quellenspezifisches Parsing, Feldzuordnung, Normalisierung und Hintergrund-Worker für Aktualisierungen.",
-      input: "Fahrzeugdaten, Bewertungen und unterschiedliche Seitenformate",
-      output:
-        "Strukturierte Datensätze in NocoDB, mit altersabhängiger Aktualisierung und Veröffentlichungsablauf",
-    },
-  },
-  {
     id: "35686514-f736-8019-921c-e5d8d77e7f23",
     featured: true,
+    screenshotIndex: 2,
     en: {
       label: "Browser automation",
+      headline: "Turn a user journey into a browser-agent check.",
       context: "Personal project · solo delivery · occasional internal use",
       summary:
         "A local tool for describing user flows in natural language and running them with browser agents. Queued runs, step results and screenshots make the execution available for review.",
@@ -50,6 +30,7 @@ export const automationCases: readonly {
     },
     de: {
       label: "Browser-Automatisierung",
+      headline: "Nutzerabläufe mit Browser-Agenten prüfen.",
       context:
         "Eigenes Projekt · allein umgesetzt · gelegentlich intern genutzt",
       summary:
@@ -60,8 +41,59 @@ export const automationCases: readonly {
     },
   },
   {
-    id: "11d86514-f736-80ed-935c-e6fe30b59d42",
+    id: "b77109b3-803c-4132-a07b-44b9b9ccc5df",
     featured: true,
+    en: {
+      label: "Data pipelines",
+      headline: "Scattered vehicle data. One updated database.",
+      context:
+        "Startup project · pipeline contribution within a team · historical implementation",
+      summary:
+        "Vehicle information from several sources, brought into a shared data model. My contribution included source-specific parsing, field mapping, normalization and background refresh workers.",
+      input: "Vehicle specifications, ratings and source-specific page formats",
+      output:
+        "Structured records in NocoDB, with age-based refresh and a publishing workflow",
+    },
+    de: {
+      label: "Datenpipelines",
+      headline: "Verteilte Fahrzeugdaten. Eine aktuelle Datenbank.",
+      context:
+        "Startup-Projekt · Pipeline-Beitrag im Team · historische Umsetzung",
+      summary:
+        "Fahrzeuginformationen aus mehreren Quellen in einem gemeinsamen Datenmodell. Mein Beitrag umfasste quellenspezifisches Parsing, Feldzuordnung, Normalisierung und Hintergrund-Worker für Aktualisierungen.",
+      input: "Fahrzeugdaten, Bewertungen und unterschiedliche Seitenformate",
+      output:
+        "Strukturierte Datensätze in NocoDB, mit altersabhängiger Aktualisierung und Veröffentlichungsablauf",
+    },
+  },
+  {
+    id: "41786514-f736-8074-8dcb-dd79f906d12a",
+    featured: true,
+    en: {
+      label: "Connected business tools",
+      headline: "Messages, meetings and project updates. One workspace.",
+      context: "Personal project · internal use",
+      summary:
+        "Background collectors bring updates from connected providers into a project-based workspace, alongside tasks, documents, time and finances. Individual collection jobs keep source updates separate and make failures visible.",
+      input: "Messages, calendar events and activity from connected providers",
+      output:
+        "A project-based overview with collected updates and links back to their sources",
+    },
+    de: {
+      label: "Verbundene Business-Tools",
+      headline: "Nachrichten, Termine und Projektinfos. Ein Arbeitsbereich.",
+      context: "Eigenes Projekt · intern genutzt",
+      summary:
+        "Hintergrundprozesse sammeln Updates angebundener Dienste in einem projektbezogenen Arbeitsbereich, neben Aufgaben, Dokumenten, Zeiten und Finanzen. Einzelne Abrufaufträge halten Quellenaktualisierungen getrennt und machen Fehler sichtbar.",
+      input:
+        "Nachrichten, Kalendertermine und Aktivitäten angebundener Dienste",
+      output:
+        "Eine projektbezogene Übersicht mit gesammelten Updates und Links zu den Quellen",
+    },
+  },
+  {
+    id: "11d86514-f736-80ed-935c-e6fe30b59d42",
+    featured: false,
     en: {
       label: "AI in a product",
       context: "Startup project · product, design and development · MVP",

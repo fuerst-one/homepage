@@ -22,11 +22,12 @@ const ui = {
     jump: "Explore the work",
     proof: "Different tasks. Working software.",
     proofIntro:
-      "Data collection, browser-agent testing and AI-supported analysis. Each example shows a different part of the work, with its project context made explicit.",
+      "Browser-agent testing, data pipelines and connected business tools.",
     selected: "Selected work",
     input: "Starting point",
     output: "What was built",
     read: "Read the project",
+    details: "How it works",
     supporting: "More ways I’ve applied this",
     offer: "What I can help you build",
     process: "One workflow first. A useful next step.",
@@ -46,11 +47,12 @@ const ui = {
     jump: "Arbeiten ansehen",
     proof: "Verschiedene Aufgaben. Funktionierende Software.",
     proofIntro:
-      "Datensammlung, Tests mit Browser-Agenten und KI-gestützte Auswertung. Jedes Beispiel zeigt einen anderen Teil der Arbeit, mit klar benanntem Projektkontext.",
+      "Tests mit Browser-Agenten, Datenpipelines und verbundene Business-Tools.",
     selected: "Ausgewählte Arbeiten",
     input: "Ausgangspunkt",
     output: "Was umgesetzt wurde",
     read: "Zum Projekt",
+    details: "So funktioniert es",
     supporting: "Weitere Anwendungen aus meiner Arbeit",
     offer: "Was ich für dich entwickeln kann",
     process: "Ein Ablauf zuerst. Ein sinnvoller nächster Schritt.",
@@ -149,22 +151,15 @@ export function AutomationLandingPage({
                 >
                   <p className={shared.eyebrow}>{story.label}</p>
                   <h3 id={`title-${project.id}`}>
-                    <Link href={project.href} lang="en">
-                      {project.name} <span aria-hidden="true">↗</span>
+                    <Link href={project.href}>
+                      {story.headline ?? project.name}{" "}
+                      <span aria-hidden="true">↗</span>
                     </Link>
                   </h3>
+                  <p className={styles.projectName} lang="en">
+                    {project.name.split(" – ")[0]}
+                  </p>
                   <p className={styles.context}>{story.context}</p>
-                  <p className={styles.summary}>{story.summary}</p>
-                  <dl className={styles.flow}>
-                    <div>
-                      <dt>{t.input}</dt>
-                      <dd>{story.input}</dd>
-                    </div>
-                    <div>
-                      <dt>{t.output}</dt>
-                      <dd>{story.output}</dd>
-                    </div>
-                  </dl>
                   {project.screenshot && (
                     <Link
                       href={project.href}
@@ -182,6 +177,23 @@ export function AutomationLandingPage({
                       />
                     </Link>
                   )}
+                  <details className={styles.caseDetails}>
+                    <summary>
+                      {t.details}
+                      <span aria-hidden="true">+</span>
+                    </summary>
+                    <p className={styles.summary}>{story.summary}</p>
+                    <dl className={styles.flow}>
+                      <div>
+                        <dt>{t.input}</dt>
+                        <dd>{story.input}</dd>
+                      </div>
+                      <div>
+                        <dt>{t.output}</dt>
+                        <dd>{story.output}</dd>
+                      </div>
+                    </dl>
+                  </details>
                   <Link href={project.href} className={shared.textLink}>
                     {t.read} <span aria-hidden="true">↗</span>
                   </Link>
