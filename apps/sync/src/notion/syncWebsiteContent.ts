@@ -4,6 +4,7 @@ import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoint
 import source from "../data/notion-site-copy.json";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { readPublicProjectCase } from "@homepage/content/projectCase";
+import { reviewProjectSource } from "@homepage/content/projectSourceReview";
 import { knowledgeDatabase } from "@homepage/database/database";
 import { createNotionReadFetch } from "./createNotionFetch";
 import {
@@ -62,6 +63,15 @@ export async function syncWebsiteContent(force = false) {
         (p): p is PageObjectResponse =>
           "properties" in p && publicIds.has(p.id),
       );
+      const sourceReview = pages.flatMap((page) =>
+        reviewProjectSource(page).map(({ field, reason }) => ({
+          projectId: page.id,
+          field,
+          reason,
+        })),
+      );
+      if (sourceReview.length)
+        console.warn("Website project source needs review", sourceReview);
       const ownerPage = await notion.pages.retrieve({ page_id: ownerId });
       if (
         !("properties" in ownerPage) ||

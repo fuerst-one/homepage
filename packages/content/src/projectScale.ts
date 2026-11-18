@@ -4,7 +4,8 @@ export type ProjectScale = {
   complexityBasis: "assessment" | "unspecified";
   effortLow: number | null;
   effortHigh: number | null;
-  effortBasis: "rebuild-estimate" | "unspecified";
+  effortBasis:
+    "rebuild-estimate" | "historical-personal-effort" | "unspecified";
   effortClassSource: string | null;
   effortClassComputed: string | null;
   teamLow: number | null;
@@ -66,7 +67,10 @@ export function publicProjectScale(value: unknown): ProjectScale {
     effortLow,
     effortHigh,
     effortBasis:
-      p.effortBasis === "rebuild-estimate" ? "rebuild-estimate" : "unspecified",
+      p.effortBasis === "rebuild-estimate" ||
+      p.effortBasis === "historical-personal-effort"
+        ? p.effortBasis
+        : "unspecified",
     effortClassSource: ["XS", "S", "M", "L", "XL", "XXL"].includes(
       text(p.effortClassSource),
     )
@@ -107,11 +111,13 @@ export function readNotionProjectScale(page: unknown): ProjectScale {
       : "unspecified",
     effortLow: num("Effort Days Low"),
     effortHigh: num("Effort Days High"),
-    effortBasis: /rebuild|replacement|recreate/i.test(
+    effortBasis: /^OWNER-REPORTED HISTORICAL PERSONAL EFFORT\b/i.test(
       rich("Effort Estimate Basis"),
     )
-      ? "rebuild-estimate"
-      : "unspecified",
+      ? "historical-personal-effort"
+      : /rebuild|replacement|recreate/i.test(rich("Effort Estimate Basis"))
+        ? "rebuild-estimate"
+        : "unspecified",
     effortClassSource: record(record(p["Effort Class (upper)"]).select).name,
     teamLow: num("Team Size Low"),
     teamHigh: num("Team Size High"),
@@ -123,4 +129,21 @@ export function readNotionProjectScale(page: unknown): ProjectScale {
     ).slice(0, 10),
     workingPattern: record(record(p["Working pattern"]).select).name,
   });
+}
+
+export function effortBasisLabel(
+  basis: ProjectScale["effortBasis"],
+  locale: "en" | "de",
+) {
+  if (basis === "historical-personal-effort")
+    return locale === "de"
+      ? "Historischer persönlicher Aufwand laut eigener Angabe"
+      : "Owner-reported historical personal effort";
+  if (basis === "rebuild-estimate")
+    return locale === "de"
+      ? "Geschätzter Neuaufbau, nicht historische Arbeitszeit"
+      : "Estimated rebuild, not historical time spent";
+  return locale === "de"
+    ? "Basis nicht angegeben; keine Lieferzusage"
+    : "Basis unspecified; not a delivery estimate";
 }

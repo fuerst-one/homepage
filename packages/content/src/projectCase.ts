@@ -22,12 +22,16 @@ export const CASE_VOCABULARY = {
     "Maintain and evolve a product":
       "Ein Produkt betreuen und weiterentwickeln",
     "Join an existing team": "Ein bestehendes Team verstärken",
+    "Sell products": "Produkte verkaufen",
   },
   stages: {
     Discovery: "Konzeption",
     Prototype: "Prototyp",
     MVP: "MVP",
     Production: "Produktiv eingesetzt",
+    "Production (restricted access)":
+      "Produktiv eingesetzt (beschränkter Zugang)",
+    Retired: "Außer Betrieb",
     Improvement: "Weiterentwicklung",
     "Internal use": "Interne Nutzung",
     "Ongoing maintenance": "Laufende Betreuung",
@@ -94,6 +98,11 @@ export const CASE_VOCABULARY = {
     "Knowledge retrieval": "Wissensabruf",
     "Agent memory": "Agentengedächtnis",
     "Computer vision detection": "Visuelle Objekterkennung",
+    "Data parsing": "Datenextraktion und -verarbeitung",
+    "Code refactoring": "Code-Refactoring",
+    "Geo suggestion": "Ortsvorschläge",
+    "Trip planning": "Reiseplanung",
+    Routing: "Routenberechnung",
   },
   ownership: {
     "Solo delivery": "Eigenständige Umsetzung",
@@ -162,7 +171,11 @@ export function readPublicProjectCase(page: unknown): ProjectCase | null {
 }
 
 const germanLabels: Record<string, string> = Object.assign(
-  {},
+  {
+    "Developer tool": "Entwicklerwerkzeug",
+    "Open Source": "Quelloffene Distribution",
+    "Automated Testing": "Automatisierte Tests",
+  },
   ...Object.values(CASE_VOCABULARY),
 );
 export function caseLabel(value: string, locale: Locale) {

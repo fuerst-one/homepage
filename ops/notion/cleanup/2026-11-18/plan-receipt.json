@@ -1,0 +1,627 @@
+{
+  "startedAt": "2026-11-18T09:47:39.180Z",
+  "planPath": "/Users/Alex/dev/01-fuerst-one/homepage/ops/notion/cleanup/2026-11-18/plan.json",
+  "verified": [
+    {
+      "id": "41c86514-f736-80d1-b371-e766290c0105",
+      "name": "Pokémon Arena",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Status",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "written": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Status",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "checkedAt": "2026-11-18T09:47:40.254Z"
+    },
+    {
+      "id": "41c86514-f736-804d-a0a0-d4b6d95fb3e6",
+      "name": "Home Pi",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Status",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "written": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Status",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "checkedAt": "2026-11-18T09:47:41.855Z"
+    },
+    {
+      "id": "41c86514-f736-80b1-8858-ea72e7502d18",
+      "name": "Traidy",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence",
+        "Case Context",
+        "Outcome Basis",
+        "Outcome Evidence"
+      ],
+      "written": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence",
+        "Case Context",
+        "Outcome Basis",
+        "Outcome Evidence"
+      ],
+      "checkedAt": "2026-11-18T09:47:44.317Z"
+    },
+    {
+      "id": "41c86514-f736-808a-8e7b-ffbc4b0c44c0",
+      "name": "Daily Briefing",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "written": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "checkedAt": "2026-11-18T09:47:46.534Z"
+    },
+    {
+      "id": "41c86514-f736-80a2-b397-fc1398edaf6e",
+      "name": "SERP API",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "written": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "checkedAt": "2026-11-18T09:47:47.568Z"
+    },
+    {
+      "id": "41c86514-f736-80bf-8395-e263d6532bd9",
+      "name": "Housing Hunter",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Research Evidence"
+      ],
+      "written": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Research Evidence"
+      ],
+      "checkedAt": "2026-11-18T09:47:48.693Z"
+    },
+    {
+      "id": "41c86514-f736-801e-8825-cbf28db44596",
+      "name": "AI Scraper",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Research Evidence"
+      ],
+      "written": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Research Evidence"
+      ],
+      "checkedAt": "2026-11-18T09:47:50.397Z"
+    },
+    {
+      "id": "41b86514-f736-81f3-b839-e338b6c1bf0a",
+      "name": "ts-shove",
+      "fields": [
+        "Target market",
+        "Usage context",
+        "Methods",
+        "Research Evidence"
+      ],
+      "written": [
+        "Target market",
+        "Usage context",
+        "Methods",
+        "Research Evidence"
+      ],
+      "checkedAt": "2026-11-18T09:47:51.944Z"
+    },
+    {
+      "id": "41a86514-f736-8085-81c5-c242b8b576eb",
+      "name": "Glyphstone",
+      "fields": ["Target market", "Delivery model", "Product type"],
+      "written": ["Target market", "Delivery model", "Product type"],
+      "checkedAt": "2026-11-18T09:47:53.151Z"
+    },
+    {
+      "id": "41786514-f736-8003-86e9-fb3a9fd4248a",
+      "name": "Pigeon Turret",
+      "fields": ["Delivery model", "Product type"],
+      "written": ["Delivery model", "Product type"],
+      "checkedAt": "2026-11-18T09:47:54.517Z"
+    },
+    {
+      "id": "35486514-f736-8087-86dd-f41b80c8b0ad",
+      "name": "mem0.one",
+      "fields": ["Target market", "Usage context"],
+      "written": ["Target market", "Usage context"],
+      "checkedAt": "2026-11-18T09:47:55.601Z"
+    },
+    {
+      "id": "21886514-f736-80c5-88f4-c37e60968f21",
+      "name": "Fuerst.one Glyph Plasma",
+      "fields": ["Target market"],
+      "written": ["Target market"],
+      "checkedAt": "2026-11-18T09:47:58.617Z"
+    },
+    {
+      "id": "d1420991-70e5-4b5a-a1f7-06d27b902cde",
+      "name": "Bubble-UI",
+      "fields": ["Target market"],
+      "written": ["Target market"],
+      "checkedAt": "2026-11-18T09:47:59.753Z"
+    },
+    {
+      "id": "cdd10e91-b9ef-4232-8378-14db1a67bc15",
+      "name": "Fuerst.one Playground",
+      "fields": ["Target market"],
+      "written": ["Target market"],
+      "checkedAt": "2026-11-18T09:48:00.890Z"
+    },
+    {
+      "id": "47579682-9325-4e9a-b014-e4fb424bb0bb",
+      "name": "World Vision",
+      "fields": ["Effort Estimate Basis"],
+      "written": ["Effort Estimate Basis"],
+      "checkedAt": "2026-11-18T09:48:02.611Z"
+    },
+    {
+      "id": "c6a3f4a3-9387-475b-a3af-bb5512846d9e",
+      "name": "LockBot",
+      "fields": ["Effort Estimate Basis"],
+      "written": ["Effort Estimate Basis"],
+      "checkedAt": "2026-11-18T09:48:04.425Z"
+    },
+    {
+      "id": "129bf87c-e0d6-4217-9c16-c320eeb0e29b",
+      "name": "Zooplus E-Food",
+      "fields": ["Effort Estimate Basis"],
+      "written": ["Effort Estimate Basis"],
+      "checkedAt": "2026-11-18T09:48:06.007Z"
+    },
+    {
+      "id": "10bcfe51-e86d-44dc-a247-0c542f9996be",
+      "name": "Kleiner als Raute",
+      "fields": ["Effort Estimate Basis"],
+      "written": ["Effort Estimate Basis"],
+      "checkedAt": "2026-11-18T09:48:06.986Z"
+    },
+    {
+      "id": "23b40e8e-626f-4fcf-9c04-83684b404adb",
+      "name": "Mobile.de Financing",
+      "fields": ["Effort Estimate Basis"],
+      "written": ["Effort Estimate Basis"],
+      "checkedAt": "2026-11-18T09:48:08.125Z"
+    },
+    {
+      "id": "b6ea7e71-2e97-42f2-8644-a57545c20d59",
+      "name": "ROLLT!",
+      "fields": ["Effort Estimate Basis"],
+      "written": ["Effort Estimate Basis"],
+      "checkedAt": "2026-11-18T09:48:09.167Z"
+    }
+  ],
+  "attempted": [
+    {
+      "id": "41c86514-f736-80d1-b371-e766290c0105",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Status",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "at": "2026-11-18T09:47:39.449Z"
+    },
+    {
+      "id": "41c86514-f736-804d-a0a0-d4b6d95fb3e6",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Status",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "at": "2026-11-18T09:47:40.545Z"
+    },
+    {
+      "id": "41c86514-f736-80b1-8858-ea72e7502d18",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence",
+        "Case Context",
+        "Outcome Basis",
+        "Outcome Evidence"
+      ],
+      "at": "2026-11-18T09:47:42.959Z"
+    },
+    {
+      "id": "41c86514-f736-808a-8e7b-ffbc4b0c44c0",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "at": "2026-11-18T09:47:45.110Z"
+    },
+    {
+      "id": "41c86514-f736-80a2-b397-fc1398edaf6e",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Methods",
+        "Research Evidence"
+      ],
+      "at": "2026-11-18T09:47:46.804Z"
+    },
+    {
+      "id": "41c86514-f736-80bf-8395-e263d6532bd9",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Research Evidence"
+      ],
+      "at": "2026-11-18T09:47:47.922Z"
+    },
+    {
+      "id": "41c86514-f736-801e-8825-cbf28db44596",
+      "fields": [
+        "Code SLOC",
+        "Test SLOC",
+        "Source Files",
+        "Code Measured At",
+        "Code Revision",
+        "Code Size Scope",
+        "Local Code Paths",
+        "Team Size Low",
+        "Team Size High",
+        "Ownership Model",
+        "Contribution Basis",
+        "Personal Contribution",
+        "Delivery Evidence",
+        "Evidence Gaps",
+        "Research Evidence"
+      ],
+      "at": "2026-11-18T09:47:48.984Z"
+    },
+    {
+      "id": "41b86514-f736-81f3-b839-e338b6c1bf0a",
+      "fields": [
+        "Target market",
+        "Usage context",
+        "Methods",
+        "Research Evidence"
+      ],
+      "at": "2026-11-18T09:47:50.699Z"
+    },
+    {
+      "id": "41a86514-f736-8085-81c5-c242b8b576eb",
+      "fields": ["Target market", "Delivery model", "Product type"],
+      "at": "2026-11-18T09:47:52.252Z"
+    },
+    {
+      "id": "41786514-f736-8003-86e9-fb3a9fd4248a",
+      "fields": ["Delivery model", "Product type"],
+      "at": "2026-11-18T09:47:53.528Z"
+    },
+    {
+      "id": "35486514-f736-8087-86dd-f41b80c8b0ad",
+      "fields": ["Target market", "Usage context"],
+      "at": "2026-11-18T09:47:54.836Z"
+    },
+    {
+      "id": "21886514-f736-80c5-88f4-c37e60968f21",
+      "fields": ["Target market"],
+      "at": "2026-11-18T09:47:55.926Z"
+    },
+    {
+      "id": "d1420991-70e5-4b5a-a1f7-06d27b902cde",
+      "fields": ["Target market"],
+      "at": "2026-11-18T09:47:58.965Z"
+    },
+    {
+      "id": "cdd10e91-b9ef-4232-8378-14db1a67bc15",
+      "fields": ["Target market"],
+      "at": "2026-11-18T09:48:00.096Z"
+    },
+    {
+      "id": "47579682-9325-4e9a-b014-e4fb424bb0bb",
+      "fields": ["Effort Estimate Basis"],
+      "at": "2026-11-18T09:48:01.753Z"
+    },
+    {
+      "id": "c6a3f4a3-9387-475b-a3af-bb5512846d9e",
+      "fields": ["Effort Estimate Basis"],
+      "at": "2026-11-18T09:48:03.552Z"
+    },
+    {
+      "id": "129bf87c-e0d6-4217-9c16-c320eeb0e29b",
+      "fields": ["Effort Estimate Basis"],
+      "at": "2026-11-18T09:48:05.284Z"
+    },
+    {
+      "id": "10bcfe51-e86d-44dc-a247-0c542f9996be",
+      "fields": ["Effort Estimate Basis"],
+      "at": "2026-11-18T09:48:06.295Z"
+    },
+    {
+      "id": "23b40e8e-626f-4fcf-9c04-83684b404adb",
+      "fields": ["Effort Estimate Basis"],
+      "at": "2026-11-18T09:48:07.336Z"
+    },
+    {
+      "id": "b6ea7e71-2e97-42f2-8644-a57545c20d59",
+      "fields": ["Effort Estimate Basis"],
+      "at": "2026-11-18T09:48:08.421Z"
+    }
+  ],
+  "completedAt": "2026-11-18T09:48:09.167Z"
+}

@@ -31,6 +31,7 @@ export const PRODUCT_FORMATS = [
   "Mobile app",
   "API",
   "Plugin / integration",
+  "Developer tool",
   "Chatbot",
   "Hardware / embedded",
   "Physical product",
@@ -45,7 +46,8 @@ export const USAGE_CONTEXTS = [
   "Learning",
   "Experimental",
 ] as const;
-export const DELIVERY_MODELS = ["SaaS"] as const;
+// Distribution is independent of customer market and product format.
+export const DELIVERY_MODELS = ["SaaS", "Open Source"] as const;
 
 export type ProjectTaxonomy = {
   productTypes?: string[];

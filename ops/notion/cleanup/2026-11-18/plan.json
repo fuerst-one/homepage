@@ -1,0 +1,819 @@
+{
+  "databaseId": "f53d61ec13a049b79f25c5c98e0994cb",
+  "sourceReadAt": "2026-11-18T09:42:10.466Z",
+  "ownerConfirmation": "Owner confirmation in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1 on 18 November 2026: \"Full solo on all of them. They are all basically completed apps.\" Sole contributor and team size one confirmed. This supersedes earlier uncertainty about contribution and team size. Completion does not establish deployment, ongoing maintenance, hours or measured outcomes.",
+  "projects": [
+    {
+      "id": "41c86514-f736-80d1-b371-e766290c0105",
+      "name": "Pokémon Arena",
+      "fields": {
+        "Code SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 17314
+        },
+        "Test SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 10672
+        },
+        "Source Files": {
+          "type": "number",
+          "before": null,
+          "after": 41
+        },
+        "Code Measured At": {
+          "type": "date",
+          "before": null,
+          "after": {
+            "start": "2026-11-18"
+          }
+        },
+        "Code Revision": {
+          "type": "rich_text",
+          "before": "",
+          "after": "pokemon-arena: 3bce348618ddf593d000b4a43c5e2d4cf3a7c118 (working tree modified)"
+        },
+        "Code Size Scope": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Measured current mapped repository working-tree footprint on 2026-11-18T09:39:46.066Z with cloc 2.10. /Users/Alex/dev/03-private/pokemon-arena. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality."
+        },
+        "Local Code Paths": {
+          "type": "rich_text",
+          "before": "/Users/Alex/dev/03-private/pokemon-arena\n[source reviewed; code size not measured]",
+          "after": "/Users/Alex/dev/03-private/pokemon-arena\n[Measured mapped repository scope; see Code Size Scope and Code Revision]"
+        },
+        "Team Size Low": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Team Size High": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Ownership Model": {
+          "type": "select",
+          "before": null,
+          "after": "Solo delivery"
+        },
+        "Contribution Basis": {
+          "type": "select",
+          "before": null,
+          "after": "Owner confirmation"
+        },
+        "Personal Contribution": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Sole contributor, responsible for the entire application."
+        },
+        "Status": {
+          "type": "select",
+          "before": null,
+          "after": "Completed"
+        },
+        "Delivery Evidence": {
+          "type": "rich_text",
+          "before": "Local source was reviewed for the capabilities described above. This backfill did not rerun the application or establish current operation, deployment, adoption or production service levels.",
+          "after": "Local source was reviewed for the capabilities described above. This backfill did not rerun the application or establish current operation, deployment, adoption or production service levels.\n\nOwner confirmation, 18 November 2026 (cleanup chat): the application is basically completed. Current runtime, deployment and service levels were not independently checked."
+        },
+        "Evidence Gaps": {
+          "type": "rich_text",
+          "before": "Confirm exact contribution boundaries, present use, maintenance and any independently measurable outcomes. Team size and actual effort remain unknown.",
+          "after": "Confirm exact contribution boundaries, present use, maintenance and any independently measurable outcomes. Team size and actual effort remain unknown.\n\nCleanup clarification: sole contribution and team size one are now owner-confirmed; those earlier gaps are resolved. Maintenance, working hours, complexity, effort and measured outcomes remain unconfirmed. The owner describes the app as basically completed; this is separate from production/runtime verification."
+        },
+        "Methods": {
+          "type": "multi_select",
+          "before": [],
+          "after": ["Automated Testing"]
+        },
+        "Research Evidence": {
+          "type": "rich_text",
+          "before": "2026-11-18 bounded source review. README.md:1 — development MVP, agent types, simulator attribution and supported scope. apps/api/src/app.ts — match/run APIs. packages/battle-engine/src/engine.ts — upstream simulator integration. docs/mechanics-compatibility.md — deliberately restricted compatibility; no exhaustive cartridge-equivalence claim.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Nov 8, 2026 to Nov 13, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.",
+          "after": "2026-11-18 bounded source review. README.md:1 — development MVP, agent types, simulator attribution and supported scope. apps/api/src/app.ts — match/run APIs. packages/battle-engine/src/engine.ts — upstream simulator integration. docs/mechanics-compatibility.md — deliberately restricted compatibility; no exhaustive cartridge-equivalence claim.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Nov 8, 2026 to Nov 13, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner confirmation in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1 on 18 November 2026: \"Full solo on all of them. They are all basically completed apps.\" Sole contributor and team size one confirmed. This supersedes earlier uncertainty about contribution and team size. Completion does not establish deployment, ongoing maintenance, hours or measured outcomes.\n\nCode measurement, 18 November 2026: Measured current mapped repository working-tree footprint on 2026-11-18T09:39:46.066Z with cloc 2.10. /Users/Alex/dev/03-private/pokemon-arena. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality. Revision: pokemon-arena: 3bce348618ddf593d000b4a43c5e2d4cf3a7c118 (working tree modified)\n\nMethods review, 18 November 2026: Automated Testing is supported by tests/api.test.ts and package.json (Vitest test runner). This review inspected configured tests; it did not rerun that project or establish runtime quality."
+        }
+      }
+    },
+    {
+      "id": "41c86514-f736-804d-a0a0-d4b6d95fb3e6",
+      "name": "Home Pi",
+      "fields": {
+        "Code SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 10294
+        },
+        "Test SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 4280
+        },
+        "Source Files": {
+          "type": "number",
+          "before": null,
+          "after": 142
+        },
+        "Code Measured At": {
+          "type": "date",
+          "before": null,
+          "after": {
+            "start": "2026-11-18"
+          }
+        },
+        "Code Revision": {
+          "type": "rich_text",
+          "before": "",
+          "after": "home-pi-frontend: 8016018e3a3b4c51c3d7aae37b67070ac49d808e (working tree modified)"
+        },
+        "Code Size Scope": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Measured current mapped repository working-tree footprint on 2026-11-18T09:39:46.455Z with cloc 2.10. /Users/Alex/dev/03-private/01-devices/home-pi/home-pi-frontend. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. Home Pi frontend/server/deploy repository only; other hardware firmware is outside the mapped scope. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality."
+        },
+        "Local Code Paths": {
+          "type": "rich_text",
+          "before": "/Users/Alex/dev/03-private/01-devices/home-pi/home-pi-frontend\n[source reviewed; code size not measured]",
+          "after": "/Users/Alex/dev/03-private/01-devices/home-pi/home-pi-frontend\n[Measured mapped repository scope; see Code Size Scope and Code Revision]"
+        },
+        "Team Size Low": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Team Size High": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Ownership Model": {
+          "type": "select",
+          "before": null,
+          "after": "Solo delivery"
+        },
+        "Contribution Basis": {
+          "type": "select",
+          "before": null,
+          "after": "Owner confirmation"
+        },
+        "Personal Contribution": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Sole contributor, responsible for the entire application."
+        },
+        "Status": {
+          "type": "select",
+          "before": null,
+          "after": "Completed"
+        },
+        "Delivery Evidence": {
+          "type": "rich_text",
+          "before": "Local source was reviewed for the capabilities described above. This backfill did not rerun the application or establish current operation, deployment, adoption or production service levels.",
+          "after": "Local source was reviewed for the capabilities described above. This backfill did not rerun the application or establish current operation, deployment, adoption or production service levels.\n\nOwner confirmation, 18 November 2026 (cleanup chat): the application is basically completed. Current runtime, deployment and service levels were not independently checked."
+        },
+        "Evidence Gaps": {
+          "type": "rich_text",
+          "before": "Confirm exact contribution boundaries, present use, maintenance and any independently measurable outcomes. Team size and actual effort remain unknown.",
+          "after": "Confirm exact contribution boundaries, present use, maintenance and any independently measurable outcomes. Team size and actual effort remain unknown.\n\nCleanup clarification: sole contribution and team size one are now owner-confirmed; those earlier gaps are resolved. Maintenance, working hours, complexity, effort and measured outcomes remain unconfirmed. The owner describes the app as basically completed; this is separate from production/runtime verification."
+        },
+        "Methods": {
+          "type": "multi_select",
+          "before": [],
+          "after": ["Automated Testing"]
+        },
+        "Research Evidence": {
+          "type": "rich_text",
+          "before": "2026-11-18 bounded source review. README.md:35 — documented browser audio/Assist flow; not a fresh hardware test. src/app/api/voice/stream/voiceSession.ts — audio-session integration. src/utils/useMqttClient.tsx — device messaging. First scaffold excluded from date window; first application work at d60e9c7 on 2023-11-24. Hardware behavior and current deployment were not revalidated.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Nov 24, 2023 to Oct 22, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.",
+          "after": "2026-11-18 bounded source review. README.md:35 — documented browser audio/Assist flow; not a fresh hardware test. src/app/api/voice/stream/voiceSession.ts — audio-session integration. src/utils/useMqttClient.tsx — device messaging. First scaffold excluded from date window; first application work at d60e9c7 on 2023-11-24. Hardware behavior and current deployment were not revalidated.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Nov 24, 2023 to Oct 22, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner confirmation in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1 on 18 November 2026: \"Full solo on all of them. They are all basically completed apps.\" Sole contributor and team size one confirmed. This supersedes earlier uncertainty about contribution and team size. Completion does not establish deployment, ongoing maintenance, hours or measured outcomes.\n\nCode measurement, 18 November 2026: Measured current mapped repository working-tree footprint on 2026-11-18T09:39:46.455Z with cloc 2.10. /Users/Alex/dev/03-private/01-devices/home-pi/home-pi-frontend. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. Home Pi frontend/server/deploy repository only; other hardware firmware is outside the mapped scope. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality. Revision: home-pi-frontend: 8016018e3a3b4c51c3d7aae37b67070ac49d808e (working tree modified)\n\nMethods review, 18 November 2026: Automated Testing is supported by tests/voiceSession.test.ts and package.json (node:test runner). This review inspected configured tests; it did not rerun that project or establish runtime quality."
+        }
+      }
+    },
+    {
+      "id": "41c86514-f736-80b1-8858-ea72e7502d18",
+      "name": "Traidy",
+      "fields": {
+        "Code SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 10171
+        },
+        "Test SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 4791
+        },
+        "Source Files": {
+          "type": "number",
+          "before": null,
+          "after": 108
+        },
+        "Code Measured At": {
+          "type": "date",
+          "before": null,
+          "after": {
+            "start": "2026-11-18"
+          }
+        },
+        "Code Revision": {
+          "type": "rich_text",
+          "before": "",
+          "after": "traidy: 462a3b1ab8f0ec0ad5712324e7600a299c5f1f50 (working tree modified)"
+        },
+        "Code Size Scope": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Measured current mapped repository working-tree footprint on 2026-11-18T09:39:46.934Z with cloc 2.10. /Users/Alex/dev/01-fuerst-one/traidy. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality."
+        },
+        "Local Code Paths": {
+          "type": "rich_text",
+          "before": "/Users/Alex/dev/01-fuerst-one/traidy\n[source reviewed; code size not measured]",
+          "after": "/Users/Alex/dev/01-fuerst-one/traidy\n[Measured mapped repository scope; see Code Size Scope and Code Revision]"
+        },
+        "Team Size Low": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Team Size High": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Ownership Model": {
+          "type": "select",
+          "before": null,
+          "after": "Solo delivery"
+        },
+        "Contribution Basis": {
+          "type": "select",
+          "before": null,
+          "after": "Owner confirmation"
+        },
+        "Personal Contribution": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Sole contributor, responsible for the entire application."
+        },
+        "Evidence Gaps": {
+          "type": "rich_text",
+          "before": "Owner confirmed on 18 November 2026 that the project is unfinished and essentially unused. Exact contribution boundaries, maintenance plans, team size and actual effort remain unknown. No live-trading or measured adoption outcome is established.",
+          "after": "Owner confirmed on 18 November 2026 that the project is unfinished and essentially unused. Exact contribution boundaries, maintenance plans, team size and actual effort remain unknown. No live-trading or measured adoption outcome is established.\n\nCleanup clarification, 18 November 2026: sole contribution and team size one are owner-confirmed. The owner describes an experiment reaching basic viability and then being deprioritized; this supersedes generic completion shorthand. Maintenance plans, working hours, complexity and effort remain unconfirmed. No live-trading or measured adoption outcome is established."
+        },
+        "Methods": {
+          "type": "multi_select",
+          "before": [],
+          "after": ["Automated Testing"]
+        },
+        "Research Evidence": {
+          "type": "rich_text",
+          "before": "2026-11-18 bounded source review. src/traidy/news/ingest.py:31 — batching and per-run bookkeeping. src/traidy/news/repository.py:71 — idempotent inserts and time-aware retrieval. src/traidy/news/sources/wayback_rss.py:1 — archived RSS, alongside GDELT/CryptoPanic/CryptoCompare adapters. src/traidy/cli.py:74 — ingestion CLI. README roadmap wording may lag source; no AI or live-trading capability inferred from roadmap or class names.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Jun 13, 2026 to Jun 15, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner clarification, 18 November 2026: Traidy was basically never used because it is not really finished. This supersedes earlier uncertainty about adoption. Visuals restored from docs/dashboard-screenshot.png and docs/dashboard-strategies.png in the local source archive, copied without modification. They show a historical backtest/example configuration, not current runtime or live investment performance.",
+          "after": "2026-11-18 bounded source review. src/traidy/news/ingest.py:31 — batching and per-run bookkeeping. src/traidy/news/repository.py:71 — idempotent inserts and time-aware retrieval. src/traidy/news/sources/wayback_rss.py:1 — archived RSS, alongside GDELT/CryptoPanic/CryptoCompare adapters. src/traidy/cli.py:74 — ingestion CLI. README roadmap wording may lag source; no AI or live-trading capability inferred from roadmap or class names.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Jun 13, 2026 to Jun 15, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner clarification, 18 November 2026: Traidy was basically never used because it is not really finished. This supersedes earlier uncertainty about adoption. Visuals restored from docs/dashboard-screenshot.png and docs/dashboard-strategies.png in the local source archive, copied without modification. They show a historical backtest/example configuration, not current runtime or live investment performance.\n\nOwner confirmation in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1 on 18 November 2026: \"Full solo on all of them. They are all basically completed apps.\" Sole contributor and team size one confirmed. This supersedes earlier uncertainty about contribution and team size. Completion does not establish deployment, ongoing maintenance, hours or measured outcomes. Project-specific owner clarification supersedes generic completion wording: an experiment that reached basic viability and was then deprioritized. Preserve On Hold / Prototype and Experimental usage.\n\nCode measurement, 18 November 2026: Measured current mapped repository working-tree footprint on 2026-11-18T09:39:46.934Z with cloc 2.10. /Users/Alex/dev/01-fuerst-one/traidy. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality. Revision: traidy: 462a3b1ab8f0ec0ad5712324e7600a299c5f1f50 (working tree modified)\n\nMethods review, 18 November 2026: Automated Testing is supported by tests/test_option_spread_config.py and pyproject.toml (pytest). This review inspected configured tests; it did not rerun that project or establish runtime quality."
+        },
+        "Case Context": {
+          "type": "rich_text",
+          "before": "Research/backtesting prototype with a normalized news corpus, import bookkeeping and point-in-time retrieval; no live-trading outcome claim.",
+          "after": "An algorithmic-trading and backtesting experiment that reached basic viability and was then deprioritized. It includes a normalized news corpus, import bookkeeping and point-in-time retrieval."
+        },
+        "Outcome Basis": {
+          "type": "select",
+          "before": "Capability only",
+          "after": "Self-reported result"
+        },
+        "Outcome Evidence": {
+          "type": "rich_text",
+          "before": "Owner confirmation, 18 November 2026: essentially never used because the project is unfinished. Existing backtest screenshots demonstrate the prototype interface, not live trading, profitable strategies or product adoption.",
+          "after": "Owner clarification, 18 November 2026: \"an experiment that got as far as proving basic viability, but was then deprioritized.\" Earlier owner input described essentially no use. Basic viability is an owner-reported experimental result, not measured trading performance, adoption or production readiness."
+        }
+      }
+    },
+    {
+      "id": "41c86514-f736-808a-8e7b-ffbc4b0c44c0",
+      "name": "Daily Briefing",
+      "fields": {
+        "Code SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 29792
+        },
+        "Test SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 2391
+        },
+        "Source Files": {
+          "type": "number",
+          "before": null,
+          "after": 202
+        },
+        "Code Measured At": {
+          "type": "date",
+          "before": null,
+          "after": {
+            "start": "2026-11-18"
+          }
+        },
+        "Code Revision": {
+          "type": "rich_text",
+          "before": "",
+          "after": "daily-briefing: 6f6ce43fc04e1874e285eb8629c4ae148462a69d (working tree modified)"
+        },
+        "Code Size Scope": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Measured current mapped repository working-tree footprint on 2026-11-18T09:39:47.452Z with cloc 2.10. /Users/Alex/dev/03-private/daily-briefing. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality."
+        },
+        "Local Code Paths": {
+          "type": "rich_text",
+          "before": "/Users/Alex/dev/03-private/daily-briefing\n[source reviewed; code size not measured]",
+          "after": "/Users/Alex/dev/03-private/daily-briefing\n[Measured mapped repository scope; see Code Size Scope and Code Revision]"
+        },
+        "Team Size Low": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Team Size High": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Ownership Model": {
+          "type": "select",
+          "before": null,
+          "after": "Solo delivery"
+        },
+        "Contribution Basis": {
+          "type": "select",
+          "before": null,
+          "after": "Owner confirmation"
+        },
+        "Personal Contribution": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Sole contributor, responsible for the entire application."
+        },
+        "Delivery Evidence": {
+          "type": "rich_text",
+          "before": "Local source was reviewed for the capabilities described above. This backfill did not rerun the application or establish current operation, deployment, adoption or production service levels.",
+          "after": "Local source was reviewed for the capabilities described above. This backfill did not rerun the application or establish current operation, deployment, adoption or production service levels.\n\nOwner confirmation, 18 November 2026 (cleanup chat): the application is basically completed. Current runtime, deployment and service levels were not independently checked."
+        },
+        "Evidence Gaps": {
+          "type": "rich_text",
+          "before": "Confirm exact contribution boundaries, present use, maintenance and any independently measurable outcomes. Team size and actual effort remain unknown.",
+          "after": "Confirm exact contribution boundaries, present use, maintenance and any independently measurable outcomes. Team size and actual effort remain unknown.\n\nCleanup clarification: sole contribution and team size one are now owner-confirmed; those earlier gaps are resolved. Maintenance, working hours, complexity, effort and measured outcomes remain unconfirmed. The owner describes the app as basically completed; this is separate from production/runtime verification."
+        },
+        "Methods": {
+          "type": "multi_select",
+          "before": [],
+          "after": ["Automated Testing"]
+        },
+        "Research Evidence": {
+          "type": "rich_text",
+          "before": "2026-11-18 bounded source review. src/app/api/briefing/[date]/fetch-all/route.ts:125 — independently validated and persisted source sections. src/lib/scraper-output.ts:10 — parsing and failure categories. src/lib/scraper-client.ts:8 — API error normalization. scripts/scrape-calendar.sh and scrape-work.sh — configuration-dependent source adapters.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Apr 24, 2026 to Sep 9, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nVisual backfill, 18 November 2026: source-based conceptual diagram of independent news/calendar/project fetching, section validation, persistence and the daily view. It contains no personal data and is not a screenshot, current-runtime check or evidence of current use. This case remains separate from Business Hub.",
+          "after": "2026-11-18 bounded source review. src/app/api/briefing/[date]/fetch-all/route.ts:125 — independently validated and persisted source sections. src/lib/scraper-output.ts:10 — parsing and failure categories. src/lib/scraper-client.ts:8 — API error normalization. scripts/scrape-calendar.sh and scrape-work.sh — configuration-dependent source adapters.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Apr 24, 2026 to Sep 9, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nVisual backfill, 18 November 2026: source-based conceptual diagram of independent news/calendar/project fetching, section validation, persistence and the daily view. It contains no personal data and is not a screenshot, current-runtime check or evidence of current use. This case remains separate from Business Hub.\n\nOwner confirmation in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1 on 18 November 2026: \"Full solo on all of them. They are all basically completed apps.\" Sole contributor and team size one confirmed. This supersedes earlier uncertainty about contribution and team size. Completion does not establish deployment, ongoing maintenance, hours or measured outcomes.\n\nCode measurement, 18 November 2026: Measured current mapped repository working-tree footprint on 2026-11-18T09:39:47.452Z with cloc 2.10. /Users/Alex/dev/03-private/daily-briefing. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality. Revision: daily-briefing: 6f6ce43fc04e1874e285eb8629c4ae148462a69d (working tree modified)\n\nMethods review, 18 November 2026: Automated Testing is supported by tests/scraperClient.test.mjs (node:test assertions). This review inspected configured tests; it did not rerun that project or establish runtime quality."
+        }
+      }
+    },
+    {
+      "id": "41c86514-f736-80a2-b397-fc1398edaf6e",
+      "name": "SERP API",
+      "fields": {
+        "Code SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 1165
+        },
+        "Test SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 23
+        },
+        "Source Files": {
+          "type": "number",
+          "before": null,
+          "after": 45
+        },
+        "Code Measured At": {
+          "type": "date",
+          "before": null,
+          "after": {
+            "start": "2026-11-18"
+          }
+        },
+        "Code Revision": {
+          "type": "rich_text",
+          "before": "",
+          "after": "serp-api: 3ff30cbda3179f02244f477348ff49be6146113c (working tree modified)"
+        },
+        "Code Size Scope": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Measured current mapped repository working-tree footprint on 2026-11-18T09:39:47.719Z with cloc 2.10. /Users/Alex/dev/04-tools/serp-api. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality."
+        },
+        "Local Code Paths": {
+          "type": "rich_text",
+          "before": "/Users/Alex/dev/04-tools/serp-api\n[source reviewed; code size not measured]",
+          "after": "/Users/Alex/dev/04-tools/serp-api\n[Measured mapped repository scope; see Code Size Scope and Code Revision]"
+        },
+        "Team Size Low": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Team Size High": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Ownership Model": {
+          "type": "select",
+          "before": null,
+          "after": "Solo delivery"
+        },
+        "Contribution Basis": {
+          "type": "select",
+          "before": null,
+          "after": "Owner confirmation"
+        },
+        "Personal Contribution": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Sole contributor, responsible for the entire application."
+        },
+        "Delivery Evidence": {
+          "type": "rich_text",
+          "before": "Local source was reviewed for the capabilities described above. This backfill did not rerun the application or establish current operation, deployment, adoption or production service levels.",
+          "after": "Local source was reviewed for the capabilities described above. This backfill did not rerun the application or establish current operation, deployment, adoption or production service levels.\n\nOwner confirmation, 18 November 2026 (cleanup chat): the application is basically completed. Current runtime, deployment and service levels were not independently checked."
+        },
+        "Evidence Gaps": {
+          "type": "rich_text",
+          "before": "Owner confirmed occasional personal prototype use on 18 November 2026. Exact contribution boundaries, maintenance activity, current compatibility across result formats, team size and actual effort remain unverified. No measured business outcome is recorded.",
+          "after": "Owner confirmed occasional personal prototype use on 18 November 2026. Exact contribution boundaries, maintenance activity, current compatibility across result formats, team size and actual effort remain unverified. No measured business outcome is recorded.\n\nCleanup clarification: sole contribution and team size one are now owner-confirmed; those earlier gaps are resolved. Maintenance, working hours, complexity, effort and measured outcomes remain unconfirmed. The owner describes the app as basically completed; this is separate from production/runtime verification."
+        },
+        "Methods": {
+          "type": "multi_select",
+          "before": [],
+          "after": ["Automated Testing"]
+        },
+        "Research Evidence": {
+          "type": "rich_text",
+          "before": "2026-11-18 bounded source review. src/router/routes.ts:3 — search/news/images/video routes. src/scraper/scrapers/google/serp/parseGoogleSerpResults.ts:5 — structured organic results. src/scraper/utils/paginateByButtonClick.ts — pagination helper. src/scheduler/scheduler.ts — cache-management/startup code; no operational reliability claim.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Jun 29, 2024 to Jul 2, 2024), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner clarification, 18 November 2026: SERP API and AI Scraper are used rarely as helpers for quickly testing prototypes requiring scraped data from different sources. This supersedes earlier uncertainty about personal use; it does not validate every parser or current operational reliability. Visual: source-based conceptual workflow, not a runtime screenshot.",
+          "after": "2026-11-18 bounded source review. src/router/routes.ts:3 — search/news/images/video routes. src/scraper/scrapers/google/serp/parseGoogleSerpResults.ts:5 — structured organic results. src/scraper/utils/paginateByButtonClick.ts — pagination helper. src/scheduler/scheduler.ts — cache-management/startup code; no operational reliability claim.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Jun 29, 2024 to Jul 2, 2024), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner clarification, 18 November 2026: SERP API and AI Scraper are used rarely as helpers for quickly testing prototypes requiring scraped data from different sources. This supersedes earlier uncertainty about personal use; it does not validate every parser or current operational reliability. Visual: source-based conceptual workflow, not a runtime screenshot.\n\nOwner confirmation in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1 on 18 November 2026: \"Full solo on all of them. They are all basically completed apps.\" Sole contributor and team size one confirmed. This supersedes earlier uncertainty about contribution and team size. Completion does not establish deployment, ongoing maintenance, hours or measured outcomes.\n\nCode measurement, 18 November 2026: Measured current mapped repository working-tree footprint on 2026-11-18T09:39:47.719Z with cloc 2.10. /Users/Alex/dev/04-tools/serp-api. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality. Revision: serp-api: 3ff30cbda3179f02244f477348ff49be6146113c (working tree modified)\n\nMethods review, 18 November 2026: Automated Testing is supported by src/utils/parseCoordinates.test.ts and jest.config.ts (Jest). This review inspected configured tests; it did not rerun that project or establish runtime quality."
+        }
+      }
+    },
+    {
+      "id": "41c86514-f736-80bf-8395-e263d6532bd9",
+      "name": "Housing Hunter",
+      "fields": {
+        "Code SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 10655
+        },
+        "Test SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 271
+        },
+        "Source Files": {
+          "type": "number",
+          "before": null,
+          "after": 74
+        },
+        "Code Measured At": {
+          "type": "date",
+          "before": null,
+          "after": {
+            "start": "2026-11-18"
+          }
+        },
+        "Code Revision": {
+          "type": "rich_text",
+          "before": "",
+          "after": "housing-hunter: 9127e6399d17ed7aa58ba12ea47ea179353aec5f (working tree clean); apartment-scout-ai: 6fcdbce94f3a18228513d31ab0f0afdedf67be3a (working tree clean)"
+        },
+        "Code Size Scope": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Measured current mapped repository working-tree footprint on 2026-11-18T09:39:48.470Z with cloc 2.10. /Users/Alex/dev/03-private/housing-hunter; /Users/Alex/dev/03-private/apartment-scout-ai. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality."
+        },
+        "Local Code Paths": {
+          "type": "rich_text",
+          "before": "/Users/Alex/dev/03-private/housing-hunter\n/Users/Alex/dev/03-private/apartment-scout-ai\n[source reviewed; code size not measured]",
+          "after": "/Users/Alex/dev/03-private/housing-hunter\n/Users/Alex/dev/03-private/apartment-scout-ai\n[Measured mapped repository scope; see Code Size Scope and Code Revision]"
+        },
+        "Team Size Low": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Team Size High": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Ownership Model": {
+          "type": "select",
+          "before": null,
+          "after": "Solo delivery"
+        },
+        "Contribution Basis": {
+          "type": "select",
+          "before": null,
+          "after": "Owner confirmation"
+        },
+        "Personal Contribution": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Sole contributor, responsible for the entire application."
+        },
+        "Delivery Evidence": {
+          "type": "rich_text",
+          "before": "Source inspection established profile polling, URL deduplication, persistence, scoring and notification code. Owner confirmation on 18 November 2026 additionally establishes continuous personal background use with notifications limited to 10/10-rated apartments. This session did not independently inspect the running service or measure uptime.",
+          "after": "Source inspection established profile polling, URL deduplication, persistence, scoring and notification code. Owner confirmation on 18 November 2026 additionally establishes continuous personal background use with notifications limited to 10/10-rated apartments. This session did not independently inspect the running service or measure uptime.\n\nOwner confirmation, 18 November 2026 (cleanup chat): the application is basically completed. Current runtime, deployment and service levels were not independently checked."
+        },
+        "Evidence Gaps": {
+          "type": "rich_text",
+          "before": "Personal background use and the 10/10 notification threshold were owner-confirmed on 18 November 2026. Exact contribution boundaries, current maintenance activity, team size and actual effort remain unknown. Matching accuracy, uptime and time savings have not been measured in this backfill.",
+          "after": "Personal background use and the 10/10 notification threshold were owner-confirmed on 18 November 2026. Exact contribution boundaries, current maintenance activity, team size and actual effort remain unknown. Matching accuracy, uptime and time savings have not been measured in this backfill.\n\nCleanup clarification: sole contribution and team size one are now owner-confirmed; those earlier gaps are resolved. Maintenance, working hours, complexity, effort and measured outcomes remain unconfirmed. The owner describes the app as basically completed; this is separate from production/runtime verification."
+        },
+        "Research Evidence": {
+          "type": "rich_text",
+          "before": "2026-11-18 bounded source review. housing-hunter/src/poll-db.ts:242 — profile polling, deduplication, persistence, scoring and notification flow. src/sites/schema-extract.ts:41 — schema-driven extraction. src/server.ts:247 — configurable recurring polling. apartment-scout-ai/supabase/functions/orchestrator/index.ts:73 — due-profile orchestration and per-site requests.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Feb 6, 2026 to Mar 1, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner clarification, 18 November 2026: housing-hunter runs continuously in the background and only notifies about 10/10 apartments. This supersedes the earlier uncertainty about current personal use. It does not establish measured matching accuracy or uptime. Visual: source-based conceptual workflow with the owner-confirmed alert threshold; no real property listings or addresses.",
+          "after": "2026-11-18 bounded source review. housing-hunter/src/poll-db.ts:242 — profile polling, deduplication, persistence, scoring and notification flow. src/sites/schema-extract.ts:41 — schema-driven extraction. src/server.ts:247 — configurable recurring polling. apartment-scout-ai/supabase/functions/orchestrator/index.ts:73 — due-profile orchestration and per-site requests.\n\nApproximate project dates were authorized by the owner in this conversation. They show the source-observed development window (Feb 6, 2026 to Mar 1, 2026), not measured work effort, retirement or continuous full-time work. Lifecycle and current maintenance remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner clarification, 18 November 2026: housing-hunter runs continuously in the background and only notifies about 10/10 apartments. This supersedes the earlier uncertainty about current personal use. It does not establish measured matching accuracy or uptime. Visual: source-based conceptual workflow with the owner-confirmed alert threshold; no real property listings or addresses.\n\nOwner confirmation in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1 on 18 November 2026: \"Full solo on all of them. They are all basically completed apps.\" Sole contributor and team size one confirmed. This supersedes earlier uncertainty about contribution and team size. Completion does not establish deployment, ongoing maintenance, hours or measured outcomes.\n\nCode measurement, 18 November 2026: Measured current mapped repository working-tree footprint on 2026-11-18T09:39:48.470Z with cloc 2.10. /Users/Alex/dev/03-private/housing-hunter; /Users/Alex/dev/03-private/apartment-scout-ai. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality. Revision: housing-hunter: 9127e6399d17ed7aa58ba12ea47ea179353aec5f (working tree clean); apartment-scout-ai: 6fcdbce94f3a18228513d31ab0f0afdedf67be3a (working tree clean)"
+        }
+      }
+    },
+    {
+      "id": "41c86514-f736-801e-8825-cbf28db44596",
+      "name": "AI Scraper",
+      "fields": {
+        "Code SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 1535
+        },
+        "Test SLOC": {
+          "type": "number",
+          "before": null,
+          "after": 0
+        },
+        "Source Files": {
+          "type": "number",
+          "before": null,
+          "after": 11
+        },
+        "Code Measured At": {
+          "type": "date",
+          "before": null,
+          "after": {
+            "start": "2026-11-18"
+          }
+        },
+        "Code Revision": {
+          "type": "rich_text",
+          "before": "",
+          "after": "ai-scraper: d1b41e2723acd35e9806e52c3bb0d07ed12aa160 (working tree modified)"
+        },
+        "Code Size Scope": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Measured current mapped repository working-tree footprint on 2026-11-18T09:39:48.738Z with cloc 2.10. /Users/Alex/dev/04-tools/ai-scraper. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality."
+        },
+        "Local Code Paths": {
+          "type": "rich_text",
+          "before": "primary: /Users/Alex/dev/04-tools/ai-scraper [source reviewed; not measured]",
+          "after": "/Users/Alex/dev/04-tools/ai-scraper\n[Measured mapped repository scope; see Code Size Scope and Code Revision]"
+        },
+        "Team Size Low": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Team Size High": {
+          "type": "number",
+          "before": null,
+          "after": 1
+        },
+        "Ownership Model": {
+          "type": "select",
+          "before": null,
+          "after": "Solo delivery"
+        },
+        "Contribution Basis": {
+          "type": "select",
+          "before": null,
+          "after": "Owner confirmation"
+        },
+        "Personal Contribution": {
+          "type": "rich_text",
+          "before": "",
+          "after": "Sole contributor, responsible for the entire application."
+        },
+        "Delivery Evidence": {
+          "type": "rich_text",
+          "before": "The local source implements CLI, HTTP and MCP extraction interfaces, schema caching, page-structure change detection and deterministic field transformation. This backfill reviewed the implementation; it did not rerun target websites or establish production adoption.",
+          "after": "The local source implements CLI, HTTP and MCP extraction interfaces, schema caching, page-structure change detection and deterministic field transformation. This backfill reviewed the implementation; it did not rerun target websites or establish production adoption.\n\nOwner confirmation, 18 November 2026 (cleanup chat): the application is basically completed. Current runtime, deployment and service levels were not independently checked."
+        },
+        "Evidence Gaps": {
+          "type": "rich_text",
+          "before": "Owner confirmed occasional personal use on 18 November 2026. Current target-site compatibility, deployment details, maintenance activity and exact contribution boundaries remain unverified. No adoption, reliability or time-saving measurements are recorded.",
+          "after": "Owner confirmed occasional personal use on 18 November 2026. Current target-site compatibility, deployment details, maintenance activity and exact contribution boundaries remain unverified. No adoption, reliability or time-saving measurements are recorded.\n\nCleanup clarification: sole contribution and team size one are now owner-confirmed; those earlier gaps are resolved. Maintenance, working hours, complexity, effort and measured outcomes remain unconfirmed. The owner describes the app as basically completed; this is separate from production/runtime verification."
+        },
+        "Research Evidence": {
+          "type": "rich_text",
+          "before": "2026-11-18 source review: /Users/Alex/dev/04-tools/ai-scraper/src/cli.ts:35 (schema reuse/regeneration and pagination); src/structure-hash.ts:59; src/extractor.ts:8; src/server.ts:79; src/mcp.ts:35. Source-observed development window: 2026-02-08 to 2026-02-09. The owner authorized approximate source-history dates; they are not measured effort or a retirement date. Runtime, adoption, maintenance and exclusive authorship remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner clarification, 18 November 2026: AI Scraper and SERP API are used rarely, mainly as helpers for quickly testing prototypes requiring scraped data from different sources. This supersedes the earlier uncertainty about personal use; maintenance, exclusive authorship and production reliability were not confirmed. Visual: source-based conceptual workflow, not a runtime screenshot.",
+          "after": "2026-11-18 source review: /Users/Alex/dev/04-tools/ai-scraper/src/cli.ts:35 (schema reuse/regeneration and pagination); src/structure-hash.ts:59; src/extractor.ts:8; src/server.ts:79; src/mcp.ts:35. Source-observed development window: 2026-02-08 to 2026-02-09. The owner authorized approximate source-history dates; they are not measured effort or a retirement date. Runtime, adoption, maintenance and exclusive authorship remain unconfirmed. Wow-factor is an editorial assessment, not a measured outcome.\n\nOwner clarification, 18 November 2026: AI Scraper and SERP API are used rarely, mainly as helpers for quickly testing prototypes requiring scraped data from different sources. This supersedes the earlier uncertainty about personal use; maintenance, exclusive authorship and production reliability were not confirmed. Visual: source-based conceptual workflow, not a runtime screenshot.\n\nOwner confirmation in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1 on 18 November 2026: \"Full solo on all of them. They are all basically completed apps.\" Sole contributor and team size one confirmed. This supersedes earlier uncertainty about contribution and team size. Completion does not establish deployment, ongoing maintenance, hours or measured outcomes.\n\nCode measurement, 18 November 2026: Measured current mapped repository working-tree footprint on 2026-11-18T09:39:48.738Z with cloc 2.10. /Users/Alex/dev/04-tools/ai-scraper. Application SLOC and Source Files exclude tests; Test SLOC includes test and diagnostic scripts. Excludes generated/vendor/dependency/build output, data/captures, docs/static assets, generated Supabase types and stock UI primitives. See ops/notion/cleanup/2026-11-18/measurements.json for exact scopes, revision/dirty status, exclusions and tool provenance. A modified tree is not exactly represented by HEAD. This is code footprint, not personal authorship or quality. Revision: ai-scraper: d1b41e2723acd35e9806e52c3bb0d07ed12aa160 (working tree modified)"
+        }
+      }
+    },
+    {
+      "id": "41b86514-f736-81f3-b839-e338b6c1bf0a",
+      "name": "ts-shove",
+      "fields": {
+        "Target market": {
+          "type": "multi_select",
+          "before": ["OSS"],
+          "after": []
+        },
+        "Usage context": {
+          "type": "multi_select",
+          "before": ["Internal", "Open Source"],
+          "after": ["Internal"]
+        },
+        "Methods": {
+          "type": "multi_select",
+          "before": [],
+          "after": ["Automated Testing", "CI/CD"]
+        },
+        "Research Evidence": {
+          "type": "rich_text",
+          "before": "Local: README.md (capabilities, CLI/API and limitations); package.json (MIT, Node >=20, ts-morph, Vitest, tsup); src/mover.ts:930 (AST-backed move/rename orchestration); src/mover.ts:862 (symbol renaming); src/resolver.ts (path resolution); src/renamer.test.ts (rename behavior); .github/workflows/ci.yml (Node 20/22 checks configured); Git history (25 March and 17 April 2026).\nPublic: https://github.com/fuerst-one/ts-shove ; https://api.github.com/repos/fuerst-one/ts-shove/commits/main ; https://registry.npmjs.org/ts-shove . Registry publication is 2026; CHANGELOG.md says 2025 and conflicts.\nCode metrics: existing scripts/project-lab/measure-codebases.mjs policy, measured 2026-11-17. Owner facts and analyst judgments remain distinct.\nLocal validation on 17 November 2026: 254 existing Vitest tests passed across a full run and scoped CLI rerun (222 non-CLI plus 32 CLI), on a temporary copy of local revision 90f64285 with the existing installed dependencies. Initial temporary-copy dependency-launcher omissions were corrected before the relevant reruns. No source-repository changes. This is functional validation, not a measured productivity result or release certification.\n\nOwner input recorded on 17 November 2026: “Git is correct”; active internal use and occasional maintenance; the tool helped the owner’s agents make TS file moves much easier using AST-based batch moves and configurable import behavior; built as an AI skill tool foremost. Owner-entered Notion values include team size 1–1, Pro Bono, Open Source delivery/usage, OSS target market, Production/Ongoing maintenance, evenings/weekends, N/A workplace, wow score 7 and public visibility. These editor selections are preserved. Solo delivery is supported by the recorded one-person team and seven same-author Git commits; technical scope is source-derived. Start: initial commit 30fc7017 on 2026-03-25T19:15:24+01:00. End of observed implementation window: 90f64285 on 2026-04-17T13:33:45+02:00. package.json filesystem birth/mtime: 2026-03-25; mover.ts and renamer.test.ts: 2026-04-17. The local agent skill is /Users/Alex/.agents/skills/ts-shove/SKILL.md; it is supporting integration evidence and excluded from repository SLOC.\n\nOwner clarification, 18 November 2026: ts-shove is probably the most-used of the recently added projects. Added source-based conceptual before/after diagram using illustrative file paths; it is not a screenshot or execution trace.",
+          "after": "Local: README.md (capabilities, CLI/API and limitations); package.json (MIT, Node >=20, ts-morph, Vitest, tsup); src/mover.ts:930 (AST-backed move/rename orchestration); src/mover.ts:862 (symbol renaming); src/resolver.ts (path resolution); src/renamer.test.ts (rename behavior); .github/workflows/ci.yml (Node 20/22 checks configured); Git history (25 March and 17 April 2026).\nPublic: https://github.com/fuerst-one/ts-shove ; https://api.github.com/repos/fuerst-one/ts-shove/commits/main ; https://registry.npmjs.org/ts-shove . Registry publication is 2026; CHANGELOG.md says 2025 and conflicts.\nCode metrics: existing scripts/project-lab/measure-codebases.mjs policy, measured 2026-11-17. Owner facts and analyst judgments remain distinct.\nLocal validation on 17 November 2026: 254 existing Vitest tests passed across a full run and scoped CLI rerun (222 non-CLI plus 32 CLI), on a temporary copy of local revision 90f64285 with the existing installed dependencies. Initial temporary-copy dependency-launcher omissions were corrected before the relevant reruns. No source-repository changes. This is functional validation, not a measured productivity result or release certification.\n\nOwner input recorded on 17 November 2026: “Git is correct”; active internal use and occasional maintenance; the tool helped the owner’s agents make TS file moves much easier using AST-based batch moves and configurable import behavior; built as an AI skill tool foremost. Owner-entered Notion values include team size 1–1, Pro Bono, Open Source delivery/usage, OSS target market, Production/Ongoing maintenance, evenings/weekends, N/A workplace, wow score 7 and public visibility. These editor selections are preserved. Solo delivery is supported by the recorded one-person team and seven same-author Git commits; technical scope is source-derived. Start: initial commit 30fc7017 on 2026-03-25T19:15:24+01:00. End of observed implementation window: 90f64285 on 2026-04-17T13:33:45+02:00. package.json filesystem birth/mtime: 2026-03-25; mover.ts and renamer.test.ts: 2026-04-17. The local agent skill is /Users/Alex/.agents/skills/ts-shove/SKILL.md; it is supporting integration evidence and excluded from repository SLOC.\n\nOwner clarification, 18 November 2026: ts-shove is probably the most-used of the recently added projects. Added source-based conceptual before/after diagram using illustrative file paths; it is not a screenshot or execution trace.\n\nMethods review, 18 November 2026: Automated Testing, CI/CD is supported by src/renamer.test.ts and package.json (Vitest); .github/workflows/ci.yml runs tests. This review inspected configured tests; it did not rerun that project or establish runtime quality."
+        }
+      }
+    },
+    {
+      "id": "41a86514-f736-8085-81c5-c242b8b576eb",
+      "name": "Glyphstone",
+      "fields": {
+        "Target market": {
+          "type": "multi_select",
+          "before": ["Experimental", "Personal"],
+          "after": []
+        },
+        "Delivery model": {
+          "type": "select",
+          "before": "Physical Product",
+          "after": null
+        },
+        "Product type": {
+          "type": "multi_select",
+          "before": ["Hardware / embedded", "Interactive experience"],
+          "after": [
+            "Hardware / embedded",
+            "Interactive experience",
+            "Physical product"
+          ]
+        }
+      }
+    },
+    {
+      "id": "41786514-f736-8003-86e9-fb3a9fd4248a",
+      "name": "Pigeon Turret",
+      "fields": {
+        "Delivery model": {
+          "type": "select",
+          "before": "Physical Product",
+          "after": null
+        },
+        "Product type": {
+          "type": "multi_select",
+          "before": ["Hardware / embedded", "Web app"],
+          "after": ["Hardware / embedded", "Physical product", "Web app"]
+        }
+      }
+    },
+    {
+      "id": "35486514-f736-8087-86dd-f41b80c8b0ad",
+      "name": "mem0.one",
+      "fields": {
+        "Target market": {
+          "type": "multi_select",
+          "before": ["Personal"],
+          "after": []
+        },
+        "Usage context": {
+          "type": "multi_select",
+          "before": ["Experimental", "Internal"],
+          "after": ["Experimental", "Internal", "Personal"]
+        }
+      }
+    },
+    {
+      "id": "21886514-f736-80c5-88f4-c37e60968f21",
+      "name": "Fuerst.one Glyph Plasma",
+      "fields": {
+        "Target market": {
+          "type": "multi_select",
+          "before": ["Personal"],
+          "after": []
+        }
+      }
+    },
+    {
+      "id": "d1420991-70e5-4b5a-a1f7-06d27b902cde",
+      "name": "Bubble-UI",
+      "fields": {
+        "Target market": {
+          "type": "multi_select",
+          "before": ["Personal"],
+          "after": []
+        }
+      }
+    },
+    {
+      "id": "cdd10e91-b9ef-4232-8378-14db1a67bc15",
+      "name": "Fuerst.one Playground",
+      "fields": {
+        "Target market": {
+          "type": "multi_select",
+          "before": ["B2B", "Personal"],
+          "after": ["B2B"]
+        }
+      }
+    },
+    {
+      "id": "47579682-9325-4e9a-b014-e4fb424bb0bb",
+      "name": "World Vision",
+      "fields": {
+        "Effort Estimate Basis": {
+          "type": "rich_text",
+          "before": "",
+          "after": "OWNER-REPORTED HISTORICAL PERSONAL EFFORT — owner clarification in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1, 18 November 2026: \"personal effort.\" The existing low/high values describe personal effort on this project. They are not a rebuild estimate, elapsed employment duration, combined team effort, timesheet measurement or delivery quote. Numeric bounds and stored effort class are preserved. An hours-per-day conversion has not been confirmed."
+        }
+      }
+    },
+    {
+      "id": "c6a3f4a3-9387-475b-a3af-bb5512846d9e",
+      "name": "LockBot",
+      "fields": {
+        "Effort Estimate Basis": {
+          "type": "rich_text",
+          "before": "",
+          "after": "OWNER-REPORTED HISTORICAL PERSONAL EFFORT — owner clarification in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1, 18 November 2026: \"personal effort.\" The existing low/high values describe personal effort on this project. They are not a rebuild estimate, elapsed employment duration, combined team effort, timesheet measurement or delivery quote. Numeric bounds and stored effort class are preserved. An hours-per-day conversion has not been confirmed."
+        }
+      }
+    },
+    {
+      "id": "129bf87c-e0d6-4217-9c16-c320eeb0e29b",
+      "name": "Zooplus E-Food",
+      "fields": {
+        "Effort Estimate Basis": {
+          "type": "rich_text",
+          "before": "",
+          "after": "OWNER-REPORTED HISTORICAL PERSONAL EFFORT — owner clarification in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1, 18 November 2026: \"personal effort.\" The existing low/high values describe personal effort on this project. They are not a rebuild estimate, elapsed employment duration, combined team effort, timesheet measurement or delivery quote. Numeric bounds and stored effort class are preserved. An hours-per-day conversion has not been confirmed."
+        }
+      }
+    },
+    {
+      "id": "10bcfe51-e86d-44dc-a247-0c542f9996be",
+      "name": "Kleiner als Raute",
+      "fields": {
+        "Effort Estimate Basis": {
+          "type": "rich_text",
+          "before": "",
+          "after": "OWNER-REPORTED HISTORICAL PERSONAL EFFORT — owner clarification in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1, 18 November 2026: \"personal effort.\" The existing low/high values describe personal effort on this project. They are not a rebuild estimate, elapsed employment duration, combined team effort, timesheet measurement or delivery quote. Numeric bounds and stored effort class are preserved. An hours-per-day conversion has not been confirmed."
+        }
+      }
+    },
+    {
+      "id": "23b40e8e-626f-4fcf-9c04-83684b404adb",
+      "name": "Mobile.de Financing",
+      "fields": {
+        "Effort Estimate Basis": {
+          "type": "rich_text",
+          "before": "",
+          "after": "OWNER-REPORTED HISTORICAL PERSONAL EFFORT — owner clarification in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1, 18 November 2026: \"personal effort.\" The existing low/high values describe personal effort on this project. They are not a rebuild estimate, elapsed employment duration, combined team effort, timesheet measurement or delivery quote. Numeric bounds and stored effort class are preserved. An hours-per-day conversion has not been confirmed."
+        }
+      }
+    },
+    {
+      "id": "b6ea7e71-2e97-42f2-8644-a57545c20d59",
+      "name": "ROLLT!",
+      "fields": {
+        "Effort Estimate Basis": {
+          "type": "rich_text",
+          "before": "",
+          "after": "OWNER-REPORTED HISTORICAL PERSONAL EFFORT — owner clarification in cleanup chat 01a1ee02-f3cf-7061-9328-3d8d98c334e1, 18 November 2026: \"personal effort.\" The existing low/high values describe personal effort on this project. They are not a rebuild estimate, elapsed employment duration, combined team effort, timesheet measurement or delivery quote. Numeric bounds and stored effort class are preserved. An hours-per-day conversion has not been confirmed."
+        }
+      }
+    }
+  ],
+  "ownerClarifications": {
+    "historicalEffort": "Six existing ranges describe personal effort; numeric bounds and classes unchanged.",
+    "traidy": "Experiment that reached basic viability and was then deprioritized; preserve Prototype / On Hold."
+  }
+}

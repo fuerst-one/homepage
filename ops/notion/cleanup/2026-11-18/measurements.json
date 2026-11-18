@@ -1,0 +1,707 @@
+{
+  "helperOrigin": "/Users/Alex/.codex/worktrees/portfolio-lab/homepage/scripts/project-lab/measure-codebases.mjs",
+  "helperSha256": "278bd9e02315d3f886fd4056c4d11c9ae50a20c26ea22cde559cd35e993dc321",
+  "policyNotes": [
+    "Read-only reuse of existing helper; adapted classification recognizes test-*.ts/js diagnostic scripts as tests.",
+    "Exclude captured data, documentation/static assets, generated Supabase types, stock UI component primitives, dependencies and build output.",
+    "Current working-tree footprint, including nonignored untracked files; revision and dirty status recorded; no authored-code inference.",
+    "Application Source Files excludes test files; Test SLOC includes diagnostic test scripts.",
+    "Housing Hunter scope covers both worker and apartment-scout-ai application. Home Pi scope covers mapped frontend/server/deploy repository, not all device firmware."
+  ],
+  "projects": [
+    {
+      "id": "41c86514-f736-80d1-b371-e766290c0105",
+      "name": "Pokémon Arena",
+      "paths": [
+        {
+          "path": "/Users/Alex/dev/03-private/pokemon-arena",
+          "countForSize": true,
+          "excludes": [
+            "data",
+            "docs",
+            "public",
+            "src/components/ui",
+            "frontend/src/components/ui",
+            "src/integrations/supabase/types.ts",
+            "deploy/esphome/.esphome"
+          ]
+        }
+      ],
+      "code": {
+        "measuredAt": "2026-11-18T09:39:46.066Z",
+        "available": true,
+        "status": "complete",
+        "tool": "cloc 2.10",
+        "enumeration": "git tracked + nonignored untracked; filesystem fallback without git",
+        "application": {
+          "files": 41,
+          "code": 17314,
+          "comments": 587,
+          "blank": 305
+        },
+        "tests": {
+          "files": 27,
+          "code": 10672,
+          "comments": 55,
+          "blank": 253
+        },
+        "languages": [
+          {
+            "name": "TypeScript",
+            "application": 14298,
+            "tests": 10672
+          },
+          {
+            "name": "CSS",
+            "application": 2808,
+            "tests": 0
+          },
+          {
+            "name": "Python",
+            "application": 187,
+            "tests": 0
+          },
+          {
+            "name": "HTML",
+            "application": 21,
+            "tests": 0
+          }
+        ],
+        "roots": [
+          {
+            "path": "/Users/Alex/dev/03-private/pokemon-arena",
+            "includes": ["."],
+            "excludes": [
+              "data",
+              "docs",
+              "public",
+              "src/components/ui",
+              "frontend/src/components/ui",
+              "src/integrations/supabase/types.ts",
+              "deploy/esphome/.esphome"
+            ],
+            "git": {
+              "root": "/Users/Alex/dev/03-private/pokemon-arena",
+              "head": "3bce348618ddf593d000b4a43c5e2d4cf3a7c118",
+              "status": "Modified"
+            }
+          }
+        ],
+        "excluded": {
+          "policy": 13,
+          "scope": 13,
+          "generatedHeader": 0,
+          "symlinkOrLarge": 0,
+          "deletedTracked": 0,
+          "empty": 0
+        },
+        "unclassifiedCandidates": 0,
+        "unclassifiedPaths": [],
+        "errors": []
+      }
+    },
+    {
+      "id": "41c86514-f736-804d-a0a0-d4b6d95fb3e6",
+      "name": "Home Pi",
+      "paths": [
+        {
+          "path": "/Users/Alex/dev/03-private/01-devices/home-pi/home-pi-frontend",
+          "countForSize": true,
+          "excludes": [
+            "data",
+            "docs",
+            "public",
+            "src/components/ui",
+            "frontend/src/components/ui",
+            "src/integrations/supabase/types.ts",
+            "deploy/esphome/.esphome"
+          ]
+        }
+      ],
+      "code": {
+        "measuredAt": "2026-11-18T09:39:46.455Z",
+        "available": true,
+        "status": "complete",
+        "tool": "cloc 2.10",
+        "enumeration": "git tracked + nonignored untracked; filesystem fallback without git",
+        "application": {
+          "files": 142,
+          "code": 10294,
+          "comments": 217,
+          "blank": 991
+        },
+        "tests": {
+          "files": 25,
+          "code": 4280,
+          "comments": 14,
+          "blank": 335
+        },
+        "languages": [
+          {
+            "name": "TypeScript",
+            "application": 9430,
+            "tests": 2241
+          },
+          {
+            "name": "Python",
+            "application": 644,
+            "tests": 0
+          },
+          {
+            "name": "Bourne Shell",
+            "application": 79,
+            "tests": 0
+          },
+          {
+            "name": "SCSS",
+            "application": 76,
+            "tests": 0
+          },
+          {
+            "name": "CSS",
+            "application": 30,
+            "tests": 0
+          },
+          {
+            "name": "Dockerfile",
+            "application": 22,
+            "tests": 0
+          },
+          {
+            "name": "JavaScript",
+            "application": 13,
+            "tests": 2039
+          }
+        ],
+        "roots": [
+          {
+            "path": "/Users/Alex/dev/03-private/01-devices/home-pi/home-pi-frontend",
+            "includes": ["."],
+            "excludes": [
+              "data",
+              "docs",
+              "public",
+              "src/components/ui",
+              "frontend/src/components/ui",
+              "src/integrations/supabase/types.ts",
+              "deploy/esphome/.esphome"
+            ],
+            "git": {
+              "root": "/Users/Alex/dev/03-private/01-devices/home-pi/home-pi-frontend",
+              "head": "8016018e3a3b4c51c3d7aae37b67070ac49d808e",
+              "status": "Modified"
+            }
+          }
+        ],
+        "excluded": {
+          "policy": 57,
+          "scope": 11,
+          "generatedHeader": 0,
+          "symlinkOrLarge": 0,
+          "deletedTracked": 0,
+          "empty": 0
+        },
+        "unclassifiedCandidates": 0,
+        "unclassifiedPaths": [],
+        "errors": []
+      }
+    },
+    {
+      "id": "41c86514-f736-80b1-8858-ea72e7502d18",
+      "name": "Traidy",
+      "paths": [
+        {
+          "path": "/Users/Alex/dev/01-fuerst-one/traidy",
+          "countForSize": true,
+          "excludes": [
+            "data",
+            "docs",
+            "public",
+            "src/components/ui",
+            "frontend/src/components/ui",
+            "src/integrations/supabase/types.ts",
+            "deploy/esphome/.esphome"
+          ]
+        }
+      ],
+      "code": {
+        "measuredAt": "2026-11-18T09:39:46.934Z",
+        "available": true,
+        "status": "complete",
+        "tool": "cloc 2.10",
+        "enumeration": "git tracked + nonignored untracked; filesystem fallback without git",
+        "application": {
+          "files": 108,
+          "code": 10171,
+          "comments": 1381,
+          "blank": 2059
+        },
+        "tests": {
+          "files": 52,
+          "code": 4791,
+          "comments": 395,
+          "blank": 1266
+        },
+        "languages": [
+          {
+            "name": "Python",
+            "application": 7607,
+            "tests": 4791
+          },
+          {
+            "name": "TypeScript",
+            "application": 1860,
+            "tests": 0
+          },
+          {
+            "name": "CSS",
+            "application": 690,
+            "tests": 0
+          },
+          {
+            "name": "HTML",
+            "application": 14,
+            "tests": 0
+          }
+        ],
+        "roots": [
+          {
+            "path": "/Users/Alex/dev/01-fuerst-one/traidy",
+            "includes": ["."],
+            "excludes": [
+              "data",
+              "docs",
+              "public",
+              "src/components/ui",
+              "frontend/src/components/ui",
+              "src/integrations/supabase/types.ts",
+              "deploy/esphome/.esphome"
+            ],
+            "git": {
+              "root": "/Users/Alex/dev/01-fuerst-one/traidy",
+              "head": "462a3b1ab8f0ec0ad5712324e7600a299c5f1f50",
+              "status": "Modified"
+            }
+          }
+        ],
+        "excluded": {
+          "policy": 16,
+          "scope": 61,
+          "generatedHeader": 0,
+          "symlinkOrLarge": 0,
+          "deletedTracked": 0,
+          "empty": 4
+        },
+        "unclassifiedCandidates": 0,
+        "unclassifiedPaths": [],
+        "errors": []
+      }
+    },
+    {
+      "id": "41c86514-f736-808a-8e7b-ffbc4b0c44c0",
+      "name": "Daily Briefing",
+      "paths": [
+        {
+          "path": "/Users/Alex/dev/03-private/daily-briefing",
+          "countForSize": true,
+          "excludes": [
+            "data",
+            "docs",
+            "public",
+            "src/components/ui",
+            "frontend/src/components/ui",
+            "src/integrations/supabase/types.ts",
+            "deploy/esphome/.esphome"
+          ]
+        }
+      ],
+      "code": {
+        "measuredAt": "2026-11-18T09:39:47.452Z",
+        "available": true,
+        "status": "complete",
+        "tool": "cloc 2.10",
+        "enumeration": "git tracked + nonignored untracked; filesystem fallback without git",
+        "application": {
+          "files": 202,
+          "code": 29792,
+          "comments": 1972,
+          "blank": 3364
+        },
+        "tests": {
+          "files": 21,
+          "code": 2391,
+          "comments": 17,
+          "blank": 247
+        },
+        "languages": [
+          {
+            "name": "TypeScript",
+            "application": 28085,
+            "tests": 163
+          },
+          {
+            "name": "Bourne Shell",
+            "application": 746,
+            "tests": 0
+          },
+          {
+            "name": "Python",
+            "application": 468,
+            "tests": 0
+          },
+          {
+            "name": "CSS",
+            "application": 205,
+            "tests": 0
+          },
+          {
+            "name": "Swift",
+            "application": 185,
+            "tests": 0
+          },
+          {
+            "name": "SQL",
+            "application": 81,
+            "tests": 0
+          },
+          {
+            "name": "JavaScript",
+            "application": 22,
+            "tests": 2228
+          }
+        ],
+        "roots": [
+          {
+            "path": "/Users/Alex/dev/03-private/daily-briefing",
+            "includes": ["."],
+            "excludes": [
+              "data",
+              "docs",
+              "public",
+              "src/components/ui",
+              "frontend/src/components/ui",
+              "src/integrations/supabase/types.ts",
+              "deploy/esphome/.esphome"
+            ],
+            "git": {
+              "root": "/Users/Alex/dev/03-private/daily-briefing",
+              "head": "6f6ce43fc04e1874e285eb8629c4ae148462a69d",
+              "status": "Modified"
+            }
+          }
+        ],
+        "excluded": {
+          "policy": 21,
+          "scope": 55,
+          "generatedHeader": 0,
+          "symlinkOrLarge": 0,
+          "deletedTracked": 0,
+          "empty": 3
+        },
+        "unclassifiedCandidates": 0,
+        "unclassifiedPaths": [],
+        "errors": []
+      }
+    },
+    {
+      "id": "41c86514-f736-80a2-b397-fc1398edaf6e",
+      "name": "SERP API",
+      "paths": [
+        {
+          "path": "/Users/Alex/dev/04-tools/serp-api",
+          "countForSize": true,
+          "excludes": [
+            "data",
+            "docs",
+            "public",
+            "src/components/ui",
+            "frontend/src/components/ui",
+            "src/integrations/supabase/types.ts",
+            "deploy/esphome/.esphome"
+          ]
+        }
+      ],
+      "code": {
+        "measuredAt": "2026-11-18T09:39:47.719Z",
+        "available": true,
+        "status": "complete",
+        "tool": "cloc 2.10",
+        "enumeration": "git tracked + nonignored untracked; filesystem fallback without git",
+        "application": {
+          "files": 45,
+          "code": 1165,
+          "comments": 33,
+          "blank": 202
+        },
+        "tests": {
+          "files": 1,
+          "code": 23,
+          "comments": 0,
+          "blank": 1
+        },
+        "languages": [
+          {
+            "name": "TypeScript",
+            "application": 1144,
+            "tests": 23
+          },
+          {
+            "name": "Dockerfile",
+            "application": 17,
+            "tests": 0
+          },
+          {
+            "name": "JavaScript",
+            "application": 4,
+            "tests": 0
+          }
+        ],
+        "roots": [
+          {
+            "path": "/Users/Alex/dev/04-tools/serp-api",
+            "includes": ["."],
+            "excludes": [
+              "data",
+              "docs",
+              "public",
+              "src/components/ui",
+              "frontend/src/components/ui",
+              "src/integrations/supabase/types.ts",
+              "deploy/esphome/.esphome"
+            ],
+            "git": {
+              "root": "/Users/Alex/dev/04-tools/serp-api",
+              "head": "3ff30cbda3179f02244f477348ff49be6146113c",
+              "status": "Modified"
+            }
+          }
+        ],
+        "excluded": {
+          "policy": 13,
+          "scope": 0,
+          "generatedHeader": 0,
+          "symlinkOrLarge": 0,
+          "deletedTracked": 0,
+          "empty": 0
+        },
+        "unclassifiedCandidates": 0,
+        "unclassifiedPaths": [],
+        "errors": []
+      }
+    },
+    {
+      "id": "41c86514-f736-80bf-8395-e263d6532bd9",
+      "name": "Housing Hunter",
+      "paths": [
+        {
+          "path": "/Users/Alex/dev/03-private/housing-hunter",
+          "countForSize": true,
+          "excludes": [
+            "data",
+            "docs",
+            "public",
+            "src/components/ui",
+            "frontend/src/components/ui",
+            "src/integrations/supabase/types.ts",
+            "deploy/esphome/.esphome"
+          ]
+        },
+        {
+          "path": "/Users/Alex/dev/03-private/apartment-scout-ai",
+          "countForSize": true,
+          "excludes": [
+            "data",
+            "docs",
+            "public",
+            "src/components/ui",
+            "frontend/src/components/ui",
+            "src/integrations/supabase/types.ts",
+            "deploy/esphome/.esphome"
+          ]
+        }
+      ],
+      "code": {
+        "measuredAt": "2026-11-18T09:39:48.470Z",
+        "available": true,
+        "status": "complete",
+        "tool": "cloc 2.10",
+        "enumeration": "git tracked + nonignored untracked; filesystem fallback without git",
+        "application": {
+          "files": 74,
+          "code": 10655,
+          "comments": 589,
+          "blank": 1567
+        },
+        "tests": {
+          "files": 6,
+          "code": 271,
+          "comments": 22,
+          "blank": 49
+        },
+        "languages": [
+          {
+            "name": "TypeScript",
+            "application": 10277,
+            "tests": 194
+          },
+          {
+            "name": "SQL",
+            "application": 181,
+            "tests": 0
+          },
+          {
+            "name": "CSS",
+            "application": 133,
+            "tests": 0
+          },
+          {
+            "name": "JavaScript",
+            "application": 31,
+            "tests": 77
+          },
+          {
+            "name": "HTML",
+            "application": 21,
+            "tests": 0
+          },
+          {
+            "name": "Dockerfile",
+            "application": 12,
+            "tests": 0
+          }
+        ],
+        "roots": [
+          {
+            "path": "/Users/Alex/dev/03-private/housing-hunter",
+            "includes": ["."],
+            "excludes": [
+              "data",
+              "docs",
+              "public",
+              "src/components/ui",
+              "frontend/src/components/ui",
+              "src/integrations/supabase/types.ts",
+              "deploy/esphome/.esphome"
+            ],
+            "git": {
+              "root": "/Users/Alex/dev/03-private/housing-hunter",
+              "head": "9127e6399d17ed7aa58ba12ea47ea179353aec5f",
+              "status": "Clean"
+            }
+          },
+          {
+            "path": "/Users/Alex/dev/03-private/apartment-scout-ai",
+            "includes": ["."],
+            "excludes": [
+              "data",
+              "docs",
+              "public",
+              "src/components/ui",
+              "frontend/src/components/ui",
+              "src/integrations/supabase/types.ts",
+              "deploy/esphome/.esphome"
+            ],
+            "git": {
+              "root": "/Users/Alex/dev/03-private/apartment-scout-ai",
+              "head": "6fcdbce94f3a18228513d31ab0f0afdedf67be3a",
+              "status": "Clean"
+            }
+          }
+        ],
+        "excluded": {
+          "policy": 20,
+          "scope": 58,
+          "generatedHeader": 0,
+          "symlinkOrLarge": 0,
+          "deletedTracked": 0,
+          "empty": 0
+        },
+        "unclassifiedCandidates": 0,
+        "unclassifiedPaths": [],
+        "errors": []
+      }
+    },
+    {
+      "id": "41c86514-f736-801e-8825-cbf28db44596",
+      "name": "AI Scraper",
+      "paths": [
+        {
+          "path": "/Users/Alex/dev/04-tools/ai-scraper",
+          "countForSize": true,
+          "excludes": [
+            "data",
+            "docs",
+            "public",
+            "src/components/ui",
+            "frontend/src/components/ui",
+            "src/integrations/supabase/types.ts",
+            "deploy/esphome/.esphome"
+          ]
+        }
+      ],
+      "code": {
+        "measuredAt": "2026-11-18T09:39:48.738Z",
+        "available": true,
+        "status": "complete",
+        "tool": "cloc 2.10",
+        "enumeration": "git tracked + nonignored untracked; filesystem fallback without git",
+        "application": {
+          "files": 11,
+          "code": 1535,
+          "comments": 109,
+          "blank": 254
+        },
+        "tests": {
+          "files": 0,
+          "code": 0,
+          "comments": 0,
+          "blank": 0
+        },
+        "languages": [
+          {
+            "name": "TypeScript",
+            "application": 1523,
+            "tests": 0
+          },
+          {
+            "name": "Dockerfile",
+            "application": 12,
+            "tests": 0
+          }
+        ],
+        "roots": [
+          {
+            "path": "/Users/Alex/dev/04-tools/ai-scraper",
+            "includes": ["."],
+            "excludes": [
+              "data",
+              "docs",
+              "public",
+              "src/components/ui",
+              "frontend/src/components/ui",
+              "src/integrations/supabase/types.ts",
+              "deploy/esphome/.esphome"
+            ],
+            "git": {
+              "root": "/Users/Alex/dev/04-tools/ai-scraper",
+              "head": "d1b41e2723acd35e9806e52c3bb0d07ed12aa160",
+              "status": "Modified"
+            }
+          }
+        ],
+        "excluded": {
+          "policy": 8,
+          "scope": 0,
+          "generatedHeader": 0,
+          "symlinkOrLarge": 0,
+          "deletedTracked": 0,
+          "empty": 0
+        },
+        "unclassifiedCandidates": 0,
+        "unclassifiedPaths": [],
+        "errors": []
+      }
+    }
+  ],
+  "measuredAt": "2026-11-18T09:39:48.828Z"
+}

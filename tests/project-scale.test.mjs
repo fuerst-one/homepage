@@ -60,3 +60,32 @@ test("missing, nonfinite, invalid scores and reversed ranges stay unknown", () =
   assert.equal(effortClass(20), "S");
   assert.equal(effortClass(601), "XXL");
 });
+
+test("owner-reported historical personal effort stays distinct from rebuild estimates", () => {
+  const { effortBasisLabel } = loadTs(
+    new URL("../packages/content/src/projectScale.ts", import.meta.url),
+  );
+  const p = readNotionProjectScale({
+    properties: {
+      "Effort Days Low": number(3),
+      "Effort Days High": number(3),
+      "Effort Estimate Basis": text(
+        "OWNER-REPORTED HISTORICAL PERSONAL EFFORT — owner clarification. Not a rebuild estimate or measured timesheet.",
+      ),
+    },
+  });
+  assert.equal(p.effortBasis, "historical-personal-effort");
+  assert.equal(publicProjectScale(p).effortBasis, "historical-personal-effort");
+  assert.match(
+    effortBasisLabel(p.effortBasis, "en"),
+    /historical personal effort/i,
+  );
+  assert.match(
+    effortBasisLabel(p.effortBasis, "de"),
+    /historischer persönlicher Aufwand/i,
+  );
+  assert.notEqual(
+    effortBasisLabel(p.effortBasis, "en"),
+    effortBasisLabel("rebuild-estimate", "en"),
+  );
+});

@@ -1,0 +1,104 @@
+[
+  {
+    "id": "41c86514-f736-80d1-b371-e766290c0105",
+    "name": "Pokémon Arena",
+    "decision": "add Automated Testing",
+    "evidence": "tests/api.test.ts and package.json (Vitest test runner)"
+  },
+  {
+    "id": "41c86514-f736-804d-a0a0-d4b6d95fb3e6",
+    "name": "Home Pi",
+    "decision": "add Automated Testing",
+    "evidence": "tests/voiceSession.test.ts and package.json (node:test runner)"
+  },
+  {
+    "id": "41c86514-f736-80b1-8858-ea72e7502d18",
+    "name": "Traidy",
+    "decision": "add Automated Testing",
+    "evidence": "tests/test_option_spread_config.py and pyproject.toml (pytest)"
+  },
+  {
+    "id": "41c86514-f736-808a-8e7b-ffbc4b0c44c0",
+    "name": "Daily Briefing",
+    "decision": "add Automated Testing",
+    "evidence": "tests/scraperClient.test.mjs (node:test assertions)"
+  },
+  {
+    "id": "41c86514-f736-80a2-b397-fc1398edaf6e",
+    "name": "SERP API",
+    "decision": "add Automated Testing",
+    "evidence": "src/utils/parseCoordinates.test.ts and jest.config.ts (Jest)"
+  },
+  {
+    "id": "41b86514-f736-81f3-b839-e338b6c1bf0a",
+    "name": "ts-shove",
+    "decision": "add Automated Testing, CI/CD",
+    "evidence": "src/renamer.test.ts and package.json (Vitest); .github/workflows/ci.yml runs tests"
+  },
+  {
+    "id": "41786514-f736-8074-8dcb-dd79f906d12a",
+    "name": "Business Hub",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "21886514-f736-80c5-88f4-c37e60968f21",
+    "name": "Fuerst.one Glyph Plasma",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "1eb86514-f736-80bf-87ae-e4e5ec9e9424",
+    "name": "Buchstabiene",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "6a549850-e00b-47fa-9fda-d2609c40431d",
+    "name": "Bags’n Boxes Chatbot",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "b6b27ca7-bf93-4162-966f-635187376722",
+    "name": "Silo-Yolo",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "d5bd0050-2efd-4aba-a168-3ce1a1e539c6",
+    "name": "Public Searoutes",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "c6a3f4a3-9387-475b-a3af-bb5512846d9e",
+    "name": "LockBot",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "d1420991-70e5-4b5a-a1f7-06d27b902cde",
+    "name": "Bubble-UI",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "e3884152-6e82-4d93-a596-ddce91e6bfd0",
+    "name": "Kinoa Lists",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "94b5c46b-abd4-4eec-9a4a-19a07654db84",
+    "name": "Public Searoutes",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  },
+  {
+    "id": "510f3492-1e77-4788-8ef5-73754af2d2e2",
+    "name": "Sophisticates",
+    "decision": "leave unknown",
+    "evidence": "Available case/repository evidence does not establish a specific recorded delivery method strongly enough for this cleanup; capabilities/frameworks alone are not methods."
+  }
+]

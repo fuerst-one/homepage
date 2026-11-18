@@ -1,5 +1,6 @@
 import {
   publicProjectScale,
+  effortBasisLabel,
   type ProjectScale,
 } from "@homepage/content/projectScale";
 
@@ -49,14 +50,7 @@ export function ProjectScaleFacts({
     effort && {
       label: de ? "Aufwand" : "Effort",
       value: `${effort} ${de ? "Personentage" : "person-days"}`,
-      note:
-        p.effortBasis === "rebuild-estimate"
-          ? de
-            ? "Geschätzter Neuaufbau, nicht historische Arbeitszeit"
-            : "Estimated rebuild, not historical time spent"
-          : de
-            ? "Basis nicht angegeben; keine Lieferzusage"
-            : "Basis unspecified; not a delivery estimate",
+      note: effortBasisLabel(p.effortBasis, locale),
     },
     p.codeSloc != null && {
       label: de ? "Codeumfang" : "Codebase size",
