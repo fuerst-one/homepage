@@ -2,6 +2,12 @@
 
 The source for [fuerst.one](https://fuerst.one): a bilingual portfolio, project browser, and freelance enquiry website built with Next.js and TypeScript. Project and profile content is maintained in Notion and published to PostgreSQL by a background worker, so public page requests do not depend on the Notion API.
 
+This repository contains homepage implementation, content infrastructure and
+technical documentation. Project screenshots, illustrations, editable visual
+sources and editorial backfill receipts belong in Notion or a separate content
+workspace, outside this repository. The website consumes published content and
+mirrored assets from PostgreSQL.
+
 ## What the application does
 
 - Presents projects, technical experience, and case studies in English and German, with project filters and data visualizations.
@@ -109,4 +115,3 @@ See [the split design](docs/plans/2026-11-16-web-sync-split-design.md),
 ## Author
 
 Created by [Alexander Fürst](https://fuerst.one). The repository documents the running website and its content infrastructure; historical rollout receipts describe their dated releases.
-

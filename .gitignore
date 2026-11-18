@@ -16,6 +16,10 @@ coverage
 # data
 /data
 
+# Project content is authored in Notion or an external content workspace.
+/ops/notion/project-visuals/
+/ops/notion/project-icons-review-*.json
+
 # production
 /build
 
