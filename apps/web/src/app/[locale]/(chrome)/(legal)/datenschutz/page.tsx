@@ -186,11 +186,25 @@ export default function DatenschutzPage() {
             personenbezogenen Daten oder personenbezogenen Daten Dritter ein.
           </p>
           <p>
-            Wir merken Erlaubnis oder Ablehnung, Hinweisversion, Zeitpunkt und
-            die gesonderte Verlaufsauswahl bis zu 180 Tage im lokalen
-            Browser-Speicher. Besuche verlängern diese Frist nicht. Eine
-            geänderte Hinweisversion oder das Löschen der Website-Daten macht
-            die Wahl ungültig. Unter dem Eingabefeld können Sie Ihre
+            Die Projektliste bietet außerdem eine freiwillige Bedeutungssuche.
+            Nach Ihrer Einwilligung wird nur Ihr Suchtext an dieselben Anbieter
+            gesendet, um ein Embedding zu erstellen. Unser Server vergleicht
+            dieses mit den indexierten öffentlichen Projektinhalten. Dabei wird
+            keine Antwort erzeugt; mit Ihrer Suche werden keine Projektauszüge
+            übermittelt. Eine Erlaubnis nur für die Suche erlaubt dem
+            Assistenten keine Antwortgenerierung. Die lokale Suche funktioniert
+            ohne diese Einwilligung. Die Bedienelemente der Bedeutungssuche
+            erscheinen nur mit gültiger KI-Einwilligung. Ohne sie bleiben
+            Eingabe und Absenden der Projektsuche lokal und öffnen keinen
+            KI-Einwilligungsdialog. Sie können über den freiwillig nutzbaren
+            Assistenten auf der Startseite einwilligen.
+          </p>
+          <p>
+            Wir merken Erlaubnis oder Ablehnung, Hinweisversion, Zeitpunkt,
+            Geltungsbereich und die gesonderte Verlaufsauswahl bis zu 180 Tage
+            im lokalen Browser-Speicher. Besuche verlängern diese Frist nicht.
+            Eine geänderte Hinweisversion oder das Löschen der Website-Daten
+            macht die Wahl ungültig. Unter dem Eingabefeld können Sie Ihre
             KI-Einstellung ändern oder die Einwilligung widerrufen. Die minimale
             Speicherung Ihrer Datenschutzwahl dient der ausdrücklich gewünschten
             Einstellung nach §25 Abs. 2 Nr. 2 TDDDG.
@@ -209,9 +223,11 @@ export default function DatenschutzPage() {
             nur auf der aktuellen Seite verfügbar.
           </p>
           <p>
-            „KI-Einwilligung widerrufen“ unter dem Eingabefeld stoppt
-            ausstehende Client-Anfragen und weitere Fragen an die KI und
-            entfernt lokale Chat- und Statusdaten. Die Ablehnung wird
+            „KI-Einwilligung widerrufen“ unter dem Eingabefeld auf der
+            Startseite oder in der Projektsuche sowie die
+            Datenschutzeinstellungen in der Fußzeile ermöglichen den Widerruf.
+            Dieser stoppt ausstehende Client-Anfragen und weitere Fragen an die
+            KI und entfernt lokale Chat- und Statusdaten. Die Ablehnung wird
             gespeichert, damit wir nicht erneut fragen. Bereits übermittelte
             Daten lassen sich nicht zurückholen. Die Rechtmäßigkeit früherer
             Verarbeitung bleibt unberührt. Rechtsgrundlage der freiwilligen
@@ -237,13 +253,13 @@ export default function DatenschutzPage() {
             Schlüssel aus der IP-Adresse abgeleiteten Hash zur
             Missbrauchsabwehr. Dieser Hash ist pseudonym und nicht anonym.
             Nutzungsdatensätze enthalten auch die erklärte Einwilligungsversion,
-            den Zeitpunkt und die Verlaufsauswahl zum Nachweis nach Art. 6 Abs.
-            1 lit. c in Verbindung mit Art. 7 Abs. 1 DSGVO. Datensätze, die
-            älter als 35 Tage sind, werden durch einen stündlichen Wartungslauf
-            und bei der Zulassung einer weiteren Anfrage gelöscht.
-            Hosting-Zugriffsprotokolle werden getrennt wie oben beschrieben
-            verarbeitet. Die Modellanfragen enthalten Ihre ursprüngliche
-            IP-Adresse nicht im Anfrageinhalt.
+            den Zeitpunkt, den Geltungsbereich und die Verlaufsauswahl zum
+            Nachweis nach Art. 6 Abs. 1 lit. c in Verbindung mit Art. 7 Abs. 1
+            DSGVO. Datensätze, die älter als 35 Tage sind, werden durch einen
+            stündlichen Wartungslauf und bei der Zulassung einer weiteren
+            Anfrage gelöscht. Hosting-Zugriffsprotokolle werden getrennt wie
+            oben beschrieben verarbeitet. Die Modellanfragen enthalten Ihre
+            ursprüngliche IP-Adresse nicht im Anfrageinhalt.
           </p>
           <p>
             Der KI-Zugang wird einem einstellbaren Anteil der Besucher durch ein

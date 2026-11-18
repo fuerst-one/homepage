@@ -8,7 +8,9 @@ export type KnowledgeDecision = {
   decidedAt: number;
   remember: boolean;
   allowed: boolean;
+  scope?: "search";
 };
+export type KnowledgePurpose = "assistant" | "search";
 export type KnowledgeConsent = KnowledgeDecision & { allowed: true };
 
 /** A declared visitor choice, not an authentication or abuse-prevention token. */
@@ -20,7 +22,8 @@ export function parseKnowledgeDecision(
   const receipt = value as KnowledgeDecision;
   if (
     Object.keys(receipt).some(
-      (key) => !["version", "decidedAt", "remember", "allowed"].includes(key),
+      (key) =>
+        !["version", "decidedAt", "remember", "allowed", "scope"].includes(key),
     ) ||
     receipt.version !== KNOWLEDGE_CONSENT_VERSION ||
     !Number.isSafeInteger(receipt.decidedAt) ||
@@ -28,6 +31,7 @@ export function parseKnowledgeDecision(
     receipt.decidedAt + KNOWLEDGE_CONSENT_TTL <= now ||
     typeof receipt.remember !== "boolean" ||
     typeof receipt.allowed !== "boolean" ||
+    (receipt.scope !== undefined && receipt.scope !== "search") ||
     (!receipt.allowed && receipt.remember)
   )
     return null;
@@ -37,7 +41,11 @@ export function parseKnowledgeDecision(
 export function parseKnowledgeConsent(
   value: unknown,
   now = Date.now(),
+  purpose: KnowledgePurpose = "assistant",
 ): KnowledgeConsent | null {
   const receipt = parseKnowledgeDecision(value, now);
-  return receipt?.allowed ? (receipt as KnowledgeConsent) : null;
+  return receipt?.allowed &&
+    (purpose === "search" || receipt.scope !== "search")
+    ? (receipt as KnowledgeConsent)
+    : null;
 }

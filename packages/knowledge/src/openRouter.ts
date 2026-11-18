@@ -43,7 +43,14 @@ export async function embedKnowledge(
   input: string[],
   signal?: AbortSignal,
 ): Promise<number[][]> {
-  if (!input.length) return [];
+  return (await embedKnowledgeWithUsage(input, signal)).vectors;
+}
+
+export async function embedKnowledgeWithUsage(
+  input: string[],
+  signal?: AbortSignal,
+): Promise<{ vectors: number[][]; costUsd?: number }> {
+  if (!input.length) return { vectors: [], costUsd: 0 };
   const data = await routerRequest(
     "embeddings",
     {
@@ -56,7 +63,7 @@ export async function embedKnowledge(
   if (!Array.isArray(data.data) || data.data.length !== input.length)
     throw new Error("Invalid embeddings");
   const sorted = [...data.data].sort((a, b) => a.index - b.index);
-  return sorted.map((item, index) => {
+  const vectors = sorted.map((item, index) => {
     if (
       item.index !== index ||
       !Array.isArray(item.embedding) ||
@@ -68,6 +75,14 @@ export async function embedKnowledge(
       throw new Error("Invalid embedding vector");
     return item.embedding;
   });
+  const cost = data.usage?.cost;
+  return {
+    vectors,
+    costUsd:
+      typeof cost === "number" && Number.isFinite(cost) && cost >= 0
+        ? cost
+        : undefined,
+  };
 }
 
 let checked: { model: string; expires: number } | undefined;

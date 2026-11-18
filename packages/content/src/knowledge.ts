@@ -1,5 +1,6 @@
 import type { Locale } from "@homepage/content/i18n";
 import { parseKnowledgeConsent } from "./knowledgeConsent";
+import type { KnowledgePurpose } from "./knowledgeConsent";
 
 export type KnowledgeSource = {
   id: string;
@@ -62,7 +63,10 @@ const record = (input: unknown): Record<string, unknown> | null =>
     ? (input as Record<string, unknown>)
     : null;
 
-export function parseKnowledgeRequest(input: unknown) {
+export function parseKnowledgeRequest(
+  input: unknown,
+  purpose: KnowledgePurpose = "assistant",
+) {
   const value = record(input);
   if (
     !value ||
@@ -75,7 +79,7 @@ export function parseKnowledgeRequest(input: unknown) {
     !["en", "de"].includes(String(value.locale))
   )
     return null;
-  const consent = parseKnowledgeConsent(value.consent);
+  const consent = parseKnowledgeConsent(value.consent, Date.now(), purpose);
   if (!consent) return null;
   return {
     message: value.message.trim(),

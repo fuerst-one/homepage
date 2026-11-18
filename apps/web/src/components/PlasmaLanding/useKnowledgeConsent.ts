@@ -9,10 +9,14 @@ import {
   parseKnowledgeConsent,
   parseKnowledgeDecision,
   type KnowledgeDecision,
+  type KnowledgePurpose,
 } from "../../lib/knowledgeConsent";
 import { KNOWLEDGE_HISTORY_KEY } from "../../lib/knowledgeHistory";
 
-export function useKnowledgeConsent(enabled: boolean | undefined) {
+export function useKnowledgeConsent(
+  enabled: boolean | undefined,
+  purpose: KnowledgePurpose = "assistant",
+) {
   const [receipt, setReceipt] = useState<KnowledgeDecision | null>(null);
   const clearChat = useCallback(() => {
     for (const key of [KNOWLEDGE_HISTORY_KEY, KNOWLEDGE_AVAILABILITY_KEY]) {
@@ -99,6 +103,7 @@ export function useKnowledgeConsent(enabled: boolean | undefined) {
       decidedAt: Date.now(),
       allowed,
       remember,
+      ...(allowed && purpose === "search" ? { scope: "search" as const } : {}),
     };
     setReceipt(next);
     try {
@@ -109,9 +114,10 @@ export function useKnowledgeConsent(enabled: boolean | undefined) {
     window.dispatchEvent(
       new CustomEvent(KNOWLEDGE_CONSENT_CHANGE_EVENT, { detail: next }),
     );
+    return next;
   };
   return {
-    receipt: parseKnowledgeConsent(receipt),
+    receipt: parseKnowledgeConsent(receipt, Date.now(), purpose),
     declined: receipt?.allowed === false,
     forget,
     revoke: () => choose(false),

@@ -175,33 +175,48 @@ export default function PrivacyPage() {
             data or personal data about other people.
           </p>
           <p>
-            We remember both allow and decline, the notice version, time and
-            separate history choice in this browser’s local storage for up to
-            180 days. Visits do not renew this period. A changed notice version
-            or clearing browser data invalidates the choice. You can change your
-            AI preference or withdraw below the landing input. This minimal
-            privacy choice is remembered as an expressly requested setting under
-            §25(2)(2) TDDDG. Chat itself stays in page memory unless you
-            additionally select “Also remember chat in this tab”. Only with that
-            choice are the last five completed exchanges, source links and
-            actions saved across pages and reloads. History expires two hours
-            after the last completed answer, or earlier when permission expires
-            or is withdrawn. Closing chat hides it; Clear chat removes its
-            history. Expired saved data are cleared on the landing page or your
-            next return. Closing the tab normally ends session storage, although
-            browser session recovery can restore it. With storage blocked,
-            permission and history stay only in this page’s memory.
+            The project list also offers optional semantic search. After your
+            permission, only your search text is sent to the same providers to
+            create an embedding; our server compares it with indexed public
+            project content. This search generates no answer and sends no
+            project excerpts with your query. Search-only permission does not
+            authorize the assistant to generate answers. Ordinary local search
+            works without this permission. Semantic search controls are only
+            shown with valid AI permission. Without it, typing and submitting
+            the project search stay local and do not open an AI consent prompt.
+            You can grant AI permission through the optional assistant on the
+            homepage.
           </p>
           <p>
-            You can withdraw using “Withdraw AI permission” below the landing
-            input. Withdrawal stops pending client requests and further AI
-            questions, and removes local chat and status data. A declined choice
-            is saved so we do not ask again. Data already transmitted cannot be
-            recalled; withdrawal does not affect the lawfulness of earlier
-            processing. Search and contact remain usable without AI permission.
-            The basis for optional AI processing is Art. 6(1)(a) GDPR; optional
-            chat storage uses §25(1) TDDDG consent. The permission can be
-            changed without losing ordinary search or contact.
+            We remember both allow and decline, the notice version, time,
+            permission scope and separate history choice in this browser’s local
+            storage for up to 180 days. Visits do not renew this period. A
+            changed notice version or clearing browser data invalidates the
+            choice. You can change your AI preference or withdraw below the
+            landing input. This minimal privacy choice is remembered as an
+            expressly requested setting under §25(2)(2) TDDDG. Chat itself stays
+            in page memory unless you additionally select “Also remember chat in
+            this tab”. Only with that choice are the last five completed
+            exchanges, source links and actions saved across pages and reloads.
+            History expires two hours after the last completed answer, or
+            earlier when permission expires or is withdrawn. Closing chat hides
+            it; Clear chat removes its history. Expired saved data are cleared
+            on the landing page or your next return. Closing the tab normally
+            ends session storage, although browser session recovery can restore
+            it. With storage blocked, permission and history stay only in this
+            page’s memory.
+          </p>
+          <p>
+            You can withdraw using “Withdraw AI permission” below the landing or
+            project-search input, or through Privacy settings in the footer.
+            Withdrawal stops pending client requests and further AI questions,
+            and removes local chat and status data. A declined choice is saved
+            so we do not ask again. Data already transmitted cannot be recalled;
+            withdrawal does not affect the lawfulness of earlier processing.
+            Search and contact remain usable without AI permission. The basis
+            for optional AI processing is Art. 6(1)(a) GDPR; optional chat
+            storage uses §25(1) TDDDG consent. The permission can be changed
+            without losing ordinary search or contact.
           </p>
           <p>
             If AI services are unavailable, project suggestions are generated
@@ -219,12 +234,13 @@ export default function PrivacyPage() {
             timestamps, costs, request status and a keyed hash derived from your
             IP address for abuse prevention. This hash is pseudonymous, not
             anonymous. Usage records also contain the declared consent version,
-            time and history choice to document permission, under Art. 6(1)(c)
-            with Art. 7(1) GDPR. Abuse prevention is based on Art. 6(1)(f) GDPR.
-            Records, including receipts, older than 35 days are deleted by an
-            hourly maintenance job and when a further request is admitted.
-            Hosting access logs are handled separately as described above. We do
-            not include your raw IP address in model request bodies.
+            time, scope and history choice to document permission, under Art.
+            6(1)(c) with Art. 7(1) GDPR. Abuse prevention is based on Art.
+            6(1)(f) GDPR. Records, including receipts, older than 35 days are
+            deleted by an hourly maintenance job and when a further request is
+            admitted. Hosting access logs are handled separately as described
+            above. We do not include your raw IP address in model request
+            bodies.
           </p>
           <p>
             AI access is offered to a configurable proportion of visitors

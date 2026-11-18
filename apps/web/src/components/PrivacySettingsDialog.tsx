@@ -43,7 +43,11 @@ export default function PrivacySettingsDialog({
             className="mt-6 border-t border-white/20 pt-5"
             aria-label={de ? "KI-Einwilligung" : "AI permission"}
           >
-            <p className="text-white">{de ? "KI-Assistent" : "AI assistant"}</p>
+            <p className="text-white">
+              {de
+                ? "KI-Assistent und Bedeutungssuche"
+                : "AI assistant and semantic search"}
+            </p>
             <p className="mt-2" role="status">
               {consent.declined
                 ? de
@@ -64,8 +68,8 @@ export default function PrivacySettingsDialog({
             </button>
             <p className="mt-3 text-xs text-neutral-400">
               {de
-                ? "Ein Widerruf stoppt weitere KI-Anfragen und löscht lokale Chatdaten. Bereits übermittelte Daten können nicht zurückgeholt werden. Eine neue Einwilligung wird auf der Startseite vor dem Senden einer KI-Frage eingeholt, wenn die KI verfügbar ist."
-                : "Withdrawal stops further AI requests and clears local chat data. Data already sent cannot be recalled. When AI is available, you can grant permission on the homepage before sending an AI question."}
+                ? "Ein Widerruf stoppt weitere KI-Anfragen und löscht lokale Chatdaten. Bereits übermittelte Daten können nicht zurückgeholt werden. Wenn KI verfügbar ist, kannst du auf der Startseite vor einer KI-Frage einwilligen. Die Bedeutungssuche in der Projektliste ist nur mit gültiger Einwilligung sichtbar. Eine Erlaubnis nur für die Suche erlaubt keine KI-Antworten."
+                : "Withdrawal stops further AI requests and clears local chat data. Data already sent cannot be recalled. When AI is available, you can grant permission before asking an AI question on the homepage. Semantic search in the project list is only visible with valid permission. Search-only permission does not allow AI answers."}
             </p>
           </section>
           <p className="mt-5 text-xs text-neutral-400">

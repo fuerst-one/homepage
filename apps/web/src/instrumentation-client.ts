@@ -8,5 +8,6 @@ if (process.env.NEXT_PUBLIC_KNOWLEDGE_ASSISTANT_ENABLED === "true" && !local)
     protect: [
       { path: "/api/assistant", method: "POST" },
       { path: "/api/assistant/status", method: "GET" },
+      { path: "/api/projects/search", method: "POST" },
     ],
   });

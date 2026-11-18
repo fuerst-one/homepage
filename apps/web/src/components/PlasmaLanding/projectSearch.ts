@@ -192,6 +192,7 @@ export type SearchProject = {
   name: string;
   href: string;
   summary: string;
+  searchText?: string;
   summaryLocale?: Locale;
   shape: number;
   matching?: ProjectCase;
@@ -267,7 +268,7 @@ const matchRank = (value: string, term: string) => {
 
 /** Uses the existing public project API; private Notion fields never enter this index. */
 export const buildProjectSearchIndex = (
-  items: ProjectListItem[],
+  items: Omit<ProjectListItem, "url" | "startDate" | "endDate" | "wowFactor">[],
   locale: Locale = "en",
 ): ProjectSearchIndex => {
   const projects: SearchProject[] = items.map((item) => {
@@ -281,6 +282,7 @@ export const buildProjectSearchIndex = (
       href,
       shape: getProjectIconShape(item.icon),
       summary: item.matching?.summary || item.oneLineSummary,
+      searchText: item.oneLineSummary,
       summaryLocale: item.matching?.summary ? "en" : undefined,
       matching: item.matching,
       facets: {
@@ -377,7 +379,11 @@ export const searchProjectIndex = (
   index: ProjectSearchIndex,
   query: string,
   filter?: SearchFilter,
+  semanticProjectIds: readonly string[] = [],
 ) => {
+  const semanticRanks = new Map(
+    [...new Set(semanticProjectIds)].map((id, rank) => [id, rank]),
+  );
   const normalized = normalize(query);
   const terms = normalized
     .split(" ")
@@ -494,12 +500,23 @@ export const searchProjectIndex = (
       const values = [
         project.name,
         project.summary,
+        project.searchText ?? "",
         ...FILTER_GROUPS.flatMap(({ field }) =>
           project.facets[field].flatMap((value) => facetAliases(field, value)),
         ),
       ];
       return (
         relatedById.has(project.id) ||
+        (semanticRanks.has(project.id) &&
+          technologyConstraints.every((alternatives) =>
+            alternatives.some(
+              (keyword) =>
+                keyword.filter &&
+                project.facets[keyword.filter.field].includes(
+                  keyword.filter.value,
+                ),
+            ),
+          )) ||
         terms.every((term) =>
           values.some((value) => Number.isFinite(matchRank(value, term))),
         )
@@ -512,7 +529,10 @@ export const searchProjectIndex = (
       const bRank = nameRank(b);
       return aRank === bRank
         ? (relatedById.get(a.id)?.rank ?? Infinity) -
-            (relatedById.get(b.id)?.rank ?? Infinity) || 0
+            (relatedById.get(b.id)?.rank ?? Infinity) ||
+            (semanticRanks.get(a.id) ?? Infinity) -
+              (semanticRanks.get(b.id) ?? Infinity) ||
+            0
         : aRank - bRank;
     })
     .map((project) => ({

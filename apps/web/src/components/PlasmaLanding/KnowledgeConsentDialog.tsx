@@ -9,12 +9,17 @@ export default function KnowledgeConsentDialog({
   onCancel,
   onDecline,
   onAllow,
+  purpose = "assistant",
+  returnFocusId = "landing-command",
 }: {
   onCancel: () => void;
   onDecline: () => void;
   onAllow: (remember: boolean) => void;
+  purpose?: "assistant" | "search";
+  returnFocusId?: string;
 }) {
   const de = useLocale() === "de";
+  const search = purpose === "search";
   const [remember, setRemember] = useState(false);
   const cancel = useRef<HTMLButtonElement>(null);
   return (
@@ -35,37 +40,49 @@ export default function KnowledgeConsentDialog({
           }}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
-            document.getElementById("landing-command")?.focus();
+            document.getElementById(returnFocusId)?.focus();
           }}
         >
           <Dialog.Title className="mb-4 shrink-0 text-lg text-white">
-            {de ? "Eine Frage an die KI?" : "Ask the AI assistant?"}
+            {search
+              ? de
+                ? "Nach Bedeutung suchen?"
+                : "Search by meaning?"
+              : de
+                ? "Eine Frage an die KI?"
+                : "Ask the AI assistant?"}
           </Dialog.Title>
           <div className="min-h-0 overflow-y-auto pr-1">
             <Dialog.Description className="text-neutral-300">
-              {de
-                ? "Deine Frage wurde noch nicht gesendet. Wenn du einwilligst, senden wir sie und die Seitensprache über OpenRouter an Microsoft Azure für die Suche und Antwort mit OpenAI-Modellen (beide Anbieter USA). Relevante öffentliche Projektauszüge werden mitgesendet; frühere Nachrichten nicht. Dabei kann eine Verarbeitung außerhalb der EU stattfinden."
-                : "Your question has not been sent. If you agree, we send it and the site language through OpenRouter to Microsoft Azure for retrieval and an answer using OpenAI models (both providers USA). Relevant public project excerpts are included; earlier messages are not. Processing may take place outside the EU."}
+              {search
+                ? de
+                  ? "Deine Suche wurde noch nicht gesendet. Wenn du einwilligst, senden wir deinen Suchtext über OpenRouter an Microsoft Azure, um mit einem OpenAI-Modell einen Suchvektor zu erstellen (beide Anbieter USA). Diesen vergleichen wir auf unserem Server mit den öffentlichen Projekten. Es wird keine KI-Antwort erzeugt. Dabei kann eine Verarbeitung außerhalb der EU stattfinden."
+                  : "Your search has not been sent. If you agree, we send your search text through OpenRouter to Microsoft Azure to create a search vector with an OpenAI model (both providers USA). Our server compares it with the public projects. No AI answer is generated. Processing may take place outside the EU."
+                : de
+                  ? "Deine Frage wurde noch nicht gesendet. Wenn du einwilligst, senden wir sie und die Seitensprache über OpenRouter an Microsoft Azure für die Suche und Antwort mit OpenAI-Modellen (beide Anbieter USA). Relevante öffentliche Projektauszüge werden mitgesendet; frühere Nachrichten nicht. Dabei kann eine Verarbeitung außerhalb der EU stattfinden."
+                  : "Your question has not been sent. If you agree, we send it and the site language through OpenRouter to Microsoft Azure for retrieval and an answer using OpenAI models (both providers USA). Relevant public project excerpts are included; earlier messages are not. Processing may take place outside the EU."}
             </Dialog.Description>
             <p className="mt-4 text-neutral-400">
               {de
                 ? "Freiwillig. Wir merken Erlaubnis oder Ablehnung für sechs Monate in diesem Browser, bis du die Wahl änderst oder sich der Hinweis ändert. Widerrufe jederzeit über „KI-Einwilligung widerrufen“ unter dem Eingabefeld. Das stoppt weitere KI-Anfragen und löscht lokale Chatdaten; bereits übermittelte Daten können nicht zurückgeholt werden. Bitte keine vertraulichen oder sensiblen Angaben senden. KI kann sich irren. Die Projektsuche funktioniert auch ohne KI."
                 : "Optional. We remember allow or decline for six months in this browser, until you change your choice or this notice changes. Withdraw at any time using “Withdraw AI permission” below the input. This stops further AI requests and clears local chat data; data already sent cannot be recalled. Leave out confidential or sensitive information. AI can make mistakes. Project search works without AI."}
             </p>
-            <label className="mt-5 flex min-h-11 cursor-pointer items-start gap-3 border border-white/20 p-3">
-              <input
-                id="remember-ai-chat"
-                type="checkbox"
-                checked={remember}
-                onChange={(event) => setRemember(event.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 accent-[#dfc993]"
-              />
-              <span>
-                {de
-                  ? "Zusätzlich den Chat in diesem Tab merken: bis zu fünf Antworten und meine Fragen, bis zwei Stunden nach der letzten Antwort. Ohne Auswahl bleibt er nur auf dieser Seite."
-                  : "Also remember chat in this tab: up to five answers and my questions, until two hours after the last answer. Otherwise it stays only on this page."}
-              </span>
-            </label>
+            {!search && (
+              <label className="mt-5 flex min-h-11 cursor-pointer items-start gap-3 border border-white/20 p-3">
+                <input
+                  id="remember-ai-chat"
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(event) => setRemember(event.target.checked)}
+                  className="mt-1 h-4 w-4 shrink-0 accent-[#dfc993]"
+                />
+                <span>
+                  {de
+                    ? "Zusätzlich den Chat in diesem Tab merken: bis zu fünf Antworten und meine Fragen, bis zwei Stunden nach der letzten Antwort. Ohne Auswahl bleibt er nur auf dieser Seite."
+                    : "Also remember chat in this tab: up to five answers and my questions, until two hours after the last answer. Otherwise it stays only on this page."}
+                </span>
+              </label>
+            )}
             <Link
               href={de ? "/datenschutz#ai-assistant" : "/privacy#ai-assistant"}
               prefetch={false}
