@@ -7,9 +7,11 @@ import {
 export function ProjectScaleFacts({
   scale,
   locale = "en",
+  compact = false,
 }: {
   scale?: ProjectScale;
   locale?: "en" | "de";
+  compact?: boolean;
 }) {
   if (!scale) return null;
   const p = publicProjectScale(scale),
@@ -32,7 +34,7 @@ export function ProjectScaleFacts({
   const facts = [
     team && {
       label: de ? "Teamgröße" : "Team size",
-      value: `${team} ${de ? "Personen" : "people"}`,
+      value: `${team} ${p.teamLow === 1 && p.teamHigh === 1 ? (de ? "Person" : "person") : de ? "Personen" : "people"}`,
       note: de ? "Erfasster Projektkontext" : "Recorded project context",
     },
     p.complexity != null && {
@@ -47,22 +49,40 @@ export function ProjectScaleFacts({
             ? "Erfasster Wert; Basis nicht angegeben"
             : "Recorded score; basis unspecified",
     },
-    effort && {
-      label: de ? "Aufwand" : "Effort",
-      value: `${effort} ${de ? "Personentage" : "person-days"}`,
-      note: effortBasisLabel(p.effortBasis, locale),
-    },
-    p.codeSloc != null && {
-      label: de ? "Codeumfang" : "Codebase size",
-      value: `${number.format(p.codeSloc)} ${de ? "Quellcodezeilen" : "source lines"}`,
-      note: de
-        ? "Untersuchter Code; kann Team- und bestehenden Code enthalten"
-        : "Inspected source; may include team and inherited code",
-    },
+    !compact &&
+      effort && {
+        label: de ? "Aufwand" : "Effort",
+        value: `${effort} ${de ? "Personentage" : "person-days"}`,
+        note: effortBasisLabel(p.effortBasis, locale),
+      },
+    !compact &&
+      p.codeSloc != null && {
+        label: de ? "Codeumfang" : "Codebase size",
+        value: `${number.format(p.codeSloc)} ${de ? "Quellcodezeilen" : "source lines"}`,
+        note: de
+          ? "Untersuchter Code; kann Team- und bestehenden Code enthalten"
+          : "Inspected source; may include team and inherited code",
+      },
   ].filter((fact): fact is { label: string; value: string; note: string } =>
     Boolean(fact),
   );
-  if (!facts.length && !p.workingPattern) return null;
+  if (!facts.length && (compact || !p.workingPattern)) return null;
+  if (compact)
+    return (
+      <dl className="grid w-full grid-cols-2 gap-x-8 gap-y-3 sm:flex sm:w-auto sm:flex-wrap">
+        {facts.map((f) => (
+          <div key={f.label}>
+            <dt className="text-[0.65rem] text-neutral-500">{f.label}</dt>
+            <dd className="mt-1 text-xs text-neutral-200">
+              {f.value}
+              <small className="mt-1 block text-[0.6rem] text-neutral-500">
+                {f.note}
+              </small>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    );
   return (
     <section
       aria-label={

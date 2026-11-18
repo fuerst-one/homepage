@@ -44,6 +44,13 @@ const COMMANDS: LandingCommand[] = [
     shape: 2,
     href: "/hire",
   },
+  {
+    id: "explore",
+    label: "Explorer",
+    caption: "See how projects connect across fields.",
+    shape: 5,
+    href: "/explorer",
+  },
 ];
 
 export const SUGGESTIONS = COMMANDS.filter(({ id }) => id !== "tinker");
@@ -194,6 +201,10 @@ export const resolveCommand = (message: string): LandingCommand | null => {
 };
 
 const GERMAN_COMMANDS: Record<string, [string, string]> = {
+  explore: [
+    "Explorer",
+    "Sieh, wie Projekte über Branchen hinweg zusammenhängen.",
+  ],
   experience: [
     "Projekte entdecken",
     "Die Menschen, Produkte und Ideen hinter meiner Arbeit.",

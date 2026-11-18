@@ -40,7 +40,8 @@ for (const locale of ["en", "de"]) {
     const metadataLabel = locale === "de" ? "Kunden" : "Clients";
     const metadataDetails =
       [...html.matchAll(/<details\b[^>]*>[\s\S]*?<\/details>/g)].find(
-        ([details]) => details.includes(`<span>${metadataLabel}</span>`),
+        ([details]) =>
+          new RegExp(`<span\\b[^>]*>${metadataLabel}</span>`).test(details),
       )?.index ?? -1;
     assert.ok(
       metadataDetails > caseLink,

@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 import { FaChartLine } from "@react-icons/all-files/fa/FaChartLine";
 import Link from "../../i18n/LocalizedLink";
@@ -14,27 +13,27 @@ import { getProjectLogoSources } from "./getProjectLogoSources";
 import { ProjectLogo } from "./ProjectLogo";
 import { ProjectIndustry } from "./ProjectIndustry";
 import { ContentUpdatedAt } from "../../ContentUpdatedAt";
-import { projectPath, SITE_URL } from "../../../lib/seo";
+import { projectPath } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { Button } from "../../Button";
 import type { PublicImageDescription } from "@homepage/database/imageDescriptions";
+import { caseLabel } from "@homepage/content/projectCase";
+import type { CaseStudyExcerpt } from "./projectDiscovery";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 export const ProjectDetails = ({
   project,
-  heading,
-  inDialog = false,
   locale = "en",
   initialDescriptions,
+  casePreview = [],
 }: {
   project: CvProject;
-  heading?: ReactNode;
-  inDialog?: boolean;
   locale?: "en" | "de";
   initialDescriptions?: PublicImageDescription[];
+  casePreview?: CaseStudyExcerpt[];
 }) => {
   const {
     name,
@@ -45,22 +44,14 @@ export const ProjectDetails = ({
     endDate,
     screenshots,
   } = project;
-
   const description = getJsxFormattedTextFromTextBlock(project.description);
   const kpis = getJsxFormattedTextFromTextBlock(project.kpis);
-  const logos = getProjectLogoSources(project);
-  const primaryLogo = logos[0];
+  const primaryLogo = getProjectLogoSources(project)[0];
   const path = projectPath(project, locale);
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
 
   return (
-    <div
-      className={
-        inDialog
-          ? "flex max-h-[90vh] flex-col"
-          : "glass-panel flex flex-col border border-white/30"
-      }
-    >
+    <div className="glass-panel flex flex-col border border-white/30">
       <div className="space-y-3 border-b border-white/15 p-6">
         <div className="-mt-2 flex items-center justify-between gap-3 pr-12">
           <ProjectIndustry project={project} locale={locale} />
@@ -68,12 +59,10 @@ export const ProjectDetails = ({
             <ProjectLogo src={primaryLogo} alt={`${name} logo`} size="detail" />
           )}
         </div>
-        {heading ?? (
-          <h1 className="text-3xl font-semibold text-white">{name}</h1>
-        )}
+        <h1 className="text-3xl font-semibold text-white">{name}</h1>
         <ContentUpdatedAt date={project.updatedAt} locale={locale} />
       </div>
-      <div className="flex-1 space-y-6 overflow-y-auto p-6">
+      <div className="space-y-6 p-6">
         {screenshots && screenshots.length > 0 && (
           <ProjectScreenshots
             screenshots={screenshots}
@@ -114,6 +103,37 @@ export const ProjectDetails = ({
             {description}
           </div>
         )}
+        {project.matching?.ownership && (
+          <p className="text-sm text-neutral-300">
+            <span className="text-neutral-500">
+              {locale === "de" ? "Meine Rolle: " : "My role: "}
+            </span>
+            {caseLabel(project.matching.ownership, locale)}
+          </p>
+        )}
+        {casePreview.length > 0 && (
+          <section
+            className="space-y-5 border-t border-white/15 pt-6"
+            aria-labelledby="project-work-title"
+          >
+            <h2
+              id="project-work-title"
+              className="text-xl font-semibold text-white"
+            >
+              {locale === "de"
+                ? "Einblick in die Umsetzung"
+                : "Inside the work"}
+            </h2>
+            {casePreview.map(({ title, text }) => (
+              <div key={title} className="space-y-2">
+                <h3 className="text-base font-medium text-white">{title}</h3>
+                <p className="text-sm leading-relaxed text-neutral-300">
+                  {text}
+                </p>
+              </div>
+            ))}
+          </section>
+        )}
         {(hasCaseStudy || websiteUrl) && (
           <div className="flex flex-wrap items-center gap-3">
             {hasCaseStudy && (
@@ -135,19 +155,26 @@ export const ProjectDetails = ({
             )}
           </div>
         )}
-        <ProjectMetaTable
-          project={project}
-          filterable={inDialog}
-          locale={locale}
-        />
-      </div>
-      <div className="flex shrink-0 flex-col items-start gap-3 border-t border-white/15 p-6 text-sm">
-        <Link
-          href={path}
-          className="break-all text-xs text-neutral-400 underline underline-offset-4"
+        <section
+          className="border-t border-white/15 pt-5"
+          aria-labelledby="project-facts-title"
         >
-          {`${SITE_URL.replace("https://", "")}${path}`}
-        </Link>
+          <h2
+            id="project-facts-title"
+            className="text-xl font-semibold text-white"
+          >
+            {locale === "de"
+              ? "Projektdaten & Technologien"
+              : "Project facts & technologies"}
+          </h2>
+          <div className="mt-4">
+            <ProjectMetaTable
+              project={project}
+              filterable={false}
+              locale={locale}
+            />
+          </div>
+        </section>
       </div>
     </div>
   );

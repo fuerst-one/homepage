@@ -10,6 +10,11 @@ import { ProjectDetails } from "../../../../../components/Cv/Projects/ProjectDet
 import { StructuredData } from "../../../../../components/StructuredData";
 import { getCachedCvProjects } from "../../../../../server/content/getCachedCvProjects";
 import { getPublicImageDescriptions } from "../../../../../server/content/getPublicImageDescriptions";
+import { readWebsiteSections } from "@homepage/database/websiteContent";
+import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
+import { caseStudyPreview } from "../../../../../components/Cv/Projects/projectDiscovery";
+import { RelatedExperience } from "../../../../../components/Cv/Projects/RelatedExperience";
+import { ExplorerProjectConnections } from "../../../../../components/Cv/Projects/ExplorerProjectConnections";
 import {
   pageMetadata,
   personSchema,
@@ -24,7 +29,11 @@ import {
 export const dynamic = "force-dynamic";
 
 const getProject = cache(async (reference: string, locale: Locale) => {
-  const projects = await getCachedCvProjects(locale);
+  const { projects, studies } = await readWebsiteSections(
+    ["projects", "studies"],
+    undefined,
+    locale,
+  );
   const project = projects.find(
     (item) =>
       item.id === reference ||
@@ -33,7 +42,7 @@ const getProject = cache(async (reference: string, locale: Locale) => {
   );
   if (!project || (locale === "de" && !hasGermanTranslation(project)))
     notFound();
-  return project;
+  return { project, projects, studies };
 });
 
 export async function generateStaticParams() {
@@ -48,7 +57,7 @@ type Props = { params: Promise<{ id: string; locale: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const locale = await getLocale(params);
-  const project = await getProject((await params).id, locale);
+  const { project } = await getProject((await params).id, locale);
   return pageMetadata(
     projectPath(project, locale),
     `${project.name} — Alexander Fuerst | Fuerst.one`,
@@ -63,7 +72,9 @@ export async function generateMetadata({ params }: Props) {
 export default async function ProjectPage({ params }: Props) {
   const locale = await getLocale(params);
   const reference = (await params).id;
-  const project = await getProject(reference, locale);
+  const { project, projects, studies } = await getProject(reference, locale);
+  const studyId = caseStudyPageId(project, locale);
+  const casePreview = studyId ? caseStudyPreview(studies[studyId] ?? []) : [];
   if (reference !== projectSlug(project))
     permanentRedirect(projectPath(project, locale));
   const imageDescriptions = await getPublicImageDescriptions(
@@ -90,8 +101,29 @@ export default async function ProjectPage({ params }: Props) {
           project={project}
           locale={locale}
           initialDescriptions={imageDescriptions}
+          casePreview={casePreview}
         />
       </article>
+      <p className="text-sm text-neutral-300">
+        <Link
+          href={`${localizedPath("/explorer", locale)}?project=${encodeURIComponent(project.id)}`}
+          className="underline underline-offset-4"
+        >
+          {locale === "de"
+            ? "Dieses Projekt im Explorer einordnen ↗"
+            : "See this project in Explorer ↗"}
+        </Link>
+      </p>
+      <ExplorerProjectConnections
+        project={project}
+        projects={projects}
+        locale={locale}
+      />
+      <RelatedExperience
+        project={project}
+        projects={projects}
+        locale={locale}
+      />
       <p className="text-sm text-neutral-300">
         {locale === "de"
           ? "Interesse an einer ähnlichen Zusammenarbeit? "

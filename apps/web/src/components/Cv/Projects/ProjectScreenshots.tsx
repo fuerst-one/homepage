@@ -7,13 +7,15 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { FaChevronLeft } from "@react-icons/all-files/fa/FaChevronLeft";
 import { FaChevronRight } from "@react-icons/all-files/fa/FaChevronRight";
 import { cn } from "../../../lib/utils";
+import { useLocale } from "../../i18n/LocaleProvider";
 
 export const ProjectScreenshots = ({
   screenshots,
   projectName,
   projectId,
   initialDescriptions,
-  locale = "en",
+  locale: localeOverride,
+  viewer = false,
   imageDetails = {},
   fit = "cover",
   priority = false,
@@ -23,6 +25,7 @@ export const ProjectScreenshots = ({
   projectId?: string;
   initialDescriptions?: PublicImageDescription[];
   locale?: "en" | "de";
+  viewer?: boolean;
   imageDetails?: Record<
     string,
     { alt?: string; caption?: string; kind?: "screenshot" | "illustration" }
@@ -30,6 +33,8 @@ export const ProjectScreenshots = ({
   fit?: "cover" | "contain";
   priority?: boolean;
 }) => {
+  const contextLocale = useLocale();
+  const locale = localeOverride ?? contextLocale;
   const descriptions = useImageDescriptions(
     projectId,
     locale,
@@ -73,7 +78,10 @@ export const ProjectScreenshots = ({
 
   return (
     <div
-      className="mt-4 select-none print:hidden"
+      className={cn(
+        "select-none print:hidden",
+        viewer ? "flex min-h-0 flex-1 flex-col" : "mt-4",
+      )}
       role="group"
       aria-roledescription={de ? "Bildergalerie" : "carousel"}
       aria-label={projectName}
@@ -86,11 +94,20 @@ export const ProjectScreenshots = ({
         }
       }}
     >
-      <div className="relative overflow-hidden border border-white/20 bg-black">
+      <div
+        className={cn(
+          "relative overflow-hidden border border-white/20 bg-black",
+          viewer && "min-h-0 flex-1",
+        )}
+      >
         <div
           className={cn(
             "relative w-full",
-            fit === "contain" ? "aspect-[16/10]" : "aspect-video",
+            viewer
+              ? "h-full"
+              : fit === "contain"
+                ? "aspect-[16/10]"
+                : "aspect-video",
           )}
         >
           {sanitizedScreenshots.map((src, index) => (
@@ -114,7 +131,9 @@ export const ProjectScreenshots = ({
                 fetchPriority={priority && index === 0 ? "high" : undefined}
                 className={cn(
                   "absolute inset-0 h-full w-full transition-opacity duration-500 motion-reduce:transition-none",
-                  fit === "contain" ? "object-contain" : "object-cover",
+                  viewer || fit === "contain"
+                    ? "object-contain"
+                    : "object-cover",
                   index === currentIndex
                     ? "opacity-100"
                     : "pointer-events-none opacity-0",
@@ -152,7 +171,7 @@ export const ProjectScreenshots = ({
         locale={locale}
       />
       {showNavigation && (
-        <div className="mt-2 flex items-center justify-between gap-2">
+        <div className="mt-2 flex shrink-0 items-center justify-between gap-2">
           <button
             type="button"
             onClick={() => goToIndex(currentIndex - 1)}

@@ -23,15 +23,17 @@ export function localizedPath(path: string, locale: Locale): string {
   )
     return path;
   let withoutLocale = path.replace(/^\/(?:en|de)(?=\/|[?#]|$)/, "");
-  const legalPaths: Record<string, Record<Locale, string>> = {
+  const pagePaths: Record<string, Record<Locale, string>> = {
+    "/explore": { en: "/explorer", de: "/explorer" },
+    "/entdecken": { en: "/explorer", de: "/explorer" },
     "/legal-notice": { en: "/legal-notice", de: "/impressum" },
     "/impressum": { en: "/legal-notice", de: "/impressum" },
     "/privacy": { en: "/privacy", de: "/datenschutz" },
     "/datenschutz": { en: "/privacy", de: "/datenschutz" },
   };
   const page = withoutLocale.split(/[?#]/, 1)[0];
-  if (legalPaths[page])
-    withoutLocale = legalPaths[page][locale] + withoutLocale.slice(page.length);
+  if (pagePaths[page])
+    withoutLocale = pagePaths[page][locale] + withoutLocale.slice(page.length);
   return `/${locale}${withoutLocale === "/" ? "" : withoutLocale.startsWith("/?") || withoutLocale.startsWith("/#") ? withoutLocale.slice(1) : withoutLocale}`;
 }
 

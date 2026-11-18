@@ -14,12 +14,14 @@ export async function Layout({
   children,
   locale = "en",
   availableLocales,
+  wide = false,
 }: {
   sidebarContent?: ReactNode;
   sidebarAfter?: ReactNode;
   sidebarPositionOnMobile?: "before" | "after";
   locale?: Locale;
   availableLocales?: Locale[];
+  wide?: boolean;
   children: ReactNode;
 }) {
   const owner = await getCachedCvOwnerPublic(locale);
@@ -60,7 +62,9 @@ export async function Layout({
   );
   return (
     <div className="relative z-10 min-h-screen max-w-full">
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col px-4 pb-12 pt-6 sm:px-6 sm:pt-8 md:px-8 lg:px-6 lg:pt-10">
+      <div
+        className={`relative mx-auto flex w-full ${wide ? "max-w-[1440px]" : "max-w-6xl"} flex-col px-4 pb-12 pt-6 sm:px-6 sm:pt-8 md:px-8 lg:px-6 lg:pt-10`}
+      >
         <header className="content-header text-neutral-300">
           <Link href="/" className="content-header-identity">
             <div className="content-header-portrait">
@@ -125,6 +129,7 @@ export async function Layout({
               <ContentNavLink href="/services/ai-products">
                 {locale === "de" ? "Produkte mit KI" : "AI products"}
               </ContentNavLink>
+              <ContentNavLink href="/explorer">Explorer</ContentNavLink>
             </div>
           </nav>
         </header>
@@ -137,7 +142,9 @@ export async function Layout({
         ) : (
           <>
             <main className="min-w-0 flex-1 pb-24">
-              <div className="mx-auto w-full max-w-3xl space-y-12">
+              <div
+                className={`mx-auto w-full ${wide ? "max-w-none" : "max-w-3xl"} space-y-12`}
+              >
                 <Suspense>{children}</Suspense>
               </div>
             </main>
