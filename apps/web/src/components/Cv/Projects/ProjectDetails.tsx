@@ -29,12 +29,14 @@ export const ProjectDetails = ({
   inDialog = false,
   locale = "en",
   initialDescriptions,
+  brief,
 }: {
   project: CvProject;
   heading?: ReactNode;
   inDialog?: boolean;
   locale?: "en" | "de";
   initialDescriptions?: PublicImageDescription[];
+  brief?: ReactNode;
 }) => {
   const {
     name,
@@ -74,6 +76,7 @@ export const ProjectDetails = ({
         <ContentUpdatedAt date={project.updatedAt} locale={locale} />
       </div>
       <div className="flex-1 space-y-6 overflow-y-auto p-6">
+        {brief}
         {screenshots && screenshots.length > 0 && (
           <ProjectScreenshots
             screenshots={screenshots}

@@ -5,6 +5,7 @@ import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { hasGermanTranslation } from "@homepage/content/localizeContent";
 import { projectSlug } from "../../lib/seo";
 import { readWebsiteSections } from "@homepage/database/websiteContent";
+import { withProjectEditorialFacts } from "@homepage/content/projectEditorial";
 
 /** Always resolve through a visible project and its explicitly linked case study. */
 export const getProjectCaseStudy = cache(
@@ -28,7 +29,7 @@ export const getProjectCaseStudy = cache(
         (lang === "en" || hasGermanTranslation(project)),
     );
     return {
-      project,
+      project: withProjectEditorialFacts(project),
       pageId,
       availableLocales,
       blocks: content.studies[pageId] ?? [],

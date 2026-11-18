@@ -12,6 +12,7 @@ import {
 } from "../../data/services";
 import { serializeJsonLd } from "../../lib/seo";
 import { serviceSchema } from "./serviceMetadata";
+import { ServiceStartingOffer } from "./ServiceStartingOffer";
 import type { getServiceEvidence } from "../../server/content/getServiceEvidence";
 import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import shared from "./services.module.css";
@@ -278,11 +279,12 @@ export function AiProductsLandingPage({
           </aside>
         </section>
 
+        <ServiceStartingOffer slug="ai-products" locale={locale} />
         <section className={shared.section} aria-labelledby="faq-heading">
           <p className={shared.eyebrow}>05 / {t.faqLabel}</p>
           <h2 id="faq-heading">{t.faq}</h2>
           <div className={shared.faq}>
-            {copy.questions.map((item) => (
+            {copy.questions.slice(0, 2).map((item) => (
               <details key={item.question}>
                 <summary>
                   {item.question}

@@ -3,6 +3,10 @@ import { SITE_URL as API_BASE_URL } from "../../lib/seo";
 import { serviceCopy, servicePath, serviceSlugs } from "../../data/services";
 import { locales } from "@homepage/content/i18n";
 import {
+  serviceCollaborations,
+  serviceCollaborationPath,
+} from "../../data/serviceCollaborations";
+import {
   serviceProducts,
   serviceProductPath,
   serviceProductSlugs,
@@ -53,6 +57,12 @@ The service pages link to selected project evidence and explain scope, deliverab
 ${serviceProductSlugs.flatMap((slug) => locales.map((locale) => `- [${serviceProducts[slug].copy[locale].label} (${locale})](${API_BASE_URL}${serviceProductPath(slug, locale)}) — ${serviceProducts[slug].copy[locale].description}`)).join("\n")}
 
 These are scoped, paid service engagements. Scope, fee and schedule are agreed before work starts; the pages do not publish fixed prices or promise future project outcomes.
+
+## Project delivery and team collaboration / Projekte und Mitarbeit
+
+${serviceSlugs.flatMap((slug) => locales.map((locale) => `- [${serviceCollaborations[slug][locale].label} (${locale})](${API_BASE_URL}${serviceCollaborationPath(slug, locale)}) — ${serviceCollaborations[slug][locale].description}`)).join("\n")}
+
+Each service has a project and team collaboration path. A review or assessment is optional; scope, responsibilities, handover, fee and availability are agreed individually.
 
 ## Public data API
 

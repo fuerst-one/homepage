@@ -262,7 +262,7 @@ export function AutomationLandingPage({
           <p className={shared.eyebrow}>05 / {t.faq}</p>
           <h2 id="faq-heading">{t.faq}</h2>
           <div className={shared.faq}>
-            {copy.questions.map((item) => (
+            {copy.questions.slice(0, 2).map((item) => (
               <details key={item.question}>
                 <summary>
                   {item.question}

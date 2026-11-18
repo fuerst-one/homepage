@@ -7,6 +7,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import Link from "../../../../../components/i18n/LocalizedLink";
 import { Layout } from "../../../../../components/Layout";
 import { ProjectDetails } from "../../../../../components/Cv/Projects/ProjectDetails";
+import { ProjectBrief } from "../../../../../components/Cv/Projects/ProjectBrief";
 import { StructuredData } from "../../../../../components/StructuredData";
 import { getCachedCvProjects } from "../../../../../server/content/getCachedCvProjects";
 import { getPublicImageDescriptions } from "../../../../../server/content/getPublicImageDescriptions";
@@ -90,6 +91,7 @@ export default async function ProjectPage({ params }: Props) {
           project={project}
           locale={locale}
           initialDescriptions={imageDescriptions}
+          brief={<ProjectBrief project={project} locale={locale} />}
         />
       </article>
       <p className="text-sm text-neutral-300">

@@ -306,7 +306,7 @@ export async function ServicePage({
           <p className={styles.eyebrow}>05 / {t.faqLabel}</p>
           <h2 id="faq-heading">{t.questions}</h2>
           <div className={styles.faq}>
-            {copy.questions.map((item) => (
+            {copy.questions.slice(0, 2).map((item) => (
               <details key={item.question}>
                 <summary>
                   {item.question}
