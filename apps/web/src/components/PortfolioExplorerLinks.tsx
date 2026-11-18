@@ -17,9 +17,9 @@ export function PortfolioExplorerLinks({ locale }: { locale: Locale }) {
       <div className="grid gap-3">
         {[
           {
-            href: "/en/lab/experience",
+            href: "/explore",
             Icon: Network,
-            title: de ? "Experience Atlas (EN)" : "Experience atlas",
+            title: de ? "Entdecken" : "Explore",
             text: de
               ? "Projekte im Zusammenhang sehen. Gemeinsamkeiten entdecken – auch mit deiner Branche."
               : "See where projects connect. Find familiar challenges across different fields.",

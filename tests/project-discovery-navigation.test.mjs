@@ -3,19 +3,22 @@ import { test } from "node:test";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 
 for (const locale of ["en", "de"]) {
-  test(`${locale} retired public lab redirects to the experience atlas`, async () => {
+  const explorePath = locale === "de" ? "/de/entdecken" : "/en/explore";
+  test(`${locale} retired public lab redirects to Explore`, async () => {
     const response = await fetch(`${base}/${locale}/lab/projects`, {
       redirect: "manual",
       signal: AbortSignal.timeout(60000),
     });
     // A layout can begin streaming before Next renders the redirecting page.
     if (response.status === 307) {
-      assert.equal(response.headers.get("location"), "/en/lab/experience");
+      assert.equal(response.headers.get("location"), explorePath);
     } else {
       assert.equal(response.status, 200);
       assert.match(
         await response.text(),
-        /<meta[^>]+http-equiv="refresh"[^>]+content="1;url=\/en\/lab\/experience"/,
+        new RegExp(
+          `<meta[^>]+http-equiv="refresh"[^>]+content="1;url=${explorePath}"`,
+        ),
       );
     }
   });
@@ -26,7 +29,7 @@ for (const locale of ["en", "de"]) {
     );
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.ok(html.includes('href="/en/lab/experience"'));
+    assert.ok(html.includes(`href="${explorePath}"`));
     assert.ok(!html.includes('href="/en/lab/projects"'));
     assert.ok(html.includes('id="related-experience-title"'));
     assert.ok(html.includes('id="project-work-title"'));

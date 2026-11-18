@@ -1,3 +1,7 @@
+"use client";
+
+import { projectDescription } from "./atlasCopy";
+import { useAtlasCopy } from "./useAtlasCopy";
 import { ArrowUpRight } from "lucide-react";
 import type { KeyboardEvent, PointerEvent } from "react";
 import type { AtlasProject } from "./model";
@@ -27,9 +31,11 @@ export function SpaceConnectionSidebar({
   onHover: (group: number | null) => void;
   onFocus: (group: number | null) => void;
 }) {
+  const { t, term } = useAtlasCopy();
   const crossIndustry = model?.crossIndustry;
   const crossProject = crossIndustry && projectById.get(crossIndustry.id);
-  const scoreLabel = numeric || structured ? "Proximity" : "Cosine similarity";
+  const scoreLabel =
+    numeric || structured ? t("Proximity") : t("Cosine similarity");
   const preview = (group: number) => ({
     // Reordering cards under a stationary pointer must not preview a new group.
     onPointerMove: (event: PointerEvent<HTMLButtonElement>) => {
@@ -49,20 +55,23 @@ export function SpaceConnectionSidebar({
   return (
     <div className="vs-connections">
       {mode === "clusters" && crossIndustry && crossProject && !emptyReason && (
-        <section className="vs-transfer" aria-label="Cross-industry connection">
-          <p className="vs-kicker">ACROSS INDUSTRIES</p>
+        <section
+          className="vs-transfer"
+          aria-label={t("Cross-industry connection")}
+        >
+          <p className="vs-kicker">{t("ACROSS INDUSTRIES")}</p>
           <button type="button" onClick={() => onSelect(crossProject.id)}>
             <strong>{crossProject.name}</strong>
             <ArrowUpRight size={14} />
           </button>
           <p>
-            {crossIndustry.sourceSectors.join(" / ")} →{" "}
-            {crossIndustry.targetSectors.join(" / ")}
+            {crossIndustry.sourceSectors.map(term).join(" / ")} →{" "}
+            {crossIndustry.targetSectors.map(term).join(" / ")}
           </p>
           {crossIndustry.evidence.slice(0, 1).map((fact) => (
-            <p key={fact.label}>
-              <b>{fact.label}</b>
-              {fact.values.slice(0, 2).join(" · ")}
+            <p key={t(fact.label)}>
+              <b>{t(fact.label)}</b>
+              {fact.values.slice(0, 2).map(term).join(" · ")}
             </p>
           ))}
         </section>
@@ -70,11 +79,12 @@ export function SpaceConnectionSidebar({
       {!!model?.identicalIds.length && !emptyReason && (
         <details className="vs-identical">
           <summary>
-            {model.identicalIds.length + 1} projects share this profile
+            {model.identicalIds.length + 1} {t("projects share this profile ")}
           </summary>
           <p>
-            These inputs produce the same position. Select each project to see
-            its individual work.
+            {t(
+              "These inputs produce the same position. Select each project to see its individual work. ",
+            )}
           </p>
           {model.identicalIds.map((id) => (
             <button type="button" key={id} onClick={() => onSelect(id)}>
@@ -87,28 +97,28 @@ export function SpaceConnectionSidebar({
       <div
         className="vs-connection-modes"
         role="group"
-        aria-label="Connection perspective"
+        aria-label={t("Connection perspective")}
       >
         <button
           type="button"
           aria-pressed={mode === "members"}
           onClick={() => onMode("members")}
         >
-          Same cluster
+          {t("Same cluster ")}
         </button>
         <button
           type="button"
           aria-pressed={mode === "clusters"}
           onClick={() => onMode("clusters")}
         >
-          Across clusters
+          {t("Across clusters ")}
         </button>
         <button
           type="button"
           aria-pressed={mode === "nearest"}
           onClick={() => onMode("nearest")}
         >
-          Closest matches
+          {t("Closest matches ")}
         </button>
       </div>
       {emptyReason ? (
@@ -118,16 +128,18 @@ export function SpaceConnectionSidebar({
         (mode === "members" ? (
           <>
             <div className="vs-neighbours-heading">
-              <h4>Other cluster members</h4>
-              <span>{model.members.length} projects</span>
+              <h4>{t("Other cluster members")}</h4>
+              <span>
+                {model.members.length} {t("projects")}
+              </span>
             </div>
             <p className="vs-connection-intro">
-              {model.groups[model.selectedGroup]?.label}
+              {term(model.groups[model.selectedGroup]?.label ?? "")}
             </p>
             <div
               className="vs-connection-scroll vs-members"
               role="region"
-              aria-label="Other cluster members"
+              aria-label={t("Other cluster members")}
               tabIndex={0}
             >
               <ul>
@@ -139,7 +151,7 @@ export function SpaceConnectionSidebar({
                         <button
                           type="button"
                           onClick={() => onSelect(member.id)}
-                          aria-label={`Explore ${project.label}`}
+                          aria-label={`${t("Explore")} ${project.label}`}
                         >
                           <i
                             style={{
@@ -149,8 +161,10 @@ export function SpaceConnectionSidebar({
                           <span>
                             <strong>{project.label}</strong>
                             <small>
-                              {member.shared.slice(0, 2).join(" · ") ||
-                                project.subtitle}
+                              {member.shared
+                                .slice(0, 2)
+                                .map(term)
+                                .join(" · ") || projectDescription(project)}
                             </small>
                           </span>
                           <ArrowUpRight size={12} />
@@ -162,7 +176,7 @@ export function SpaceConnectionSidebar({
               </ul>
               {!model.members.length && (
                 <p className="vs-exclusion">
-                  No other projects in this cluster.
+                  {t("No other projects in this cluster. ")}
                 </p>
               )}
             </div>
@@ -170,16 +184,16 @@ export function SpaceConnectionSidebar({
         ) : mode === "clusters" ? (
           <>
             <div className="vs-neighbours-heading">
-              <h4>Connections across clusters</h4>
+              <h4>{t("Connections across clusters")}</h4>
             </div>
             <p className="vs-connection-intro">
-              The closest project in each other group.
+              {t("The closest project in each other group. ")}
             </p>
             {model.bridges.length ? (
               <div
                 className="vs-connection-scroll"
                 role="region"
-                aria-label="Connections across clusters"
+                aria-label={t("Connections across clusters")}
                 tabIndex={0}
               >
                 <ol className="vs-bridges">
@@ -193,15 +207,18 @@ export function SpaceConnectionSidebar({
                           type="button"
                           {...preview(bridge.group)}
                           onClick={() => onSelect(bridge.id)}
-                          aria-label={`Explore ${project.label}, closest project in cluster ${bridge.group + 1}, ${group.ids.length} projects`}
+                          aria-label={`${t("Explore")} ${project.label} · ${t("Cluster")} ${bridge.group + 1} · ${group.ids.length} ${t("projects")}`}
                           aria-describedby={`vs-bridge-shared-${project.id}`}
                         >
                           <span className="vs-cluster-heading">
                             <i
                               style={{ background: SPACE_COLORS[bridge.group] }}
                             />
-                            CLUSTER {String(bridge.group + 1).padStart(2, "0")}
-                            <small>{group.ids.length} projects</small>
+                            {t("CLUSTER ")}
+                            {String(bridge.group + 1).padStart(2, "0")}
+                            <small>
+                              {group.ids.length} {t("projects")}
+                            </small>
                           </span>
                           <strong>
                             {project.name} <ArrowUpRight size={13} />
@@ -210,10 +227,10 @@ export function SpaceConnectionSidebar({
                             className="vs-bridge-shared"
                             id={`vs-bridge-shared-${project.id}`}
                           >
-                            <b>Shared</b>
+                            <b>{t("Shared")}</b>
                             {bridge.shared.length
-                              ? bridge.shared.slice(0, 2).join(" · ")
-                              : "No shared recorded tags"}
+                              ? bridge.shared.slice(0, 2).map(term).join(" · ")
+                              : t("No shared recorded tags")}
                           </span>
                         </button>
                       </li>
@@ -223,16 +240,19 @@ export function SpaceConnectionSidebar({
               </div>
             ) : (
               <p className="vs-exclusion">
-                No separate clusters to compare in this selection. Closest
-                matches still lets you explore individual projects.
+                {t(
+                  "No separate clusters to compare in this selection. Closest matches still lets you explore individual projects. ",
+                )}
               </p>
             )}
           </>
         ) : (
           <>
             <div className="vs-neighbours-heading">
-              <h4>Closest in this lens</h4>
-              <span>{numeric || structured ? "proximity ↗" : "cosine ↗"}</span>
+              <h4>{t("Closest in this lens")}</h4>
+              <span>
+                {numeric || structured ? t("proximity ↗") : t("cosine ↗")}
+              </span>
             </div>
             <ol className="vs-neighbours">
               {model.nearest.map((neighbour, index) => {
@@ -243,7 +263,7 @@ export function SpaceConnectionSidebar({
                     <button
                       type="button"
                       onClick={() => onSelect(neighbour.id)}
-                      aria-label={`Select neighbour ${project.label}`}
+                      aria-label={`${t("Select neighbour")} ${project.label}`}
                       aria-describedby={`vs-neighbour-context-${project.id} vs-neighbour-score-${project.id}`}
                     >
                       <span className="vs-rank">0{index + 1}</span>
@@ -251,8 +271,8 @@ export function SpaceConnectionSidebar({
                         <strong>{project.name}</strong>
                         <small id={`vs-neighbour-context-${project.id}`}>
                           {neighbour.shared.length
-                            ? neighbour.shared.slice(0, 2).join(" · ")
-                            : "No shared recorded tags"}
+                            ? neighbour.shared.slice(0, 2).map(term).join(" · ")
+                            : t("No shared recorded tags")}
                         </small>
                         <span className="vs-similarity-track">
                           <i
@@ -280,7 +300,7 @@ export function SpaceConnectionSidebar({
       )}
       {model && !emptyReason && (
         <p className="vs-ranking-note">
-          Compared in the full space. Map positions are approximate.
+          {t("Compared in the full space. Map positions are approximate. ")}
         </p>
       )}
     </div>
@@ -296,25 +316,28 @@ export function SpaceClusterSidebar({
   projectById: Map<string, AtlasProject>;
   onSelect: (id: string) => void;
 }) {
+  const { t, term } = useAtlasCopy();
   return (
     <section
       className="vs-cluster-detail"
-      aria-label={`Cluster ${group.index + 1} projects`}
+      aria-label={`${t("Cluster")} ${group.index + 1} · ${t("projects")}`}
     >
       <p className="vs-kicker">
         <i style={{ background: SPACE_COLORS[group.index] }} />
-        CLUSTER {String(group.index + 1).padStart(2, "0")} · {group.ids.length}{" "}
-        PROJECTS
+        {t("CLUSTER ")}
+        {String(group.index + 1).padStart(2, "0")} · {group.ids.length}{" "}
+        {t("PROJECTS ")}
       </p>
-      <h3>{group.label}</h3>
+      <h3>{term(group.label)}</h3>
       <p className="vs-connection-intro">
-        Recorded traits in this group. Select a project to explore its
-        individual contribution.
+        {t(
+          "Recorded traits in this group. Select a project to explore its individual contribution. ",
+        )}
       </p>
       <div className="vs-cluster-traits">
         {group.terms.slice(0, 6).map((item) => (
-          <span key={item.term}>
-            {item.term}
+          <span key={term(item.term)}>
+            {term(item.term)}
             <small>
               {item.count}/{item.total}
             </small>
@@ -322,7 +345,7 @@ export function SpaceClusterSidebar({
         ))}
       </div>
       <div className="vs-members">
-        <h4>Projects in this cluster</h4>
+        <h4>{t("Projects in this cluster")}</h4>
         <ul>
           {group.ids.map((id) => {
             const project = projectById.get(id);
@@ -332,12 +355,14 @@ export function SpaceClusterSidebar({
                   <button
                     type="button"
                     onClick={() => onSelect(id)}
-                    aria-label={`Explore ${project.label}`}
+                    aria-label={`${t("Explore")} ${project.label}`}
                   >
                     <i style={{ background: SPACE_COLORS[group.index] }} />
                     <span>
                       <strong>{project.label}</strong>
-                      <small>{project.subtitle || project.ownership}</small>
+                      <small>
+                        {projectDescription(project) || term(project.ownership)}
+                      </small>
                     </span>
                     <ArrowUpRight size={12} />
                   </button>

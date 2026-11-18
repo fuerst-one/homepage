@@ -1,5 +1,8 @@
 "use client";
 
+import { projectDescription } from "./atlasCopy";
+import { useAtlasCopy } from "./useAtlasCopy";
+
 import dynamic from "next/dynamic";
 import {
   Component,
@@ -65,11 +68,15 @@ const LENSES = [
   },
 ] as const;
 
+function SpaceLoading() {
+  const { t } = useAtlasCopy();
+  return (
+    <div className="vs-loading">{t("Initializing spatial renderer…")}</div>
+  );
+}
 const Space3D = dynamic(() => import("./SemanticSpace3D"), {
   ssr: false,
-  loading: () => (
-    <div className="vs-loading">Initializing spatial renderer…</div>
-  ),
+  loading: SpaceLoading,
 });
 const VIEWS = [
   { id: "3d", name: "3D space", icon: Box },
@@ -113,6 +120,7 @@ export function SemanticSpaceWorkbench({
   onExplore: () => void;
   experimentsEnabled?: boolean;
 }) {
+  const { locale, t, term } = useAtlasCopy();
   const [labels, setLabels] = useState(false);
   const [hulls, setHulls] = useState(true);
   const [reset, setReset] = useState(0);
@@ -218,6 +226,7 @@ export function SemanticSpaceWorkbench({
                   project,
                   group,
                   space.groups[group]?.ids.length ?? 0,
+                  locale,
                 ),
                 group,
                 xy: space.positions2d[index],
@@ -226,7 +235,7 @@ export function SemanticSpaceWorkbench({
             ]
           : [];
       }) ?? [],
-    [space, projectById],
+    [space, projectById, locale],
   );
   const connections = useMemo(
     () =>
@@ -311,18 +320,27 @@ export function SemanticSpaceWorkbench({
   const exclusion = space?.excluded.find((p) => p.id === selectedId);
   const selectedGroup = connections?.selectedGroup ?? -1;
   const emptyReason = exclusion
-    ? `This project is outside this space: ${exclusion.reason.toLowerCase()}.`
+    ? `${t("This project is outside this space:")} ${term(exclusion.reason)}.`
     : space && !space.ids.includes(selectedId)
-      ? "This project is outside the selected project filter."
+      ? t("This project is outside the selected project filter.")
       : !space
-        ? "Project vectors are not available for this lens yet."
+        ? t("Project vectors are not available for this lens yet.")
         : undefined;
   const variance = view === "2d" ? space?.variance2d : space?.variance3d;
   const stress = view === "2d" ? space?.stress2d : space?.stress3d;
   const axes = useMemo(
     () =>
-      space ? describeSpaceAxes(projects, space, view === "2d" ? 2 : 3) : [],
-    [projects, space, view],
+      space
+        ? describeSpaceAxes(projects, space, view === "2d" ? 2 : 3).map(
+            (axis) => ({
+              ...axis,
+              label: axis.label ? t(axis.label) : undefined,
+              negative: t(axis.negative ?? "Mixed patterns"),
+              positive: t(axis.positive ?? "Mixed patterns"),
+            }),
+          )
+        : [],
+    [projects, space, view, t],
   );
   const structured = space?.representation === "structured";
   const selectCluster = (index: number) => {
@@ -344,7 +362,11 @@ export function SemanticSpaceWorkbench({
 
   return (
     <div className="vs-workbench">
-      <div className="vs-recipes" role="group" aria-label="Experience lenses">
+      <div
+        className="vs-recipes"
+        role="group"
+        aria-label={t("Experience lenses")}
+      >
         {LENSES.map((item, index) => (
           <button
             key={item.id}
@@ -359,8 +381,8 @@ export function SemanticSpaceWorkbench({
           >
             <span>0{index + 1}</span>
             <div>
-              <strong>{item.label}</strong>
-              <small>{item.question}</small>
+              <strong>{t(item.label)}</strong>
+              <small>{t(item.question)}</small>
             </div>
             <ArrowUpRight size={16} />
           </button>
@@ -398,12 +420,14 @@ export function SemanticSpaceWorkbench({
       ) : (
         <div className="vs-input-strip">
           <span>
-            {structured ? "COMPARED AS RECORDED FIELDS" : "EMBEDDED TOGETHER"}
+            {structured
+              ? t("COMPARED AS RECORDED FIELDS")
+              : t("EMBEDDED TOGETHER")}
           </span>
           {definition.fields.map((field, i) => (
-            <span key={field} className="vs-input-field">
+            <span key={t(field)} className="vs-input-field">
               {i > 0 && <b>+</b>}
-              {field}
+              {t(field)}
             </span>
           ))}
         </div>
@@ -414,7 +438,7 @@ export function SemanticSpaceWorkbench({
             <div
               className="vs-views"
               role="group"
-              aria-label="Vector visualization"
+              aria-label={t("Vector visualization")}
             >
               {VIEWS.map(({ id, name, icon: Icon }) => (
                 <button
@@ -424,7 +448,7 @@ export function SemanticSpaceWorkbench({
                   onClick={() => onView(id)}
                 >
                   <Icon size={14} />
-                  <span>{name}</span>
+                  <span>{t(name)}</span>
                 </button>
               ))}
             </div>
@@ -434,24 +458,24 @@ export function SemanticSpaceWorkbench({
                   type="button"
                   aria-pressed={hulls}
                   onClick={() => setHulls(!hulls)}
-                  title="Toggle cluster envelopes"
+                  title={t("Toggle cluster envelopes")}
                 >
                   <Box size={14} />
-                  <span>Clusters</span>
+                  <span>{t("Clusters")}</span>
                 </button>
               )}
               <button
                 type="button"
                 aria-pressed={labels}
                 onClick={() => setLabels(!labels)}
-                title="Toggle all project labels"
+                title={t("Toggle all project labels")}
               >
                 <Layers3 size={14} />
-                <span>Labels</span>
+                <span>{t("Labels")}</span>
               </button>
               <button
                 type="button"
-                aria-label="Reset view"
+                aria-label={t("Reset view")}
                 onClick={() => {
                   viewport.current = createSpaceViewport();
                   setReset((n) => n + 1);
@@ -464,7 +488,7 @@ export function SemanticSpaceWorkbench({
           <div
             className="vs-canvas"
             role="group"
-            aria-label={VIEWS.find((v) => v.id === view)?.name}
+            aria-label={t(VIEWS.find((v) => v.id === view)?.name ?? "")}
           >
             {!space ||
             nodes.length < 2 ||
@@ -473,23 +497,33 @@ export function SemanticSpaceWorkbench({
                 <Crosshair size={28} />
                 <strong>
                   {waiting
-                    ? "Recalculating the numeric map…"
+                    ? t("Recalculating the numeric map…")
                     : recipe === "scale" && scaleError
                       ? scaleError
                       : !space
-                        ? "Project vectors are not available yet."
+                        ? t("Project vectors are not available yet.")
                         : recipe === "scale"
                           ? !scaleFields.length
-                            ? "Choose at least one numeric field."
+                            ? t("Choose at least one numeric field.")
                             : nodes.length < 2
-                              ? "Fewer than two projects have comparable values."
-                              : "These projects have identical values in the selected fields."
+                              ? t(
+                                  "Fewer than two projects have comparable values.",
+                                )
+                              : t(
+                                  "These projects have identical values in the selected fields.",
+                                )
                           : experiment
-                            ? "Fewer than two projects have every selected field."
-                            : "More current vectors are needed for this lens."}
+                            ? t(
+                                "Fewer than two projects have every selected field.",
+                              )
+                            : t(
+                                "More current vectors are needed for this lens.",
+                              )}
                 </strong>
                 <p>
-                  The project selector and stories below are still available.
+                  {t(
+                    "The project selector and stories below are still available. ",
+                  )}
                 </p>
               </div>
             ) : view === "3d" ? (
@@ -497,9 +531,9 @@ export function SemanticSpaceWorkbench({
                 key={reset}
                 fallback={
                   <div className="vs-loading">
-                    <p>3D rendering is unavailable in this browser.</p>
+                    <p>{t("3D rendering is unavailable in this browser.")}</p>
                     <button type="button" onClick={() => onView("2d")}>
-                      Open the 2D projection
+                      {t("Open the 2D projection ")}
                     </button>
                   </div>
                 }
@@ -542,54 +576,65 @@ export function SemanticSpaceWorkbench({
             )}
             {waiting && space && (
               <div className="vs-map-updating" role="status">
-                Updating map… <span>Previous result remains visible</span>
+                {t("Updating map… ")}
+                <span>{t("Previous result remains visible")}</span>
               </div>
             )}
             <div className="vs-plot-corner" aria-hidden="true">
               {view === "3d"
-                ? "XYZ / ORBIT"
+                ? t("XYZ / ORBIT")
                 : view === "2d"
-                  ? "XY / PROJECT"
-                  : "NN / CONNECT"}
+                  ? t("XY / PROJECT")
+                  : t("NN / CONNECT")}
               <span>
                 {" "}
-                {LENSES.find(
-                  (item) => item.id === displayedRecipe,
-                )?.label.toUpperCase()}
+                {t(
+                  LENSES.find((item) => item.id === displayedRecipe)?.label ??
+                    "",
+                ).toUpperCase()}
               </span>
             </div>
           </div>
           <div className="vs-plot-footer">
             <span>
               {view === "3d"
-                ? "Drag to orbit · scroll to zoom · click a project"
+                ? t("Drag to orbit · scroll to zoom · click a project")
                 : view === "2d"
-                  ? "Hover to identify · click a project"
-                  : "Drag a node to pull · drag background to pan · scroll to zoom"}
+                  ? t("Hover to identify · click a project")
+                  : t(
+                      "Drag a node to pull · drag background to pan · scroll to zoom",
+                    )}
             </span>
             <span>
               <i />{" "}
               {preview
-                ? `Previewing cluster ${String(preview.index + 1).padStart(2, "0")}`
+                ? `${t("Previewing cluster")} ${String(preview.index + 1).padStart(2, "0")}`
                 : clusterView
-                  ? `Cluster ${String(clusterView.index + 1).padStart(2, "0")} selected`
+                  ? `${t("Cluster")} ${String(clusterView.index + 1).padStart(2, "0")} ${t("selected")}`
                   : !selectedId
-                    ? "All projects · choose a cluster or a point"
+                    ? t("All projects · choose a cluster or a point")
                     : connectionMode === "members"
-                      ? "Selected project + other cluster members"
+                      ? t("Selected project + other cluster members")
                       : connectionMode === "clusters"
-                        ? "Your cluster + connections into other clusters"
-                        : "Selected + closest matches"}
+                        ? t("Your cluster + connections into other clusters")
+                        : t("Selected + closest matches")}
             </span>
           </div>
           {space && view !== "network" && (
-            <div className="vs-axis-guide" aria-label="Projection directions">
+            <div
+              className="vs-axis-guide"
+              aria-label={t("Projection directions")}
+            >
               <p>
-                Reading the axes{" "}
+                {t("Reading the axes")}{" "}
                 <span>
                   {displayedRecipe === "scale"
-                    ? "Measurements associated with each direction · not quality scores"
-                    : "Position shows similarity. These directions are not business categories or skill scales."}
+                    ? t(
+                        "Measurements associated with each direction · not quality scores",
+                      )
+                    : t(
+                        "Position shows similarity. These directions are not business categories or skill scales.",
+                      )}
                 </span>
               </p>
               <dl>
@@ -600,14 +645,14 @@ export function SemanticSpaceWorkbench({
                       {axis.label ? (
                         <span>
                           {axis.label} ·{" "}
-                          {((space.axes[i] ?? 0) * 100).toFixed(0)}% of
-                          variation
+                          {((space.axes[i] ?? 0) * 100).toFixed(0)}
+                          {t("% of variation ")}
                         </span>
                       ) : (
                         <>
-                          <span>− {axis.negative ?? "Mixed patterns"}</span>
+                          <span>− {axis.negative ?? t("Mixed patterns")}</span>
                           <span aria-hidden="true">↔</span>
-                          <span>+ {axis.positive ?? "Mixed patterns"}</span>
+                          <span>+ {axis.positive ?? t("Mixed patterns")}</span>
                         </>
                       )}
                     </dd>
@@ -618,8 +663,10 @@ export function SemanticSpaceWorkbench({
           )}
           <p className="vs-size-note">
             {view === "3d"
-              ? "Size reflects wow factor · perspective affects apparent size"
-              : "Area reflects wow factor (1–10)"}
+              ? t(
+                  "Size reflects wow factor · perspective affects apparent size",
+                )
+              : t("Area reflects wow factor (1–10)")}
           </p>
         </div>
         <aside
@@ -629,10 +676,10 @@ export function SemanticSpaceWorkbench({
           tabIndex={-1}
           aria-label={
             clusterView
-              ? `Cluster ${clusterView.index + 1}: ${clusterView.label}`
+              ? `${t("Cluster")} ${clusterView.index + 1}: ${term(clusterView.label)}`
               : selected
-                ? "Selected project and connections"
-                : "All clusters"
+                ? t("Selected project and connections")
+                : t("All clusters")
           }
         >
           {(clusterView || selected) && (
@@ -647,24 +694,24 @@ export function SemanticSpaceWorkbench({
             >
               <ArrowLeft size={14} />
               {selected && selectedGroup >= 0
-                ? `Back to cluster ${String(selectedGroup + 1).padStart(2, "0")}`
-                : "Back to all clusters"}
+                ? `${t("Back to cluster")} ${String(selectedGroup + 1).padStart(2, "0")}`
+                : t("Back to all clusters")}
             </button>
           )}
           <label className="vs-project-select">
-            <span>JUMP TO A PROJECT</span>
+            <span>{t("JUMP TO A PROJECT")}</span>
             <select
               value={selectedId}
               onChange={(event) => selectProject(event.target.value, false)}
             >
-              <option value="">All projects · no selection</option>
+              <option value="">{t("All projects · no selection")}</option>
               {[...projects]
                 .sort((a, b) => a.label.localeCompare(b.label))
                 .map((project) => (
                   <option key={project.id} value={project.id}>
                     {project.label}
                     {space && !space.ids.includes(project.id)
-                      ? " · unmapped"
+                      ? t(" · unmapped")
                       : ""}
                   </option>
                 ))}
@@ -677,15 +724,16 @@ export function SemanticSpaceWorkbench({
               onSelect={selectProject}
             />
           ) : !selected ? (
-            <section className="vs-overview" aria-label="All clusters">
-              <p className="vs-kicker">EXPLORE THE RANGE</p>
+            <section className="vs-overview" aria-label={t("All clusters")}>
+              <p className="vs-kicker">{t("EXPLORE THE RANGE")}</p>
               <h3>
-                {connections?.groups.length ?? 0} clusters. {nodes.length}{" "}
-                projects.
+                {connections?.groups.length ?? 0} {t("clusters. ")}
+                {nodes.length} {t("projects. ")}
               </h3>
               <p>
-                Nothing selected. Choose a cluster to explore what connects its
-                projects, or select any point on the map.
+                {t(
+                  "Nothing selected. Choose a cluster to explore what connects its projects, or select any point on the map. ",
+                )}
               </p>
               {connections && (
                 <SpaceClusterGrid
@@ -699,22 +747,23 @@ export function SemanticSpaceWorkbench({
             <>
               <div className="vs-selected" aria-live="polite">
                 <p className="vs-kicker">
-                  <Crosshair size={12} /> SELECTED{" "}
+                  <Crosshair size={12} /> {t("SELECTED")}{" "}
                   {selectedGroup >= 0 && (space?.groups.length ?? 0) > 1 && (
                     <span>
-                      CLUSTER {String(selectedGroup + 1).padStart(2, "0")}
+                      {t("CLUSTER ")}
+                      {String(selectedGroup + 1).padStart(2, "0")}
                     </span>
                   )}
                 </p>
                 <h3>{selected?.name}</h3>
-                <p className="vs-summary">
-                  {selected?.subtitle || selected?.summary}
-                </p>
+                <p className="vs-summary">{projectDescription(selected)}</p>
                 {selected?.ownership && (
                   <p className="vs-role">
-                    <b>My role</b>
-                    {selected.ownership}
-                    {selected.projectType ? ` · ${selected.projectType}` : ""}
+                    <b>{t("My role")}</b>
+                    {term(selected.ownership)}
+                    {selected.projectType
+                      ? ` · ${term(selected.projectType)}`
+                      : ""}
                   </p>
                 )}
               </div>
@@ -724,7 +773,8 @@ export function SemanticSpaceWorkbench({
                 onClick={onExplore}
                 aria-controls="atlas-project-detail"
               >
-                Explore this project <ArrowDown size={15} />
+                {t("Explore this project ")}
+                <ArrowDown size={15} />
               </button>
               <SpaceConnectionSidebar
                 model={connections}
@@ -746,176 +796,162 @@ export function SemanticSpaceWorkbench({
           )}
         </aside>
       </div>
-      {space && (
-        <div className="vs-readout">
-          <div>
-            <span>
-              {view === "network" ? "CONNECTION RULE" : "VARIANCE RETAINED"}
-            </span>
-            <strong>
-              {view === "network"
-                ? "Up to 3 neighbours / node"
-                : `${((variance ?? 0) * 100).toFixed(1)}%`}
-            </strong>
-            <small>
-              {view === "network"
-                ? "Undirected union of nearest-neighbour links"
-                : `By the first ${view === "2d" ? "two" : "three"} principal components`}
-            </small>
-          </div>
-          <div>
-            <span>{view === "network" ? "LAYOUT" : "DISTANCE DISTORTION"}</span>
-            <strong>
-              {view === "network"
-                ? "Force-directed"
-                : `${((stress ?? 0) * 100).toFixed(1)}%`}
-            </strong>
-            <small>
-              {view === "network"
-                ? "Screen distance does not encode similarity"
-                : "Normalized stress · lower is more faithful"}
-            </small>
-          </div>
-          <div>
-            <span>MODEL</span>
-            <strong>
-              {displayedRecipe === "scale"
-                ? "Numeric field vectors"
-                : structured
-                  ? "Recorded field similarity"
-                  : (experiment?.model ?? data?.model)?.replace("openai/", "")}
-            </strong>
-            <small>
-              {displayedRecipe === "scale" || structured
-                ? "Calculated locally · no model calls"
-                : experiment
-                  ? "Experiment cached · switching views makes no model calls"
-                  : "Prepared in advance · no model calls while browsing"}
-            </small>
-          </div>
-        </div>
-      )}
       <details className="vs-method">
         <summary>
-          <CircleHelp size={14} /> What determines the position?
+          <CircleHelp size={14} /> {t("What determines the position? ")}
         </summary>
+        {space && (
+          <div className="vs-readout">
+            <div>
+              <span>
+                {view === "network"
+                  ? t("CONNECTION RULE")
+                  : t("VARIANCE RETAINED")}
+              </span>
+              <strong>
+                {view === "network"
+                  ? t("Up to 3 neighbours / node")
+                  : `${((variance ?? 0) * 100).toFixed(1)}%`}
+              </strong>
+              <small>
+                {view === "network"
+                  ? t("Undirected union of nearest-neighbour links")
+                  : t(
+                      view === "2d"
+                        ? "By the first two principal components"
+                        : "By the first three principal components",
+                    )}
+              </small>
+            </div>
+            <div>
+              <span>
+                {view === "network" ? t("LAYOUT") : t("DISTANCE DISTORTION")}
+              </span>
+              <strong>
+                {view === "network"
+                  ? t("Force-directed")
+                  : `${((stress ?? 0) * 100).toFixed(1)}%`}
+              </strong>
+              <small>
+                {view === "network"
+                  ? t("Screen distance does not encode similarity")
+                  : t("Normalized stress · lower is more faithful")}
+              </small>
+            </div>
+            <div>
+              <span>{t("MODEL")}</span>
+              <strong>
+                {displayedRecipe === "scale"
+                  ? t("Numeric field vectors")
+                  : structured
+                    ? t("Recorded field similarity")
+                    : (experiment?.model ?? data?.model)?.replace(
+                        "openai/",
+                        "",
+                      )}
+              </strong>
+              <small>
+                {displayedRecipe === "scale" || structured
+                  ? t("Calculated locally · no model calls")
+                  : experiment
+                    ? t(
+                        "Experiment cached · switching views makes no model calls",
+                      )
+                    : t("Prepared in advance · no model calls while browsing")}
+              </small>
+            </div>
+          </div>
+        )}
         <div>
           {experiment && (
             <p>
-              Current experiment:{" "}
+              {t("Current experiment:")}{" "}
               {comparisonMode === "joint"
-                ? "one embedding of all selected fields together"
-                : "equal-weight concatenation of separately normalized field embeddings"}
-              . Both comparison maps include only projects with every selected
-              field recorded, so missing values do not shape similarity. Field
-              changes remain drafts until Run comparison.
+                ? t("one embedding of all selected fields together")
+                : t(
+                    "equal-weight concatenation of separately normalized field embeddings",
+                  )}
+              {t(
+                ". Both comparison maps include only projects with every selected field recorded, so missing values do not shape similarity. Field changes remain drafts until Run comparison. ",
+              )}
             </p>
           )}
           {recipe === "scale" ? (
             <p>
-              The selected measurements form numeric vectors. Complexity uses
-              its 1–5 scale; team size, rebuild effort and code size use log(1 +
-              value), then the range of the active complete projects. Each
-              varying field has equal weight. Both endpoints of a recorded range
-              share that field’s weight. Constant fields add no distance and are
-              ignored. Missing values are never filled with zero; effort needs a
-              recorded rebuild-estimate basis. Filters refit scaling, projection
-              and clustering. Numbers describe project context, not personal
-              authorship, actual historic effort or quality. Positions are
-              principal-component projections, computed with classical
-              multidimensional scaling. Axis descriptions use the measurement
-              most correlated with that direction.
+              {t(
+                "The selected measurements form numeric vectors. Complexity uses its 1–5 scale; team size, rebuild effort and code size use log(1 + value), then the range of the active complete projects. Each varying field has equal weight. Both endpoints of a recorded range share that field’s weight. Constant fields add no distance and are ignored. Missing values are never filled with zero; effort needs a recorded rebuild-estimate basis. Filters refit scaling, projection and clustering. Numbers describe project context, not personal authorship, actual historic effort or quality. Positions are principal-component projections, computed with classical multidimensional scaling. Axis descriptions use the measurement most correlated with that direction. ",
+              )}
             </p>
           ) : structured ? (
             <p>
-              This lens compares recorded fields with equal weight. Categories
-              use normalized indicator vectors: exact shared values make
-              projects closer, regardless of how many tags a field contains.
-              Contribution also uses team-size ranges: log(1 + size), scaled to
-              the current population; both endpoints share one field’s weight.
-              Constant fields contribute no distance. Missing required values
-              are excluded rather than filled with zero. Working pattern is a
-              recorded category, not an estimate of availability or effort.
-              Proximity is one minus the mean field dissimilarity. The
-              projection uses the corresponding Euclidean distance, √(2 − 2 ×
-              proximity).
+              {t(
+                "This lens compares recorded fields with equal weight. Categories use normalized indicator vectors: exact shared values make projects closer, regardless of how many tags a field contains. Contribution also uses team-size ranges: log(1 + size), scaled to the current population; both endpoints share one field’s weight. Constant fields contribute no distance. Missing required values are excluded rather than filled with zero. Working pattern is a recorded category, not an estimate of availability or effort. Proximity is one minus the mean field dissimilarity. The projection uses the corresponding Euclidean distance, √(2 − 2 × proximity). ",
+              )}
             </p>
           ) : (
             <p>
-              This embedding combines its listed fields into one text per
-              project, then embeds that text into{" "}
-              {data?.dimensions.toLocaleString("en") ?? "a high number of"}{" "}
-              dimensions. Names and client identities are not added as fields.
-              Positions in 2D and 3D are principal-component projections of
-              normalized vectors (computed with classical multidimensional
-              scaling). Projection directions have no inherent business meaning.
-              Recorded traits describe clusters with supporting counts instead
-              of pretending that opposite ends of an axis are opposing skills.
+              {t(
+                "This embedding combines its listed fields into one text per project, then embeds that text into",
+              )}{" "}
+              {data?.dimensions.toLocaleString(locale) ?? t("a high number of")}{" "}
+              {t(
+                "dimensions. Names and client identities are not added as fields. Positions in 2D and 3D are principal-component projections of normalized vectors (computed with classical multidimensional scaling). Projection directions have no inherent business meaning. Recorded traits describe clusters with supporting counts instead of pretending that opposite ends of an axis are opposing skills. ",
+              )}
             </p>
           )}
           <p>
-            Only part of the original geometry fits on screen. Use the neighbour
-            ranking for similarity in the full space; the projection is an
-            overview. Across clusters highlights the selected project’s group
-            and its closest project in each other group. The sidebar compares
-            recorded tag frequencies between those groups, not inferred causes
-            of clustering. Closest matches instead ranks up to five individual
-            projects, regardless of cluster. Colours identify medoid clusters
-            computed separately for the current data; their numbers are local to
-            a map. In 3D, lines connect the selected project to the displayed
-            matches. Network lines retain the nearest-neighbour graph and do not
-            change with the sidebar mode. Connections do not establish
-            collaboration or measured business outcomes.
+            {t(
+              "Only part of the original geometry fits on screen. Use the neighbour ranking for similarity in the full space; the projection is an overview. Across clusters highlights the selected project’s group and its closest project in each other group. The sidebar compares recorded tag frequencies between those groups, not inferred causes of clustering. Closest matches instead ranks up to five individual projects, regardless of cluster. Colours identify medoid clusters computed separately for the current data; their numbers are local to a map. In 3D, lines connect the selected project to the displayed matches. Network lines retain the nearest-neighbour graph and do not change with the sidebar mode. Connections do not establish collaboration or measured business outcomes. ",
+            )}
           </p>
           {space?.clustering && (
             <p>
-              Automatic grouping tests feasible counts from 2 to 10, with at
-              least two projects per group and three deterministic PAM starts.
-              It refits 12 subsets containing 80% of the projects, then picks
-              the smallest count within one standard error of the best mean
-              resampled silhouette. This is a simplicity heuristic, not a
-              confidence interval. Stability is mean adjusted Rand agreement on
-              retained projects; it is not accuracy. If no eligible separated
-              partition is found, the map remains one group. Current separation:{" "}
-              {space.clustering.silhouette?.toFixed(3) ?? "not applicable"};
-              stability:{" "}
-              {space.clustering.stability?.toFixed(3) ?? "not applicable"}.
+              {t(
+                "Automatic grouping tests feasible counts from 2 to 10, with at least two projects per group and three deterministic PAM starts. It refits 12 subsets containing 80% of the projects, then picks the smallest count within one standard error of the best mean resampled silhouette. This is a simplicity heuristic, not a confidence interval. Stability is mean adjusted Rand agreement on retained projects; it is not accuracy. If no eligible separated partition is found, the map remains one group. Current separation:",
+              )}{" "}
+              {space.clustering.silhouette?.toFixed(3) ?? t("not applicable")}
+              {t("; stability:")}{" "}
+              {space.clustering.stability?.toFixed(3) ?? t("not applicable")}.
             </p>
           )}
           <p>
-            Faint convex envelopes surround each cluster in the displayed
-            projection, with a small margin for the dots. Envelopes can overlap;
-            they do not mark exclusive territories or a confidence interval.
-            Turn off Clusters for an unobstructed view.
+            {t(
+              "Faint convex envelopes surround each cluster in the displayed projection, with a small margin for the dots. Envelopes can overlap; they do not mark exclusive territories or a confidence interval. Turn off Clusters for an unobstructed view. ",
+            )}
           </p>
           <p>
-            Bubble size uses the recorded wow-factor, a subjective portfolio
-            rating from 1 to 10. Circle area scales with the rating; perspective
-            also affects apparent size in 3D. Unscored projects use a small
-            fallback marker. Visual sizing does not affect embeddings, cluster
-            membership or neighbour rankings.
+            {t(
+              "Bubble size uses the recorded wow-factor, a subjective portfolio rating from 1 to 10. Circle area scales with the rating; perspective also affects apparent size in 3D. Unscored projects use a small fallback marker. Visual sizing does not affect embeddings, cluster membership or neighbour rankings. ",
+            )}
             {experiment?.fields.includes("wowFactor") &&
-              " This experiment separately includes Wow factor as an embedding field, so the recorded rating also influences similarity."}
+              t(
+                " This experiment separately includes Wow factor as an embedding field, so the recorded rating also influences similarity.",
+              )}
           </p>
           {data && recipe !== "scale" && (
             <p>
-              {structured ? "Source refreshed" : "Embedding cache"}:{" "}
+              {structured ? t("Source refreshed") : t("Embedding cache")}:{" "}
               {(structured ? data.sourceRefreshedAt : data.generatedAt)?.slice(
                 0,
                 10,
-              ) ?? "Date not recorded"}
+              ) ?? t("Date not recorded")}
               .
               {structured
-                ? "Required fields must be recorded; this map is rebuilt locally when the snapshot is prepared."
-                : "Missing or changed embedding inputs are excluded until regenerated."}{" "}
-              {space?.excluded.length ?? 0} projects excluded in this lens.
+                ? t(
+                    "Required fields must be recorded; this map is rebuilt locally when the snapshot is prepared.",
+                  )
+                : t(
+                    "Missing or changed embedding inputs are excluded until regenerated.",
+                  )}{" "}
+              {space?.excluded.length ?? 0}{" "}
+              {t("projects excluded in this lens. ")}
             </p>
           )}
           {!!space?.excluded.length && (
             <ul>
               {space.excluded.map((e) => (
                 <li key={e.id}>
-                  {projectById.get(e.id)?.label ?? e.id}: {e.reason}
+                  {projectById.get(e.id)?.label ?? e.id}: {term(e.reason)}
                 </li>
               ))}
             </ul>

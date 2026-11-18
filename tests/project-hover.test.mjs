@@ -47,3 +47,31 @@ test("missing project facts stay omitted and long summary fallbacks are bounded"
   assert.match(details.description, /…$/);
   assert.deepEqual(details.rows, []);
 });
+
+test("German bubble cards use published prose and translate traits without changing project identity", () => {
+  const details = projectHoverDetails(
+    {
+      name: "Konfig",
+      subtitle: "Original English",
+      summary: "Context",
+      industries: ["Automotive & mobility"],
+      ownership: "Solo delivery",
+      wowFactor: 8,
+      presentation: {
+        description: "Ein Designwerkzeug für Motorraddekore.",
+        locale: "de",
+      },
+    },
+    0,
+    1,
+    "de",
+  );
+  assert.equal(details.title, "Konfig");
+  assert.equal(details.contentLocale, "de");
+  assert.equal(details.description, "Ein Designwerkzeug für Motorraddekore.");
+  assert.deepEqual(details.rows.slice(0, 3), [
+    { label: "Branche", value: "Automobil & Mobilität" },
+    { label: "Beitrag", value: "Eigenständige Umsetzung" },
+    { label: "Gruppe", value: "01 · 1 Projekt" },
+  ]);
+});

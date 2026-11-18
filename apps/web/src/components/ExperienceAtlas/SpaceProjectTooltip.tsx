@@ -1,3 +1,6 @@
+"use client";
+
+import { useAtlasCopy } from "./useAtlasCopy";
 import type { ProjectHoverDetails } from "./projectHover";
 
 export function SpaceProjectTooltip({
@@ -5,13 +8,16 @@ export function SpaceProjectTooltip({
 }: {
   details: ProjectHoverDetails;
 }) {
+  const { t } = useAtlasCopy();
   return (
     <div
       className="vs-cluster-tooltip vs-spatial-tooltip vs-project-tooltip"
       role="tooltip"
     >
       <strong>{details.title}</strong>
-      {details.description && <p>{details.description}</p>}
+      {details.description && (
+        <p lang={details.contentLocale}>{details.description}</p>
+      )}
       <dl>
         {details.rows.map((row) => (
           <div key={row.label}>
@@ -20,7 +26,7 @@ export function SpaceProjectTooltip({
           </div>
         ))}
       </dl>
-      <small>Click to explore this project</small>
+      <small>{t("Click to explore this project")}</small>
     </div>
   );
 }

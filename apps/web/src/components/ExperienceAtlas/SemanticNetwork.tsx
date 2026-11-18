@@ -1,5 +1,7 @@
 "use client";
 
+import { useAtlasCopy } from "./useAtlasCopy";
+
 import {
   useCallback,
   useEffect,
@@ -38,6 +40,7 @@ export function SemanticNetwork({
   scale: number;
   onSelect: (id: string) => void;
 }) {
+  const { locale, t } = useAtlasCopy();
   const chart = useRef<EChartsType | null>(null);
   const tooltip = useChartTooltip(chart, nodes);
   const [repulsion, setRepulsion] = useState(260);
@@ -53,8 +56,9 @@ export function SemanticNetwork({
       aria: {
         enabled: true,
         label: {
-          description:
+          description: t(
             "Spring network of project similarities. Drag a node to move it and its connections, or drag empty space to pan. Use Jump to a project for keyboard selection. Positions are navigational, not measured distances.",
+          ),
         },
       },
       tooltip: {
@@ -69,7 +73,7 @@ export function SemanticNetwork({
           const data = (params as { data?: { id?: string } }).data;
           const node = nodes.find((n) => n.id === data?.id);
           return node?.hover && tooltip.show(`project:${node.id}`)
-            ? projectTooltipElement(node.hover)
+            ? projectTooltipElement(node.hover, locale)
             : "";
         },
       },
@@ -158,6 +162,8 @@ export function SemanticNetwork({
       repulsion,
       gentle,
       reducedMotion,
+      locale,
+      t,
       scale,
       viewport,
       tooltip,
@@ -208,17 +214,17 @@ export function SemanticNetwork({
             disabled={reducedMotion}
             onChange={(event) => setGentle(event.target.checked)}
           />
-          Gentle springs
+          {t("Gentle springs ")}
         </label>
         <label>
-          Spread
+          {t("Spread ")}
           <select
             value={repulsion}
             onChange={(event) => setRepulsion(Number(event.target.value))}
           >
-            <option value={120}>Compact</option>
-            <option value={260}>Balanced</option>
-            <option value={520}>Open</option>
+            <option value={120}>{t("Compact")}</option>
+            <option value={260}>{t("Balanced")}</option>
+            <option value={520}>{t("Open")}</option>
           </select>
         </label>
       </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useAtlasCopy } from "./useAtlasCopy";
+
 import { useEffect, useRef, useState, type RefObject } from "react";
 import type { CustomSeriesOption, EChartsOption, EChartsType } from "echarts";
 import { EChart } from "../ProjectLab/chartPrimitives";
@@ -65,6 +67,7 @@ export function SemanticSpaceCharts({
   onSelect: (id: string) => void;
   onClusterSelect: (index: number) => void;
 }) {
+  const { locale, t } = useAtlasCopy();
   const host = useRef<HTMLDivElement>(null);
   const chart = useRef<EChartsType | null>(null);
   const tooltip = useChartTooltip(chart, nodes);
@@ -176,19 +179,20 @@ export function SemanticSpaceCharts({
         if (!node && data?.cluster !== undefined) {
           const group = groups.find((item) => item.index === data.cluster);
           return group && tooltip.show(`cluster:${group.index}`)
-            ? clusterTooltipElement(group)
+            ? clusterTooltipElement(group, locale)
             : "";
         }
         return node?.hover && tooltip.show(`project:${node.id}`)
-          ? projectTooltipElement(node.hover)
+          ? projectTooltipElement(node.hover, locale)
           : "";
       },
     },
     aria: {
       enabled: true,
       label: {
-        description:
+        description: t(
           "Project similarity space. Use the project selector, cluster previews or sidebar connections for keyboard navigation.",
+        ),
       },
     },
     grid: { left: 65, right: 65, top: 65, bottom: 62 },

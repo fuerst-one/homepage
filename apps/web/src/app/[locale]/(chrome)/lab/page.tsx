@@ -1,5 +1,1 @@
-import { redirect } from "next/navigation";
-
-export default function LabPage() {
-  redirect("/en/lab/experience");
-}
+export { LegacyExplorePage as default } from "../../../../components/ExperienceAtlas/ExplorePage";

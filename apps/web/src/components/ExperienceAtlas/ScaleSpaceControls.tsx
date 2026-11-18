@@ -1,5 +1,7 @@
 "use client";
 
+import { useAtlasCopy } from "./useAtlasCopy";
+
 import { useState } from "react";
 import { FlaskConical, X } from "lucide-react";
 import type { AtlasProject } from "./model";
@@ -31,17 +33,18 @@ export function ScaleSpaceControls({
   pending: boolean;
   error?: string;
 }) {
+  const { t, term } = useAtlasCopy();
   const [open, setOpen] = useState(false);
   const sectors = [...new Set(projects.flatMap((p) => p.industries))].sort();
   return (
     <div className="vs-playground">
       <div className="vs-input-strip">
-        <span>NUMERIC DISTANCES · LOCAL</span>
+        <span>{t("NUMERIC DISTANCES · LOCAL")}</span>
         <span>
           {SCALE_FIELDS.filter((field) => fields.includes(field.id))
-            .map((field) => field.label)
-            .join(" + ") || "No measurements selected"}
-          {sector && ` · ${sector}`}
+            .map((field) => t(field.label))
+            .join(" + ") || t("No measurements selected")}
+          {sector && ` · ${term(sector)}`}
         </span>
         <button
           type="button"
@@ -51,13 +54,13 @@ export function ScaleSpaceControls({
           onClick={() => setOpen(!open)}
         >
           {open ? <X size={14} /> : <FlaskConical size={14} />}
-          {open ? "Close playground" : "Try different fields"}
+          {open ? t("Close playground") : t("Try different fields")}
         </button>
       </div>
       {open && (
         <div id="scale-playground" className="vs-experiment-body">
           <fieldset className="vs-experiment-fields">
-            <legend>Measurements to compare</legend>
+            <legend>{t("Measurements to compare")}</legend>
             <div className="vs-field-chips vs-scale-fields">
               {SCALE_FIELDS.map((field) => {
                 const missing = activeProjects.filter(
@@ -77,16 +80,16 @@ export function ScaleSpaceControls({
                     }
                     title={
                       missing.length
-                        ? `Missing comparable values: ${missing.map((p) => p.label).join(", ")}`
-                        : "Comparable values recorded for every project"
+                        ? `${t("Missing comparable values:")} ${missing.map((p) => p.label).join(", ")}`
+                        : t("Comparable values recorded for every project")
                     }
                   >
-                    {field.label}
+                    {t(field.label)}
                     <small
                       className="vs-field-missing"
                       data-incomplete={missing.length > 0}
                     >
-                      {missing.length} missing
+                      {missing.length} {t("missing ")}
                     </small>
                   </button>
                 );
@@ -94,15 +97,18 @@ export function ScaleSpaceControls({
             </div>
             <div className="vs-experiment-actions">
               <label>
-                Project set
+                {t("Project set ")}
                 <select
                   value={sector}
                   onChange={(e) => onSector(e.target.value)}
                 >
-                  <option value="">All projects ({projects.length})</option>
+                  <option value="">
+                    {t("All projects (")}
+                    {projects.length})
+                  </option>
                   {sectors.map((s) => (
                     <option key={s} value={s}>
-                      {s} (
+                      {term(s)} (
                       {projects.filter((p) => p.industries.includes(s)).length})
                     </option>
                   ))}
@@ -116,43 +122,42 @@ export function ScaleSpaceControls({
                 {result ? (
                   <>
                     <strong>
-                      {result.space.ids.length}/{activeProjects.length} projects
-                      comparable
+                      {result.space.ids.length}/{activeProjects.length}{" "}
+                      {t("projects comparable ")}
                     </strong>
                     <span>
-                      {result.space.excluded.length} excluded ·{" "}
-                      {result.calculationMs.toFixed(0)} ms calculation · no API
-                      calls
+                      {result.space.excluded.length} {t("excluded ·")}{" "}
+                      {result.calculationMs.toFixed(0)}{" "}
+                      {t("ms calculation · no API calls ")}
                     </span>
                   </>
                 ) : (
                   <strong>
                     {error ??
                       (pending
-                        ? "Recalculating… controls remain available"
-                        : "Select measurements")}
+                        ? t("Recalculating… controls remain available")
+                        : t("Select measurements"))}
                   </strong>
                 )}
               </div>
             </div>
           </fieldset>
           <p className="vs-experiment-status">
-            Fields carry equal weight. Team and effort ranges keep both bounds;
-            larger numeric ranges use a logarithmic scale. Missing means
-            unrecorded or not comparable, never zero. Rebuild effort is an
-            estimate, not historical time spent.
+            {t(
+              "Fields carry equal weight. Team and effort ranges keep both bounds; larger numeric ranges use a logarithmic scale. Missing means unrecorded or not comparable, never zero. Rebuild effort is an estimate, not historical time spent. ",
+            )}
           </p>
           {result &&
             result.constantFields.length > 0 &&
             result.space.ids.length > 1 && (
               <p className="vs-experiment-status">
-                No variation in this selection:{" "}
+                {t("No variation in this selection:")}{" "}
                 {SCALE_FIELDS.filter((f) =>
                   result.constantFields.includes(f.id),
                 )
-                  .map((f) => f.label)
+                  .map((f) => t(f.label))
                   .join(", ")}
-                . These fields add no distance.
+                {t(". These fields add no distance. ")}
               </p>
             )}
         </div>

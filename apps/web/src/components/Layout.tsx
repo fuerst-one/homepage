@@ -62,7 +62,9 @@ export async function Layout({
   );
   return (
     <div className="relative z-10 min-h-screen max-w-full">
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col px-4 pb-12 pt-6 sm:px-6 sm:pt-8 md:px-8 lg:px-6 lg:pt-10">
+      <div
+        className={`relative mx-auto flex w-full ${wide ? "max-w-[1440px]" : "max-w-6xl"} flex-col px-4 pb-12 pt-6 sm:px-6 sm:pt-8 md:px-8 lg:px-6 lg:pt-10`}
+      >
         <header className="content-header text-neutral-300">
           <Link href="/" className="content-header-identity">
             <div className="content-header-portrait">
@@ -124,8 +126,8 @@ export async function Layout({
               <ContentNavLink href="/services/ai-automation">
                 {locale === "de" ? "KI & Automatisierung" : "AI & automation"}
               </ContentNavLink>
-              <ContentNavLink href="/en/lab/experience">
-                Experience atlas{locale === "de" ? " (EN)" : ""}
+              <ContentNavLink href="/explore">
+                {locale === "de" ? "Entdecken" : "Explore"}
               </ContentNavLink>
             </div>
           </nav>

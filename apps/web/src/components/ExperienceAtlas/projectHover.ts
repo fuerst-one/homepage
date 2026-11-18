@@ -1,34 +1,60 @@
 import type { AtlasProject } from "./model";
+import type { Locale } from "@homepage/content/i18n";
+import { atlasText, atlasTerm, atlasCount } from "./atlasCopy";
 
 export type ProjectHoverDetails = {
   title: string;
   description: string;
+  contentLocale?: Locale;
   rows: { label: string; value: string }[];
 };
 
 export function projectHoverDetails(
   project: Pick<
     AtlasProject,
-    "name" | "subtitle" | "summary" | "industries" | "ownership" | "wowFactor"
+    | "name"
+    | "subtitle"
+    | "summary"
+    | "industries"
+    | "ownership"
+    | "wowFactor"
+    | "presentation"
   >,
   group: number,
   count: number,
+  locale: Locale = "en",
 ): ProjectHoverDetails {
-  const description = (project.subtitle || project.summary).trim();
+  const description = (
+    project.presentation?.description ||
+    project.subtitle ||
+    project.summary
+  ).trim();
   const rows: ProjectHoverDetails["rows"] = [];
   if (project.industries.length)
-    rows.push({ label: "Industry", value: project.industries.join(" · ") });
+    rows.push({
+      label: atlasText(locale, "Industry"),
+      value: project.industries
+        .map((value) => atlasTerm(locale, value))
+        .join(" · "),
+    });
   if (project.ownership)
-    rows.push({ label: "Contribution", value: project.ownership });
+    rows.push({
+      label: atlasText(locale, "Contribution"),
+      value: atlasTerm(locale, project.ownership),
+    });
   if (group >= 0)
     rows.push({
-      label: "Cluster",
-      value: `${String(group + 1).padStart(2, "0")} · ${count} ${count === 1 ? "project" : "projects"}`,
+      label: atlasText(locale, "Cluster"),
+      value: `${String(group + 1).padStart(2, "0")} · ${atlasCount(locale, count)}`,
     });
   if (project.wowFactor !== null)
-    rows.push({ label: "Wow factor", value: `${project.wowFactor}/10` });
+    rows.push({
+      label: atlasText(locale, "Wow factor"),
+      value: `${project.wowFactor}/10`,
+    });
   return {
     title: project.name,
+    contentLocale: project.presentation?.locale ?? "en",
     description:
       description.length > 180 ? `${description.slice(0, 179)}…` : description,
     rows,
@@ -38,6 +64,7 @@ export function projectHoverDetails(
 /** ECharts accepts DOM content. textContent keeps every recorded field inert. */
 export function projectTooltipElement(
   details: ProjectHoverDetails,
+  locale: Locale = "en",
 ): HTMLElement {
   const element = document.createElement("div");
   element.className = "vs-project-tooltip";
@@ -47,6 +74,7 @@ export function projectTooltipElement(
   if (details.description) {
     const description = document.createElement("p");
     description.textContent = details.description;
+    description.lang = details.contentLocale ?? "en";
     element.append(description);
   }
   const facts = document.createElement("dl");
@@ -61,7 +89,7 @@ export function projectTooltipElement(
   }
   element.append(facts);
   const hint = document.createElement("small");
-  hint.textContent = "Click to explore this project";
+  hint.textContent = atlasText(locale, "Click to explore this project");
   element.append(hint);
   return element;
 }

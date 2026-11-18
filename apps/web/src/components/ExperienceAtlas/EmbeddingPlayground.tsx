@@ -1,5 +1,7 @@
 "use client";
 
+import { useAtlasCopy } from "./useAtlasCopy";
+
 import { useEffect, useRef, useState } from "react";
 import { FlaskConical, Plus, RotateCcw, X } from "lucide-react";
 import {
@@ -39,6 +41,7 @@ export function EmbeddingPlayground({
   onMode: (mode: ComparisonMode) => void;
   onReset: () => void;
 }) {
+  const { t, term } = useAtlasCopy();
   const [open, setOpen] = useState(false);
   const [fields, setFields] = useState<EmbeddingField[]>(
     DEFAULT_FIELDS[recipe],
@@ -64,7 +67,9 @@ export function EmbeddingPlayground({
       )
     : undefined;
   const coverageLabel = (id: EmbeddingField) =>
-    coverage ? `${coverage.missingByField[id].length} missing` : "Checking…";
+    coverage
+      ? `${coverage.missingByField[id].length} ${t("missing")}`
+      : t(t("Checking…"));
   useEffect(() => () => controller.current?.abort(), []);
   useEffect(() => {
     if (!open) return;
@@ -73,7 +78,7 @@ export function EmbeddingPlayground({
       .then(async (response) => {
         if (!response.ok)
           throw new Error(
-            "The playground is available on the local dev server.",
+            t("The playground is available on the local dev server."),
           );
         return response.json();
       })
@@ -82,7 +87,7 @@ export function EmbeddingPlayground({
         if (!abort.signal.aborted) setError(e.message);
       });
     return () => abort.abort();
-  }, [open]);
+  }, [open, t]);
   useEffect(() => {
     if (!busy) return;
     const start = performance.now();
@@ -124,7 +129,7 @@ export function EmbeddingPlayground({
       });
       const value = await response.json();
       if (!response.ok)
-        throw new Error(value.error || "The comparison could not finish.");
+        throw new Error(value.error || t("The comparison could not finish."));
       if (!abort.signal.aborted) {
         onResult(value);
         setApplied(signature);
@@ -133,7 +138,9 @@ export function EmbeddingPlayground({
     } catch (e) {
       if (!abort.signal.aborted)
         setError(
-          e instanceof Error ? e.message : "The comparison could not finish.",
+          e instanceof Error
+            ? e.message
+            : t("The comparison could not finish."),
         );
     } finally {
       if (!abort.signal.aborted) setBusy(false);
@@ -144,15 +151,15 @@ export function EmbeddingPlayground({
       <div className="vs-input-strip">
         <span>
           {result && mode === "blend"
-            ? "EMBEDDED SEPARATELY · BLENDED"
+            ? t("EMBEDDED SEPARATELY · BLENDED")
             : !result && recipe !== "engineering"
-              ? "COMPARED AS RECORDED FIELDS"
-              : "EMBEDDED TOGETHER"}
+              ? t("COMPARED AS RECORDED FIELDS")
+              : t("EMBEDDED TOGETHER")}
         </span>
         {(result?.fields ?? DEFAULT_FIELDS[recipe]).map((id, i) => (
           <span key={id} className="vs-input-field">
             {i > 0 && <b>+</b>}
-            {EMBEDDING_FIELDS.find((f) => f.id === id)!.label}
+            {t(EMBEDDING_FIELDS.find((f) => f.id === id)!.label)}
           </span>
         ))}
         <button
@@ -163,30 +170,27 @@ export function EmbeddingPlayground({
           onClick={() => setOpen(!open)}
         >
           <FlaskConical size={14} />
-          {open ? "Close playground" : "Try different fields"}
+          {open ? t("Close playground") : t("Try different fields")}
         </button>
       </div>
       {open && (
         <div id="embedding-playground" className="vs-experiment-body">
           <div className="vs-experiment-heading">
             <div>
-              <p className="vs-kicker">LOCAL / EMBEDDING PLAYGROUND</p>
-              <h3>Same fields. Two ways to connect them.</h3>
+              <p className="vs-kicker">{t("LOCAL / EMBEDDING PLAYGROUND")}</p>
+              <h3>{t("Same fields. Two ways to connect them.")}</h3>
             </div>
             <button type="button" onClick={reset} disabled={busy}>
-              <RotateCcw size={13} /> Restore original lens
+              <RotateCcw size={13} /> {t("Restore original lens ")}
             </button>
           </div>
           <p className="vs-experiment-intro">
-            Compare a single embedding of the complete text with an equal blend
-            of separately embedded fields. Both maps use the same projects and
-            automatically choose their cluster count. This comparison requires
-            every selected field. The product and contribution defaults compare
-            recorded categories directly, with team size treated numerically;
-            running this experiment instead tests text embeddings.
+            {t(
+              "Compare a single embedding of the complete text with an equal blend of separately embedded fields. Both maps use the same projects and automatically choose their cluster count. This comparison requires every selected field. The product and contribution defaults compare recorded categories directly, with team size treated numerically; running this experiment instead tests text embeddings. ",
+            )}
           </p>
           <fieldset disabled={busy} className="vs-experiment-fields">
-            <legend>Fields to compare</legend>
+            <legend>{t("Fields to compare")}</legend>
             <div className="vs-field-chips">
               {EMBEDDING_FIELDS.filter((f) => fields.includes(f.id)).map(
                 (f) => (
@@ -194,15 +198,15 @@ export function EmbeddingPlayground({
                     type="button"
                     key={f.id}
                     onClick={() => toggle(f.id)}
-                    aria-label={`Remove ${f.label}`}
+                    aria-label={`${t("Remove")} ${t(f.label)}`}
                     aria-describedby={`vs-field-coverage-${f.id}`}
                     title={
                       coverage?.missingByField[f.id].length
-                        ? `Missing for: ${coverage.missingByField[f.id].map((id) => projects.find((p) => p.id === id)?.label ?? id).join(", ")}`
-                        : "Recorded for every project in the selected set"
+                        ? `${t("Missing for:")} ${coverage.missingByField[f.id].map((id) => projects.find((p) => p.id === id)?.label ?? id).join(", ")}`
+                        : t("Recorded for every project in the selected set")
                     }
                   >
-                    {f.label}
+                    {t(f.label)}
                     <small
                       id={`vs-field-coverage-${f.id}`}
                       className="vs-field-missing"
@@ -218,19 +222,19 @@ export function EmbeddingPlayground({
               )}
               <details className="vs-field-picker">
                 <summary>
-                  <Plus size={13} /> Add a field
+                  <Plus size={13} /> {t("Add a field ")}
                 </summary>
                 <div>
                   <input
                     type="search"
-                    aria-label="Search embedding fields"
-                    placeholder="Search fields…"
+                    aria-label={t("Search embedding fields")}
+                    placeholder={t("Search fields…")}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
                   <div className="vs-field-options">
                     {EMBEDDING_FIELDS.filter((f) =>
-                      f.label.toLowerCase().includes(search.toLowerCase()),
+                      t(f.label).toLowerCase().includes(search.toLowerCase()),
                     ).map((f) => (
                       <label key={f.id}>
                         <input
@@ -239,8 +243,8 @@ export function EmbeddingPlayground({
                           onChange={() => toggle(f.id)}
                         />
                         <span>
-                          {f.label}
-                          {"numeric" in f && <em>Number as text</em>}
+                          {t(f.label)}
+                          {"numeric" in f && <em>{t("Number as text")}</em>}
                         </span>
                         <small
                           className="vs-field-missing"
@@ -253,10 +257,10 @@ export function EmbeddingPlayground({
                       </label>
                     ))}
                     {!EMBEDDING_FIELDS.some((f) =>
-                      f.label.toLowerCase().includes(search.toLowerCase()),
+                      t(f.label).toLowerCase().includes(search.toLowerCase()),
                     ) && (
                       <p className="vs-experiment-status">
-                        No matching fields.
+                        {t("No matching fields. ")}
                       </p>
                     )}
                   </div>
@@ -268,44 +272,51 @@ export function EmbeddingPlayground({
               role="status"
               aria-live="polite"
             >
-              <span>COMPLETE-DATA COMPARISON</span>
+              <span>{t("COMPLETE-DATA COMPARISON")}</span>
               {!fields.length ? (
-                <strong>Choose fields to preview coverage.</strong>
+                <strong>{t("Choose fields to preview coverage.")}</strong>
               ) : coverage ? (
                 <>
                   <strong>
                     {coverage.readyIds.length}/{selectedProjects.length}{" "}
-                    projects ready
+                    {t("projects ready ")}
                   </strong>
                   <span>
-                    {coverage.incompleteIds.length} incomplete · each project
-                    counted once
+                    {coverage.incompleteIds.length}{" "}
+                    {t("incomplete · each project counted once ")}
                   </span>
                 </>
               ) : (
-                <strong>Checking field coverage…</strong>
+                <strong>{t("Checking field coverage…")}</strong>
               )}
             </div>
             <p className="vs-experiment-status">
-              Counts follow the project filter. {EMBEDDING_FIELDS.length} public
-              project fields are available; IDs, media and private research
-              notes are not embedding inputs.
+              {t("Counts follow the project filter. ")}
+              {EMBEDDING_FIELDS.length}{" "}
+              {t(
+                "public project fields are available; IDs, media and private research notes are not embedding inputs. ",
+              )}
               {EMBEDDING_FIELDS.some(
                 (f) => "numeric" in f && fields.includes(f.id),
               ) &&
-                " Numbers are embedded as text, not treated as numeric distances."}
+                t(
+                  " Numbers are embedded as text, not treated as numeric distances.",
+                )}
             </p>
             <div className="vs-experiment-actions">
               <label>
-                Project set
+                {t("Project set ")}
                 <select
                   value={sector}
                   onChange={(e) => setSector(e.target.value)}
                 >
-                  <option value="">All projects ({projects.length})</option>
+                  <option value="">
+                    {t("All projects (")}
+                    {projects.length})
+                  </option>
                   {sectors.map((s) => (
                     <option key={s} value={s}>
-                      {s} (
+                      {term(s)} (
                       {projects.filter((p) => p.industries.includes(s)).length})
                     </option>
                   ))}
@@ -324,22 +335,28 @@ export function EmbeddingPlayground({
                 }
               >
                 <FlaskConical size={14} />
-                {busy ? `Comparing · ${seconds(elapsed)}` : "Run comparison"}
+                {busy
+                  ? `${t("Comparing")} · ${seconds(elapsed)}`
+                  : t("Run comparison")}
               </button>
               <span>
                 {!fields.length
-                  ? "Choose at least one field."
+                  ? t("Choose at least one field.")
                   : coverage && coverage.readyIds.length < 2
-                    ? "Choose fields shared by at least two projects."
+                    ? t("Choose fields shared by at least two projects.")
                     : result && signature !== applied
-                      ? "Draft changed · run to update the map"
-                      : "Model calls only when you run · cached inputs are reused"}
+                      ? t("Draft changed · run to update the map")
+                      : t(
+                          "Model calls only when you run · cached inputs are reused",
+                        )}
               </span>
             </div>
           </fieldset>
           {capabilities && !capabilities.configured && (
             <p role="status">
-              The local dev server needs its embedding-provider configuration.
+              {t(
+                "The local dev server needs its embedding-provider configuration. ",
+              )}
             </p>
           )}
           {error && (
@@ -350,9 +367,9 @@ export function EmbeddingPlayground({
           <div aria-live="polite" role="status">
             {busy && (
               <p className="vs-experiment-status">
-                Preparing missing vectors, then evaluating cluster counts. First
-                runs take longer; changing the displayed result below makes no
-                model calls.
+                {t(
+                  "Preparing missing vectors, then evaluating cluster counts. First runs take longer; changing the displayed result below makes no model calls. ",
+                )}
               </p>
             )}
           </div>
@@ -361,7 +378,7 @@ export function EmbeddingPlayground({
               <div
                 className="vs-comparison-results"
                 role="group"
-                aria-label="Embedding comparison results"
+                aria-label={t("Embedding comparison results")}
               >
                 {(["joint", "blend"] as const).map((item, index) => {
                   const value = result[item],
@@ -377,26 +394,31 @@ export function EmbeddingPlayground({
                         <b>{index === 0 ? "A" : "B"}</b>
                         <strong>
                           {item === "joint"
-                            ? "Embed together"
-                            : "Blend cached fields"}
+                            ? t("Embed together")
+                            : t("Blend cached fields")}
                         </strong>
-                        <small>{mode === item ? "ON MAP" : "VIEW MAP"}</small>
+                        <small>
+                          {mode === item ? t("ON MAP") : t("VIEW MAP")}
+                        </small>
                       </span>
                       <span className="vs-comparison-metrics">
                         <span>
                           <b>{d?.reason === "selected" ? d.k : "—"}</b>
                           {d?.reason === "selected"
-                            ? "groups"
-                            : "unpartitioned"}
+                            ? t("groups")
+                            : t("unpartitioned")}
                         </span>
                         <span>
-                          <b>{metric(d?.silhouette)}</b>separation
+                          <b>{metric(d?.silhouette)}</b>
+                          {t("separation ")}
                         </span>
                         <span>
-                          <b>{metric(d?.stability)}</b>stability
+                          <b>{metric(d?.stability)}</b>
+                          {t("stability ")}
                         </span>
                         <span>
-                          <b>{seconds(value.calculationMs)}</b>calculation
+                          <b>{seconds(value.calculationMs)}</b>
+                          {t("calculation ")}
                         </span>
                       </span>
                     </button>
@@ -404,16 +426,19 @@ export function EmbeddingPlayground({
                 })}
               </div>
               <p className="vs-experiment-status">
-                {result.included}/{result.requested} projects have every
-                selected field. {result.requested - result.included} excluded
-                for missing data. {result.newVectors} new vectors ·{" "}
-                {result.reusedVectors} reused · {seconds(result.embeddingMs)}{" "}
-                preparing vectors · {seconds(elapsed)} total.
+                {result.included}/{result.requested}{" "}
+                {t("projects have every selected field. ")}
+                {result.requested - result.included}{" "}
+                {t("excluded for missing data. ")}
+                {result.newVectors} {t("new vectors ·")} {result.reusedVectors}{" "}
+                {t("reused · ")}
+                {seconds(result.embeddingMs)} {t("preparing vectors · ")}
+                {seconds(elapsed)} {t("total. ")}
               </p>
               <p className="vs-experiment-status">
-                Higher separation and stability describe geometry, not client
-                relevance. Compare the actual neighbours too. Each map is fitted
-                independently; axis directions and colours can change.
+                {t(
+                  "Higher separation and stability describe geometry, not client relevance. Compare the actual neighbours too. Each map is fitted independently; axis directions and colours can change. ",
+                )}
               </p>
             </>
           )}

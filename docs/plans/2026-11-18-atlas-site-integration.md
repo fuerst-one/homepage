@@ -1,0 +1,9 @@
+# Explore site integration
+
+Make the atlas a first-class destination at `/en/explore` and `/de/entdecken`, titled Explore / Entdecken. Redirect the old Lab routes and mismatched locale aliases while preserving project, lens and view deep links. Keep the main navigation link last, add a homepage quick link and project-detail return link, and remove redundant Lab sub-navigation. Open up the existing explorer into the shared wide page layout while retaining selection, transition and camera behavior.
+
+Reuse the site locale provider, localized links, layout, published project descriptions and project facts. Translate presentation only: original taxonomy keys, vectors, numeric inputs and cluster assignments remain unchanged. German descriptions come from the published German content; unavailable prose is explicitly identified as English rather than silently treated as translated. Localize all public controls, hover cards, states and methodology; developer experiments retain their development-only access.
+
+Use the existing monospace type, glass panels, neutral borders and enquiry CTA. Remove the prototype's serif declarations at their source. Give related-project cards aligned content, readable panel backgrounds and visible interaction states. Let German sidebar labels wrap, and keep small layouts free of horizontal overflow.
+
+Preserve concurrent project-discovery changes and unrelated data edits. Validation covers route and locale behavior, German/English browser flows including deep links, project/cluster selection, chart tabs, tooltips and narrow layouts. The full suite passed 456 tests and the workspace typecheck passed. After the visual refinement, the production build, 22 focused checks, scoped lint and formatting passed. Browser inspection confirmed inherited site typography, keyboard focus and a 375px mobile layout without horizontal overflow. Publish only the lab preview branch.

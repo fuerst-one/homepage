@@ -299,6 +299,15 @@ export function atlasRelated(
 }
 
 export type AtlasProject = {
+  /** Published locale-specific copy. Never used by the analysis model. */
+  presentation?: {
+    description: string;
+    locale: "en" | "de";
+    projectHref: string | null;
+    caseHref: string | null;
+    caseLocale: "en" | "de";
+    casePreview?: { title: string; text: string }[];
+  };
   wowFactor: number | null;
   industries: string[];
   id: string;

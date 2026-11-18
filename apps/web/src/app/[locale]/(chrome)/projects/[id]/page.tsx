@@ -96,6 +96,16 @@ export default async function ProjectPage({ params }: Props) {
           casePreview={casePreview}
         />
       </article>
+      <p className="text-sm text-neutral-300">
+        <Link
+          href={`${localizedPath("/explore", locale)}?project=${encodeURIComponent(project.id)}`}
+          className="underline underline-offset-4"
+        >
+          {locale === "de"
+            ? "Dieses Projekt in Entdecken einordnen ↗"
+            : "See this project in Explore ↗"}
+        </Link>
+      </p>
       <RelatedExperience
         project={project}
         projects={projects}

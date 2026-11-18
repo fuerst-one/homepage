@@ -4,16 +4,21 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { FaChevronLeft } from "@react-icons/all-files/fa/FaChevronLeft";
 import { FaChevronRight } from "@react-icons/all-files/fa/FaChevronRight";
 import { cn } from "../../../lib/utils";
+import { useLocale } from "../../i18n/LocaleProvider";
 
 export const ProjectScreenshots = ({
   screenshots,
   projectName,
   compact = false,
+  locale: localeOverride,
 }: {
   screenshots: string[];
   projectName: string;
   compact?: boolean;
+  locale?: "en" | "de";
 }) => {
+  const contextLocale = useLocale();
+  const locale = localeOverride ?? contextLocale;
   const sanitizedScreenshots = useMemo(
     () => screenshots.filter(Boolean),
     [screenshots],
@@ -80,7 +85,9 @@ export const ProjectScreenshots = ({
               type="button"
               onClick={() => goToIndex(activeIndex - 1)}
               className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center border border-white/30 bg-black/80 text-neutral-100 opacity-0 transition hover:border-white hover:text-white group-hover/screenshot:opacity-100"
-              aria-label="Previous screenshot"
+              aria-label={
+                locale === "de" ? "Vorheriges Bild" : "Previous screenshot"
+              }
             >
               <FaChevronLeft className="text-base" />
             </button>
@@ -88,7 +95,7 @@ export const ProjectScreenshots = ({
               type="button"
               onClick={() => goToIndex(activeIndex + 1)}
               className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center border border-white/30 bg-black/80 text-neutral-100 opacity-0 transition hover:border-white hover:text-white group-hover/screenshot:opacity-100"
-              aria-label="Next screenshot"
+              aria-label={locale === "de" ? "Nächstes Bild" : "Next screenshot"}
             >
               <FaChevronRight className="text-base" />
             </button>
@@ -102,7 +109,12 @@ export const ProjectScreenshots = ({
               key={index}
               type="button"
               onClick={() => setActiveIndex(index)}
-              aria-label={`Show screenshot ${index + 1}`}
+              aria-pressed={index === activeIndex}
+              aria-label={
+                locale === "de"
+                  ? `Bild ${index + 1} anzeigen`
+                  : `Show screenshot ${index + 1}`
+              }
               className={cn(
                 "h-2.5 w-2.5 border border-white/30 transition",
                 index === activeIndex
