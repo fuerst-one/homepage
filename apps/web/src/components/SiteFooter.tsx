@@ -50,6 +50,7 @@ export function SiteFooter({ locale = "en" }: { locale?: Locale }) {
             {locale === "de" ? "Datenschutz" : "Privacy"}
           </Link>
           <PrivacySettings />
+          <a href="/llms.txt">llms.txt</a>
         </nav>
       </div>
     </footer>
