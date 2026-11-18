@@ -18,6 +18,7 @@ import { AutomationLandingPage } from "./AutomationLandingPage";
 import { AiProductsLandingPage } from "./AiProductsLandingPage";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
 import { ServiceHeroActions } from "./ServiceHeroActions";
+import { ServiceHeroSculpture } from "./ServiceHeroSculpture";
 import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import styles from "./services.module.css";
 
@@ -124,21 +125,30 @@ export async function ServicePage({
   const hero = evidence.find((project) => project.heroVisuals.length);
 
   return (
-    <Layout locale={locale}>
-      <article lang={locale} className={styles.page}>
+    <Layout locale={locale} width="wide">
+      <article lang={locale} className={`${styles.page} ${styles.landing}`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: serializeJsonLd(serviceSchema(slug, locale)),
           }}
         />
-        <header className={`${styles.hero} ${styles.serviceHero}`}>
-          <p className={styles.eyebrow}>01 / {copy.label}</p>
-          <h1>{copy.headline}</h1>
-          <p className={styles.intro}>{copy.intro}</p>
-          <ServiceHeroActions slug={slug} locale={locale} workLabel={t.jump} />
-          <p className={styles.micro}>{copy.reassurance}</p>
-          <p className={styles.signature}>{t.by}</p>
+        <header
+          className={`${styles.hero} ${styles.serviceHero} ${styles.landingHero}`}
+        >
+          <div className={styles.heroCopy}>
+            <p className={styles.eyebrow}>01 / {copy.label}</p>
+            <h1>{copy.headline}</h1>
+            <p className={styles.intro}>{copy.intro}</p>
+            <ServiceHeroActions
+              slug={slug}
+              locale={locale}
+              workLabel={t.jump}
+            />
+            <p className={styles.micro}>{copy.reassurance}</p>
+            <p className={styles.signature}>{t.by}</p>
+          </div>
+          <ServiceHeroSculpture slug={slug} locale={locale} />
         </header>
         {hero && (
           <figure className={styles.heroVisual}>
@@ -213,52 +223,61 @@ export async function ServicePage({
                           : t.commission}
                     </span>
                   </div>
-                  <h3 lang="en">
-                    <Link href={project.href}>
-                      {project.name} <span aria-hidden="true">↗</span>
-                    </Link>
-                  </h3>
-                  <p>{caseStories[project.id]?.[locale]}</p>
-                  <dl className={styles.caseContext}>
-                    <dt>{t.client}</dt>
-                    <dd lang="en">{project.clients.join(" · ")}</dd>
-                  </dl>
-                  <ServiceProjectVisuals
-                    visuals={project.visuals}
-                    projectName={project.name}
-                    projectId={project.id}
-                    initialDescriptions={project.imageDescriptions}
-                    locale={locale}
-                  />
-                  {kpis && (
-                    <div className={styles.results}>
-                      <p className={styles.eyebrow}>
-                        {t.source}
-                        {locale === "de" && project.contentLocale === "en"
-                          ? " · Originaltext (Englisch)"
-                          : ""}
-                      </p>
-                      <p lang={project.contentLocale} className={styles.metric}>
-                        {kpis}
-                      </p>
-                      <p className={styles.micro}>{t.caseNote}</p>
+                  <div className={styles.caseBody}>
+                    <div className={styles.caseCopy}>
+                      <h3 lang="en">
+                        <Link href={project.href}>
+                          {project.name} <span aria-hidden="true">↗</span>
+                        </Link>
+                      </h3>
+                      <p>{caseStories[project.id]?.[locale]}</p>
+                      <dl className={styles.caseContext}>
+                        <dt>{t.client}</dt>
+                        <dd lang="en">{project.clients.join(" · ")}</dd>
+                      </dl>
+                      {kpis && (
+                        <div className={styles.results}>
+                          <p className={styles.eyebrow}>
+                            {t.source}
+                            {locale === "de" && project.contentLocale === "en"
+                              ? " · Originaltext (Englisch)"
+                              : ""}
+                          </p>
+                          <p
+                            lang={project.contentLocale}
+                            className={styles.metric}
+                          >
+                            {kpis}
+                          </p>
+                          <p className={styles.micro}>{t.caseNote}</p>
+                        </div>
+                      )}
+                      <ul
+                        className={styles.tools}
+                        aria-label={
+                          locale === "de" ? "Verwendete Tools" : "Tools used"
+                        }
+                      >
+                        {project.tools.map((tool) => (
+                          <li lang="en" key={tool}>
+                            {tool}
+                          </li>
+                        ))}
+                      </ul>
+                      <Link href={project.href} className={styles.textLink}>
+                        {t.cases} <span aria-hidden="true">↗</span>
+                      </Link>
                     </div>
-                  )}
-                  <ul
-                    className={styles.tools}
-                    aria-label={
-                      locale === "de" ? "Verwendete Tools" : "Tools used"
-                    }
-                  >
-                    {project.tools.map((tool) => (
-                      <li lang="en" key={tool}>
-                        {tool}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href={project.href} className={styles.textLink}>
-                    {t.cases} <span aria-hidden="true">↗</span>
-                  </Link>
+                    <div className={styles.caseVisuals}>
+                      <ServiceProjectVisuals
+                        visuals={project.visuals}
+                        projectName={project.name}
+                        projectId={project.id}
+                        initialDescriptions={project.imageDescriptions}
+                        locale={locale}
+                      />
+                    </div>
+                  </div>
                 </article>
               );
             })

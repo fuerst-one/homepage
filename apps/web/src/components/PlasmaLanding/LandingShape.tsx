@@ -23,6 +23,7 @@ export default function LandingShape({
   reducedMotion,
   active,
   interactionTarget,
+  keyboardOrbit = false,
   onReadyChange,
 }: {
   shapeIndex: number;
@@ -30,6 +31,7 @@ export default function LandingShape({
   reducedMotion: boolean;
   active: boolean;
   interactionTarget: HTMLElement | null;
+  keyboardOrbit?: boolean;
   onReadyChange?: (ready: boolean) => void;
 }) {
   const canvasRef = useRef<PlasmaCanvasHandle>(null);
@@ -43,6 +45,7 @@ export default function LandingShape({
     shapeIndex,
     paused,
     reducedMotion,
+    keyboardOrbit,
   });
 
   useEffect(() => {
@@ -86,13 +89,21 @@ export default function LandingShape({
       dragging = false;
       lastInteractionAt = performance.now();
     };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!keyboardOrbit || !event.shiftKey || !event.key.startsWith("Arrow"))
+        return;
+      lastInteractionAt = performance.now();
+      if (!raf) raf = requestAnimationFrame(render);
+    };
     interactionTarget?.addEventListener("pointerdown", onPointerDown);
+    interactionTarget?.addEventListener("keydown", onKeyDown);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerUp);
     raf = requestAnimationFrame(render);
     return () => {
       cancelAnimationFrame(raf);
       interactionTarget?.removeEventListener("pointerdown", onPointerDown);
+      interactionTarget?.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
     };
@@ -105,6 +116,7 @@ export default function LandingShape({
     reducedMotion,
     shapeIndex,
     interactionTarget,
+    keyboardOrbit,
     onReadyChange,
   ]);
 

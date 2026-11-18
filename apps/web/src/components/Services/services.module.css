@@ -514,3 +514,294 @@
     font-size: 0.9rem;
   }
 }
+
+/* Overview pages have a wider composition; branch pages retain the reading layout. */
+.page.landing {
+  --line: #ffffff2b;
+  --muted: #b9beb4;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  padding: 0;
+  border: 1px solid var(--line);
+  background: #090b08ed;
+  backdrop-filter: none;
+}
+.landing .landingHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(2rem, 4vw, 4rem);
+  padding: clamp(2rem, 5vw, 5rem) var(--gutter);
+  align-items: center;
+}
+.heroCopy {
+  min-width: 0;
+}
+.landingHero .eyebrow {
+  color: #cbe996;
+}
+.landingHero h1 {
+  margin-top: 1.5rem;
+  font-size: clamp(2.8rem, 5vw, 4.8rem);
+  line-height: 1.03;
+  letter-spacing: -0.065em;
+  max-width: 18ch;
+}
+.landingHero .intro {
+  max-width: 52ch;
+  font-size: 0.9rem;
+}
+.landingHero .signature {
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.landing .heroVisual {
+  margin: 0 var(--gutter) 4rem;
+  transform: rotate(-0.7deg);
+}
+.landing .heroImage {
+  max-height: 39rem;
+}
+.landing .section {
+  margin-top: 0;
+  padding: clamp(3.5rem, 7vw, 7rem) var(--gutter);
+  border-top: 1px solid var(--line);
+}
+.landing .section h2,
+.landing .closing h2 {
+  max-width: 22ch;
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  line-height: 1.2;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+.landing .sectionIntro {
+  max-width: 60ch;
+}
+.landing .deliverables {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.landing .deliverable {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border-bottom: 0;
+}
+.landing .deliverable > div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.landing .deliverable h3 {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+.landing .deliverable .number {
+  color: #cbe996;
+  font-size: 0.8rem;
+}
+.landing .deliverable .output {
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+.landing .startingOffer {
+  --line: #12200640;
+  --muted: #35422c;
+  margin: 0;
+  padding: clamp(2.5rem, 5vw, 4rem) var(--gutter);
+  border: 0;
+  color: #10170b;
+  background: #cbe3af;
+  backdrop-filter: none;
+}
+.landing .startingOffer .eyebrow {
+  color: #35422c;
+}
+.landing .startingOffer h2 {
+  max-width: 28ch;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.25;
+}
+.landing .engagementGrid {
+  gap: 3rem;
+}
+.landing .startingOffer a:focus-visible {
+  outline-color: #10170b;
+}
+.landing .case {
+  padding: 2rem 0 3rem;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  backdrop-filter: none;
+}
+.caseBody {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  gap: 3rem;
+  align-items: start;
+}
+.caseCopy,
+.caseVisuals {
+  min-width: 0;
+}
+.caseCopy > p {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+.landing .case h3 {
+  font-size: clamp(1.4rem, 2.1vw, 2rem);
+  letter-spacing: -0.045em;
+}
+.caseVisuals > div {
+  margin-top: 0;
+}
+.landing .process {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.landing .process li {
+  padding: 1.5rem 0 0;
+  border-left: 0;
+  border-top: 1px solid var(--line);
+}
+.landing .process li > span {
+  position: static;
+  display: block;
+  margin-bottom: 1.5rem;
+  color: #cbe996;
+}
+.landing .fit {
+  margin-top: 4rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: #eeefe7;
+  color: #14170f;
+  border: 0;
+}
+.landing .fit h3 {
+  color: #555c4c;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.landing .fit p {
+  max-width: 54ch;
+  color: #14170f;
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  line-height: 1.7;
+  letter-spacing: -0.03em;
+}
+.landing .faq {
+  max-width: 54rem;
+  margin-left: auto;
+}
+.landing .closing {
+  margin: 0;
+  padding: clamp(2.5rem, 5vw, 5rem) var(--gutter);
+}
+.landing .closing > p {
+  max-width: 60ch;
+}
+.landing .other {
+  margin: 0;
+  padding: 2rem var(--gutter);
+}
+.landingHero > * {
+  animation: service-enter 650ms both;
+}
+.landingHero > :nth-child(2) {
+  animation-delay: 120ms;
+}
+@keyframes service-enter {
+  from {
+    opacity: 0.35;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@supports (animation-timeline: view()) {
+  .landing .deliverable,
+  .landing .case,
+  .landing .process li {
+    animation: service-enter linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 65%;
+  }
+}
+@media (max-width: 1000px) {
+  .landing .landingHero {
+    grid-template-columns: 1fr 0.8fr;
+    gap: 1.5rem;
+  }
+  .landingHero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+  }
+  .landing .deliverables {
+    gap: 1.25rem;
+  }
+  .caseBody {
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  }
+}
+@media (max-width: 767px) {
+  .landing .landingHero {
+    grid-template-columns: 1fr;
+  }
+  .landingHero h1 {
+    font-size: clamp(2.1rem, 6.8vw, 3.5rem);
+    max-width: 19ch;
+  }
+  .landingHero .intro {
+    font-size: 0.85rem;
+  }
+  .landing .heroVisual {
+    transform: none;
+    margin-bottom: 2.5rem;
+  }
+  .landing .deliverables,
+  .landing .process,
+  .caseBody {
+    grid-template-columns: 1fr;
+  }
+  .landing .deliverables {
+    gap: 0;
+  }
+  .landing .deliverable + .deliverable {
+    border-top: 1px solid var(--line);
+  }
+  .landing .deliverable {
+    gap: 1rem;
+  }
+  .landing .deliverable .output {
+    padding-top: 0;
+    margin-top: 1.25rem;
+  }
+  .landing .case {
+    padding-bottom: 2rem;
+  }
+  .landing .process {
+    gap: 2rem;
+  }
+  .landing .engagementGrid {
+    gap: 2rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landingHero > *,
+  .landing .deliverable,
+  .landing .case,
+  .landing .process li {
+    animation: none;
+  }
+}
