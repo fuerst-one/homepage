@@ -82,6 +82,7 @@ export const ATLAS_DE: Record<string, string> = {
   Game: "Spiel",
   "E-commerce": "Onlinehandel",
   Explore: "Entdecken",
+  Explorer: "Explorer",
   "Explore the work": "Projekte entdecken",
   groups: "Gruppen",
   "Product description": "Produktbeschreibung",
@@ -344,6 +345,8 @@ export const ATLAS_DE: Record<string, string> = {
     "Keine weiteren Angaben zur Umsetzung erfasst.",
   "Tools used": "Eingesetzte Werkzeuge",
   "Not recorded": "Nicht erfasst",
+  "Inputs for this view": "Merkmale dieser Ansicht",
+  "Not available in this view": "In dieser Ansicht nicht verfügbar",
   Languages: "Programmiersprachen",
   Capabilities: "Kompetenzen",
   Methods: "Methoden",
@@ -400,8 +403,8 @@ export const ATLAS_DE: Record<string, string> = {
     "Weniger als zwei Projekte haben alle ausgewählten Felder.",
   "More current vectors are needed for this lens.":
     "Für diese Perspektive werden weitere aktuelle Vektoren benötigt.",
-  "The project selector and stories below are still available.":
-    "Du kannst weiterhin Projekte auswählen und ihre Details ansehen.",
+  "Choose a project with the picker below, then open its title in the sidebar.":
+    "Wähle unten ein Projekt aus und öffne seine Seite über den Titel in der Seitenleiste.",
   "3D rendering is unavailable in this browser.":
     "Dieser Browser kann die 3D-Ansicht nicht darstellen.",
   "Open the 2D projection": "2D-Karte öffnen",

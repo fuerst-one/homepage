@@ -4,10 +4,10 @@ const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 const query =
   "?project=15b86514-f736-803e-b9b7-e47ebc2406d1&lens=practice&view=2d";
 for (const [locale, slug, title] of [
-  ["en", "explore", "Explore"],
-  ["de", "entdecken", "Entdecken"],
+  ["en", "explorer", "Explorer"],
+  ["de", "explorer", "Explorer"],
 ]) {
-  test(`${locale} Explore is canonical, localized and linked to its selected project`, async () => {
+  test(`${locale} Explorer is canonical, localized and linked to its selected project`, async () => {
     const response = await fetch(`${base}/${locale}/${slug}${query}`, {
       signal: AbortSignal.timeout(60000),
     });
@@ -26,14 +26,39 @@ for (const [locale, slug, title] of [
       html.includes(locale === "de" ? "Zurück zur Gruppe" : "Back to cluster"),
     );
     assert.ok(!html.includes('class="lab-site-navigation"'));
+    assert.ok(html.includes('class="vs-project-title-link"'));
+    assert.ok(!html.includes('id="atlas-project-detail"'));
+    assert.ok(!html.includes('id="atlas-related-title"'));
+  });
+  test(`${locale} project detail contains the three connected projects previously below Explorer`, async () => {
+    const response = await fetch(
+      `${base}/${locale}/projects/konfig-product-design-configurator`,
+      {
+        signal: AbortSignal.timeout(60000),
+      },
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.ok(html.includes('id="explorer-connections-title"'));
+    const prefix =
+      locale === "de"
+        ? "Verbundenes Projekt ansehen"
+        : "View connected project";
+    assert.equal(
+      (html.match(new RegExp(`aria-label="${prefix}:`, "g")) ?? []).length,
+      3,
+    );
+    for (const name of ["Conversion Y", "Bags’n Boxes Chatbot", "Seabo"])
+      assert.ok(html.includes(`aria-label="${prefix}: ${name}`));
   });
   for (const path of [
     "lab",
     "lab/experience",
     "lab/projects",
-    locale === "en" ? "entdecken" : "explore",
+    "entdecken",
+    "explore",
   ]) {
-    test(`${locale}/${path} keeps selections when redirecting to Explore`, async () => {
+    test(`${locale}/${path} keeps selections when redirecting to Explorer`, async () => {
       const response = await fetch(`${base}/${locale}/${path}${query}`, {
         redirect: "manual",
         signal: AbortSignal.timeout(60000),

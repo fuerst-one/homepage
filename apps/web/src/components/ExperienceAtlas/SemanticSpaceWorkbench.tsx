@@ -1,7 +1,8 @@
 "use client";
 
-import { projectDescription } from "./atlasCopy";
+import { projectLensFacts } from "./projectLensFacts";
 import { useAtlasCopy } from "./useAtlasCopy";
+import Link from "../i18n/LocalizedLink";
 
 import dynamic from "next/dynamic";
 import {
@@ -13,7 +14,6 @@ import {
   type ReactNode,
 } from "react";
 import {
-  ArrowDown,
   ArrowLeft,
   ArrowUpRight,
   Box,
@@ -106,7 +106,6 @@ export function SemanticSpaceWorkbench({
   view,
   onView,
   onSelect,
-  onExplore,
   experimentsEnabled = false,
 }: {
   data?: SemanticDataset;
@@ -117,7 +116,6 @@ export function SemanticSpaceWorkbench({
   view: SpaceView;
   onView: (view: SpaceView) => void;
   onSelect: (id: string) => void;
-  onExplore: () => void;
   experimentsEnabled?: boolean;
 }) {
   const { locale, t, term } = useAtlasCopy();
@@ -359,9 +357,15 @@ export function SemanticSpaceWorkbench({
     onSelect(id);
   };
   const clearSelection = () => selectProject("");
+  const selectedFacts = selected
+    ? projectLensFacts(selected, displayedRecipe, locale, {
+        fields: displayedRecipe === recipe ? experiment?.fields : undefined,
+        scaleFields,
+      })
+    : [];
 
   return (
-    <div className="vs-workbench">
+    <div className="vs-workbench glass-panel">
       <div
         className="vs-recipes"
         role="group"
@@ -522,7 +526,7 @@ export function SemanticSpaceWorkbench({
                 </strong>
                 <p>
                   {t(
-                    "The project selector and stories below are still available. ",
+                    "Choose a project with the picker below, then open its title in the sidebar. ",
                   )}
                 </p>
               </div>
@@ -574,6 +578,26 @@ export function SemanticSpaceWorkbench({
                 onClusterSelect={selectCluster}
               />
             )}
+            <label className="vs-project-select glass-panel">
+              <span>{t("JUMP TO A PROJECT")}</span>
+              <select
+                aria-controls="vs-inspector"
+                value={selectedId}
+                onChange={(event) => selectProject(event.target.value, false)}
+              >
+                <option value="">{t("All projects · no selection")}</option>
+                {[...projects]
+                  .sort((a, b) => a.label.localeCompare(b.label))
+                  .map((project) => (
+                    <option key={project.id} value={project.id}>
+                      {project.label}
+                      {space && !space.ids.includes(project.id)
+                        ? t(" · unmapped")
+                        : ""}
+                    </option>
+                  ))}
+              </select>
+            </label>
             {waiting && space && (
               <div className="vs-map-updating" role="status">
                 {t("Updating map… ")}
@@ -698,25 +722,7 @@ export function SemanticSpaceWorkbench({
                 : t("Back to all clusters")}
             </button>
           )}
-          <label className="vs-project-select">
-            <span>{t("JUMP TO A PROJECT")}</span>
-            <select
-              value={selectedId}
-              onChange={(event) => selectProject(event.target.value, false)}
-            >
-              <option value="">{t("All projects · no selection")}</option>
-              {[...projects]
-                .sort((a, b) => a.label.localeCompare(b.label))
-                .map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.label}
-                    {space && !space.ids.includes(project.id)
-                      ? t(" · unmapped")
-                      : ""}
-                  </option>
-                ))}
-            </select>
-          </label>
+
           {clusterView ? (
             <SpaceClusterSidebar
               group={clusterView}
@@ -755,27 +761,35 @@ export function SemanticSpaceWorkbench({
                     </span>
                   )}
                 </p>
-                <h3>{selected?.name}</h3>
-                <p className="vs-summary">{projectDescription(selected)}</p>
-                {selected?.ownership && (
-                  <p className="vs-role">
-                    <b>{t("My role")}</b>
-                    {term(selected.ownership)}
-                    {selected.projectType
-                      ? ` · ${term(selected.projectType)}`
-                      : ""}
-                  </p>
-                )}
+                <h3>
+                  {selected.presentation?.projectHref ? (
+                    <Link
+                      className="vs-project-title-link"
+                      href={selected.presentation.projectHref}
+                      aria-label={`${selected.label} · ${t("View full project")}`}
+                    >
+                      {selected.name}
+                      <ArrowUpRight size={20} aria-hidden="true" />
+                    </Link>
+                  ) : (
+                    selected.name
+                  )}
+                </h3>
+                <dl
+                  className="vs-project-facts"
+                  aria-label={t("Inputs for this view")}
+                >
+                  {selectedFacts.map((fact) => (
+                    <div key={fact.id}>
+                      <dt>{fact.label}</dt>
+                      <dd>
+                        {fact.value}
+                        {fact.note && <small>{fact.note}</small>}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
-              <button
-                type="button"
-                className="vs-detail-button"
-                onClick={onExplore}
-                aria-controls="atlas-project-detail"
-              >
-                {t("Explore this project ")}
-                <ArrowDown size={15} />
-              </button>
               <SpaceConnectionSidebar
                 model={connections}
                 mode={connectionMode}

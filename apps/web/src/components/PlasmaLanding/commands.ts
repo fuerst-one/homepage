@@ -46,10 +46,10 @@ const COMMANDS: LandingCommand[] = [
   },
   {
     id: "explore",
-    label: "Explore",
+    label: "Explorer",
     caption: "See how projects connect across fields.",
     shape: 5,
-    href: "/explore",
+    href: "/explorer",
   },
 ];
 
@@ -202,7 +202,7 @@ export const resolveCommand = (message: string): LandingCommand | null => {
 
 const GERMAN_COMMANDS: Record<string, [string, string]> = {
   explore: [
-    "Entdecken",
+    "Explorer",
     "Sieh, wie Projekte über Branchen hinweg zusammenhängen.",
   ],
   experience: [

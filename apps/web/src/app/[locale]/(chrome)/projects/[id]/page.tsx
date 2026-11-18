@@ -13,6 +13,7 @@ import { readWebsiteSections } from "@homepage/database/websiteContent";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { caseStudyPreview } from "../../../../../components/Cv/Projects/projectDiscovery";
 import { RelatedExperience } from "../../../../../components/Cv/Projects/RelatedExperience";
+import { ExplorerProjectConnections } from "../../../../../components/Cv/Projects/ExplorerProjectConnections";
 import {
   pageMetadata,
   personSchema,
@@ -98,14 +99,19 @@ export default async function ProjectPage({ params }: Props) {
       </article>
       <p className="text-sm text-neutral-300">
         <Link
-          href={`${localizedPath("/explore", locale)}?project=${encodeURIComponent(project.id)}`}
+          href={`${localizedPath("/explorer", locale)}?project=${encodeURIComponent(project.id)}`}
           className="underline underline-offset-4"
         >
           {locale === "de"
-            ? "Dieses Projekt in Entdecken einordnen ↗"
-            : "See this project in Explore ↗"}
+            ? "Dieses Projekt im Explorer einordnen ↗"
+            : "See this project in Explorer ↗"}
         </Link>
       </p>
+      <ExplorerProjectConnections
+        project={project}
+        projects={projects}
+        locale={locale}
+      />
       <RelatedExperience
         project={project}
         projects={projects}

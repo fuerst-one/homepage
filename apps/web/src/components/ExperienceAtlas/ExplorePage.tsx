@@ -7,8 +7,6 @@ import { presentProject } from "./projectPresentation";
 import { atlasText } from "./atlasCopy";
 import type { SemanticDataset } from "./spaceTypes";
 import { readWebsiteSections } from "@homepage/database/websiteContent";
-import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
-import { caseStudyPreview } from "../Cv/Projects/projectDiscovery";
 import { getLocale } from "../../server/i18n/getLocale";
 import { pageMetadata } from "../../lib/seo";
 import preview from "../../content/lab-preview.json";
@@ -22,8 +20,8 @@ export type ExplorePageProps = {
 export async function exploreMetadata({ params }: ExplorePageProps) {
   const locale = await getLocale(params);
   return pageMetadata(
-    localizedPath("/explore", locale),
-    `${atlasText(locale, "Explore")} — Alexander Fuerst | Fuerst.one`,
+    localizedPath("/explorer", locale),
+    `${atlasText(locale, "Explorer")} — Alexander Fuerst | Fuerst.one`,
     atlasText(
       locale,
       "Explore the connections between my projects, skills and industries. Select a project to see the work in context.",
@@ -32,16 +30,10 @@ export async function exploreMetadata({ params }: ExplorePageProps) {
   );
 }
 
-export async function ExplorePage({
-  params,
-  searchParams,
-  routeLocale,
-}: ExplorePageProps & { routeLocale: Locale }) {
+export async function ExplorePage({ params }: ExplorePageProps) {
   const locale = await getLocale(params);
-  if (locale !== routeLocale)
-    return redirectExplore(locale, await searchParams);
-  const { projects: published, studies } = await readWebsiteSections(
-    ["projects", "studies"],
+  const { projects: published } = await readWebsiteSections(
+    ["projects"],
     undefined,
     locale,
   );
@@ -52,18 +44,11 @@ export async function ExplorePage({
         <ExperienceAtlas
           projects={preview.atlas.map((project) => {
             const publishedProject = byId.get(project.id);
-            const result = presentProject(
+            return presentProject(
               { ...project, scale: publicProjectScale(project.scale) },
               publishedProject,
               locale,
             );
-            const caseId =
-              publishedProject && caseStudyPageId(publishedProject, locale);
-            if (result.presentation && caseId)
-              result.presentation.casePreview = caseStudyPreview(
-                studies[caseId] ?? [],
-              );
-            return result;
           })}
           semanticData={preview.semantic as SemanticDataset}
           experimentsEnabled={process.env.NODE_ENV === "development"}
@@ -84,7 +69,7 @@ export function redirectExplore(
     else if (value !== undefined) search.set(key, value);
   }
   return redirect(
-    `${localizedPath("/explore", locale)}${search.size ? `?${search}` : ""}`,
+    `${localizedPath("/explorer", locale)}${search.size ? `?${search}` : ""}`,
   );
 }
 

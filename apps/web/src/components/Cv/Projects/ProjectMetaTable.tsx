@@ -75,13 +75,13 @@ export const ProjectMetaTable = ({
             className="glass-panel group border border-white/15 p-3"
           >
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-left text-[0.7rem] uppercase tracking-[0.3em] text-neutral-300 [&::-webkit-details-marker]:hidden">
-              <span>{label}</span>
-              <span className="flex items-center gap-2 text-[0.6rem] tracking-[0.25em] text-neutral-500">
+              <span className="shrink-0">{label}</span>
+              <span className="flex min-w-0 items-center gap-2 text-[0.6rem] tracking-[0.25em] text-neutral-500">
                 <span className="truncate text-neutral-300/80" title={preview}>
                   {preview}
                 </span>
                 <span
-                  className="text-neutral-400 transition-transform group-open:rotate-180"
+                  className="shrink-0 text-neutral-400 transition-transform group-open:rotate-180"
                   aria-hidden="true"
                 >
                   ▾

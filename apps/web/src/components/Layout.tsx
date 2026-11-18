@@ -126,9 +126,7 @@ export async function Layout({
               <ContentNavLink href="/services/ai-automation">
                 {locale === "de" ? "KI & Automatisierung" : "AI & automation"}
               </ContentNavLink>
-              <ContentNavLink href="/explore">
-                {locale === "de" ? "Entdecken" : "Explore"}
-              </ContentNavLink>
+              <ContentNavLink href="/explorer">Explorer</ContentNavLink>
             </div>
           </nav>
         </header>

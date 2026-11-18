@@ -66,7 +66,9 @@ export function SemanticNetwork({
         enterable: false,
         hideDelay: 0,
         padding: 12,
-        backgroundColor: "#171717",
+        backgroundColor: "rgba(16, 16, 16, 0.75)",
+        extraCssText:
+          "-webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px)",
         borderColor: "#666",
         textStyle: { color: "#ddd", fontSize: 12 },
         formatter: (params: unknown) => {

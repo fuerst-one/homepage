@@ -306,7 +306,6 @@ export type AtlasProject = {
     projectHref: string | null;
     caseHref: string | null;
     caseLocale: "en" | "de";
-    casePreview?: { title: string; text: string }[];
   };
   wowFactor: number | null;
   industries: string[];

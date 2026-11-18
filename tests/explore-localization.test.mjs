@@ -5,28 +5,28 @@ import { loadTs } from "./helpers/load-ts.mjs";
 const { localizedPath } = loadTs(
   new URL("../packages/content/src/i18n.ts", import.meta.url),
 );
-test("Explore language switching keeps project, lens, view and anchor", () => {
+test("Explorer language switching keeps project, lens, view and anchor", () => {
   const selection = "?project=one&lens=scale&view=2d#atlas-project-detail";
   assert.equal(
-    localizedPath(`/en/explore${selection}`, "de"),
-    `/de/entdecken${selection}`,
+    localizedPath(`/en/explorer${selection}`, "de"),
+    `/de/explorer${selection}`,
   );
   assert.equal(
-    localizedPath(`/de/entdecken${selection}`, "en"),
-    `/en/explore${selection}`,
+    localizedPath(`/de/explorer${selection}`, "en"),
+    `/en/explorer${selection}`,
   );
 });
 
-test("homepage Explore shortcuts resolve to the canonical route in either language", () => {
+test("homepage Explorer shortcuts resolve to the canonical route in either language", () => {
   const { resolveExplicitCommand, getLocalizedSuggestions } = loadTs(
     new URL(
       "../apps/web/src/components/PlasmaLanding/commands.ts",
       import.meta.url,
     ),
   );
-  assert.equal(resolveExplicitCommand("Explore", "en").href, "/explore");
-  assert.equal(resolveExplicitCommand("Entdecken", "de").href, "/de/entdecken");
-  assert.equal(getLocalizedSuggestions("de").at(-1).href, "/de/entdecken");
+  assert.equal(resolveExplicitCommand("Explorer", "en").href, "/explorer");
+  assert.equal(resolveExplicitCommand("Explorer", "de").href, "/de/explorer");
+  assert.equal(getLocalizedSuggestions("de").at(-1).href, "/de/explorer");
 });
 
 test("published German prose changes presentation without changing model fields", () => {

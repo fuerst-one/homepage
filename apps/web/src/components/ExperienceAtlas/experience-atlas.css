@@ -30,7 +30,7 @@
   outline: 2px solid var(--atlas-lime);
   outline-offset: 5px;
 }
-.experience-atlas :is(h1, h2, h3, p, figure) {
+.experience-atlas :where(h1, h2, h3, p, figure) {
   margin: 0;
 }
 .experience-atlas :is(h1, h2, h3) {

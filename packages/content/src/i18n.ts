@@ -24,8 +24,8 @@ export function localizedPath(path: string, locale: Locale): string {
     return path;
   let withoutLocale = path.replace(/^\/(?:en|de)(?=\/|[?#]|$)/, "");
   const pagePaths: Record<string, Record<Locale, string>> = {
-    "/explore": { en: "/explore", de: "/entdecken" },
-    "/entdecken": { en: "/explore", de: "/entdecken" },
+    "/explore": { en: "/explorer", de: "/explorer" },
+    "/entdecken": { en: "/explorer", de: "/explorer" },
     "/legal-notice": { en: "/legal-notice", de: "/impressum" },
     "/impressum": { en: "/legal-notice", de: "/impressum" },
     "/privacy": { en: "/privacy", de: "/datenschutz" },

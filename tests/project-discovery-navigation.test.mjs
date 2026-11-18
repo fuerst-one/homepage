@@ -3,8 +3,8 @@ import { test } from "node:test";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 
 for (const locale of ["en", "de"]) {
-  const explorePath = locale === "de" ? "/de/entdecken" : "/en/explore";
-  test(`${locale} retired public lab redirects to Explore`, async () => {
+  const explorePath = `/${locale}/explorer`;
+  test(`${locale} retired public lab redirects to Explorer`, async () => {
     const response = await fetch(`${base}/${locale}/lab/projects`, {
       redirect: "manual",
       signal: AbortSignal.timeout(60000),

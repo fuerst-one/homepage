@@ -16,7 +16,7 @@ export const revalidate = 60;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getCachedCvProjects();
   return [
-    ...["/", "/projects", "/contact", "/hire", "/plasma", "/explore"].flatMap(
+    ...["/", "/projects", "/contact", "/hire", "/plasma", "/explorer"].flatMap(
       (path) =>
         locales.map((locale) => ({
           url: `${SITE_URL}${localizedPath(path, locale)}`,
