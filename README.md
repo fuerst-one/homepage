@@ -1,19 +1,50 @@
 # fuerst.one
 
-A pnpm workspace with two independently packaged applications:
+The source for [fuerst.one](https://fuerst.one): a bilingual portfolio, project browser, and freelance enquiry website built with Next.js and TypeScript. Project and profile content is maintained in Notion and published to PostgreSQL by a background worker, so public page requests do not depend on the Notion API.
 
-- `apps/web`: Next.js website. Reads prepared PostgreSQL publications and writes
-  enquiry receipts; it has no Notion dependency or credentials.
-- `apps/sync`: background content/asset publication, enquiry delivery with Notion
-  mentions, daily Malt refresh, and optional knowledge indexing. It has no Next.js or React dependency.
-- `packages/content`: public types and shared domain utilities.
-- `packages/database`: persistence, public readers and migrations.
-- `packages/knowledge`: shared provider, budget and embedding-cache runtime.
+## What the application does
+
+- Presents projects, technical experience, and case studies in English and German, with project filters and data visualizations.
+- Provides service pages and an enquiry flow. Submissions receive a database-backed receipt before a worker delivers them to Notion and adds the configured owner mention.
+- Publishes project images into database-backed asset storage, retaining the last successful publication when a source refresh fails.
+- Includes an optional assistant that retrieves published portfolio content. Its UI/API release flags, consent flow, quotas, and shared spending limits are separate from ordinary browsing and content publication.
+
+## Architecture
+
+```text
+Notion content + images
+        |
+        v
+apps/sync -----> PostgreSQL publications + asset bytes -----> apps/web
+        ^                        ^                              |
+        |                        |                              |
+        +---- enquiry outbox <---+---- enquiry receipt <--------+
+```
+
+The web application reads public projections rather than raw Notion records. The worker owns source credentials, content publication, asset mirroring, and asynchronous delivery. PostgreSQL is required for the website even when AI is disabled.
+
+| Workspace            | Responsibility                                                                                                                                           |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/web`           | Next.js App Router website, localized pages, public APIs, and enquiry receipts                                                                           |
+| `apps/sync`          | Content/asset publication, enquiry delivery with Notion mentions, daily Malt refresh, and optional knowledge indexing; packaged without Next.js or React |
+| `packages/content`   | Public types and shared domain utilities                                                                                                                 |
+| `packages/database`  | Persistence, public readers, and SQL migrations                                                                                                          |
+| `packages/knowledge` | Provider integration, budget admission, and embedding cache                                                                                              |
+
+The frontend uses React, Tailwind CSS, ECharts, Zustand, and Three.js/React Three Fiber. The two applications are built and deployed separately.
 
 ## Development
 
-Use Node 24+ and pnpm 10.13.1. Root commands load the ignored `.env.local`.
-The web only needs its database settings; source credentials belong to the worker.
+Use Node 24+, pnpm 10.13.1, and Docker for the local PostgreSQL service.
+Root commands load the ignored `.env.local`.
+
+```sh
+cp .env.example .env.local
+```
+
+Configure `KNOWLEDGE_DB_PASSWORD` and the matching `KNOWLEDGE_DATABASE_URL`, then supply the worker's Notion integration token and source database/page IDs from `.env.example`. The integration needs access to the configured Notion sources. This repository does not bundle a copy of the portfolio's content database.
+
+The web only needs its database settings; source credentials belong to the worker. Leave both assistant release flags false for a content-only setup. Provider credentials are needed only for optional AI operations; see [AI controls](docs/ai-operations.md).
 
 ```sh
 pnpm install --frozen-lockfile
@@ -74,3 +105,8 @@ See [the split design](docs/plans/2026-11-16-web-sync-split-design.md),
 [local verification](docs/web-sync-split-verification-2026-11-16.md),
 [content operations](docs/notion-content-operations.md) and
 [the verified previous rollout](docs/notion-worker-rollout-2026-11-16.md).
+
+## Author
+
+Created by [Alexander Fürst](https://fuerst.one). The repository documents the running website and its content infrastructure; historical rollout receipts describe their dated releases.
+
