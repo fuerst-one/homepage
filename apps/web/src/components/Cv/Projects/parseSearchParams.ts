@@ -28,6 +28,7 @@ const FILTER_KEYS = new Set([
   "targetMarket",
   "usageContext",
   "deliveryModel",
+  "deliveryModels",
   "capabilities",
   "methods",
   "tools",
@@ -54,7 +55,12 @@ export const parseProjectSearchParams = (
   });
   if (!entries.length && searchParams.all !== "1")
     return { featured: ["true"] };
-  return Object.fromEntries(entries) as FilterParams;
+  const result: FilterParams = {};
+  for (const [key, values] of entries as [keyof FilterParams, string[]][]) {
+    const canonical = key === "deliveryModels" ? "deliveryModel" : key;
+    result[canonical] = [...new Set([...(result[canonical] ?? []), ...values])];
+  }
+  return result;
 };
 
 const filterSignature = (filters: FilterParams) =>

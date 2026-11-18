@@ -14,6 +14,7 @@ const CATEGORICAL_KEYS = [
   "targetMarket",
   "usageContext",
   "deliveryModel",
+  "deliveryModels",
   "capabilities",
   "methods",
   "languages",
@@ -36,7 +37,13 @@ export const parseListParams = (searchParams: URLSearchParams): ParseResult => {
     if (values.length) {
       const validation = validateCategorical(key, values);
       if (!validation.ok) return validation;
-      categorical[key as keyof FilterParams] = values;
+      const canonical = key === "deliveryModels" ? "deliveryModel" : key;
+      categorical[canonical as keyof FilterParams] = [
+        ...new Set([
+          ...(categorical[canonical as keyof FilterParams] ?? []),
+          ...values,
+        ]),
+      ];
     }
   }
 

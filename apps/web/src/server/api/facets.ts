@@ -1,5 +1,6 @@
 import { CvProject } from "@homepage/content/models";
 import countBy from "lodash/countBy";
+import { projectDeliveryModels } from "@homepage/content/projectTaxonomy";
 
 export type FacetCount = {
   value: string;
@@ -32,7 +33,9 @@ export const computeFacets = (projects: CvProject[]): Facets => ({
   productTypes: countMultiSelect(projects, "productTypes"),
   targetMarket: countMultiSelect(projects, "targetMarket"),
   usageContext: countMultiSelect(projects, "usageContext"),
-  deliveryModels: countSingle(projects, "deliveryModel"),
+  deliveryModels: toSortedFacets(
+    countBy(projects.flatMap(projectDeliveryModels)),
+  ),
   capabilities: countMultiSelect(projects, "capabilities"),
   methods: countMultiSelect(projects, "methods"),
   languages: countMultiSelect(projects, "languages"),

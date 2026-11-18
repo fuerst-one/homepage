@@ -2,7 +2,10 @@ import { CvProject } from "@homepage/content/models";
 import countBy from "lodash/countBy";
 import { colors } from "../colors";
 import { CASE_VOCABULARY } from "@homepage/content/projectCase";
-import { matchesLegacyTaxonomy } from "@homepage/content/projectTaxonomy";
+import {
+  matchesLegacyTaxonomy,
+  projectDeliveryModels,
+} from "@homepage/content/projectTaxonomy";
 
 type FilterKey =
   | keyof Omit<
@@ -27,7 +30,10 @@ export const getFilterOptionCounts = (
 ) => {
   const countsByKey = countBy(
     projects.flatMap<unknown>((project) => {
-      const value = project[key];
+      const value =
+        key === "deliveryModel" || key === "deliveryModels"
+          ? projectDeliveryModels(project)
+          : project[key];
       return Array.isArray(value)
         ? [...new Set<unknown>(value)]
         : value == null
@@ -56,7 +62,9 @@ export const filterProjects = (
       }
       const value = Object.hasOwn(CASE_VOCABULARY, key)
         ? project.matching?.[key as keyof typeof CASE_VOCABULARY]
-        : project[key as keyof CvProject];
+        : key === "deliveryModel" || key === "deliveryModels"
+          ? projectDeliveryModels(project)
+          : project[key as keyof CvProject];
       return searchValues.some(
         (searchValue) =>
           getIsMatchingProject(value, [searchValue]) ||

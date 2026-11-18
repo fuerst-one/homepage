@@ -1,5 +1,5 @@
 import type { Locale } from "@homepage/content/i18n";
-import { sectorLabel } from "./projectTaxonomy";
+import { sectorLabel, deliveryLabel } from "./projectTaxonomy";
 
 // This allowlist is the public matching vocabulary, not the full editorial record.
 export const CASE_VOCABULARY = {
@@ -180,6 +180,6 @@ const germanLabels: Record<string, string> = Object.assign(
 );
 export function caseLabel(value: string, locale: Locale) {
   return locale === "de"
-    ? (germanLabels[value] ?? sectorLabel(value, locale))
+    ? (germanLabels[value] ?? deliveryLabel(sectorLabel(value, locale), locale))
     : value;
 }

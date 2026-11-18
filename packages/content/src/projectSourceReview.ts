@@ -2,6 +2,7 @@ import { CASE_VOCABULARY } from "./projectCase";
 import {
   CUSTOMER_MARKETS,
   DELIVERY_MODELS,
+  LEGACY_DELIVERY_MODELS,
   PRODUCT_FORMATS,
   SECTORS,
   USAGE_CONTEXTS,
@@ -22,7 +23,8 @@ const controlled: Record<string, readonly string[]> = {
   "Product type": PRODUCT_FORMATS,
   "Target market": CUSTOMER_MARKETS,
   "Usage context": USAGE_CONTEXTS,
-  "Delivery model": DELIVERY_MODELS,
+  "Delivery model": [...DELIVERY_MODELS, ...LEGACY_DELIVERY_MODELS],
+  "Delivery & operation": DELIVERY_MODELS,
   "Buyer Needs": Object.keys(CASE_VOCABULARY.buyerNeeds),
   "Delivery Stages": Object.keys(CASE_VOCABULARY.stages),
   "Project Domains": Object.keys(CASE_VOCABULARY.domains),

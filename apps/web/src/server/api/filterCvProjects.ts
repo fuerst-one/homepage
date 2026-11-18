@@ -1,4 +1,5 @@
 import { CvProject } from "@homepage/content/models";
+import { projectDeliveryModels } from "@homepage/content/projectTaxonomy";
 import {
   FilterParams,
   filterProjects,
@@ -93,7 +94,7 @@ const buildHaystack = (project: CvProject): string => {
     ...(project.targetMarket ?? []),
     ...(project.usageContext ?? []),
     ...(project.matching?.domains ?? []),
-    project.deliveryModel ?? "",
+    ...projectDeliveryModels(project),
     project.projectType,
     project.workplace,
   ]

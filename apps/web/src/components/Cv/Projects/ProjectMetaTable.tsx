@@ -1,6 +1,10 @@
 import { ProjectScaleFacts } from "./ProjectScaleFacts";
 import { CvProject } from "@homepage/content/models";
-import { sectorLabel } from "@homepage/content/projectTaxonomy";
+import {
+  sectorLabel,
+  deliveryLabel,
+  projectDeliveryModels,
+} from "@homepage/content/projectTaxonomy";
 import { Tag } from "./Tag";
 
 const ROW_LABELS: Partial<Record<keyof CvProject, string>> = {
@@ -9,7 +13,7 @@ const ROW_LABELS: Partial<Record<keyof CvProject, string>> = {
   productTypes: "Product formats",
   targetMarket: "Customer market",
   usageContext: "Usage context",
-  deliveryModel: "Delivery model",
+  deliveryModel: "Delivery & operation",
   capabilities: "Capabilities",
   methods: "Methods",
   tools: "Tools",
@@ -25,9 +29,11 @@ export const ProjectMetaTable = ({
   filterable?: boolean;
   locale?: "en" | "de";
 }) => {
+  const fieldValue = (key: keyof CvProject) =>
+    key === "deliveryModel" ? projectDeliveryModels(project) : project[key];
   const filteredFields = Object.entries(ROW_LABELS)
     .filter(([projectKey]) => {
-      const value = project[projectKey as keyof CvProject];
+      const value = fieldValue(projectKey as keyof CvProject);
       if (Array.isArray(value)) {
         return value.length > 0;
       }
@@ -43,7 +49,7 @@ export const ProjectMetaTable = ({
                 productTypes: "Produktformate",
                 targetMarket: "Zielmarkt",
                 usageContext: "Nutzungskontext",
-                deliveryModel: "Bereitstellung",
+                deliveryModel: "Bereitstellung & Betrieb",
                 capabilities: "Kompetenzen",
                 methods: "Methoden",
                 tools: "Tools",
@@ -52,7 +58,7 @@ export const ProjectMetaTable = ({
             )[key]
           : label,
       projectKey: key as keyof CvProject,
-      value: project[key as keyof CvProject],
+      value: fieldValue(key as keyof CvProject),
     }));
 
   if (filteredFields.length === 0 && !project.scale) {
@@ -64,8 +70,13 @@ export const ProjectMetaTable = ({
       <ProjectScaleFacts scale={project.scale} locale={locale} />
       {filteredFields.map(({ label, projectKey, value }) => {
         const preview = formatPreviewValue(
-          projectKey === "industries" && Array.isArray(value)
-            ? (value as string[]).map((item) => sectorLabel(item, locale))
+          (projectKey === "industries" || projectKey === "deliveryModel") &&
+            Array.isArray(value)
+            ? (value as string[]).map((item) =>
+                projectKey === "industries"
+                  ? sectorLabel(item, locale)
+                  : deliveryLabel(item, locale),
+              )
             : value,
         );
 
@@ -134,7 +145,11 @@ const Property = <TKey extends keyof CvProject>({
             searchParamKey={filterable ? projectKey : undefined}
             value={i}
           >
-            {projectKey === "industries" ? sectorLabel(i, locale) : i}
+            {projectKey === "industries"
+              ? sectorLabel(i, locale)
+              : projectKey === "deliveryModel"
+                ? deliveryLabel(i, locale)
+                : i}
           </Tag>
         ))}
       </div>

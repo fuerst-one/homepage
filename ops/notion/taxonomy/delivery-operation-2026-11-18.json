@@ -1,0 +1,455 @@
+{
+  "version": 1,
+  "date": "2026-11-18",
+  "databaseId": "f53d61ec-13a0-49b7-9f25-c5c98e0994cb",
+  "propertyId": "BE%7Bp",
+  "from": {
+    "name": "Delivery model",
+    "type": "select"
+  },
+  "to": {
+    "name": "Delivery & operation",
+    "type": "multi_select",
+    "options": [
+      "Hosted access",
+      "Self-hosted",
+      "Local installation",
+      "Package / source distribution",
+      "Embedded integration",
+      "Physical build",
+      "Professional service",
+      "Design handoff"
+    ]
+  },
+  "semantics": "Delivery/access pattern including historical and prototype work; does not assert current hosting, production, licensing, price or maintenance.",
+  "projects": [
+    {
+      "id": "41c86514-f736-80d1-b371-e766290c0105",
+      "name": "Pokémon Arena",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Local installation"],
+      "basis": "Description explicitly identifies a local API-first battle environment."
+    },
+    {
+      "id": "41c86514-f736-804d-a0a0-d4b6d95fb3e6",
+      "name": "Home Pi",
+      "hidden": false,
+      "before": "Physical Product",
+      "after": ["Self-hosted", "Embedded integration"],
+      "basis": "Personal dashboard integrates MQTT/Home Assistant and a configured voice pipeline; software operation, not a manufactured product."
+    },
+    {
+      "id": "41c86514-f736-80b1-8858-ea72e7502d18",
+      "name": "Traidy",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Local installation"],
+      "basis": "Research backtesting prototype and ingestion CLI; no hosted service established."
+    },
+    {
+      "id": "41c86514-f736-808a-8e7b-ffbc4b0c44c0",
+      "name": "Daily Briefing",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Self-hosted"],
+      "basis": "Private dashboard with configurable source and scraper jobs."
+    },
+    {
+      "id": "41c86514-f736-80a2-b397-fc1398edaf6e",
+      "name": "SERP API",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Self-hosted"],
+      "basis": "Owner-operated HTTP search API prototype; no external SaaS offering established."
+    },
+    {
+      "id": "41c86514-f736-80bf-8395-e263d6532bd9",
+      "name": "Housing Hunter",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Self-hosted"],
+      "basis": "Personal continuously running polling and notification service."
+    },
+    {
+      "id": "41c86514-f736-801e-8825-cbf28db44596",
+      "name": "AI Scraper",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Local installation", "Self-hosted"],
+      "basis": "CLI, HTTP server and MCP interfaces are described; both local tool and operator-run server modes."
+    },
+    {
+      "id": "41b86514-f736-81f3-b839-e338b6c1bf0a",
+      "name": "ts-shove",
+      "hidden": false,
+      "before": "Open Source",
+      "after": ["Package / source distribution", "Local installation"],
+      "basis": "Published npm CLI/library with source distribution and local agent use."
+    },
+    {
+      "id": "41a86514-f736-8085-81c5-c242b8b576eb",
+      "name": "Glyphstone",
+      "hidden": false,
+      "before": "Physical Product",
+      "after": ["Physical build"],
+      "basis": "Standalone ESP32 object with custom enclosure and controls."
+    },
+    {
+      "id": "41786514-f736-8003-86e9-fb3a9fd4248a",
+      "name": "Pigeon Turret",
+      "hidden": false,
+      "before": "Physical Product",
+      "after": ["Physical build", "Self-hosted"],
+      "basis": "Physical device plus operator-run Raspberry Pi service and dashboard; prototype status unchanged."
+    },
+    {
+      "id": "41786514-f736-80ab-bead-e2ccd429b958",
+      "name": "Page Control",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access", "Embedded integration"],
+      "basis": "Hosted workspace plus embeddable website assistant widget."
+    },
+    {
+      "id": "41786514-f736-8074-8dcb-dd79f906d12a",
+      "name": "Business Hub",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Self-hosted"],
+      "basis": "Private owner-operated business workspace."
+    },
+    {
+      "id": "35686514-f736-8019-921c-e5d8d77e7f23",
+      "name": "Test Flow",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Local installation"],
+      "basis": "Description explicitly calls this a local E2E testing tool."
+    },
+    {
+      "id": "35486514-f736-803d-ae01-dc666a99d11c",
+      "name": "RoadTrippin",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access", "Local installation"],
+      "basis": "Hosted collaborative planner plus installable mobile app format."
+    },
+    {
+      "id": "35486514-f736-8020-bde8-e0f741a1a77a",
+      "name": "build-manager",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Local installation"],
+      "basis": "Description explicitly calls this a local file-based harness with a web UI."
+    },
+    {
+      "id": "35486514-f736-8087-86dd-f41b80c8b0ad",
+      "name": "mem0.one",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Self-hosted"],
+      "basis": "Private memory API with operator-managed graph/vector services."
+    },
+    {
+      "id": "21886514-f736-80c5-88f4-c37e60968f21",
+      "name": "Fuerst.one Glyph Plasma",
+      "hidden": false,
+      "before": "Open Source",
+      "after": [
+        "Hosted access",
+        "Embedded integration",
+        "Package / source distribution"
+      ],
+      "basis": "Hosted homepage animation, embedded feature and linked public source repository."
+    },
+    {
+      "id": "1eb86514-f736-80bf-87ae-e4e5ec9e9424",
+      "name": "Buchstabiene",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access"],
+      "basis": "Hosted web puzzle used by regular players."
+    },
+    {
+      "id": "15b86514-f736-803e-b9b7-e47ebc2406d1",
+      "name": "Konfig",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access", "Embedded integration"],
+      "basis": "Browser configurator embedded into the shop."
+    },
+    {
+      "id": "11d86514-f736-80ed-935c-e6fe30b59d42",
+      "name": "Conversion Y",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access", "Embedded integration"],
+      "basis": "Survey management web app plus website survey integration; MVP status unchanged."
+    },
+    {
+      "id": "d33ded3a-755e-47bc-87ff-6fd496774a18",
+      "name": "ORA",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access", "Self-hosted"],
+      "basis": "Owner confirmation in this migration: both hosted and self-hosted delivery."
+    },
+    {
+      "id": "47579682-9325-4e9a-b014-e4fb424bb0bb",
+      "name": "World Vision",
+      "hidden": false,
+      "before": "Consultation",
+      "after": ["Professional service"],
+      "basis": "CRO advisory and experimentation engagement."
+    },
+    {
+      "id": "6a549850-e00b-47fa-9fda-d2609c40431d",
+      "name": "Bags’n Boxes Chatbot",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access", "Embedded integration"],
+      "basis": "Typeform-hosted branching configurator integrated into the packaging journey; historical delivery."
+    },
+    {
+      "id": "6bce7ee2-3d3b-4f7d-8c31-a7159b49a301",
+      "name": "Fuerst.one Homepage",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access"],
+      "basis": "Hosted portfolio and CV publication."
+    },
+    {
+      "id": "b6b27ca7-bf93-4162-966f-635187376722",
+      "name": "Silo-Yolo",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access"],
+      "basis": "Portfolio links a hosted recognition-map prototype; production readiness unchanged."
+    },
+    {
+      "id": "d5bd0050-2efd-4aba-a168-3ce1a1e539c6",
+      "name": "Public Searoutes",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Embedded integration"],
+      "basis": "Excel add-in delivering routing inside an existing spreadsheet workflow."
+    },
+    {
+      "id": "c6a3f4a3-9387-475b-a3af-bb5512846d9e",
+      "name": "LockBot",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Embedded integration"],
+      "basis": "Telegram bot delivers updates inside an existing messaging platform."
+    },
+    {
+      "id": "d1420991-70e5-4b5a-a1f7-06d27b902cde",
+      "name": "Bubble-UI",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access"],
+      "basis": "Linked browser-based UI experiment."
+    },
+    {
+      "id": "e3884152-6e82-4d93-a596-ddce91e6bfd0",
+      "name": "Kinoa Lists",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access"],
+      "basis": "Linked hosted recipe and grocery web app."
+    },
+    {
+      "id": "153487a4-4b86-48b2-998c-3675a85bfd8e",
+      "name": "Web Strategy Toolbox",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access"],
+      "basis": "Hosted beta workspace described in the case."
+    },
+    {
+      "id": "129bf87c-e0d6-4217-9c16-c320eeb0e29b",
+      "name": "Zooplus E-Food",
+      "hidden": false,
+      "before": "Consultation",
+      "after": ["Design handoff"],
+      "basis": "University concept, Axure prototype and usability study; owner approved Design handoff."
+    },
+    {
+      "id": "afd09462-172e-40a9-8011-d2f6af5f5859",
+      "name": "Bags’n Boxes Online-Shop",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access", "Embedded integration"],
+      "basis": "Hosted Shopware shop with theme features and CRM API integration."
+    },
+    {
+      "id": "30f6e7c0-b762-4f33-adf0-2f433ec05090",
+      "name": "Dres. Stähler",
+      "hidden": true,
+      "before": "SaaS",
+      "after": ["Hosted access"],
+      "basis": "Historical commissioned dentist website; hidden flag preserved."
+    },
+    {
+      "id": "10bcfe51-e86d-44dc-a247-0c542f9996be",
+      "name": "Kleiner als Raute",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Physical build"],
+      "basis": "Clothing venture with physical products; access/pricing label removed."
+    },
+    {
+      "id": "23b40e8e-626f-4fcf-9c04-83684b404adb",
+      "name": "Mobile.de Financing",
+      "hidden": false,
+      "before": "Consultation",
+      "after": ["Professional service"],
+      "basis": "CRO advisory and experimentation engagement."
+    },
+    {
+      "id": "b6ea7e71-2e97-42f2-8644-a57545c20d59",
+      "name": "ROLLT!",
+      "hidden": false,
+      "before": "Consultation",
+      "after": ["Design handoff"],
+      "basis": "Three-day clickable prototype and pitch; owner approved Design handoff."
+    },
+    {
+      "id": "d53554cf-ec81-4e1c-a46a-6da27179ba7c",
+      "name": "E-Smart Control",
+      "hidden": false,
+      "before": "Consultation",
+      "after": ["Design handoff"],
+      "basis": "Fictional university product design and mobile interface; owner approved Design handoff."
+    },
+    {
+      "id": "9d4999cb-5ee7-4fc3-a99e-9ee7fbadce5d",
+      "name": "Burger Loop",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access", "Package / source distribution"],
+      "basis": "Hosted educational web app and linked source repository."
+    },
+    {
+      "id": "f139765e-8589-4978-b7fd-86f8bfefc376",
+      "name": "Nautic Internet",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access"],
+      "basis": "Historical brand website; no current availability claim."
+    },
+    {
+      "id": "94b5c46b-abd4-4eec-9a4a-19a07654db84",
+      "name": "Public Searoutes",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access", "Package / source distribution"],
+      "basis": "Hosted route-planning web app described as an open-source alternative."
+    },
+    {
+      "id": "b77109b3-803c-4132-a07b-44b9b9ccc5df",
+      "name": "NuMobility",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access"],
+      "basis": "Hosted mobility database, configurator and blog."
+    },
+    {
+      "id": "7c7ab543-4c3c-4744-b070-bf3c030d5d6a",
+      "name": "Gemeinde-App",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Local installation", "Hosted access"],
+      "basis": "Mobile app delivery plus hosted content/tour management described in the project."
+    },
+    {
+      "id": "765dfa64-20ea-431b-a507-fd90cf18a015",
+      "name": "PortCheck",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access", "Self-hosted"],
+      "basis": "Owner confirmation in this migration: both hosted and self-hosted delivery."
+    },
+    {
+      "id": "949c5737-db8f-40ca-bfb8-c12598d63a9f",
+      "name": "Working Day Countdown",
+      "hidden": true,
+      "before": "Free Service",
+      "after": ["Hosted access", "Package / source distribution"],
+      "basis": "Linked hosted calculator and source repository; hidden flag preserved."
+    },
+    {
+      "id": "e315ebfb-d36f-4b62-8f7c-f58eaacf7806",
+      "name": "Playlist-Stats",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access", "Package / source distribution"],
+      "basis": "Linked hosted web app and source repository."
+    },
+    {
+      "id": "f9cc2539-c940-4864-8ff0-8424ed0d9fb9",
+      "name": "Playlist-Canvas",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access", "Package / source distribution"],
+      "basis": "Linked hosted web app and source repository."
+    },
+    {
+      "id": "153f6668-f4d6-490a-8345-0b999b35305a",
+      "name": "Seabo",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access"],
+      "basis": "Customer-facing chartering web app with hosted app URL."
+    },
+    {
+      "id": "0a956fc5-ec59-4b2d-8284-738f5e53fd90",
+      "name": "i-Musicnetwork",
+      "hidden": true,
+      "before": "Free Service",
+      "after": ["Hosted access"],
+      "basis": "Historical shop redesign with website URL; hidden flag preserved."
+    },
+    {
+      "id": "fa3d95c1-4b7d-422f-9cdc-d3a937fe3a83",
+      "name": "Maybach",
+      "hidden": true,
+      "before": "SaaS",
+      "after": ["Hosted access"],
+      "basis": "Historical manufacturer website with URL; hidden flag preserved."
+    },
+    {
+      "id": "510f3492-1e77-4788-8ef5-73754af2d2e2",
+      "name": "Sophisticates",
+      "hidden": false,
+      "before": "Free Service",
+      "after": ["Hosted access"],
+      "basis": "Delivered company brand website."
+    },
+    {
+      "id": "cdd10e91-b9ef-4232-8378-14db1a67bc15",
+      "name": "Fuerst.one Playground",
+      "hidden": false,
+      "before": "Open Source",
+      "after": ["Hosted access"],
+      "basis": "Published personal website; prior Open Source tag alone does not establish distribution channel."
+    },
+    {
+      "id": "482c21e0-0e0d-436b-8858-a338875ee4bd",
+      "name": "FAAREN",
+      "hidden": false,
+      "before": "SaaS",
+      "after": ["Hosted access"],
+      "basis": "Car-offer search frontend delivered on the hosted platform."
+    },
+    {
+      "id": "a2e00fd0-11cd-4128-ad63-76c98bae2010",
+      "name": "Druckpanda",
+      "hidden": false,
+      "before": "Consultation",
+      "after": ["Embedded integration", "Package / source distribution"],
+      "basis": "Shopware plugin delivered for installation in an existing shop."
+    }
+  ]
+}

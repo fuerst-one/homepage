@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { projectDeliveryModels } from "@homepage/content/projectTaxonomy";
 import { knowledgeDatabase } from "@homepage/database/database";
 
 import {
@@ -75,7 +76,7 @@ export function publishedKnowledgeDocuments(
           ...(p.productTypes ?? []),
           ...(p.targetMarket ?? []),
           ...(p.usageContext ?? []),
-          p.deliveryModel,
+          ...projectDeliveryModels(p),
           p.projectType,
           p.workplace,
           ...p.clients.map((client) => client.name),

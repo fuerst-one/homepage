@@ -47,28 +47,68 @@ export const USAGE_CONTEXTS = [
   "Experimental",
 ] as const;
 // Distribution is independent of customer market and product format.
-export const DELIVERY_MODELS = ["SaaS", "Open Source"] as const;
+export const DELIVERY_MODELS = [
+  "Hosted access",
+  "Self-hosted",
+  "Local installation",
+  "Package / source distribution",
+  "Embedded integration",
+  "Physical build",
+  "Professional service",
+  "Design handoff",
+] as const;
+// Read old publications during rollout; these cannot be reclassified without project context.
+export const LEGACY_DELIVERY_MODELS = [
+  "SaaS",
+  "Open Source",
+  "Free Service",
+  "Physical Product",
+  "Consultation",
+] as const;
+const readableDeliveryModels = [...DELIVERY_MODELS, ...LEGACY_DELIVERY_MODELS];
+
+/** An explicit array, including an empty one, takes precedence over a cached scalar. */
+export function projectDeliveryModels(value: ProjectTaxonomy): string[] {
+  return unique(
+    Array.isArray(value.deliveryModels)
+      ? value.deliveryModels
+      : [value.deliveryModel],
+    readableDeliveryModels,
+  );
+}
+
+export function deliveryLabel(value: string, locale: Locale = "en") {
+  const labels: Record<string, string> = {
+    "Hosted access": "Gehosteter Zugang",
+    "Self-hosted": "Selbst gehostet",
+    "Local installation": "Lokale Installation",
+    "Package / source distribution": "Paket- / Quellcode-Verteilung",
+    "Embedded integration": "Eingebettete Integration",
+    "Physical build": "Physischer Aufbau",
+    "Professional service": "Fachliche Dienstleistung",
+    "Design handoff": "Design-Übergabe",
+  };
+  return locale === "de" ? (labels[value] ?? value) : value;
+}
 
 export type ProjectTaxonomy = {
   productTypes?: string[];
   targetMarket?: string[];
   usageContext?: string[];
   deliveryModel?: string | null;
+  deliveryModels?: string[];
 };
 
 /** Shared publication allowlist for newly exposed taxonomy, without editorial source fields. */
 export function publicProjectTaxonomy(value: unknown): ProjectTaxonomy {
   const source = object(value);
-  const delivery = source.deliveryModel;
+  const deliveryModels = projectDeliveryModels(source as ProjectTaxonomy);
   return {
     productTypes: unique(rows(source.productTypes), PRODUCT_FORMATS),
     targetMarket: unique(rows(source.targetMarket), CUSTOMER_MARKETS),
     usageContext: unique(rows(source.usageContext), USAGE_CONTEXTS),
-    deliveryModel:
-      typeof delivery === "string" &&
-      DELIVERY_MODELS.includes(delivery as (typeof DELIVERY_MODELS)[number])
-        ? delivery
-        : null,
+    deliveryModels,
+    deliveryModel: deliveryModels[0] ?? null,
   };
 }
 
@@ -98,6 +138,7 @@ export function readNotionProjectTaxonomy(
       targetMarket: [],
       usageContext: [],
       deliveryModel: null,
+      deliveryModels: [],
     };
   const multi = (name: string, vocabulary: readonly string[]) =>
     unique(
@@ -105,7 +146,16 @@ export function readNotionProjectTaxonomy(
       vocabulary,
     );
   const sector = object(object(properties.Sector).select).name;
-  const delivery = object(object(properties["Delivery model"]).select).name;
+  const renamed = Object.hasOwn(properties, "Delivery & operation");
+  const delivery = object(
+    properties[renamed ? "Delivery & operation" : "Delivery model"],
+  );
+  const deliveryModels = unique(
+    Array.isArray(delivery.multi_select)
+      ? rows(delivery.multi_select).map((v) => object(v).name)
+      : [object(delivery.select).name],
+    renamed ? DELIVERY_MODELS : readableDeliveryModels,
+  );
   return {
     industries:
       typeof sector === "string" && Object.hasOwn(SECTORS, sector)
@@ -114,11 +164,8 @@ export function readNotionProjectTaxonomy(
     productTypes: multi("Product type", PRODUCT_FORMATS),
     targetMarket: multi("Target market", CUSTOMER_MARKETS),
     usageContext: multi("Usage context", USAGE_CONTEXTS),
-    deliveryModel:
-      typeof delivery === "string" &&
-      DELIVERY_MODELS.includes(delivery as (typeof DELIVERY_MODELS)[number])
-        ? delivery
-        : null,
+    deliveryModels,
+    deliveryModel: deliveryModels[0] ?? null,
   };
 }
 

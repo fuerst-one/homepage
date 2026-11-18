@@ -5,7 +5,10 @@ import { useLocale } from "../../../i18n/LocaleProvider";
 import { useFiltersStore } from "../filtersStore";
 import clsx from "clsx";
 import { caseLabel } from "@homepage/content/projectCase";
-import { sectorLabel } from "@homepage/content/projectTaxonomy";
+import {
+  sectorLabel,
+  projectDeliveryModels,
+} from "@homepage/content/projectTaxonomy";
 import { CvProject } from "@homepage/content/models";
 import { FilterParams, filterProjects } from "./utils";
 import {
@@ -23,6 +26,8 @@ const ARRAY_COLUMNS: (keyof FilterParams)[] = [
   "productTypes",
   "targetMarket",
   "usageContext",
+  "deliveryModel",
+  "deliveryModels",
   "capabilities",
   "methods",
   "tools",
@@ -65,7 +70,7 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
   { key: "productTypes", label: "Product formats" },
   { key: "targetMarket", label: "Customer market" },
   { key: "usageContext", label: "Usage context" },
-  { key: "deliveryModel", label: "Delivery model" },
+  { key: "deliveryModel", label: "Delivery & operation" },
   {
     key: "featured",
     label: "Featured",
@@ -97,7 +102,7 @@ const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
   productTypes: "Produktformate",
   targetMarket: "Zielmarkt",
   usageContext: "Nutzungskontext",
-  deliveryModel: "Bereitstellung",
+  deliveryModel: "Bereitstellung & Betrieb",
   featured: "Ausgewählt",
   capabilities: "Kompetenzen",
   methods: "Methoden",
@@ -108,6 +113,7 @@ const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
 };
 
 const EXTRA_FILTER_LABELS: Record<string, [string, string]> = {
+  deliveryModels: ["Delivery & operation", "Bereitstellung & Betrieb"],
   id: ["Project", "Projekt"],
   buyerNeeds: ["Buyer need", "Bedarf"],
   stages: ["Delivery stage", "Umsetzungsstand"],
@@ -503,7 +509,12 @@ const buildOptionsForKey = (
   const counts = new Map<string, number>();
 
   projects.forEach((project) => {
-    const value = key === "domains" ? project.matching?.domains : project[key];
+    const value =
+      key === "domains"
+        ? project.matching?.domains
+        : key === "deliveryModel"
+          ? projectDeliveryModels(project)
+          : project[key];
 
     if (Array.isArray(value)) {
       [...new Set(value.filter(Boolean))].forEach((item) => {
