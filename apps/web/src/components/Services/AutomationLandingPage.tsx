@@ -13,6 +13,8 @@ import { serializeJsonLd } from "../../lib/seo";
 import { serviceSchema } from "./serviceMetadata";
 import type { getServiceEvidence } from "../../server/content/getServiceEvidence";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
+import { ServiceHeroActions } from "./ServiceHeroActions";
+import { ServiceHeroSculpture } from "./ServiceHeroSculpture";
 import shared from "./services.module.css";
 import styles from "./automation.module.css";
 import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
@@ -87,8 +89,11 @@ export function AutomationLandingPage({
   );
 
   return (
-    <Layout locale={locale}>
-      <article lang={locale} className={`${shared.page} ${styles.page}`}>
+    <Layout locale={locale} wide>
+      <article
+        lang={locale}
+        className={`${shared.page} ${styles.page} ${shared.landing}`}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -96,26 +101,21 @@ export function AutomationLandingPage({
           }}
         />
         <header
-          className={`${shared.hero} ${shared.serviceHero} ${styles.hero}`}
+          className={`${shared.hero} ${shared.serviceHero} ${styles.hero} ${shared.landingHero}`}
         >
-          <p className={shared.eyebrow}>01 / {copy.label}</p>
-          <h1>{copy.headline}</h1>
-          <p className={shared.intro}>{copy.intro}</p>
-          <div className={shared.actions}>
-            <Button
-              href={enquiry}
-              variant="cta"
-              arrow
-              className={shared.primary}
-            >
-              {copy.cta}
-            </Button>
-            <a href="#work" className={shared.textLink}>
-              {t.jump} <span aria-hidden="true">↓</span>
-            </a>
+          <div className={shared.heroCopy}>
+            <p className={shared.eyebrow}>01 / {copy.label}</p>
+            <h1>{copy.headline}</h1>
+            <p className={shared.intro}>{copy.intro}</p>
+            <ServiceHeroActions
+              slug="ai-automation"
+              locale={locale}
+              workLabel={t.jump}
+            />
+            <p className={shared.micro}>{copy.reassurance}</p>
+            <p className={shared.signature}>{t.by}</p>
           </div>
-          <p className={shared.micro}>{copy.reassurance}</p>
-          <p className={shared.signature}>{t.by}</p>
+          <ServiceHeroSculpture slug="ai-automation" locale={locale} />
         </header>
 
         {featured.length > 0 && (
@@ -262,7 +262,7 @@ export function AutomationLandingPage({
           <p className={shared.eyebrow}>05 / {t.faq}</p>
           <h2 id="faq-heading">{t.faq}</h2>
           <div className={shared.faq}>
-            {copy.questions.map((item) => (
+            {copy.questions.slice(0, 2).map((item) => (
               <details key={item.question}>
                 <summary>
                   {item.question}

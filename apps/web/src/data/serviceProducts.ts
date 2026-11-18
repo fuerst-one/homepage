@@ -26,6 +26,7 @@ type ProductCopy = {
   inputs: readonly string[];
   boundary: string;
   cta: string;
+  heroCta: string;
   subject: string;
   brief: string;
 };
@@ -77,6 +78,7 @@ export const serviceProducts: Record<
         boundary:
           "The review covers one agreed flow. New user research, a complete design system, production code and a full product redesign require a separate scope. A review alone does not establish a conversion lift.",
         cta: "Discuss an interface review",
+        heroCta: "Review one flow",
         subject: "Product-interface review enquiry",
         brief:
           "Hi Alexander,\n\nOur product or a link:\nThe one flow we'd like reviewed:\nWhat users struggle with:\n\nOptional: existing evidence, constraints or timing.\n",
@@ -121,6 +123,7 @@ export const serviceProducts: Record<
         boundary:
           "Das Review umfasst einen vereinbarten Ablauf. Neues Nutzerresearch, ein vollständiges Designsystem, Produktivcode und ein komplettes Redesign brauchen einen eigenen Umfang. Ein Review allein belegt keine Conversion-Steigerung.",
         cta: "Interface-Review besprechen",
+        heroCta: "Einen Ablauf prüfen",
         subject: "Anfrage zum Produktinterface-Review",
         brief:
           "Hi Alexander,\n\nUnser Produkt oder ein Link:\nDiesen Ablauf möchten wir prüfen lassen:\nHier haben Nutzer Schwierigkeiten:\n\nOptional: vorhandene Erkenntnisse, Grenzen oder Zeitrahmen.\n",
@@ -169,6 +172,7 @@ export const serviceProducts: Record<
         boundary:
           "The assessment covers one agreed workflow. Production integrations, a working prototype, model training and ongoing operation are separate engagements. If the evidence does not support automation, that is a useful finding too.",
         cta: "Discuss a workflow assessment",
+        heroCta: "Assess one workflow",
         subject: "Workflow & automation assessment enquiry",
         brief:
           "Hi Alexander,\n\nThe recurring workflow:\nThe sources, tools and people involved:\nHow often it repeats:\nWhere the result should go:\nWhat we'd like to improve:\n\nOptional: frequency, an example or constraints.\n",
@@ -213,6 +217,7 @@ export const serviceProducts: Record<
         boundary:
           "Das Assessment umfasst einen vereinbarten Workflow. Produktive Integrationen, ein funktionierender Prototyp, Modelltraining und laufender Betrieb sind eigene Aufträge. Wenn die Erkenntnisse gegen eine Automatisierung sprechen, ist auch das ein nützliches Ergebnis.",
         cta: "Workflow-Assessment besprechen",
+        heroCta: "Workflow prüfen lassen",
         subject: "Anfrage zum Workflow- und Automatisierungs-Assessment",
         brief:
           "Hi Alexander,\n\nDer wiederkehrende Ablauf:\nBeteiligte Quellen, Tools und Personen:\nSo oft wiederholt sich die Aufgabe:\nHier soll das Ergebnis ankommen:\nDas möchten wir verbessern:\n\nOptional: Häufigkeit, ein Beispiel oder wichtige Grenzen.\n",

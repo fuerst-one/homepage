@@ -7,6 +7,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import Link from "../../../../../components/i18n/LocalizedLink";
 import { Layout } from "../../../../../components/Layout";
 import { ProjectDetails } from "../../../../../components/Cv/Projects/ProjectDetails";
+import { ProjectBrief } from "../../../../../components/Cv/Projects/ProjectBrief";
 import { StructuredData } from "../../../../../components/StructuredData";
 import { getCachedCvProjects } from "../../../../../server/content/getCachedCvProjects";
 import { getPublicImageDescriptions } from "../../../../../server/content/getPublicImageDescriptions";
@@ -15,6 +16,7 @@ import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { caseStudyPreview } from "../../../../../components/Cv/Projects/projectDiscovery";
 import { RelatedExperience } from "../../../../../components/Cv/Projects/RelatedExperience";
 import { ExplorerProjectConnections } from "../../../../../components/Cv/Projects/ExplorerProjectConnections";
+import { withProjectEditorialFacts } from "@homepage/content/projectEditorial";
 import {
   pageMetadata,
   personSchema,
@@ -29,11 +31,12 @@ import {
 export const dynamic = "force-dynamic";
 
 const getProject = cache(async (reference: string, locale: Locale) => {
-  const { projects, studies } = await readWebsiteSections(
+  const { projects: publishedProjects, studies } = await readWebsiteSections(
     ["projects", "studies"],
     undefined,
     locale,
   );
+  const projects = publishedProjects.map(withProjectEditorialFacts);
   const project = projects.find(
     (item) =>
       item.id === reference ||
@@ -102,6 +105,7 @@ export default async function ProjectPage({ params }: Props) {
           locale={locale}
           initialDescriptions={imageDescriptions}
           casePreview={casePreview}
+          brief={<ProjectBrief project={project} locale={locale} />}
         />
       </article>
       <p className="text-sm text-neutral-300">

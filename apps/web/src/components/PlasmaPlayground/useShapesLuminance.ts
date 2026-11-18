@@ -16,6 +16,7 @@ import {
 import { getIsReducedMotion } from "../Plasma/getIsReducedMotion";
 import { buildMirroredPlasmaRamp } from "../Plasma/buildMirroredPlasmaRamp";
 import { createGeometryCache } from "./createGeometryCache";
+import { orbitCameraWithKey } from "./orbitCameraWithKey";
 import { CONTRAST_LUT_GAINS } from "./constants";
 import {
   buildContrastLutCache,
@@ -36,6 +37,7 @@ type ShapeOptions = {
   shapeIndex: number;
   paused: boolean;
   reducedMotion: boolean;
+  keyboardOrbit?: boolean;
 };
 
 const RENDER_WIDTH = 768;
@@ -544,6 +546,21 @@ export const useShapesLuminance = (
       refs.interacting = false;
       refs.lastInteractionAt = performance.now();
     };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (
+        !options?.keyboardOrbit ||
+        !orbitCameraWithKey(
+          refs.camera,
+          controls,
+          event,
+          interactionTarget.clientHeight,
+        )
+      )
+        return;
+      event.preventDefault();
+      refs.userHasInteracted = true;
+      refs.lastInteractionAt = performance.now();
+    };
     controls.addEventListener("start", onStart);
     controls.addEventListener("change", onChange);
     controls.addEventListener("end", onEnd);
@@ -577,6 +594,7 @@ export const useShapesLuminance = (
       }
     };
     interactionTarget.addEventListener("pointerdown", onPointerDown);
+    interactionTarget.addEventListener("keydown", onKeyDown);
     window.addEventListener("pointerup", onPointerUp);
 
     refs.controls = controls;
@@ -586,6 +604,7 @@ export const useShapesLuminance = (
       controls.removeEventListener("change", onChange);
       controls.removeEventListener("end", onEnd);
       interactionTarget.removeEventListener("pointerdown", onPointerDown);
+      interactionTarget.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("pointerup", onPointerUp);
       controls.dispose();
       if (sceneRef.current === refs) {
@@ -593,7 +612,7 @@ export const useShapesLuminance = (
         refs.interacting = false;
       }
     };
-  }, [active, interactionTarget]);
+  }, [active, interactionTarget, options?.keyboardOrbit]);
 
   const sample = useCallback(
     (args: SamplerArgs): LuminanceSample | null => {

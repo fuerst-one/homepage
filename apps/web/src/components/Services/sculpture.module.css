@@ -1,0 +1,146 @@
+.sculpture {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: #cbe996;
+  border: 1px solid #cbe99633;
+  background: #0b0e09;
+}
+.art {
+  position: relative;
+  min-height: 24rem;
+  flex: 1;
+  overflow: hidden;
+  background-image:
+    linear-gradient(#cbe99608 1px, transparent 1px),
+    linear-gradient(90deg, #cbe99608 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  /* Preserve vertical page gestures; horizontal touch drags can orbit. */
+  touch-action: pan-y pinch-zoom !important;
+  user-select: none;
+}
+.sculpture[data-ready="true"] .art {
+  cursor: grab;
+}
+.sculpture[data-ready="true"] .art:active {
+  cursor: grabbing;
+}
+.art:focus-visible {
+  outline: 2px solid #cbe996;
+  outline-offset: -4px;
+}
+.dragHint {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  color: #b7c6a3;
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  opacity: 0;
+}
+.sculpture[data-ready="true"] .dragHint {
+  opacity: 1;
+}
+.crosshair,
+.coordinates {
+  position: absolute;
+  z-index: 1;
+  color: #91a879;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+.crosshair {
+  top: 1rem;
+  left: 1rem;
+  font-size: 1rem;
+}
+.coordinates {
+  bottom: 1rem;
+  right: 1rem;
+}
+.stage {
+  position: absolute;
+  width: 210%;
+  aspect-ratio: 800 / 448;
+  top: 50%;
+  left: -55%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: brightness(1.25) sepia(0.3) saturate(1.2);
+}
+.stage :global(.landing-shape-canvas) {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+}
+.sculpture[data-service="ai-automation"] .stage {
+  transform: translateY(-50%) scale(0.8);
+}
+.fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+  transition: opacity 400ms;
+}
+.sculpture[data-ready="true"] .fallback {
+  opacity: 0;
+}
+.sculpture figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.75rem;
+  padding: 0.4rem 0.5rem 0.4rem 1.25rem;
+  border-top: 1px solid #cbe99633;
+  color: #bdc7b1;
+  font-size: 0.6rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.sculpture figcaption > span {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.dot {
+  width: 5px;
+  height: 5px;
+  background: #cbe996;
+}
+.sculpture button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid #cbe99640;
+  color: #cbe996;
+  font-size: 1rem;
+}
+.sculpture button:hover:not(:disabled) {
+  background: #cbe99620;
+}
+.sculpture button:focus-visible {
+  outline: 2px solid #cbe996;
+  outline-offset: 3px;
+}
+.sculpture button:disabled {
+  opacity: 0.35;
+}
+@media (max-width: 767px) {
+  .art {
+    min-height: 18rem;
+  }
+  .stage {
+    width: 180%;
+    left: -40%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fallback {
+    transition: none;
+  }
+}

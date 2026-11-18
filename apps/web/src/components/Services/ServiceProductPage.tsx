@@ -15,6 +15,7 @@ import { PERSON_ID, SITE_URL } from "../../lib/seo";
 import { getServiceEvidence } from "../../server/content/getServiceEvidence";
 import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import styles from "./services.module.css";
+import { serviceCollaborationPath } from "../../data/serviceCollaborations";
 
 export async function ServiceProductPage({
   slug,
@@ -248,6 +249,32 @@ export async function ServiceProductPage({
             <details>
               <summary>
                 {de
+                  ? "Wie viel Mitwirkung braucht ihr von uns?"
+                  : "How much participation do you need from us?"}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>
+                {de
+                  ? "Wir brauchen eine Ansprechperson, die den gewählten Ablauf kennt, sowie die vereinbarten Beispiele und Zugänge. Einen gemeinsamen Durchgang und die Besprechung der Ergebnisse planen wir ein. Umfang und Form eurer Mitwirkung klären wir vor der Beauftragung."
+                  : "We need a contact who knows the selected flow, plus the agreed examples and access. We plan a walkthrough and a review of the findings together. The amount and format of your involvement are agreed before you commission the work."}
+              </p>
+            </details>
+            <details>
+              <summary>
+                {de
+                  ? "In welcher Form bekommen wir die Übergabe?"
+                  : "What form does the handover take?"}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>
+                {de
+                  ? "Ihr bekommt die vereinbarten Ergebnisse in einem nutzbaren Dokument oder eurem passenden Arbeitswerkzeug. Empfehlungen, Annahmen und offene Fragen werden nachvollziehbar festgehalten. Wir gehen die Übergabe gemeinsam durch, damit euer Team die nächsten Schritte beurteilen kann."
+                  : "You receive the agreed deliverables in a usable document or an appropriate tool your team works with. Recommendations, assumptions and open questions are recorded clearly. We review the handover together so your team can assess the next steps."}
+              </p>
+            </details>
+            <details>
+              <summary>
+                {de
                   ? "Was kostet es und wann kann es starten?"
                   : "What does it cost, and when can we start?"}
                 <span aria-hidden="true">+</span>
@@ -320,8 +347,11 @@ export async function ServiceProductPage({
           <span>
             {de ? "Du möchtest weitergehen?" : "Looking beyond the first step?"}
           </span>
-          <Link href={servicePath(slug, locale)}>
-            {serviceCopy[slug][locale].label} ↗
+          <Link href={serviceCollaborationPath(slug, locale)}>
+            {de
+              ? "Projekt & Zusammenarbeit ansehen"
+              : "Explore projects & collaboration"}{" "}
+            ↗
           </Link>
         </nav>
       </article>

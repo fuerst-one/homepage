@@ -6,9 +6,10 @@ import { PLAYGROUND_CHARACTERS } from "../Plasma/constants";
 import { useShapesLuminance } from "../PlasmaPlayground/useShapesLuminance";
 import { createLandingGeometry } from "./shapeGeometries";
 import { createLandingIconGeometry } from "./iconGeometries";
+import type { BufferGeometry } from "three";
 
 const emptyGeometries = () => [];
-const createGeometry = (index: number) =>
+const createDefaultGeometry = (index: number) =>
   index < 6 ? createLandingGeometry(index) : createLandingIconGeometry(index);
 
 const RAMP = PLAYGROUND_CHARACTERS.slice(0, PLAYGROUND_CHARACTERS.length / 2);
@@ -23,6 +24,8 @@ export default function LandingShape({
   reducedMotion,
   active,
   interactionTarget,
+  keyboardOrbit = false,
+  geometryFactory = createDefaultGeometry,
   onReadyChange,
 }: {
   shapeIndex: number;
@@ -30,6 +33,8 @@ export default function LandingShape({
   reducedMotion: boolean;
   active: boolean;
   interactionTarget: HTMLElement | null;
+  keyboardOrbit?: boolean;
+  geometryFactory?: (index: number) => BufferGeometry;
   onReadyChange?: (ready: boolean) => void;
 }) {
   const canvasRef = useRef<PlasmaCanvasHandle>(null);
@@ -39,10 +44,11 @@ export default function LandingShape({
   }, []);
   const { sample, ready } = useShapesLuminance(active, interactionTarget, {
     createGeometries: emptyGeometries,
-    createGeometry,
+    createGeometry: geometryFactory,
     shapeIndex,
     paused,
     reducedMotion,
+    keyboardOrbit,
   });
 
   useEffect(() => {
@@ -86,13 +92,21 @@ export default function LandingShape({
       dragging = false;
       lastInteractionAt = performance.now();
     };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!keyboardOrbit || !event.shiftKey || !event.key.startsWith("Arrow"))
+        return;
+      lastInteractionAt = performance.now();
+      if (!raf) raf = requestAnimationFrame(render);
+    };
     interactionTarget?.addEventListener("pointerdown", onPointerDown);
+    interactionTarget?.addEventListener("keydown", onKeyDown);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerUp);
     raf = requestAnimationFrame(render);
     return () => {
       cancelAnimationFrame(raf);
       interactionTarget?.removeEventListener("pointerdown", onPointerDown);
+      interactionTarget?.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
     };
@@ -105,6 +119,7 @@ export default function LandingShape({
     reducedMotion,
     shapeIndex,
     interactionTarget,
+    keyboardOrbit,
     onReadyChange,
   ]);
 

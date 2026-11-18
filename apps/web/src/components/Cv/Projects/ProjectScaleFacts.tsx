@@ -108,7 +108,10 @@ export function ProjectScaleFacts({
       </dl>
       {p.workingPattern && (
         <p className="text-xs text-neutral-300">
-          {de ? "Arbeitsweise" : "Working pattern"}: {p.workingPattern}
+          {de ? "Arbeitsweise" : "Working pattern"}:{" "}
+          {de && p.workingPattern === "3 days/week"
+            ? "3 Tage/Woche"
+            : p.workingPattern}
         </p>
       )}
       {p.codeMeasuredAt && p.codeSloc != null && (

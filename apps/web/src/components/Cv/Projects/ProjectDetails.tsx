@@ -20,6 +20,7 @@ import { Button } from "../../Button";
 import type { PublicImageDescription } from "@homepage/database/imageDescriptions";
 import { caseLabel } from "@homepage/content/projectCase";
 import type { CaseStudyExcerpt } from "./projectDiscovery";
+import type { ReactNode } from "react";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -29,11 +30,13 @@ export const ProjectDetails = ({
   locale = "en",
   initialDescriptions,
   casePreview = [],
+  brief,
 }: {
   project: CvProject;
   locale?: "en" | "de";
   initialDescriptions?: PublicImageDescription[];
   casePreview?: CaseStudyExcerpt[];
+  brief?: ReactNode;
 }) => {
   const {
     name,
@@ -63,6 +66,7 @@ export const ProjectDetails = ({
         <ContentUpdatedAt date={project.updatedAt} locale={locale} />
       </div>
       <div className="space-y-6 p-6">
+        {brief}
         {screenshots && screenshots.length > 0 && (
           <ProjectScreenshots
             screenshots={screenshots}

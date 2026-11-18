@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getCachedCvProjects } from "../server/content/getCachedCvProjects";
 import { projectPath, SITE_URL } from "../lib/seo";
 import { servicePath, serviceSlugs } from "../data/services";
+import { serviceCollaborationPath } from "../data/serviceCollaborations";
 import { serviceAlternates } from "../components/Services/serviceMetadata";
 import {
   serviceProductPath,
@@ -38,6 +39,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       (["en", "de"] as const).map((locale) => ({
         url: `${SITE_URL}${servicePath(slug, locale)}`,
         alternates: { languages: serviceAlternates(slug) },
+      })),
+    ),
+    ...serviceSlugs.flatMap((slug) =>
+      locales.map((locale) => ({
+        url: `${SITE_URL}${serviceCollaborationPath(slug, locale)}`,
+        alternates: {
+          languages: languageAlternates(serviceCollaborationPath(slug, "en")),
+        },
       })),
     ),
     ...serviceProductSlugs.flatMap((slug) =>

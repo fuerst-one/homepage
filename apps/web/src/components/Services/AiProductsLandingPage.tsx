@@ -12,6 +12,9 @@ import {
 } from "../../data/services";
 import { serializeJsonLd } from "../../lib/seo";
 import { serviceSchema } from "./serviceMetadata";
+import { ServiceStartingOffer } from "./ServiceStartingOffer";
+import { ServiceHeroActions } from "./ServiceHeroActions";
+import { ServiceHeroSculpture } from "./ServiceHeroSculpture";
 import type { getServiceEvidence } from "../../server/content/getServiceEvidence";
 import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import shared from "./services.module.css";
@@ -102,8 +105,11 @@ export function AiProductsLandingPage({
   );
 
   return (
-    <Layout locale={locale}>
-      <article lang={locale} className={`${shared.page} ${styles.page}`}>
+    <Layout locale={locale} wide>
+      <article
+        lang={locale}
+        className={`${shared.page} ${styles.page} ${shared.landing}`}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -111,26 +117,21 @@ export function AiProductsLandingPage({
           }}
         />
         <header
-          className={`${shared.hero} ${shared.serviceHero} ${styles.hero}`}
+          className={`${shared.hero} ${shared.serviceHero} ${styles.hero} ${shared.landingHero}`}
         >
-          <p className={shared.eyebrow}>01 / {copy.label}</p>
-          <h1>{copy.headline}</h1>
-          <p className={shared.intro}>{copy.intro}</p>
-          <div className={shared.actions}>
-            <Button
-              href={enquiry}
-              variant="cta"
-              arrow
-              className={shared.primary}
-            >
-              {copy.cta}
-            </Button>
-            <a href="#work" className={shared.textLink}>
-              {t.jump} <span aria-hidden="true">↓</span>
-            </a>
+          <div className={shared.heroCopy}>
+            <p className={shared.eyebrow}>01 / {copy.label}</p>
+            <h1>{copy.headline}</h1>
+            <p className={shared.intro}>{copy.intro}</p>
+            <ServiceHeroActions
+              slug="ai-products"
+              locale={locale}
+              workLabel={t.jump}
+            />
+            <p className={shared.micro}>{copy.reassurance}</p>
+            <p className={shared.signature}>{t.by}</p>
           </div>
-          <p className={shared.micro}>{copy.reassurance}</p>
-          <p className={shared.signature}>{t.by}</p>
+          <ServiceHeroSculpture slug="ai-products" locale={locale} />
         </header>
 
         {!!roadtrippin?.heroVisuals.length && (
@@ -278,11 +279,12 @@ export function AiProductsLandingPage({
           </aside>
         </section>
 
+        <ServiceStartingOffer slug="ai-products" locale={locale} />
         <section className={shared.section} aria-labelledby="faq-heading">
           <p className={shared.eyebrow}>05 / {t.faqLabel}</p>
           <h2 id="faq-heading">{t.faq}</h2>
           <div className={shared.faq}>
-            {copy.questions.map((item) => (
+            {copy.questions.slice(0, 2).map((item) => (
               <details key={item.question}>
                 <summary>
                   {item.question}
