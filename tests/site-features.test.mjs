@@ -87,8 +87,21 @@ for (const [locale, page] of [
       assert.match(
         html,
         locale === "en"
-          ? /does not store questions or answers/
-          : /speichert keine Fragen oder Antworten/,
+          ? /query vectors and reusable public answers/
+          : /Suchvektoren und wiederverwendbare öffentliche Antworten/,
+      );
+      assert.match(html, locale === "en" ? /one year/ : /ein Jahr/);
+      assert.match(
+        html,
+        locale === "en"
+          ? /next daily maintenance run/
+          : /nächsten täglichen Wartungslauf/,
+      );
+      assert.match(
+        html,
+        locale === "en"
+          ? /original submitted question or search text/
+          : /ursprünglichen Frage- oder Suchtext/,
       );
     }));
 }

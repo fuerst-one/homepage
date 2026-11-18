@@ -118,7 +118,7 @@ export function useKnowledgeAssistant(enabled = true) {
       const response = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: question, locale, consent }),
+        body: JSON.stringify({ message: input, locale, consent }),
         signal: controller.signal,
       });
       if (pending.current !== controller || controller.signal.reason === "user")

@@ -142,7 +142,8 @@ test("semantic search uses existing opt-in, withdraws immediately and falls back
       waitUntil: "networkidle2",
       timeout: 90000,
     });
-    await page.type("#project-search", "nebulaquartz");
+    const originalQuery = "  nebulaquartz  ";
+    await page.type("#project-search", originalQuery);
     await page.waitForFunction(
       () =>
         document.querySelectorAll("[data-project-search-result]").length === 0,
@@ -159,7 +160,11 @@ test("semantic search uses existing opt-in, withdraws immediately and falls back
       target,
     );
     assert.equal(sent.length, 1);
-    assert.equal(sent[0].message, "nebulaquartz");
+    assert.equal(
+      sent[0].message,
+      originalQuery,
+      "raw field text reaches the API",
+    );
     assert.equal(sent[0].consent.allowed, true);
     await page.focus("#project-search");
     await page.keyboard.press("Enter");

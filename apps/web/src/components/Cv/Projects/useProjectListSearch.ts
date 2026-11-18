@@ -107,7 +107,7 @@ export function useProjectListSearch(
       const response = await fetch("/api/projects/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, locale, consent: receipt }),
+        body: JSON.stringify({ message: query, locale, consent: receipt }),
         signal: controller.signal,
       });
       if (!response.ok) throw new Error("Semantic project search unavailable");

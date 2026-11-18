@@ -4,8 +4,9 @@ import { readFileSync } from "node:fs";
 import ts from "typescript";
 import { loadTs } from "./helpers/load-ts.mjs";
 
-function route(name, admit, healthy = true) {
+function route(name, admit, healthy = true, text = "Relevant projects?") {
   const calls = [];
+  const rawRequests = [];
   const privacy = loadTs(
     new URL("../apps/web/src/lib/knowledgeConsent.ts", import.meta.url),
   );
@@ -39,8 +40,9 @@ function route(name, admit, healthy = true) {
       knowledgeFallback: () => fallback,
     };
     dependencies[`${prefix}server/knowledge/chat`] = {
-      answerKnowledge: async () => {
+      answerKnowledge: async (...args) => {
         calls.push("paid");
+        rawRequests.push(args);
         return fallback;
       },
     };
@@ -74,7 +76,7 @@ function route(name, admit, healthy = true) {
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      message: "Relevant projects?",
+      message: text,
       locale: "en",
       consent: {
         version: privacy.KNOWLEDGE_CONSENT_VERSION,
@@ -85,8 +87,15 @@ function route(name, admit, healthy = true) {
     }),
   });
   request.nextUrl = new URL(request.url);
-  return { exports, request, calls };
+  return { exports, request, calls, rawRequests };
 }
+test("assistant forwards original submitted whitespace for raw storage without changing retrieval", async () => {
+  const text = "  Relevant   projects?\n";
+  const { exports, request, rawRequests } = route("route.ts", true, true, text);
+  assert.equal((await exports.POST(request)).status, 200);
+  assert.equal(rawRequests[0][0], text.trim());
+  assert.equal(rawRequests[0][5], text);
+});
 test("excluded direct POSTs use local fallback without paid calls or probes", async () => {
   const { exports, request, calls } = route("route.ts", false);
   const result = await (await exports.POST(request)).json();

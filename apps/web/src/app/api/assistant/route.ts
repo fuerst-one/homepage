@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
         ip,
         AbortSignal.any([signal, request.signal]),
         parsed.consent,
+        (input as { message: string }).message,
       ),
     () => {
       mode = "fallback";

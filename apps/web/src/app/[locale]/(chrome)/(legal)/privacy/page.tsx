@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
-        Last updated: 16 November 2026
+        Last updated: 18 November 2026
       </p>
       <p>
         This policy explains how personal data is processed when you visit
@@ -229,18 +229,43 @@ export default function PrivacyPage() {
             project suggestions without a consent prompt.
           </p>
           <p>
-            Our application database does not store questions or answers. It
-            stores public knowledge passages and embeddings, plus usage
-            timestamps, costs, request status and a keyed hash derived from your
-            IP address for abuse prevention. This hash is pseudonymous, not
-            anonymous. Usage records also contain the declared consent version,
-            time, scope and history choice to document permission, under Art.
-            6(1)(c) with Art. 7(1) GDPR. Abuse prevention is based on Art.
-            6(1)(f) GDPR. Records, including receipts, older than 35 days are
-            deleted by an hourly maintenance job and when a further request is
-            admitted. Hosting access logs are handled separately as described
-            above. We do not include your raw IP address in model request
-            bodies.
+            With your AI permission, our database stores query vectors and
+            reusable public answers in a shared cache on our server in Germany.
+            For each cached query we also store the original submitted question
+            or search text, including free-form questions, to maintain and check
+            cache matches and avoid repeated paid processing. The raw text is
+            restricted to our server and administration; it is not shown to
+            other visitors or inserted into their model requests. The assistant
+            and project search share query vectors and keyed fingerprints. For
+            supported public portfolio questions, validated answers and their
+            public evidence can be reused for identical or closely matching
+            requests from other consenting visitors. Personal or free-form
+            answers are not shared. The cache stores no visitor identifier, HTTP
+            headers, cookies or credentials. Text, vectors and fingerprints may
+            contain personal data; they are not treated as anonymous. Normal
+            retention is one year from creation. Entries then expire and are
+            deleted by the next daily maintenance run, even if AI is paused.
+            Hits do not extend retention and capacity pruning does not remove
+            younger entries. Changed published content invalidates answer reuse
+            without extending storage. Withdrawal stops further requests from
+            your browser. You can also withdraw consent for stored data and
+            request earlier erasure using the contact details above; supplying
+            your submitted text helps us locate matching entries. Required
+            erasure can shorten the normal retention period. The seven-day
+            backup rotation described above also applies.
+          </p>
+          <p>
+            Separately, our database stores public knowledge passages and
+            embeddings, plus usage timestamps, costs, request status and a keyed
+            hash derived from your IP address for abuse prevention. This hash is
+            pseudonymous, not anonymous. Usage records also contain the declared
+            consent version, time, scope and history choice to document
+            permission, under Art. 6(1)(c) with Art. 7(1) GDPR. Abuse prevention
+            is based on Art. 6(1)(f) GDPR. Records, including receipts, older
+            than 35 days are deleted by an hourly maintenance job and when a
+            further request is admitted. Hosting access logs are handled
+            separately as described above. We do not include your raw IP address
+            in model request bodies.
           </p>
           <p>
             AI access is offered to a configurable proportion of visitors

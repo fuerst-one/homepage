@@ -16,6 +16,8 @@ async function main() {
         "007-malt-refresh.sql",
         "008-project-dimensions.sql",
         "008-ai-admission.sql",
+        "009-query-cache.sql",
+        "010-query-cache-retention.sql",
       ]) {
         const migration = await readFile(
           new URL(import.meta.resolve(`@homepage/database/migrations/${file}`)),
