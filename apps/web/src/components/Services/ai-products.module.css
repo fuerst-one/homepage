@@ -130,3 +130,43 @@
     border-top: 1px solid var(--line);
   }
 }
+
+.page .preview {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  margin-inline: var(--gutter);
+}
+.page .brief {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 0;
+  border-right: 1px solid var(--line);
+}
+.page .preview > div:not(.brief) {
+  min-width: 0;
+  margin-top: 0;
+}
+.page .preview figcaption {
+  grid-column: 1 / -1;
+}
+.page .audiences {
+  margin-top: 3rem;
+  padding: 2.5rem var(--gutter);
+}
+.page .summary,
+.page .context {
+  max-width: 72ch;
+}
+@media (max-width: 767px) {
+  .page .preview {
+    grid-template-columns: 1fr;
+  }
+  .page .brief {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
+.page .empty {
+  max-width: 68ch;
+}

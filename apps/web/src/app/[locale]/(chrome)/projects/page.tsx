@@ -14,6 +14,7 @@ import { OwnerFacts } from "../../../../components/Cv/OwnerFacts";
 import Link from "../../../../components/i18n/LocalizedLink";
 import { StructuredData } from "../../../../components/StructuredData";
 import { getSiteFeatures } from "../../../../server/siteFeatures";
+import { PortfolioExplorerLinks } from "../../../../components/PortfolioExplorerLinks";
 import {
   pageMetadata,
   personSchema,
@@ -74,6 +75,7 @@ export default async function ProjectsPage({ params }: LocaleParams) {
           {copy["cv.intro"]}
         </p>
       </header>
+      <PortfolioExplorerLinks locale={locale} />
       <ProjectsClientView
         projects={projects}
         semanticEnabled={getSiteFeatures().assistantEnabled}

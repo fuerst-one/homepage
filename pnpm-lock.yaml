@@ -179,6 +179,9 @@ importers:
       lucide-react:
         specifier: ^1.74.0
         version: 1.74.0(@types/react@19.3.0)(react@19.3.1)
+      ml-matrix:
+        specifier: 6.15.1
+        version: 6.15.1
       motion:
         specifier: ^10.18.0
         version: 10.18.0

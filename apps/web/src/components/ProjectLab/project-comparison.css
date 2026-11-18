@@ -1,0 +1,166 @@
+.comparison-disclosure {
+  border-block: 1px solid #ffffff30;
+  margin-block: 28px;
+}
+.comparison-disclosure > summary {
+  padding-block: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+.comparison-workbench {
+  padding-block: 20px;
+  min-width: 0;
+}
+.project-comparison {
+  background: #080808f0;
+  border: 1px solid #ffffff30;
+  padding: 24px;
+  margin-block: 24px;
+  min-width: 0;
+}
+.comparison-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 24px;
+}
+.comparison-heading h3,
+.comparison-leads h3 {
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+}
+.comparison-heading p,
+.comparison-note,
+.comparison-leads > p {
+  color: #a3a3a3;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.comparison-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 32px;
+}
+.comparison-field {
+  border-top: 1px solid #ffffff20;
+  padding-top: 14px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.comparison-field-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.comparison-field h4 {
+  font-weight: 600;
+  font-size: 12px;
+}
+.comparison-field-heading span {
+  font-size: 11px;
+  color: #a3a3a3;
+}
+.comparison-field > p {
+  padding-block: 8px;
+  font-size: 13px;
+}
+.project-comparison summary {
+  cursor: pointer;
+  font-size: 11px;
+  color: #a3a3a3;
+  min-height: 36px;
+  padding-block: 8px;
+}
+.comparison-differences {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding-block: 8px;
+  font-size: 11px;
+}
+.comparison-differences p {
+  color: #a3a3a3;
+}
+.comparison-more {
+  margin-block: 12px;
+}
+.comparison-more > summary {
+  font-size: 12px;
+}
+.comparison-note {
+  margin-top: 18px;
+}
+.comparison-selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.comparison-selectors label {
+  display: grid;
+  gap: 8px;
+  font-size: 11px;
+  color: #a3a3a3;
+  min-width: 0;
+}
+.comparison-selectors select {
+  background: #111;
+  border: 1px solid #ffffff40;
+  padding: 12px;
+  color: #f5f5f5;
+  width: 100%;
+  min-width: 0;
+  font-size: 13px;
+}
+.comparison-leads {
+  margin-block: 24px;
+}
+.comparison-leads > p {
+  max-width: 80ch;
+  margin-block: 8px 16px;
+}
+.comparison-leads > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+}
+.comparison-leads button {
+  display: grid;
+  text-align: left;
+  gap: 8px;
+  border: 1px solid #ffffff30;
+  padding: 18px;
+  background: #ffffff05;
+  color: #f5f5f5;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.comparison-leads button:hover {
+  border-color: #ffffff80;
+  background: #ffffff0a;
+}
+.comparison-leads button span,
+.comparison-leads small {
+  font-size: 11px;
+  color: #b5b5b5;
+}
+:is(.comparison-workbench, .comparison-disclosure, .project-comparison)
+  :is(select, summary, button):focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+@media (max-width: 640px) {
+  .comparison-fields,
+  .comparison-selectors,
+  .comparison-differences {
+    grid-template-columns: 1fr;
+  }
+  .project-comparison {
+    padding: 16px;
+  }
+}

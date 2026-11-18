@@ -21,6 +21,7 @@ const result = spawnSync(
     "tests/notion-db.integration.mjs",
     "tests/notion-worker.integration.mjs",
     "tests/malt-worker.integration.mjs",
+    "tests/github-db.integration.mjs",
   ],
   {
     stdio: "inherit",

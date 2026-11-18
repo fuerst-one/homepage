@@ -1,25 +1,8 @@
 import { FilterConfig } from "./types";
-import { useMemo } from "react";
 import { CvProject } from "@homepage/content/models";
 import { getFilterOptionCounts } from "./utils";
 import { ClientChartWrapper } from "./ClientChartWrapper";
-
-const TREEMAP_ITEMS_MAX = 12;
-
-const GRAYSCALE_PALETTE = [
-  "#f5f5f5",
-  "#dcdcdc",
-  "#bdbdbd",
-  "#a0a0a0",
-  "#878787",
-  "#6e6e6e",
-  "#575757",
-  "#454545",
-  "#363636",
-  "#2a2a2a",
-  "#1f1f1f",
-  "#161616",
-];
+import { treemapOption } from "./treemapOptions";
 
 export const TreemapFilter = ({
   filterConfig,
@@ -30,66 +13,12 @@ export const TreemapFilter = ({
 }) => {
   const { projectKey } = filterConfig;
   const itemCounts = getFilterOptionCounts(projects, projectKey);
-  const itemsLength = Math.min(itemCounts.length, TREEMAP_ITEMS_MAX);
-
-  const data = useMemo(() => {
-    return [
-      ...itemCounts.slice(0, itemsLength).map(({ itemKey, count, color }) => ({
-        name: itemKey,
-        value: count,
-        ...(color ? { itemStyle: { color } } : {}),
-      })),
-    ];
-  }, [itemCounts, itemsLength]);
-
   return (
     <div className="h-full min-h-0 w-full">
       <div className="h-full w-full overflow-hidden">
         <ClientChartWrapper
           projectKey={projectKey}
-          chartProps={{
-            option: {
-              tooltip: {
-                trigger: "item",
-                formatter: "{b}: {c}",
-                backgroundColor: "#000",
-                borderColor: "#fff",
-                confine: true,
-                textStyle: { color: "#fff" },
-              },
-              color: Array.from(
-                { length: itemsLength },
-                (_, i) => GRAYSCALE_PALETTE[i % GRAYSCALE_PALETTE.length],
-              ),
-              series: [
-                {
-                  name: filterConfig.label,
-                  type: "treemap",
-                  data: data,
-                  roam: false,
-                  left: 0,
-                  top: 0,
-                  width: "100%",
-                  height: "100%",
-                  itemStyle: {
-                    borderColor: "#000",
-                    borderWidth: 1,
-                  },
-                  label: {
-                    show: true,
-                    fontSize: 10,
-                    color: "#fff",
-                    textBorderColor: "#000",
-                    textBorderWidth: 2,
-                    fontFamily: "var(--font-plex), monospace",
-                  },
-                  breadcrumb: {
-                    show: false,
-                  },
-                },
-              ],
-            },
-          }}
+          chartProps={{ option: treemapOption(itemCounts, filterConfig.label) }}
         />
       </div>
       <dl className="hidden">

@@ -164,3 +164,31 @@
 .caseDetails .flow {
   margin-bottom: 1.25rem;
 }
+
+.page .proofIndex {
+  margin-inline: var(--gutter);
+}
+.page .cases {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 3rem;
+}
+.page .case {
+  min-width: 0;
+}
+.page .case:first-child {
+  grid-column: 1 / -1;
+}
+.page .context,
+.page .summary {
+  max-width: 68ch;
+}
+@media (max-width: 767px) {
+  .page .cases {
+    grid-template-columns: 1fr;
+  }
+}
+.page .supporting > div > p:last-child,
+.page .empty {
+  max-width: 68ch;
+}

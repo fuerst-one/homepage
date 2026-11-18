@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getCachedCvProjects } from "../server/content/getCachedCvProjects";
 import { projectPath, SITE_URL } from "../lib/seo";
 import { servicePath, serviceSlugs } from "../data/services";
+import { serviceCollaborationPath } from "../data/serviceCollaborations";
 import { serviceAlternates } from "../components/Services/serviceMetadata";
 import {
   serviceProductPath,
@@ -21,11 +22,12 @@ export const revalidate = 60;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getCachedCvProjects();
   return [
-    ...["/", "/projects", "/contact", "/hire", "/plasma"].flatMap((path) =>
-      locales.map((locale) => ({
-        url: `${SITE_URL}${localizedPath(path, locale)}`,
-        alternates: { languages: languageAlternates(path) },
-      })),
+    ...["/", "/projects", "/contact", "/hire", "/plasma", "/explorer"].flatMap(
+      (path) =>
+        locales.map((locale) => ({
+          url: `${SITE_URL}${localizedPath(path, locale)}`,
+          alternates: { languages: languageAlternates(path) },
+        })),
     ),
     ...["/legal-notice", "/privacy"].flatMap((path) =>
       locales.map((locale) => ({
@@ -37,6 +39,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       (["en", "de"] as const).map((locale) => ({
         url: `${SITE_URL}${servicePath(slug, locale)}`,
         alternates: { languages: serviceAlternates(slug) },
+      })),
+    ),
+    ...serviceSlugs.flatMap((slug) =>
+      locales.map((locale) => ({
+        url: `${SITE_URL}${serviceCollaborationPath(slug, locale)}`,
+        alternates: {
+          languages: languageAlternates(serviceCollaborationPath(slug, "en")),
+        },
       })),
     ),
     ...serviceProductSlugs.flatMap((slug) =>

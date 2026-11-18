@@ -1,4 +1,7 @@
-import { profileCollectionAvailable, pruneProfileEvents } from "@homepage/database/visitorProfile";
+import {
+  profileCollectionAvailable,
+  pruneProfileEvents,
+} from "@homepage/database/visitorProfile";
 import { notionFailure } from "@homepage/database/notionDiagnostics";
 import { setTimeout as pause } from "node:timers/promises";
 import { knowledgeDatabase } from "@homepage/database/database";
@@ -8,6 +11,7 @@ import { postgresMaltMirrorStore } from "@homepage/database/postgresMaltMirrorSt
 import { refreshMaltIfDue } from "../malt/scheduledRefresh";
 import { notionMaltMirrorStore } from "../malt/notionMaltMirrorStore";
 import { syncWebsiteContent } from "./syncWebsiteContent";
+import { syncGitHubActivity } from "../github/syncGitHubActivity";
 import {
   cleanupKnowledgeUsage,
   cleanupKnowledgeCache,
@@ -50,9 +54,20 @@ export async function watchNotion(signal: AbortSignal) {
     }
   };
   await Promise.all([
+    loop(
+      () => syncGitHubActivity(false, signal),
+      60_000,
+      "GitHub activity sync",
+    ),
     loop(cleanupKnowledgeUsage, 3600_000, "AI retention cleanup"),
     loop(cleanupKnowledgeCache, 24 * 3600_000, "AI cache pruning"),
-    loop(async () => { if (await profileCollectionAvailable()) await pruneProfileEvents(); }, 24 * 3600_000, "Visitor profile retention"),
+    loop(
+      async () => {
+        if (await profileCollectionAvailable()) await pruneProfileEvents();
+      },
+      24 * 3600_000,
+      "Visitor profile retention",
+    ),
     loop(deliverPendingEnquiries, 5000, "Notion enquiry delivery"),
     loop(() => refreshMaltIfDue(), 60_000, "Malt refresh"),
     loop(

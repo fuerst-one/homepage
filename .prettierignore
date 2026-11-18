@@ -8,3 +8,4 @@ styles/all.css
 node_modules
 coverage
 .pnpm-store
+apps/web/src/content/lab-preview.json

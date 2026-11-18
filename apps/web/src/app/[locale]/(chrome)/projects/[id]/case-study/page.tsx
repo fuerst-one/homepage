@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import Link from "../../../../../../components/i18n/LocalizedLink";
 import { Layout } from "../../../../../../components/Layout";
 import { CaseStudyContent } from "../../../../../../components/Cv/Projects/CaseStudyContent";
+import { ProjectBrief } from "../../../../../../components/Cv/Projects/ProjectBrief";
 import { ContentUpdatedAt } from "../../../../../../components/ContentUpdatedAt";
 import { StructuredData } from "../../../../../../components/StructuredData";
 import { getLocale } from "../../../../../../server/i18n/getLocale";
@@ -134,6 +135,7 @@ export default async function CaseStudyPage({ params }: Props) {
             locale={locale}
           />
         </header>
+        <ProjectBrief project={project} locale={locale} />
         <CaseStudyContent
           blocks={blocks}
           projectName={project.name}

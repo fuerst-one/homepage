@@ -41,6 +41,10 @@ const fixture = () => ({
         },
       ],
       references: ["private"],
+      "Local Code Paths": "/Users/Alex/dev/private-research-fixture",
+      localCodePaths: "/Users/Alex/dev/private-research-fixture",
+      "Effort Days High": 12345,
+      "Research Evidence": "private-claude-session-fixture",
       position3d: [0, 0, 0],
       tools: [],
       industries: [],
@@ -101,6 +105,9 @@ test("the worker publishes explicit public fields and locale variants before per
     "germanReady",
     '"hidden"',
     '"references"',
+    "/Users/Alex/dev/private-research-fixture",
+    "private-claude-session-fixture",
+    "Effort Days High",
   ])
     assert.ok(!serialized.includes(secret), secret);
   assert.equal(result.locales.en.owner.email, "public@example.com");

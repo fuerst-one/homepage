@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import ts from "typescript";
 
-test("independent maintenance runs cache pruning daily and usage cleanup hourly even with AI paused", async () => {
+test("independent maintenance runs GitHub, daily cache and profile pruning and hourly usage cleanup even with AI paused", async () => {
   const intervals = [],
     calls = [];
   const store = { read: async () => ({ observation: true }) };
@@ -34,6 +34,9 @@ test("independent maintenance runs cache pruning daily and usage cleanup hourly 
     "./syncWebsiteContent": {
       syncWebsiteContent: async () => calls.push("website"),
     },
+    "../github/syncGitHubActivity": {
+      syncGitHubActivity: async () => calls.push("github"),
+    },
     "@homepage/knowledge/policy": {
       cleanupKnowledgeUsage: async () => calls.push("usage"),
       cleanupKnowledgeCache: async () => calls.push("cache"),
@@ -60,8 +63,9 @@ test("independent maintenance runs cache pruning daily and usage cleanup hourly 
   assert.equal(calls.filter((call) => call === "cache").length, 1);
   assert.equal(calls.filter((call) => call === "usage").length, 1);
   assert.equal(calls.filter((call) => call === "profiles").length, 1);
+  assert.equal(calls.filter((call) => call === "github").length, 1);
   assert.deepEqual(
     intervals.sort((a, b) => a - b),
-    [5000, 60000, 60000, 3600_000, 24 * 3600_000, 24 * 3600_000],
+    [5000, 60000, 60000, 60000, 3600_000, 24 * 3600_000, 24 * 3600_000],
   );
 });

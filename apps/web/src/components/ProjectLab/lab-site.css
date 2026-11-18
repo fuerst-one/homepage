@@ -1,0 +1,214 @@
+.lab-site {
+  min-width: 0;
+}
+.lab-site-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 26px;
+  border-block: 1px solid #ffffff30;
+  font-size: 12px;
+  color: #a3a3a3;
+}
+.lab-site-navigation > span {
+  margin-right: auto;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.lab-site-navigation a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  border-bottom: 2px solid transparent;
+}
+.lab-site-navigation a[aria-current] {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+.lab-site .experience-atlas,
+.lab-site .experience-atlas.is-vector-mode,
+.lab-site .project-lab {
+  --atlas-bg: #080808;
+  --atlas-panel: #111;
+  --atlas-ink: #f5f5f5;
+  --atlas-muted: #a3a3a3;
+  --atlas-line: #ffffff30;
+  --atlas-lime: #e5e5e5;
+  --lab-ink: #f5f5f5;
+  --lab-muted: #a3a3a3;
+  --lab-line: #ffffff30;
+  --lab-accent: #e5e5e5;
+  background: transparent;
+  color: #f5f5f5;
+  padding: 0;
+  max-width: none;
+  min-height: 0;
+}
+.lab-site .experience-atlas .atlas-intro,
+.lab-site .lab-header {
+  padding-block: 32px;
+  margin: 0;
+  align-items: start;
+}
+.lab-site :is(.experience-atlas, .project-lab) :is(h1, h2, h3, h4, em),
+.lab-site .experience-atlas .atlas-outcome strong {
+  font-family: inherit;
+  font-style: normal;
+}
+.lab-site .experience-atlas .atlas-intro h1,
+.lab-site .lab-header h1 {
+  font-size: 30px;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  margin-top: 12px;
+}
+.lab-site .experience-atlas .atlas-intro h1 em,
+.lab-site .lab-header h1 em {
+  color: #a3a3a3;
+}
+.lab-site .experience-atlas .atlas-intro-copy p,
+.lab-site .lab-intro {
+  color: #d4d4d4;
+  font-size: 13px;
+}
+.lab-site .lab-stamp {
+  border-color: #ffffff30;
+}
+.lab-site .experience-atlas .atlas-section-heading :is(h2, h3),
+.lab-site .lab-section-heading h2 {
+  font-size: clamp(20px, 2vw, 24px);
+  line-height: 1.3;
+}
+.lab-site .lab-tabs {
+  flex-wrap: wrap;
+  gap: 0 24px;
+  overflow: visible;
+}
+.lab-site .lab-tabs button {
+  padding-block: 14px;
+}
+.lab-site .lab-tabs button span {
+  display: none;
+}
+.lab-site .experience-atlas .atlas-explorer,
+.lab-site .lab-chart-scroll {
+  background: #080808f5;
+}
+.lab-site .vs-workbench {
+  --vs-line: #ffffff30;
+  border-radius: 0;
+  background: #080808f5;
+}
+.lab-site .experience-atlas .atlas-experiment-switch button {
+  border-radius: 0;
+}
+.lab-site
+  .experience-atlas
+  .atlas-experiment-switch
+  button[aria-pressed="true"] {
+  background: #ffffff12;
+  color: #fff;
+  border-color: #ffffff80;
+}
+.lab-site .experience-atlas .atlas-story-grid {
+  gap: 40px;
+}
+.lab-site .experience-atlas .atlas-outcome strong {
+  font-size: 21px;
+  line-height: 1.5;
+}
+.lab-site .experience-atlas .atlas-enquiry h2 {
+  font-size: clamp(28px, 3.5vw, 44px);
+}
+.lab-site .experience-atlas .atlas-enquiry a {
+  padding: 0;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+.lab-site .experience-atlas .atlas-enquiry a:hover {
+  background: hsl(var(--primary-hover));
+}
+@media (max-width: 760px) {
+  .lab-site-navigation {
+    gap: 0 18px;
+    font-size: 11px;
+  }
+  .lab-site-navigation > span {
+    width: 100%;
+    padding-top: 15px;
+  }
+  .lab-site .experience-atlas .atlas-intro,
+  .lab-site .lab-header {
+    padding-block: 32px;
+  }
+  .lab-site .lab-tabs {
+    gap: 0 18px;
+  }
+}
+
+.lab-site-navigation a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+.lab-site .experience-atlas .atlas-story .atlas-challenge {
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.9;
+}
+.lab-site .experience-atlas .atlas-detail-heading h2 {
+  font-size: 32px;
+  font-weight: 600;
+}
+.lab-site .experience-atlas .atlas-contribution p,
+.lab-site .experience-atlas .atlas-delivery p {
+  font-size: 12px;
+}
+.lab-site .vs-workbench :is(button, select) {
+  border-radius: 0;
+}
+.lab-site .vs-visual {
+  background: radial-gradient(ellipse at 50% 45%, #181818, #080808 70%);
+}
+.lab-site .vs-heading h2 {
+  font-size: 22px;
+}
+.lab-site .vs-recipes > button {
+  background: transparent;
+}
+.lab-site .vs-recipes > button[aria-pressed="true"] {
+  background: #ffffff0d;
+}
+.lab-site .vs-plot-toolbar button {
+  background: transparent;
+  border-color: #ffffff30;
+}
+.lab-site .vs-plot-toolbar button[aria-pressed="true"] {
+  background: #ffffff12;
+  border-color: #ffffff80;
+}
+.lab-site .experience-atlas .atlas-story {
+  border: 1px solid #ffffff30;
+  padding: 24px;
+  background: #080808b3;
+}
+@media (max-width: 380px) {
+  .lab-site .vs-recipes {
+    grid-template-columns: 1fr;
+  }
+  .lab-site .vs-recipes > button {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    border-right: 0;
+    border-bottom: 1px solid #ffffff20;
+  }
+  .lab-site .vs-recipes > button:last-child {
+    border-bottom: 0;
+  }
+  .lab-site .vs-recipes strong {
+    overflow-wrap: normal;
+  }
+}

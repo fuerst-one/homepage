@@ -5,7 +5,10 @@ import Link from "../../components/i18n/LocalizedLink";
 import Image from "next/image";
 import { getCachedCvOwnerPublic } from "../../server/content/getCachedCvOwner";
 import { PlasmaLanding } from "../../components/PlasmaLanding/PlasmaLanding";
-import { Button } from "../../components/Button";
+import { HomeActions } from "../../components/HomeWork/HomeActions";
+import { HomeWork } from "../../components/HomeWork/HomeWork";
+import { getCachedCvProjects } from "../../server/content/getCachedCvProjects";
+import { readPublicGitHubActivity } from "@homepage/database/githubActivity";
 import { StructuredData } from "../../components/StructuredData";
 import { pageMetadata, personSchema, SITE_URL, PERSON_ID } from "../../lib/seo";
 import "../home.css";
@@ -30,9 +33,11 @@ export async function generateMetadata({ params }: LocaleParams) {
 export default async function Home({ params }: LocaleParams) {
   const locale = await getLocale(params);
   const { assistantEnabled } = getSiteFeatures();
-  const [owner, copy] = await Promise.all([
+  const [owner, copy, projects, github] = await Promise.all([
     getCachedCvOwnerPublic(locale),
     getSiteCopy(locale),
+    getCachedCvProjects(locale),
+    readPublicGitHubActivity(),
   ]);
   return (
     <main>
@@ -40,10 +45,6 @@ export default async function Home({ params }: LocaleParams) {
         headline={copy["home.eyebrow"]}
         assistantEnabled={assistantEnabled}
       />
-      <EnquiryStart locale={locale} />
-      <div className="mx-auto w-full max-w-4xl px-6 pb-16">
-        <MaltTerms locale={locale} mirror={owner.malt} />
-      </div>
       <section className="home-about" aria-labelledby="home-about-title">
         <div className="home-about-heading">
           <p className="home-about-eyebrow">{copy["home.eyebrow"]}</p>
@@ -74,25 +75,7 @@ export default async function Home({ params }: LocaleParams) {
           <p>{copy["home.p3"]}</p>
         </div>
         <div className="home-about-links">
-          <nav aria-label="Explore my work" className="flex flex-wrap gap-4">
-            <Button
-              prefetch={false}
-              href="/projects"
-              className="max-w-full"
-              arrow
-            >
-              {locale === "de" ? "Projekte entdecken" : "Explore projects"}
-            </Button>
-            <Button
-              prefetch={false}
-              href="/contact"
-              variant="cta"
-              className="max-w-full"
-              arrow
-            >
-              {locale === "de" ? "Kontakt aufnehmen" : "Get in touch"}
-            </Button>
-          </nav>
+          <HomeActions locale={locale} />
           <p className="home-about-elsewhere">
             {locale === "de" ? "Entdecke den " : "Explore the "}
             <Link prefetch={false} href="/projects" className="underline">
@@ -108,6 +91,16 @@ export default async function Home({ params }: LocaleParams) {
           </p>
         </div>
       </section>
+      <HomeWork projects={projects} github={github} locale={locale} />
+      <div className="home-closing">
+        <EnquiryStart locale={locale} />
+        <div className="mx-auto w-full max-w-4xl px-6 pb-12">
+          <MaltTerms locale={locale} mirror={owner.malt} />
+        </div>
+        <div className="home-closing-actions">
+          <HomeActions locale={locale} closing />
+        </div>
+      </div>
       <StructuredData
         data={{
           "@context": "https://schema.org",
