@@ -145,12 +145,7 @@ export async function verifyKnowledgeAutomation(
 }
 
 export type AdmissionReason =
-  | "selected"
-  | "excluded"
-  | "paused"
-  | "bot"
-  | "suspicious"
-  | "quota";
+  "selected" | "excluded" | "paused" | "bot" | "suspicious" | "quota";
 export async function recordKnowledgeAdmission(reason: AdmissionReason) {
   const sql = knowledgeDatabase();
   await sql`
@@ -165,4 +160,11 @@ export async function cleanupKnowledgeUsage() {
   const sql = knowledgeDatabase();
   await sql`DELETE FROM knowledge_usage WHERE created_at < now()-interval '35 days'`;
   await sql`DELETE FROM knowledge_admission_counts WHERE hour < now()-interval '35 days'`;
+}
+
+/** Daily cache pruning remains independent of paid AI and public-content refreshes. */
+export async function cleanupKnowledgeCache() {
+  const sql = knowledgeDatabase();
+  await sql`DELETE FROM knowledge_query_cache WHERE expires_at<=now()`;
+  await sql`DELETE FROM knowledge_response_cache WHERE expires_at<=now()`;
 }

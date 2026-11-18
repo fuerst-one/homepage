@@ -118,6 +118,7 @@ function loadModule(file, dependencies) {
 function service({ fresh = true, denied = false, fail = false } = {}) {
   const calls = [];
   const dependencies = {
+    "@homepage/content/knowledgeConsent": privacy,
     "node:crypto": {
       createHmac: () => ({
         update: () => ({ digest: () => "hashed-visitor" }),
@@ -140,6 +141,15 @@ function service({ fresh = true, denied = false, fail = false } = {}) {
         calls.push("embedding");
         if (fail) throw new Error("Provider unavailable");
         return { vectors: [Array(1536).fill(0.1)], costUsd: 0.000002 };
+      },
+    },
+    "@homepage/knowledge/queryCache": {
+      cachedQueryEmbedding: async (_sql, input, embed, signal) => {
+        const {
+          vectors: [vector],
+          costUsd,
+        } = await embed([input.message], signal);
+        return { vector, costUsd };
       },
     },
     "@homepage/knowledge/usage": {
@@ -227,8 +237,10 @@ test("failed embedding requests retain their budget reservation", async () => {
 
 function route({ enabled = true, admitted = true } = {}) {
   const calls = [];
+  const rawRequests = [];
   return {
     calls,
+    rawRequests,
     ...loadModule("../apps/web/src/app/api/projects/search/route.ts", {
       "next/server": {
         NextResponse: { json: (body, options) => Response.json(body, options) },
@@ -252,8 +264,9 @@ function route({ enabled = true, admitted = true } = {}) {
         recordKnowledgeAdmission: async () => {},
       },
       "@/server/knowledge/projectSearch": {
-        searchKnowledgeProjects: async () => {
+        searchKnowledgeProjects: async (...args) => {
           calls.push("search");
+          rawRequests.push(args);
           return ["atlas"];
         },
       },
@@ -273,6 +286,18 @@ const request = (body, headers = {}) => {
   req.nextUrl = new URL(req.url);
   return req;
 };
+
+test("project search forwards the unmodified submitted text separately from the normalized search", async () => {
+  const { POST, rawRequests } = route();
+  const text = "  React   projects\n";
+  assert.equal(
+    (await POST(request({ message: text, locale: "en", consent: consent() })))
+      .status,
+    200,
+  );
+  assert.equal(rawRequests[0][0], text.trim());
+  assert.equal(rawRequests[0][4], text);
+});
 
 test("project search rejects missing consent, foreign origins and oversized queries before retrieval", async () => {
   const { POST, calls } = route();

@@ -81,7 +81,7 @@ export async function finishKnowledgeUsage(
     Number.isFinite(costUsd) &&
     costUsd >= 0
   ) {
-    await sql`UPDATE knowledge_usage SET status = 'complete', amount_micro_usd = ${Math.ceil((costUsd + 0.001) * 1_000_000)} WHERE id = ${id}`.signal(
+    await sql`UPDATE knowledge_usage SET status = 'complete', amount_micro_usd = ${costUsd === 0 ? 0 : Math.ceil((costUsd + 0.001) * 1_000_000)} WHERE id = ${id}`.signal(
       signal,
     );
   } else {

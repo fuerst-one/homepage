@@ -22,7 +22,7 @@ export default function DatenschutzPage() {
         Datenschutzerklärung
       </h1>
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
-        Stand: 16. November 2026
+        Stand: 18. November 2026
       </p>
       <p>
         Diese Erklärung beschreibt, wie personenbezogene Daten beim Besuch von
@@ -247,10 +247,41 @@ export default function DatenschutzPage() {
             Projektvorschläge ohne Einwilligungsdialog.
           </p>
           <p>
-            Unsere Anwendungsdatenbank speichert keine Fragen oder Antworten.
-            Sie enthält öffentliche Wissensauszüge und Embeddings sowie
-            Nutzungszeitpunkte, Kosten, Anfragestatus und einen mit geheimem
-            Schlüssel aus der IP-Adresse abgeleiteten Hash zur
+            Mit Ihrer KI-Einwilligung speichern wir Suchvektoren und
+            wiederverwendbare öffentliche Antworten in einem gemeinsamen Cache
+            auf unserem Server in Deutschland. Zu jeder gespeicherten
+            Suchanfrage speichern wir auch den ursprünglichen Frage- oder
+            Suchtext, einschließlich frei formulierter Fragen, um Cache-Treffer
+            zu verwalten und zu prüfen sowie wiederholte kostenpflichtige
+            Verarbeitung zu vermeiden. Der ursprüngliche Text ist nur auf
+            unserem Server und für die Administration zugänglich; er wird
+            anderen Besuchern nicht angezeigt oder deren Modellanfragen
+            beigefügt. Assistent und Projektsuche teilen Suchvektoren und
+            schlüsselbasierte Prüfsummen. Bei unterstützten öffentlichen
+            Portfoliofragen können geprüfte Antworten und öffentliche Belege für
+            gleiche oder eng übereinstimmende Anfragen anderer eingewilligter
+            Besucher wiederverwendet werden. Persönliche oder frei formulierte
+            Antworten werden nicht geteilt. Der Cache enthält keine
+            Besucherkennung, HTTP-Header, Cookies oder Zugangsdaten. Texte,
+            Vektoren und Prüfsummen können personenbezogene Daten enthalten und
+            werden nicht als anonym behandelt. Die normale Speicherdauer beträgt
+            ein Jahr ab Erstellung. Danach laufen Einträge ab und werden im
+            nächsten täglichen Wartungslauf auch bei pausierter KI gelöscht.
+            Treffer verlängern die Frist nicht; eine Mengenbegrenzung entfernt
+            keine jüngeren Einträge. Geänderte veröffentlichte Inhalte
+            verhindern die Wiederverwendung alter Antworten, ohne deren
+            Speicherdauer zu verlängern. Ein Widerruf stoppt weitere Anfragen
+            aus Ihrem Browser. Die Einwilligung für gespeicherte Daten können
+            Sie ebenfalls über die oben genannten Kontaktdaten widerrufen und
+            eine frühere Löschung verlangen; Ihr übermittelter Text hilft uns,
+            passende Einträge zu finden. Erforderliche Löschungen können die
+            normale Speicherdauer verkürzen. Die oben beschriebene siebentägige
+            Sicherungsrotation gilt auch hier.
+          </p>
+          <p>
+            Getrennt davon enthält die Datenbank öffentliche Wissensauszüge und
+            Embeddings sowie Nutzungszeitpunkte, Kosten, Anfragestatus und einen
+            mit geheimem Schlüssel aus der IP-Adresse abgeleiteten Hash zur
             Missbrauchsabwehr. Dieser Hash ist pseudonym und nicht anonym.
             Nutzungsdatensätze enthalten auch die erklärte Einwilligungsversion,
             den Zeitpunkt, den Geltungsbereich und die Verlaufsauswahl zum

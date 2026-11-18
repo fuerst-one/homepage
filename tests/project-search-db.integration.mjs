@@ -12,6 +12,12 @@ test("semantic retrieval ranks and deduplicates real indexed projects in Postgre
   const usage = loadTs(
     new URL("../packages/knowledge/src/usage.ts", import.meta.url),
   );
+  const cache = loadTs(
+    new URL("../packages/knowledge/src/queryCache.ts", import.meta.url),
+  );
+  const { KNOWLEDGE_CONSENT_VERSION } = loadTs(
+    new URL("../packages/content/src/knowledgeConsent.ts", import.meta.url),
+  );
   const { searchKnowledgeProjects } = loadTs(
     new URL(
       "../apps/web/src/server/knowledge/projectSearch.ts",
@@ -37,10 +43,21 @@ test("semantic retrieval ranks and deduplicates real indexed projects in Postgre
     });
     usage.reserveKnowledgeUsage = async () => "read-only-verification";
     usage.finishKnowledgeUsage = async () => {};
+    cache.cachedQueryEmbedding = async () => ({
+      vector: JSON.parse(seed.embedding),
+      costUsd: 0,
+      hit: true,
+    });
     const ids = await searchKnowledgeProjects(
       "nebulaquartz",
       "test",
       AbortSignal.timeout(5000),
+      {
+        version: KNOWLEDGE_CONSENT_VERSION,
+        decidedAt: Date.now(),
+        allowed: true,
+        remember: false,
+      },
     );
     assert.equal(ids[0], seed.project_id);
     assert.equal(ids.length, new Set(ids).size);

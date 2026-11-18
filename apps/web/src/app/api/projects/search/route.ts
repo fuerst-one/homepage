@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
       address,
       AbortSignal.any([request.signal, AbortSignal.timeout(8000)]),
       parsed.consent,
+      (input as { message: string }).message,
     );
     return reply({ projectIds });
   } catch (error) {

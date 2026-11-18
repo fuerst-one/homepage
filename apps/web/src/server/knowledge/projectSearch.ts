@@ -1,5 +1,7 @@
 import { createHmac } from "node:crypto";
 import type { KnowledgeConsent } from "@homepage/content/knowledgeConsent";
+import { parseKnowledgeConsent } from "@homepage/content/knowledgeConsent";
+import { cachedQueryEmbedding } from "@homepage/knowledge/queryCache";
 import { knowledgeDatabase } from "@homepage/database/database";
 import {
   embeddingModel,
@@ -16,8 +18,11 @@ export async function searchKnowledgeProjects(
   address: string,
   signal?: AbortSignal,
   consent?: KnowledgeConsent,
+  rawMessage = message,
 ): Promise<string[]> {
   signal?.throwIfAborted();
+  if (!parseKnowledgeConsent(consent, Date.now(), "search"))
+    throw new Error("Current search consent required");
   const secret =
     process.env.KNOWLEDGE_RATE_LIMIT_SECRET || process.env.CRON_SECRET;
   if (!secret || embeddingModel() !== "openai/text-embedding-3-small")
@@ -36,10 +41,12 @@ export async function searchKnowledgeProjects(
     consent,
   );
   try {
-    const {
-      vectors: [vector],
-      costUsd,
-    } = await embedKnowledgeWithUsage([message], signal);
+    const { vector, costUsd } = await cachedQueryEmbedding(
+      sql,
+      { message, rawMessage, model: embeddingModel(), secret },
+      embedKnowledgeWithUsage,
+      signal,
+    );
     signal?.throwIfAborted();
     // Both public languages contribute evidence; multiple chunks become one result per project.
     const rows = await sql`

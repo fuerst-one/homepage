@@ -115,7 +115,8 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
     await page.waitForSelector(
       ".landing-console:not([inert]) #landing-command",
     );
-    await page.type("#landing-command", "Which work would suit my idea?");
+    const originalQuestion = "  Which work would suit my idea?  ";
+    await page.type("#landing-command", originalQuestion);
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,
     );
@@ -131,7 +132,7 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
     assert.equal(await page.$("[data-ai-consent]"), null);
     assert.equal(
       await page.$eval("#landing-command", (e) => e.value),
-      "Which work would suit my idea?",
+      originalQuestion,
     );
     await page.waitForFunction(
       () => document.activeElement?.id === "landing-command",
@@ -142,6 +143,11 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
     await page.waitForSelector(".knowledge-answer");
     assert.equal(posts, 1);
     assert.equal(bodies[0].consent.remember, false);
+    assert.equal(
+      bodies[0].message,
+      originalQuestion,
+      "raw field text survives consent and reaches the API",
+    );
     assert.equal(
       await page.evaluate(() =>
         sessionStorage.getItem("fuerst-one:knowledge-chat:v1"),

@@ -7,6 +7,13 @@ Microsoft Azure with renewed consent. Historical local acceptance below predates
 that rollout; consult the [production release receipt](ai-production-release-2026-11-16.md)
 for exact production activation state.
 
+The isolated 18 November cache implementation adds migrations 009/010 and renews
+consent to `2026-11-18.3`. Query vectors are shared between both semantic search
+paths; supported public assistant answers have exact and guarded semantic reuse.
+See [cache behavior and acceptance](knowledge-query-cache-2026-11-18.md) for
+retention, migration order, measured provider calls and the deliberately limited
+answer-sharing scope. This change has not been deployed.
+
 Open <http://localhost:6888/en> or <http://localhost:6888/de>. Type into the
 shared input to preview project suggestions; press **Enter** to ask the
 assistant. Try “Show projects with AI automation”. Answers cite
@@ -116,10 +123,12 @@ The Docker database listens on localhost port 55438 and persists in the
   imported. German content uses the site's existing translation publication gate.
   Editorial notes, relations, arbitrary URLs, child pages and synced blocks are
   excluded. Removing publication withdraws material on the next completed read.
-- The server stores embeddings and budget records, not chat prompts, replies or
-  raw IP addresses. Questions and retrieved passages go to OpenRouter and its
-  selected model provider. Treat this as a local prototype pending a public
-  privacy-notice review.
+- The server stores public-content embeddings, budget records, temporary query
+  vectors and supported public answers. Cache entries have keyed fingerprints,
+  original submitted query text, no visitor identifiers, and expire after
+  one calendar year. Younger entries are not evicted for capacity. Raw IP addresses are not stored by the application. On cache misses,
+  questions and relevant public passages go to OpenRouter and Azure. Personal
+  or free-form answers are excluded from shared response caching.
 - Actions use server-owned links and targets. Model output is rendered as plain
   text; citations show retrieved evidence but do not guarantee every generated
   claim is accurate. Check answers before public release.
