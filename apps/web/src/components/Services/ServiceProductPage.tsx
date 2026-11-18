@@ -3,15 +3,12 @@ import Link from "next/link";
 import { Layout } from "../Layout";
 import { Button } from "../Button";
 import { StructuredData } from "../StructuredData";
-import {
-  serviceCopy,
-  servicePath,
-  type ServiceSlug,
-} from "../../data/services";
+import { serviceCopy, servicePath } from "../../data/services";
 import {
   serviceProducts,
   serviceProductEmail,
   serviceProductPath,
+  type ServiceProductSlug,
 } from "../../data/serviceProducts";
 import { localizedPath, type Locale } from "@homepage/content/i18n";
 import { PERSON_ID, SITE_URL, projectPath } from "../../lib/seo";
@@ -23,7 +20,7 @@ export async function ServiceProductPage({
   slug,
   locale,
 }: {
-  slug: ServiceSlug;
+  slug: ServiceProductSlug;
   locale: Locale;
 }) {
   const copy = serviceProducts[slug].copy[locale];

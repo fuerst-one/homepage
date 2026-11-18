@@ -12,7 +12,7 @@ export type EnquiryIntent = (typeof ENQUIRY_INTENTS)[number];
 export type EnquiryContext = {
   source?: "home" | "hire" | "service" | "project";
   projectId?: string;
-  service?: "product-interfaces" | "ai-automation";
+  service?: "product-interfaces" | "ai-automation" | "ai-products";
   offer?: "review" | "assessment";
 };
 export type Enquiry = {
@@ -70,7 +70,8 @@ export function enquiryContext(value: unknown): EnquiryContext {
     result.projectId = value.projectId;
   if (
     value.service === "product-interfaces" ||
-    value.service === "ai-automation"
+    value.service === "ai-automation" ||
+    value.service === "ai-products"
   )
     result.service = value.service;
   if (

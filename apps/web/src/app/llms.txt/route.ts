@@ -5,6 +5,7 @@ import { locales } from "@homepage/content/i18n";
 import {
   serviceProducts,
   serviceProductPath,
+  serviceProductSlugs,
 } from "../../data/serviceProducts";
 import {
   buildRateLimitedResponse,
@@ -49,7 +50,7 @@ The service pages link to selected project evidence and explain scope, deliverab
 
 ## Focused starting engagements / Klar begrenzte Einstiege
 
-${serviceSlugs.flatMap((slug) => locales.map((locale) => `- [${serviceProducts[slug].copy[locale].label} (${locale})](${API_BASE_URL}${serviceProductPath(slug, locale)}) — ${serviceProducts[slug].copy[locale].description}`)).join("\n")}
+${serviceProductSlugs.flatMap((slug) => locales.map((locale) => `- [${serviceProducts[slug].copy[locale].label} (${locale})](${API_BASE_URL}${serviceProductPath(slug, locale)}) — ${serviceProducts[slug].copy[locale].description}`)).join("\n")}
 
 These are scoped, paid service engagements. Scope, fee and schedule are agreed before work starts; the pages do not publish fixed prices or promise future project outcomes.
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   serviceProducts,
   serviceProductPath,
+  isServiceProductSlug,
 } from "../../data/serviceProducts";
 import type { ServiceSlug, ServiceLocale } from "../../data/services";
 import styles from "./services.module.css";
@@ -13,6 +14,7 @@ export function ServiceStartingOffer({
   slug: ServiceSlug;
   locale: ServiceLocale;
 }) {
+  if (!isServiceProductSlug(slug)) return null;
   const copy = serviceProducts[slug].copy[locale];
   return (
     <section

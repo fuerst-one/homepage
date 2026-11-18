@@ -1,0 +1,144 @@
+.page {
+  background: rgba(0, 0, 0, 0.56);
+}
+.hero h1 {
+  max-width: 19ch;
+}
+.preview {
+  border: 1px solid var(--line);
+  background: #0b0b0b;
+}
+.brief {
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--line);
+}
+.brief blockquote {
+  max-width: 34rem;
+  margin-top: 1rem;
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  line-height: 1.7;
+  letter-spacing: -0.03em;
+  text-wrap: pretty;
+}
+.brief > span {
+  display: block;
+  margin-top: 1rem;
+  color: #cbe996;
+}
+.preview a,
+.visual {
+  display: block;
+}
+.preview img,
+.visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.preview figcaption {
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.65rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.audiences {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  padding-block: 1.5rem;
+  border-block: 1px solid var(--line);
+}
+.audiences h2 {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.audiences p {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+.case {
+  padding-block: 2.5rem;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 2rem;
+}
+.case:first-of-type {
+  margin-top: 2rem;
+}
+.case h3 {
+  margin-top: 0.9rem;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  line-height: 1.4;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.case h3 a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.context {
+  margin-top: 0.9rem;
+  font-size: 0.7rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.summary,
+.empty {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  line-height: 1.9;
+  color: #dedede;
+}
+.flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-block: 1.5rem;
+  border-block: 1px solid var(--line);
+}
+.flow > div {
+  padding: 1.25rem 1rem;
+  min-width: 0;
+}
+.flow > div:first-child {
+  padding-left: 0;
+}
+.flow > div + div {
+  border-left: 1px solid var(--line);
+}
+.flow dt {
+  color: #cbe996;
+  font-size: 0.65rem;
+  line-height: 1.8;
+}
+.flow dd {
+  margin-top: 0.7rem;
+  font-size: 0.75rem;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.visual {
+  border: 1px solid var(--line);
+  background: #101010;
+  margin-top: 1.5rem;
+}
+@media (max-width: 540px) {
+  .audiences,
+  .flow {
+    grid-template-columns: 1fr;
+  }
+  .audiences {
+    gap: 1.5rem;
+  }
+  .flow > div,
+  .flow > div:first-child {
+    padding: 1rem 0;
+  }
+  .flow > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
