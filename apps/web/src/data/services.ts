@@ -1,5 +1,7 @@
 import { localizedPath, type Locale } from "@homepage/content/i18n";
 
+import { automationCases } from "./automationCases";
+
 export type ServiceLocale = Locale;
 export const serviceSlugs = ["product-interfaces", "ai-automation"] as const;
 export type ServiceSlug = (typeof serviceSlugs)[number];
@@ -17,10 +19,7 @@ export const serviceProjects: Record<ServiceSlug, readonly string[]> = {
     "15b86514-f736-803e-b9b7-e47ebc2406d1",
     "153f6668-f4d6-490a-8345-0b999b35305a",
   ],
-  "ai-automation": [
-    "11d86514-f736-80ed-935c-e6fe30b59d42",
-    "35486514-f736-8020-bde8-e0f741a1a77a",
-  ],
+  "ai-automation": automationCases.map((item) => item.id),
 };
 
 type ServiceCopy = {
@@ -213,28 +212,29 @@ export const serviceCopy: Record<
   "ai-automation": {
     en: {
       label: "AI automation & prototypes",
-      title: "AI automation & working prototypes — Alexander Fuerst",
+      title:
+        "AI automation, data pipelines & browser agents — Alexander Fuerst",
       description:
-        "Connect your tools, reduce repetitive work and test product ideas with working prototypes. Practical AI automation and product engineering by Alexander Fuerst.",
-      headline: "Less copying between tools. More moving things forward.",
+        "Collect and structure data, connect tools and automate browser workflows. Practical AI and automation with documented examples from Alexander Fuerst.",
+      headline: "Turn scattered information into working workflows.",
       intro:
-        "Your team shouldn’t have to be the integration between its tools. I build automations that connect the work — and prototypes that turn “could this work?” into something you can actually try.",
+        "I build data pipelines, tool integrations and browser automations that turn recurring tasks into working software. AI helps where the task calls for it.",
       cta: "Let’s talk about your workflow",
       emailSubject: "Let's talk about automation or a prototype",
       emailBody:
-        "Hi Alexander,\n\nThe workflow or idea:\nThe tools we use:\nThe result we'd like:\n\nOptional: an example of the current process or a timeline.\n",
+        "Hi Alexander,\n\nThe workflow or idea:\nThe sources and tools involved:\nHow often it repeats:\nWhere the result should go:\nThe result we'd like:\n\nOptional: an example of the current process or a timeline.\n",
       reassurance:
         "Start with one repetitive task or one product question. No technical specification needed.",
       evidenceIntro:
-        "AI-supported survey analysis and a personal multi-agent development tool. Concrete examples of turning information and repeated steps into usable software.",
+        "Multi-source data pipelines, browser-agent testing and AI-supported survey analysis. Concrete examples with their scope, contribution and project stage made explicit.",
       workHeading: "Start with the work. Build what helps.",
       workIntro:
         "The useful question is where your team loses time or your idea needs evidence. That determines what to automate, where AI fits and what needs a person’s judgment.",
       deliverables: [
         {
-          title: "Connect the tools you already use",
-          text: "Move information between systems, remove repeated data entry and make handoffs explicit. Start with one workflow and the access your tools actually provide.",
-          output: "Workflow map · API integrations · error and retry handling",
+          title: "Collect, structure and keep data current",
+          text: "Bring information from websites and APIs into a consistent format. Map fields, validate records and connect the result to your tools, with scheduled workers and error handling where the workflow needs them.",
+          output: "Source adapters · data validation · recurring update jobs",
         },
         {
           title: "Give AI a defined job",
@@ -242,9 +242,9 @@ export const serviceCopy: Record<
           output: "AI workflow · evaluation examples · human review points",
         },
         {
-          title: "Put the idea in someone’s hands",
-          text: "Test the riskiest assumption with a working prototype. Give users something to react to and your team a concrete basis for deciding what to build next.",
-          output: "Focused scope · working prototype · findings and next steps",
+          title: "Automate repeatable browser work",
+          text: "Turn a repeated browser task or user journey into an executable workflow. Make steps, checks and results visible so people can review what happened and investigate failures.",
+          output: "Browser workflows · queued runs · inspectable results",
         },
       ],
       process: [
@@ -291,29 +291,29 @@ export const serviceCopy: Record<
     de: {
       label: "KI-Automatisierung & Prototypen",
       title:
-        "KI-Automatisierung & funktionierende Prototypen — Alexander Fuerst",
+        "KI-Automatisierung, Datenpipelines & Browser-Agenten — Alexander Fuerst",
       description:
-        "Tools verbinden, manuelle Arbeit reduzieren und Produktideen mit funktionierenden Prototypen testen. Praktische KI-Automatisierung mit Alexander Fuerst.",
-      headline: "Weniger zwischen Tools kopieren. Mehr voranbringen.",
+        "Daten sammeln und strukturieren, Tools verbinden und Browser-Abläufe automatisieren. Praktische KI und Automatisierung mit Projektbeispielen von Alexander Fuerst.",
+      headline: "Daten nutzbar machen. Abläufe verbinden.",
       intro:
-        "Dein Team sollte nicht die Schnittstelle zwischen seinen Tools sein. Ich entwickle Automatisierungen, die Arbeitsschritte verbinden — und Prototypen, mit denen aus „Könnte das funktionieren?“ etwas wird, das du ausprobieren kannst.",
+        "Ich entwickle Datenpipelines, Tool-Anbindungen und Browser-Automatisierungen für wiederkehrende Aufgaben. KI kommt dort zum Einsatz, wo sie der Aufgabe hilft.",
       cta: "Lass uns über deinen Ablauf sprechen",
       emailSubject: "Anfrage zu Automatisierung oder einem Prototyp",
       emailBody:
-        "Hi Alexander,\n\nUnser Ablauf oder unsere Idee:\nDiese Tools nutzen wir:\nDas wünschen wir uns als Ergebnis:\n\nOptional: ein Beispiel des aktuellen Ablaufs oder ein Zeitrahmen.\n",
+        "Hi Alexander,\n\nUnser Ablauf oder unsere Idee:\nBeteiligte Quellen und Tools:\nSo oft wiederholt sich die Aufgabe:\nHier soll das Ergebnis ankommen:\nDas wünschen wir uns als Ergebnis:\n\nOptional: ein Beispiel des aktuellen Ablaufs oder ein Zeitrahmen.\n",
       reassurance:
         "Eine wiederkehrende Aufgabe oder eine Produktfrage reicht. Ein technisches Konzept brauchst du dafür noch nicht.",
       evidenceIntro:
-        "KI-gestützte Umfrageauswertung und ein eigenes Multi-Agenten-Entwicklungstool. Konkrete Beispiele dafür, wie aus Informationen und wiederkehrenden Schritten nutzbare Software wird.",
+        "Datenpipelines mit mehreren Quellen, Tests mit Browser-Agenten und KI-gestützte Umfrageauswertung. Konkrete Beispiele mit klar benanntem Umfang, Beitrag und Projektstand.",
       workHeading: "Bei der Arbeit anfangen. Bauen, was hilft.",
       workIntro:
         "Wo verliert dein Team Zeit? Welche Annahme muss deine Idee erst beweisen? Daraus ergibt sich, was wir automatisieren, wo KI hilft und wo menschliches Urteil nötig bleibt.",
       deliverables: [
         {
-          title: "Die vorhandenen Tools verbinden",
-          text: "Informationen zwischen Systemen übertragen, doppelte Dateneingabe vermeiden und Übergaben klar machen. Wir starten mit einem Ablauf und den Zugängen, die deine Tools tatsächlich bieten.",
+          title: "Daten sammeln, strukturieren und aktuell halten",
+          text: "Informationen aus Webseiten und APIs in ein einheitliches Format bringen. Felder zuordnen, Datensätze prüfen und das Ergebnis mit deinen Tools verbinden. Wo der Ablauf es braucht, mit geplanten Workern und Fehlerbehandlung.",
           output:
-            "Prozessübersicht · API-Anbindungen · Fehler- und Wiederholungslogik",
+            "Quellenadapter · Datenprüfung · wiederkehrende Aktualisierungen",
         },
         {
           title: "KI eine klar umrissene Aufgabe geben",
@@ -321,10 +321,9 @@ export const serviceCopy: Record<
           output: "KI-Ablauf · Testbeispiele · menschliche Prüfpunkte",
         },
         {
-          title: "Die Idee ausprobierbar machen",
-          text: "Die entscheidende Annahme mit einem funktionierenden Prototyp testen. Nutzer bekommen etwas Greifbares und dein Team eine Grundlage für die nächste Produktentscheidung.",
-          output:
-            "Klarer Umfang · funktionierender Prototyp · Erkenntnisse und nächste Schritte",
+          title: "Wiederkehrende Browser-Arbeit automatisieren",
+          text: "Eine wiederkehrende Browser-Aufgabe oder Nutzerreise als ausführbaren Ablauf umsetzen. Schritte, Prüfungen und Ergebnisse sichtbar machen, damit Menschen nachvollziehen können, was passiert ist, und Fehler untersuchen können.",
+          output: "Browser-Abläufe · Warteschlangen · überprüfbare Ergebnisse",
         },
       ],
       process: [

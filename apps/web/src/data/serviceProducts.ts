@@ -119,14 +119,13 @@ export const serviceProducts: Record<
     segment: "assessment",
     copy: {
       en: {
-        label: "AI workflow assessment",
-        title:
-          "AI workflow assessment & automation planning — Alexander Fuerst",
+        label: "Workflow & automation assessment",
+        title: "Workflow & automation assessment — Alexander Fuerst",
         description:
           "Find a useful first automation before committing to a build. Assess one workflow, compare AI and conventional options, and get a practical implementation and validation brief.",
         headline: "Find the right workflow to automate first.",
         intro:
-          "Before you connect another AI tool, understand the work it needs to do. We examine one recurring workflow and turn a promising idea into a practical decision about what to build, what to keep human and what to leave alone.",
+          "Before choosing tools, understand the work they need to do. We examine one recurring workflow and turn a promising idea into a practical decision about what to build, what to keep human and what to leave alone.",
         teaser:
           "Map one recurring workflow, compare AI and conventional automation, and define a useful first implementation step.",
         decision:
@@ -158,19 +157,19 @@ export const serviceProducts: Record<
         boundary:
           "The assessment covers one agreed workflow. Production integrations, a working prototype, model training and ongoing operation are separate engagements. If the evidence does not support automation, that is a useful finding too.",
         cta: "Discuss a workflow assessment",
-        subject: "AI workflow assessment enquiry",
+        subject: "Workflow & automation assessment enquiry",
         brief:
-          "Hi Alexander,\n\nThe recurring workflow:\nThe tools and people involved:\nWhat we'd like to improve:\n\nOptional: frequency, an example or constraints.\n",
+          "Hi Alexander,\n\nThe recurring workflow:\nThe sources, tools and people involved:\nHow often it repeats:\nWhere the result should go:\nWhat we'd like to improve:\n\nOptional: frequency, an example or constraints.\n",
       },
       de: {
-        label: "KI-Workflow-Assessment",
+        label: "Workflow- und Automatisierungs-Assessment",
         title:
-          "KI-Workflow-Assessment & Automatisierungsplanung — Alexander Fuerst",
+          "Workflow- und Automatisierungs-Assessment & Automatisierungsplanung — Alexander Fuerst",
         description:
           "Den richtigen Einstieg in die Automatisierung finden: einen Ablauf prüfen, KI mit klassischen Lösungen vergleichen und Umsetzung sowie Erfolgskriterien konkret planen.",
         headline: "Finde den richtigen Ablauf für die erste Automatisierung.",
         intro:
-          "Bevor das nächste KI-Tool dazukommt, muss klar sein, welche Arbeit es übernehmen soll. Wir prüfen einen wiederkehrenden Ablauf und klären konkret, was sich bauen lässt, wo Menschen entscheiden sollten und was besser so bleibt.",
+          "Bevor wir Tools auswählen, muss klar sein, welche Arbeit sie übernehmen sollen. Wir prüfen einen wiederkehrenden Ablauf und klären konkret, was sich bauen lässt, wo Menschen entscheiden sollten und was besser so bleibt.",
         teaser:
           "Einen wiederkehrenden Ablauf verstehen, KI und klassische Automatisierung vergleichen und einen sinnvollen ersten Umsetzungsschritt festlegen.",
         decision:
@@ -202,9 +201,9 @@ export const serviceProducts: Record<
         boundary:
           "Das Assessment umfasst einen vereinbarten Workflow. Produktive Integrationen, ein funktionierender Prototyp, Modelltraining und laufender Betrieb sind eigene Aufträge. Wenn die Erkenntnisse gegen eine Automatisierung sprechen, ist auch das ein nützliches Ergebnis.",
         cta: "Workflow-Assessment besprechen",
-        subject: "Anfrage zum KI-Workflow-Assessment",
+        subject: "Anfrage zum Workflow- und Automatisierungs-Assessment",
         brief:
-          "Hi Alexander,\n\nDer wiederkehrende Ablauf:\nBeteiligte Tools und Personen:\nDas möchten wir verbessern:\n\nOptional: Häufigkeit, ein Beispiel oder wichtige Grenzen.\n",
+          "Hi Alexander,\n\nDer wiederkehrende Ablauf:\nBeteiligte Quellen, Tools und Personen:\nSo oft wiederholt sich die Aufgabe:\nHier soll das Ergebnis ankommen:\nDas möchten wir verbessern:\n\nOptional: Häufigkeit, ein Beispiel oder wichtige Grenzen.\n",
       },
     },
   },

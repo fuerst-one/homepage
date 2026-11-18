@@ -1,4 +1,5 @@
 import type { CvProject } from "@homepage/content/models";
+import { automationCases } from "../../data/automationCases";
 import { serviceProjects, type ServiceSlug } from "../../data/services";
 
 // Only explicitly selected public portfolio records belong in a service case study.
@@ -14,6 +15,10 @@ export function selectServiceEvidence(
     return [
       {
         id: project.id,
+        story:
+          slug === "ai-automation"
+            ? (automationCases.find((item) => item.id === project.id) ?? null)
+            : null,
         href: projectHref(project),
         contentLocale: project.contentLocale ?? "en",
         name: project.name.trim(),

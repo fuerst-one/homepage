@@ -206,7 +206,14 @@ export async function ServiceProductPage({
               <h3>
                 <Link href={project.href}>{project.name} ↗</Link>
               </h3>
-              <p>{project.clients.join(" · ")}</p>
+              <p>
+                {project.story?.[locale].context ?? project.clients.join(" · ")}
+              </p>
+              {project.story && (
+                <p className={styles.sectionIntro}>
+                  {project.story[locale].summary}
+                </p>
+              )}
               {project.screenshot && (
                 <Link
                   href={project.href}

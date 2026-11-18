@@ -15,6 +15,7 @@ import {
 } from "../../data/services";
 import { selectServiceEvidence } from "./serviceEvidence";
 import { serviceSchema } from "./serviceMetadata";
+import { AutomationLandingPage } from "./AutomationLandingPage";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
 import styles from "./services.module.css";
 
@@ -85,14 +86,6 @@ const caseStories: Record<string, { en: string; de: string }> = {
     en: "Voyage calculation, competitor analysis, route monitoring and negotiation in one maritime application. A complex professional domain translated into usable workflows.",
     de: "Reisekalkulation, Wettbewerbsanalyse, Routenüberwachung und Verhandlung in einer maritimen Anwendung. Eine komplexe Fachdomäne, übersetzt in bedienbare Abläufe.",
   },
-  "11d86514-f736-80ed-935c-e6fe30b59d42": {
-    en: "A B2B survey product that combines survey creation, website integration and automatic analysis, helping businesses turn responses into actionable information.",
-    de: "Ein B2B-Umfrageprodukt, das Erstellung, Website-Integration und automatische Auswertung verbindet, um aus Antworten nutzbare Informationen zu machen.",
-  },
-  "35486514-f736-8020-bde8-e0f741a1a77a": {
-    en: "A personal development tool coordinating AI agents through a staged build process, with a web interface for live status, steering and review. A self-directed project, not a client commission.",
-    de: "Ein eigenes Entwicklungstool, das KI-Agenten durch einen mehrstufigen Build-Prozess koordiniert. Mit Weboberfläche für Status, Steuerung und Review. Ein eigenes Projekt, kein Kundenauftrag.",
-  },
 };
 
 export async function ServicePage({
@@ -123,6 +116,9 @@ export async function ServicePage({
   const evidence = selectServiceEvidence(projects, slug, (project) =>
     projectPath(project, locale),
   );
+  if (slug === "ai-automation") {
+    return <AutomationLandingPage locale={locale} evidence={evidence} />;
+  }
   const hero = evidence.find((project) => project.screenshot);
 
   return (
