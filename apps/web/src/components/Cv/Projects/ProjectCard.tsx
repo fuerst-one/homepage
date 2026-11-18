@@ -20,6 +20,7 @@ import { useProjectFocusStore } from "./projectFocusStore";
 import { projectPath } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
+import { projectHeading } from "./projectHeading";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -47,16 +48,14 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const openDialog = () => setFocused(id);
   const path = projectPath(project, locale);
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
+  const { title, subtitle } = projectHeading(name);
 
   return (
     <article className="glass-panel group relative grid grid-cols-1 gap-5 border border-white/30 p-5 transition hover:border-white md:grid-cols-[16rem_minmax(0,1fr)] md:gap-6">
-      <button
-        type="button"
-        onClick={openDialog}
+      <Link
+        href={path}
         aria-label={
-          locale === "de"
-            ? `Details zu ${name} anzeigen`
-            : `View details for ${name}`
+          locale === "de" ? `Projekt ansehen: ${name}` : `View project: ${name}`
         }
         className="absolute inset-0 z-0 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white print:hidden"
       />
@@ -64,6 +63,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
         <Thumbnail
           src={thumbnail}
           projectName={name}
+          locale={locale}
           onClick={openDialog}
           screenshotCount={screenshots?.length ?? 0}
         />
@@ -113,19 +113,20 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
           </div>
         )}
       </div>
-      <div className="pointer-events-none relative z-10 flex min-w-0 flex-col gap-3">
-        <header className="space-y-1">
+      <div className="pointer-events-none relative z-10 flex min-w-0 flex-col gap-4">
+        <header className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <ProjectIndustry project={project} locale={locale} />
             {primaryLogo && (
               <ProjectLogo src={primaryLogo} alt={`${name} logo`} />
             )}
           </div>
-          <h3 className="text-2xl font-semibold text-white">
-            <Link href={path} className="pointer-events-auto hover:underline">
-              {name}
-            </Link>
-          </h3>
+          <h3 className="text-2xl font-semibold text-white">{title}</h3>
+          {subtitle && (
+            <p className="text-base leading-snug text-neutral-300">
+              {subtitle}
+            </p>
+          )}
           <p className="text-xs text-neutral-400">
             {projectType} ·{" "}
             <DateRange
@@ -150,36 +151,45 @@ const Thumbnail = ({
   projectName,
   onClick,
   screenshotCount,
+  locale,
 }: {
   src: string | undefined;
   projectName: string;
   onClick: () => void;
   screenshotCount: number;
+  locale: "en" | "de";
 }) => {
   const hasMultiple = screenshotCount > 1;
+  if (!src)
+    return (
+      <div
+        className="flex aspect-video w-full items-center justify-center border border-white/20 bg-black text-neutral-500 print:hidden"
+        aria-hidden="true"
+      >
+        <FaImage className="text-2xl" />
+      </div>
+    );
 
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={`Open details for ${projectName}`}
+      aria-label={
+        locale === "de"
+          ? `Bilder von ${projectName} ansehen`
+          : `View images for ${projectName}`
+      }
       className="group/thumb pointer-events-auto relative block aspect-video w-full overflow-hidden border border-white/20 bg-black transition hover:border-white focus-visible:border-white focus-visible:outline-none print:hidden"
     >
-      {src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt={`${projectName} preview`}
-          loading="lazy"
-          className="h-full w-full object-cover transition duration-500 group-hover/thumb:scale-105"
-        />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center text-neutral-500">
-          <FaImage className="text-2xl" />
-        </div>
-      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={`${projectName} preview`}
+        loading="lazy"
+        className="h-full w-full object-cover transition duration-500 group-hover/thumb:scale-105"
+      />
       <span className="absolute inset-0 flex items-center justify-center bg-black/60 text-[0.65rem] uppercase tracking-[0.3em] text-white opacity-0 transition group-hover/thumb:opacity-100">
-        View
+        {locale === "de" ? "Bilder ansehen" : "View images"}
       </span>
       {hasMultiple && (
         <span className="absolute bottom-2 right-2 border border-white/30 bg-black/70 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.25em] text-neutral-200">

@@ -9,12 +9,12 @@ import { useLocale } from "../../i18n/LocaleProvider";
 export const ProjectScreenshots = ({
   screenshots,
   projectName,
-  compact = false,
+  viewer = false,
   locale: localeOverride,
 }: {
   screenshots: string[];
   projectName: string;
-  compact?: boolean;
+  viewer?: boolean;
   locale?: "en" | "de";
 }) => {
   const contextLocale = useLocale();
@@ -53,13 +53,20 @@ export const ProjectScreenshots = ({
   };
 
   return (
-    <div className="group/screenshot mt-4 select-none print:hidden">
-      <div className="relative overflow-hidden border border-white/20 bg-black">
+    <div
+      className={cn(
+        "group/screenshot select-none print:hidden",
+        viewer ? "flex min-h-0 flex-1 flex-col" : "mt-4",
+      )}
+    >
+      <div
+        className={cn(
+          "relative overflow-hidden border border-white/20 bg-black",
+          viewer && "min-h-0 flex-1",
+        )}
+      >
         <div
-          className={cn(
-            "relative w-full",
-            compact ? "h-[28vh] min-h-32" : "aspect-video",
-          )}
+          className={cn("relative w-full", viewer ? "h-full" : "aspect-video")}
         >
           {sanitizedScreenshots.map((src, index) => (
             <Fragment key={`${src}-${index}`}>
@@ -68,9 +75,10 @@ export const ProjectScreenshots = ({
                 src={src}
                 alt={`${projectName} screenshot ${index + 1}`}
                 loading="lazy"
+                aria-hidden={index !== activeIndex}
                 className={cn(
                   "absolute inset-0 h-full w-full transition-opacity duration-500",
-                  compact ? "object-contain" : "object-cover",
+                  viewer ? "object-contain" : "object-cover",
                   index === activeIndex
                     ? "opacity-100"
                     : "pointer-events-none opacity-0",
@@ -84,7 +92,10 @@ export const ProjectScreenshots = ({
             <button
               type="button"
               onClick={() => goToIndex(activeIndex - 1)}
-              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center border border-white/30 bg-black/80 text-neutral-100 opacity-0 transition hover:border-white hover:text-white group-hover/screenshot:opacity-100"
+              className={cn(
+                "absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center border border-white/30 bg-black/80 text-neutral-100 opacity-0 transition hover:border-white hover:text-white focus-visible:opacity-100 group-hover/screenshot:opacity-100",
+                viewer && "opacity-100",
+              )}
               aria-label={
                 locale === "de" ? "Vorheriges Bild" : "Previous screenshot"
               }
@@ -94,7 +105,10 @@ export const ProjectScreenshots = ({
             <button
               type="button"
               onClick={() => goToIndex(activeIndex + 1)}
-              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center border border-white/30 bg-black/80 text-neutral-100 opacity-0 transition hover:border-white hover:text-white group-hover/screenshot:opacity-100"
+              className={cn(
+                "absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center border border-white/30 bg-black/80 text-neutral-100 opacity-0 transition hover:border-white hover:text-white focus-visible:opacity-100 group-hover/screenshot:opacity-100",
+                viewer && "opacity-100",
+              )}
               aria-label={locale === "de" ? "Nächstes Bild" : "Next screenshot"}
             >
               <FaChevronRight className="text-base" />
@@ -103,7 +117,7 @@ export const ProjectScreenshots = ({
         )}
       </div>
       {showNavigation && (
-        <div className="mt-3 flex items-center justify-center gap-2">
+        <div className="mt-3 flex shrink-0 flex-wrap items-center justify-center gap-2">
           {sanitizedScreenshots.map((_, index) => (
             <button
               key={index}
