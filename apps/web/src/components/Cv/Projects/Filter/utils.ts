@@ -1,4 +1,5 @@
 import { CvProject } from "@homepage/content/models";
+import type { Locale } from "@homepage/content/i18n";
 import countBy from "lodash/countBy";
 import { colors } from "../colors";
 import { CASE_VOCABULARY } from "@homepage/content/projectCase";
@@ -73,6 +74,15 @@ export const filterProjects = (
     });
   });
 };
+
+/** A landing-page category opens the directory with that category selected. */
+export function projectFacetHref(
+  key: "capabilities" | "industries" | "methods",
+  value: string,
+  locale: Locale,
+) {
+  return `/${locale}/projects?${new URLSearchParams({ [key]: value })}`;
+}
 
 const getIsMatchingProject = (
   projectValue: unknown,

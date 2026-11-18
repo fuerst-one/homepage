@@ -3,6 +3,9 @@
   "private": true,
   "packageManager": "pnpm@10.13.1",
   "scripts": {
+    "github:sync": "node --env-file=.env.local --import tsx apps/sync/scripts/github.ts sync",
+    "github:status": "node --env-file=.env.local --import tsx apps/sync/scripts/github.ts status",
+    "github:migrate": "node --env-file=.env.local --import tsx apps/sync/scripts/github.ts migrate",
     "dev": "node --env-file-if-exists=.env.local scripts/web.mjs dev",
     "build": "node --env-file-if-exists=.env.local scripts/web.mjs build",
     "start": "node --env-file-if-exists=.env.local scripts/web.mjs start",

@@ -3,38 +3,41 @@ import { knowledgeDatabase } from "@homepage/database/database";
 
 type Snapshot = { value: unknown; ageMs: number };
 
-export function postgresSnapshotStore(sql = knowledgeDatabase()) {
+export function postgresSnapshotStore(
+  sql = knowledgeDatabase(),
+  table: "notion_snapshots" | "github_worker_snapshots" = "notion_snapshots",
+) {
   return {
     async read(key: string): Promise<Snapshot | null> {
       const [row] =
         await sql`SELECT payload, extract(epoch FROM (clock_timestamp()-refreshed_at))*1000 AS age
-        FROM notion_snapshots WHERE key=${key}`;
+        FROM ${sql(table)} WHERE key=${key}`;
       return row ? { value: row.payload, ageMs: Number(row.age) } : null;
     },
     async claim(key: string, freshSeconds: number): Promise<string | null> {
       const token = randomUUID();
-      await sql`INSERT INTO notion_snapshots(key) VALUES (${key}) ON CONFLICT DO NOTHING`;
+      await sql`INSERT INTO ${sql(table)}(key) VALUES (${key}) ON CONFLICT DO NOTHING`;
       const rows =
-        await sql`UPDATE notion_snapshots SET lease_token=${token},lease_until=clock_timestamp()+interval '10 minutes'
+        await sql`UPDATE ${sql(table)} SET lease_token=${token},lease_until=clock_timestamp()+interval '10 minutes'
         WHERE key=${key} AND lease_until<=clock_timestamp() AND retry_at<=clock_timestamp()
         AND (refreshed_at IS NULL OR refreshed_at<=clock_timestamp()-${freshSeconds}*interval '1 second') RETURNING key`;
       return rows.length ? token : null;
     },
     async publish(key: string, token: string, value: unknown) {
       const rows =
-        await sql`UPDATE notion_snapshots SET payload=${sql.json(JSON.parse(JSON.stringify(value)))},refreshed_at=clock_timestamp(),
+        await sql`UPDATE ${sql(table)} SET payload=${sql.json(JSON.parse(JSON.stringify(value)))},refreshed_at=clock_timestamp(),
         lease_token=NULL,lease_until=clock_timestamp(),retry_at=clock_timestamp()
         WHERE key=${key} AND lease_token=${token} AND lease_until>clock_timestamp() RETURNING key`;
       return rows.length > 0;
     },
     async renew(key: string, token: string) {
       const rows =
-        await sql`UPDATE notion_snapshots SET lease_until=clock_timestamp()+interval '10 minutes'
+        await sql`UPDATE ${sql(table)} SET lease_until=clock_timestamp()+interval '10 minutes'
         WHERE key=${key} AND lease_token=${token} AND lease_until>clock_timestamp() RETURNING key`;
       return rows.length > 0;
     },
     async fail(key: string, token: string) {
-      await sql`UPDATE notion_snapshots SET lease_token=NULL,lease_until=clock_timestamp(),retry_at=clock_timestamp()+interval '60 seconds'
+      await sql`UPDATE ${sql(table)} SET lease_token=NULL,lease_until=clock_timestamp(),retry_at=clock_timestamp()+interval '60 seconds'
         WHERE key=${key} AND lease_token=${token}`;
     },
   };

@@ -1,10 +1,9 @@
-import { publicProjectScale } from "@homepage/content/projectScale";
 import { localizedPath, type Locale } from "@homepage/content/i18n";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Layout } from "../Layout";
 import { ExperienceAtlas } from "./ExperienceAtlas";
-import { presentProject } from "./projectPresentation";
+import { publishedExplorerData } from "./projectPresentation";
 import { atlasText } from "./atlasCopy";
 import type { SemanticDataset } from "./spaceTypes";
 import { readWebsiteSections } from "@homepage/database/websiteContent";
@@ -40,20 +39,16 @@ export async function ExplorePage({ params }: ExplorePageProps) {
     undefined,
     locale,
   );
-  const byId = new Map(published.map((project) => [project.id, project]));
+  const data = publishedExplorerData(
+    { atlas: preview.atlas, semantic: preview.semantic as SemanticDataset },
+    published,
+    locale,
+  );
   return (
     <Layout locale={locale} availableLocales={["en", "de"]} wide>
       <div className="explore-site">
         <ExperienceAtlas
-          projects={preview.atlas.map((project) => {
-            const publishedProject = byId.get(project.id);
-            return presentProject(
-              { ...project, scale: publicProjectScale(project.scale) },
-              publishedProject,
-              locale,
-            );
-          })}
-          semanticData={preview.semantic as SemanticDataset}
+          {...data}
           experimentsEnabled={process.env.NODE_ENV === "development"}
         />
       </div>
