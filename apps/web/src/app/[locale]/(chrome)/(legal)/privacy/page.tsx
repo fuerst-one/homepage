@@ -1,3 +1,4 @@
+import { VisitorProfilePrivacy } from "../../../../../components/VisitorProfile/VisitorProfilePrivacy";
 import type { Metadata } from "next";
 import { getSiteFeatures } from "@/server/siteFeatures";
 
@@ -106,10 +107,11 @@ export default function PrivacyPage() {
         Cookies, analytics and browser storage
       </h2>
       <p>
-        We do not use visitor analytics, advertising pixels, session replay or
-        tracking cookies. The website does not set application cookies and does
-        not create visitor profiles.
+        We do not use advertising pixels, session replay or tracking cookies.
+        The website does not set application cookies. Interest profiling and
+        first-party insights are optional, as described below.
       </p>
+      <VisitorProfilePrivacy locale="en" />
       <p>
         The Plasma playground keeps visual settings in page memory by default.
         If you select “Remember visual settings on this device”, your source,

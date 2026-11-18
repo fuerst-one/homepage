@@ -21,6 +21,13 @@ function loadModule(path, dependencies = {}) {
   });
   new Function("exports", "require", outputText)(exports, (name) => {
     if (name in dependencies) return dependencies[name];
+    if (name.endsWith("/VisitorProfilePrivacy"))
+      return loadTs(
+        new URL(
+          "../apps/web/src/components/VisitorProfile/VisitorProfilePrivacy.tsx",
+          import.meta.url,
+        ),
+      );
     if (name === "@/server/siteFeatures")
       return loadTs(
         new URL("../apps/web/src/server/siteFeatures.ts", import.meta.url),

@@ -25,6 +25,7 @@ import {
   type EnquiryEvidence,
 } from "@homepage/content/enquiryEvidence";
 import { caseLabel } from "@homepage/content/projectCase";
+import { recordVisitorInteraction } from "../VisitorProfile/profileStore";
 type Field = keyof (typeof enquiryCopy)["en"]["labels"];
 const controlClass =
   "mt-2 block w-full border border-white/35 bg-black px-3 py-3 text-sm text-white placeholder:text-neutral-500 focus:border-white focus:outline focus:outline-1 focus:outline-white disabled:opacity-60 aria-[invalid=true]:border-amber-300";
@@ -176,6 +177,7 @@ export function EnquiryFlow({
       const data = await response.json();
       if (data.receipt !== value.id) throw new Error("Invalid receipt");
       setReceipt(data.receipt);
+      recordVisitorInteraction("enquiry_submitted", "enquiry");
       try {
         sessionStorage.removeItem(ENQUIRY_DRAFT_KEY);
       } catch {
@@ -569,7 +571,12 @@ export function EnquiryFlow({
           </Button>
         </div>
       ) : (
-        <form onSubmit={submit} noValidate className="space-y-6">
+        <form
+          onFocus={() => recordVisitorInteraction("enquiry_started", "enquiry")}
+          onSubmit={submit}
+          noValidate
+          className="space-y-6"
+        >
           <fieldset disabled={sending || !ready} className="min-w-0 space-y-6">
             {restored && (
               <p className="text-xs text-neutral-400">

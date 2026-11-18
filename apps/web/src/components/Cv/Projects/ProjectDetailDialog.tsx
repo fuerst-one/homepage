@@ -6,6 +6,7 @@ import { FaTimes } from "@react-icons/all-files/fa/FaTimes";
 import { CvProject } from "@homepage/content/models";
 import { useProjectFocusStore } from "./projectFocusStore";
 import { ProjectDetails } from "./ProjectDetails";
+import { useVisitorProfileStore } from "../../VisitorProfile/profileStore";
 
 export const ProjectDetailDialog = ({
   projects,
@@ -13,6 +14,7 @@ export const ProjectDetailDialog = ({
   projects: CvProject[];
 }) => {
   const locale = useLocale();
+  const liveProfileOpen = useVisitorProfileStore((s) => s.enabled && s.open);
   const focusedId = useProjectFocusStore((s) => s.focusedProjectId);
   const setFocused = useProjectFocusStore((s) => s.setFocusedProjectId);
   const project = focusedId
@@ -28,10 +30,22 @@ export const ProjectDetailDialog = ({
   };
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog.Root
+      modal={!liveProfileOpen}
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm" />
         <Dialog.Content
+          style={liveProfileOpen ? { zIndex: 75 } : undefined}
+          onInteractOutside={(event) => {
+            if (
+              event.target instanceof Element &&
+              event.target.closest("[data-profile-ui]")
+            )
+              event.preventDefault();
+          }}
           className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed left-1/2 top-1/2 z-[101] flex max-h-[90vh] w-[min(64rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col border border-white/30 bg-black text-neutral-100 shadow-2xl outline-none"
           aria-describedby={undefined}
         >

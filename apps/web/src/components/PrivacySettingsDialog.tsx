@@ -1,9 +1,11 @@
 "use client";
 
 import * as Dialog from "@radix-ui/react-dialog";
+import { useRef } from "react";
 import { useLocale } from "./i18n/LocaleProvider";
 import Link from "./i18n/LocalizedLink";
 import { useKnowledgeConsent } from "./PlasmaLanding/useKnowledgeConsent";
+import { useVisitorProfileStore } from "./VisitorProfile/profileStore";
 
 export default function PrivacySettingsDialog({
   onClose,
@@ -15,6 +17,8 @@ export default function PrivacySettingsDialog({
   const de = useLocale() === "de";
   // Do not restore or reset consent on opening; memory-only choices may be active.
   const consent = useKnowledgeConsent(undefined);
+  const profile = useVisitorProfileStore();
+  const transferToProfile = useRef(false);
   return (
     <Dialog.Root
       open
@@ -28,7 +32,11 @@ export default function PrivacySettingsDialog({
           className="fixed left-1/2 top-1/2 z-[101] max-h-[90svh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto border border-white/30 bg-[#10100f] p-6 text-sm leading-relaxed text-neutral-200 shadow-2xl sm:p-8"
           onCloseAutoFocus={(event) => {
             event.preventDefault();
-            restoreFocus();
+            if (transferToProfile.current) {
+              requestAnimationFrame(() =>
+                document.querySelector<HTMLElement>(".profile-panel")?.focus(),
+              );
+            } else restoreFocus();
           }}
         >
           <Dialog.Title className="mb-4 text-lg text-white">
@@ -72,6 +80,54 @@ export default function PrivacySettingsDialog({
                 : "Withdrawal stops further AI requests and clears local chat data. Data already sent cannot be recalled. When AI is available, you can grant permission before asking an AI question on the homepage. Semantic search in the project list is only visible with valid permission. Search-only permission does not allow AI answers."}
             </p>
           </section>
+          <p className="mt-5 text-xs text-neutral-400">
+            {de ? "Live-Interessenprofil: " : "Live interest profile: "}
+            {profile.enabled
+              ? de
+                ? "aktiv"
+                : "active"
+              : de
+                ? "aus"
+                : "off"}.{" "}
+            <button
+              type="button"
+              className="min-h-11 underline underline-offset-4"
+              onClick={() => {
+                transferToProfile.current = true;
+                onClose();
+                profile.setOpen(true);
+              }}
+            >
+              {de
+                ? "Profil und Einstellungen öffnen"
+                : "Open profile and settings"}
+            </button>
+            {profile.enabled && (
+              <button
+                type="button"
+                className="block min-h-11 underline underline-offset-4"
+                onClick={() => void profile.stop()}
+              >
+                {de
+                  ? "Profil stoppen und Daten löschen"
+                  : "Stop profile and erase data"}
+              </button>
+            )}
+            {profile.network === "delete-error" && (
+              <span role="alert">
+                {de
+                  ? "Geteilte Daten konnten noch nicht gelöscht werden. "
+                  : "Shared data could not yet be erased. "}
+                <button
+                  type="button"
+                  className="min-h-11 underline"
+                  onClick={() => void profile.deleteShared()}
+                >
+                  {de ? "Löschen erneut versuchen" : "Retry erasure"}
+                </button>
+              </span>
+            )}
+          </p>
           <p className="mt-5 text-xs text-neutral-400">
             {de
               ? "Das optionale Speichern der Darstellung verwaltest du im "

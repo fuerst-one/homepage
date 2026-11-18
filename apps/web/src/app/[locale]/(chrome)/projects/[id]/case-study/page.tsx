@@ -112,7 +112,10 @@ export default async function CaseStudyPage({ params }: Props) {
           {locale === "de" ? "Fallstudie" : "Case study"}
         </span>
       </nav>
-      <article className="mx-auto w-full max-w-3xl border border-white/30 bg-black/85 p-5 sm:p-8">
+      <article
+        data-profile-project={project.id}
+        className="mx-auto w-full max-w-3xl border border-white/30 bg-black/85 p-5 sm:p-8"
+      >
         <header className="mb-8 space-y-3 border-b border-white/20 pb-6">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
             {locale === "de" ? "Fallstudie" : "Case study"}

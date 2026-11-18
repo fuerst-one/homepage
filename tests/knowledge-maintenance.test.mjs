@@ -8,6 +8,10 @@ test("independent maintenance runs cache pruning daily and usage cleanup hourly 
     calls = [];
   const store = { read: async () => ({ observation: true }) };
   const dependencies = {
+    "@homepage/database/visitorProfile": {
+      profileCollectionAvailable: async () => true,
+      pruneProfileEvents: async () => calls.push("profiles"),
+    },
     "@homepage/database/notionDiagnostics": { notionFailure: () => ({}) },
     "node:timers/promises": {
       setTimeout: async (interval) => {
@@ -55,8 +59,9 @@ test("independent maintenance runs cache pruning daily and usage cleanup hourly 
   await exports.watchNotion(new AbortController().signal);
   assert.equal(calls.filter((call) => call === "cache").length, 1);
   assert.equal(calls.filter((call) => call === "usage").length, 1);
+  assert.equal(calls.filter((call) => call === "profiles").length, 1);
   assert.deepEqual(
     intervals.sort((a, b) => a - b),
-    [5000, 60000, 60000, 3600_000, 24 * 3600_000],
+    [5000, 60000, 60000, 3600_000, 24 * 3600_000, 24 * 3600_000],
   );
 });

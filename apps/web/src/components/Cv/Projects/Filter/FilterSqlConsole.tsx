@@ -3,6 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { useLocale } from "../../../i18n/LocaleProvider";
 import { useFiltersStore } from "../filtersStore";
+import { recordVisitorInteraction } from "../../../VisitorProfile/profileStore";
 import clsx from "clsx";
 import { caseLabel } from "@homepage/content/projectCase";
 import {
@@ -190,10 +191,15 @@ export const FilterSqlConsole = ({
       ).sort((a, b) => a.localeCompare(b));
     }
 
+    if (!isSelected)
+      recordVisitorInteraction("filter_selected", `${key}:${optionValue}`);
     setFilters(nextFilters as FilterParams);
   };
 
   const handleApplyPreset = (preset: CvPreset) => {
+    for (const [key, values] of Object.entries(preset.filter))
+      for (const value of values ?? [])
+        recordVisitorInteraction("filter_selected", `${key}:${value}`);
     setFilters(preset.filter);
   };
 

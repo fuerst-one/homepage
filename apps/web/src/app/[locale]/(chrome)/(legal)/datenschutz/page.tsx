@@ -1,3 +1,4 @@
+import { VisitorProfilePrivacy } from "../../../../../components/VisitorProfile/VisitorProfilePrivacy";
 import type { Metadata } from "next";
 import { getSiteFeatures } from "@/server/siteFeatures";
 
@@ -110,10 +111,12 @@ export default function DatenschutzPage() {
         Cookies, Besucheranalyse und Browserspeicher
       </h2>
       <p>
-        Wir verwenden keine Besucheranalyse, Werbepixel, Sitzungsaufzeichnungen
-        oder Tracking-Cookies. Die Website setzt selbst keine Cookies und
-        erstellt keine Besucherprofile.
+        Wir verwenden keine Werbepixel, Sitzungsaufzeichnungen oder
+        Tracking-Cookies. Die Website setzt selbst keine Cookies.
+        Interessenprofil und eigene Besucheranalyse sind freiwillig und werden
+        nachfolgend beschrieben.
       </p>
+      <VisitorProfilePrivacy locale="de" />
       <p>
         Der Plasma-Spielplatz hält Einstellungen zunächst nur im Arbeitsspeicher
         der Seite. Erst wenn Sie „Darstellung auf diesem Gerät merken“ wählen,

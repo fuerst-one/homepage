@@ -7,6 +7,7 @@ import { LocaleProvider } from "../../components/i18n/LocaleProvider";
 import { isLocale, locales } from "@homepage/content/i18n";
 import { SITE_DESCRIPTION, SITE_URL } from "../../lib/seo";
 import { SiteFooter } from "../../components/SiteFooter";
+import { VisitorProfileEntry } from "../../components/VisitorProfile/VisitorProfileEntry";
 
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -60,6 +61,7 @@ export default async function RootLayout({
         <LocaleProvider key={locale} locale={locale}>
           {children}
           <SiteFooter locale={locale} />
+          <VisitorProfileEntry />
         </LocaleProvider>
       </body>
     </html>

@@ -1,3 +1,4 @@
+import { profileCollectionAvailable, pruneProfileEvents } from "@homepage/database/visitorProfile";
 import { notionFailure } from "@homepage/database/notionDiagnostics";
 import { setTimeout as pause } from "node:timers/promises";
 import { knowledgeDatabase } from "@homepage/database/database";
@@ -51,6 +52,7 @@ export async function watchNotion(signal: AbortSignal) {
   await Promise.all([
     loop(cleanupKnowledgeUsage, 3600_000, "AI retention cleanup"),
     loop(cleanupKnowledgeCache, 24 * 3600_000, "AI cache pruning"),
+    loop(async () => { if (await profileCollectionAvailable()) await pruneProfileEvents(); }, 24 * 3600_000, "Visitor profile retention"),
     loop(deliverPendingEnquiries, 5000, "Notion enquiry delivery"),
     loop(() => refreshMaltIfDue(), 60_000, "Malt refresh"),
     loop(

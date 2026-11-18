@@ -55,6 +55,7 @@ export const ProjectDetails = ({
 
   return (
     <div
+      data-profile-project={project.id}
       className={
         inDialog
           ? "flex max-h-[90vh] flex-col"
