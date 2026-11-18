@@ -1,6 +1,18 @@
 import { localizedPath, type Locale } from "@homepage/content/i18n";
 import type { ServiceSlug } from "./services";
 
+export const serviceProductSlugs = [
+  "product-interfaces",
+  "ai-automation",
+] as const;
+export type ServiceProductSlug = (typeof serviceProductSlugs)[number];
+
+export function isServiceProductSlug(
+  service: ServiceSlug,
+): service is ServiceProductSlug {
+  return serviceProductSlugs.some((slug) => slug === service);
+}
+
 type ProductCopy = {
   label: string;
   title: string;
@@ -19,7 +31,7 @@ type ProductCopy = {
 };
 
 export const serviceProducts: Record<
-  ServiceSlug,
+  ServiceProductSlug,
   { segment: string; copy: Record<Locale, ProductCopy> }
 > = {
   "product-interfaces": {
@@ -209,16 +221,25 @@ export const serviceProducts: Record<
   },
 };
 
-export const isServiceProduct = (service: ServiceSlug, product: string) =>
-  serviceProducts[service].segment === product;
+export const isServiceProduct = (
+  service: ServiceSlug,
+  product: string,
+): service is ServiceProductSlug =>
+  isServiceProductSlug(service) && serviceProducts[service].segment === product;
 
-export const serviceProductPath = (service: ServiceSlug, locale: Locale) =>
+export const serviceProductPath = (
+  service: ServiceProductSlug,
+  locale: Locale,
+) =>
   localizedPath(
     `/services/${service}/${serviceProducts[service].segment}`,
     locale,
   );
 
-export function serviceProductEmail(service: ServiceSlug, locale: Locale) {
+export function serviceProductEmail(
+  service: ServiceProductSlug,
+  locale: Locale,
+) {
   const copy = serviceProducts[service].copy[locale];
   return `mailto:alexander@fuerst.one?subject=${encodeURIComponent(copy.subject)}&body=${encodeURIComponent(copy.brief)}`;
 }

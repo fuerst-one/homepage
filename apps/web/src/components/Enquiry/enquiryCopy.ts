@@ -90,6 +90,7 @@ export const enquiryCopy = {
     contextNames: {
       "product-interfaces": "Product interfaces",
       "ai-automation": "AI & automation",
+      "ai-products": "AI-enabled products",
       review: "Product-interface review",
       assessment: "Workflow & automation assessment",
     },
@@ -170,6 +171,7 @@ export const enquiryCopy = {
     contextNames: {
       "product-interfaces": "Produktinterfaces",
       "ai-automation": "KI & Automatisierung",
+      "ai-products": "Produkte mit KI",
       review: "Produktinterface-Review",
       assessment: "Workflow- und Automatisierungs-Assessment",
     },

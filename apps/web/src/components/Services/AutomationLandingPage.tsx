@@ -313,6 +313,9 @@ export function AutomationLandingPage({
           <Link href={servicePath("product-interfaces", locale)}>
             {serviceCopy["product-interfaces"][locale].label} ↗
           </Link>
+          <Link href={servicePath("ai-products", locale)}>
+            {serviceCopy["ai-products"][locale].label} ↗
+          </Link>
         </nav>
       </article>
     </Layout>

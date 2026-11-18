@@ -74,6 +74,19 @@ const text = (value) => ({
   type: "rich_text",
   rich_text: [{ plain_text: value }],
 });
+
+test("AI-product service context selects product AI evidence without requiring a written brief", () => {
+  const matches = selectEnquiryEvidence(
+    candidates,
+    brief({ context: { service: "ai-products" } }),
+  );
+  assert.ok(matches.length > 0);
+  assert.equal(
+    matches[0].project.caseStudy.aiUsage.includes("AI product feature"),
+    true,
+  );
+  assert.ok(matches[0].reasons.includes("Add AI capabilities"));
+});
 const multi = (...names) => ({
   type: "multi_select",
   multi_select: names.map((name) => ({ name })),

@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import { isLocale, locales } from "@homepage/content/i18n";
 import { pageMetadata } from "../../../../../../lib/seo";
-import { isServiceSlug, serviceSlugs } from "../../../../../../data/services";
+import { isServiceSlug } from "../../../../../../data/services";
 import {
   serviceProducts,
   serviceProductPath,
   isServiceProduct,
+  serviceProductSlugs,
 } from "../../../../../../data/serviceProducts";
 import { ServiceProductPage } from "../../../../../../components/Services/ServiceProductPage";
 
@@ -16,7 +17,7 @@ export const revalidate = 60;
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
-    serviceSlugs.map((service) => ({
+    serviceProductSlugs.map((service) => ({
       locale,
       service,
       product: serviceProducts[service].segment,

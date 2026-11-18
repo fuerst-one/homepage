@@ -3,7 +3,10 @@ import { getCachedCvProjects } from "../server/content/getCachedCvProjects";
 import { projectPath, SITE_URL } from "../lib/seo";
 import { servicePath, serviceSlugs } from "../data/services";
 import { serviceAlternates } from "../components/Services/serviceMetadata";
-import { serviceProductPath } from "../data/serviceProducts";
+import {
+  serviceProductPath,
+  serviceProductSlugs,
+} from "../data/serviceProducts";
 import {
   locales,
   localizedPath,
@@ -35,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         alternates: { languages: serviceAlternates(slug) },
       })),
     ),
-    ...serviceSlugs.flatMap((slug) =>
+    ...serviceProductSlugs.flatMap((slug) =>
       locales.map((locale) => ({
         url: `${SITE_URL}${serviceProductPath(slug, locale)}`,
         alternates: {

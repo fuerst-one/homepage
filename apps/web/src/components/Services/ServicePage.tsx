@@ -16,6 +16,7 @@ import {
 import { selectServiceEvidence } from "./serviceEvidence";
 import { serviceSchema } from "./serviceMetadata";
 import { AutomationLandingPage } from "./AutomationLandingPage";
+import { AiProductsLandingPage } from "./AiProductsLandingPage";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
 import styles from "./services.module.css";
 
@@ -116,6 +117,9 @@ export async function ServicePage({
   const evidence = selectServiceEvidence(projects, slug, (project) =>
     projectPath(project, locale),
   );
+  if (slug === "ai-products") {
+    return <AiProductsLandingPage locale={locale} evidence={evidence} />;
+  }
   if (slug === "ai-automation") {
     return <AutomationLandingPage locale={locale} evidence={evidence} />;
   }
@@ -353,6 +357,9 @@ export async function ServicePage({
           <span>{t.other}</span>
           <Link href={servicePath(other, locale)}>
             {serviceCopy[other][locale].label} ↗
+          </Link>
+          <Link href={servicePath("ai-products", locale)}>
+            {serviceCopy["ai-products"][locale].label} ↗
           </Link>
         </nav>
       </article>

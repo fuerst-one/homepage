@@ -288,9 +288,13 @@ export function selectEnquiryEvidence(
       ? excludesAI
         ? ["Automate repetitive work"]
         : ["Add AI capabilities", "Automate repetitive work"]
-      : brief.context.service === "product-interfaces"
-        ? ["Improve a complex interface"]
-        : [];
+      : brief.context.service === "ai-products"
+        ? excludesAI
+          ? []
+          : ["Add AI capabilities"]
+        : brief.context.service === "product-interfaces"
+          ? ["Improve a complex interface"]
+          : [];
   const stages = intentStages[brief.intent] ?? [];
   const needs = [
     ...new Set([...(intentNeeds[brief.intent] ?? []), ...serviceNeeds]),

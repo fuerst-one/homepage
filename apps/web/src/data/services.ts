@@ -1,9 +1,14 @@
 import { localizedPath, type Locale } from "@homepage/content/i18n";
 
 import { automationCases } from "./automationCases";
+import { aiProductsCopy, aiProductCases } from "./aiProducts";
 
 export type ServiceLocale = Locale;
-export const serviceSlugs = ["product-interfaces", "ai-automation"] as const;
+export const serviceSlugs = [
+  "product-interfaces",
+  "ai-automation",
+  "ai-products",
+] as const;
 export type ServiceSlug = (typeof serviceSlugs)[number];
 
 export function isServiceSlug(value: string): value is ServiceSlug {
@@ -15,6 +20,7 @@ export function servicePath(slug: ServiceSlug, locale: ServiceLocale) {
 }
 
 export const serviceProjects: Record<ServiceSlug, readonly string[]> = {
+  "ai-products": aiProductCases.map((project) => project.id),
   "product-interfaces": [
     "15b86514-f736-803e-b9b7-e47ebc2406d1",
     "153f6668-f4d6-490a-8345-0b999b35305a",
@@ -22,7 +28,7 @@ export const serviceProjects: Record<ServiceSlug, readonly string[]> = {
   "ai-automation": automationCases.map((item) => item.id),
 };
 
-type ServiceCopy = {
+export type ServiceCopy = {
   label: string;
   title: string;
   description: string;
@@ -47,6 +53,7 @@ export const serviceCopy: Record<
   ServiceSlug,
   Record<ServiceLocale, ServiceCopy>
 > = {
+  "ai-products": aiProductsCopy,
   "product-interfaces": {
     en: {
       label: "Complex product interfaces",
