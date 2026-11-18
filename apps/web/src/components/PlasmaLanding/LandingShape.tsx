@@ -6,9 +6,10 @@ import { PLAYGROUND_CHARACTERS } from "../Plasma/constants";
 import { useShapesLuminance } from "../PlasmaPlayground/useShapesLuminance";
 import { createLandingGeometry } from "./shapeGeometries";
 import { createLandingIconGeometry } from "./iconGeometries";
+import type { BufferGeometry } from "three";
 
 const emptyGeometries = () => [];
-const createGeometry = (index: number) =>
+const createDefaultGeometry = (index: number) =>
   index < 6 ? createLandingGeometry(index) : createLandingIconGeometry(index);
 
 const RAMP = PLAYGROUND_CHARACTERS.slice(0, PLAYGROUND_CHARACTERS.length / 2);
@@ -24,6 +25,7 @@ export default function LandingShape({
   active,
   interactionTarget,
   keyboardOrbit = false,
+  geometryFactory = createDefaultGeometry,
   onReadyChange,
 }: {
   shapeIndex: number;
@@ -32,6 +34,7 @@ export default function LandingShape({
   active: boolean;
   interactionTarget: HTMLElement | null;
   keyboardOrbit?: boolean;
+  geometryFactory?: (index: number) => BufferGeometry;
   onReadyChange?: (ready: boolean) => void;
 }) {
   const canvasRef = useRef<PlasmaCanvasHandle>(null);
@@ -41,7 +44,7 @@ export default function LandingShape({
   }, []);
   const { sample, ready } = useShapesLuminance(active, interactionTarget, {
     createGeometries: emptyGeometries,
-    createGeometry,
+    createGeometry: geometryFactory,
     shapeIndex,
     paused,
     reducedMotion,

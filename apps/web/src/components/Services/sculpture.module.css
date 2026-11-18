@@ -76,6 +76,9 @@
   width: 100% !important;
   height: auto !important;
 }
+.sculpture[data-service="ai-automation"] .stage {
+  transform: translateY(-50%) scale(0.8);
+}
 .fallback {
   position: absolute;
   inset: 0;

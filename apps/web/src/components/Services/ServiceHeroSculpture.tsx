@@ -5,15 +5,15 @@ import { useEffect, useState } from "react";
 import type { ServiceLocale, ServiceSlug } from "../../data/services";
 import styles from "./sculpture.module.css";
 
-const LandingShape = dynamic(() => import("../PlasmaLanding/LandingShape"), {
+const LandingShape = dynamic(() => import("./ServiceHeroShape"), {
   ssr: false,
 });
 
 const studies = {
   "product-interfaces": {
     shape: 0,
-    en: "Interaction study",
-    de: "Interaktionsstudie",
+    en: "Made for interaction",
+    de: "Für Interaktion gemacht",
   },
   "ai-automation": {
     shape: 4,
@@ -86,6 +86,7 @@ export function ServiceHeroSculpture({
   return (
     <figure
       className={styles.sculpture}
+      data-service={slug}
       data-ready={ready}
       data-paused={paused || reducedMotion}
     >
@@ -108,21 +109,22 @@ export function ServiceHeroSculpture({
           aria-hidden="true"
         >
           {slug === "product-interfaces" ? (
-            <g transform="translate(200 180) rotate(-12) skewY(8)">
-              {[-1, 0, 1].map((i) => (
-                <g key={i} transform={`translate(${i * 45} ${i * -28})`}>
-                  <rect
-                    x="-95"
-                    y="-75"
-                    width="190"
-                    height="150"
-                    rx="4"
-                    fill="#0c0e0b"
-                  />
-                  <path d="M-95-48H95M-72-14H54M-72 8H16M-72 46H64" />
-                  <circle cx="-77" cy="-61" r="3" />
-                </g>
-              ))}
+            <g transform="translate(200 170) rotate(9)">
+              <rect x="-118" y="-106" width="186" height="80" rx="16" />
+              <rect x="-106" y="-96" width="162" height="56" rx="12" />
+              <path
+                d="M-42 10V-66C-42-86-14-86-14-66V-4C-14-28 14-28 14-6V8C14-16 42-16 42 8V20C42-2 70-2 70 20V57C70 84 52 91 44 110H-22C-44 88-57 72-68 54L-90 19C-104-3-80-17-66 3Z"
+                fill="#0c0e0b"
+                strokeWidth="2"
+              />
+              <rect
+                x="-27"
+                y="104"
+                width="78"
+                height="18"
+                rx="4"
+                fill="#0c0e0b"
+              />
             </g>
           ) : slug === "ai-automation" ? (
             <g transform="translate(200 180)">
