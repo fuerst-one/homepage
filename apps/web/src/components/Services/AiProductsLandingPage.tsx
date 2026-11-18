@@ -12,7 +12,7 @@ import {
 } from "../../data/services";
 import { serializeJsonLd } from "../../lib/seo";
 import { serviceSchema } from "./serviceMetadata";
-import type { selectServiceEvidence } from "./serviceEvidence";
+import type { getServiceEvidence } from "../../server/content/getServiceEvidence";
 import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import shared from "./services.module.css";
 import styles from "./ai-products.module.css";
@@ -89,7 +89,7 @@ export function AiProductsLandingPage({
   evidence,
 }: {
   locale: ServiceLocale;
-  evidence: ReturnType<typeof selectServiceEvidence>;
+  evidence: Awaited<ReturnType<typeof getServiceEvidence>>;
 }) {
   const copy = serviceCopy["ai-products"][locale];
   const t = ui[locale];
@@ -143,6 +143,8 @@ export function AiProductsLandingPage({
             <ServiceProjectVisuals
               visuals={roadtrippin.heroVisuals}
               projectName={roadtrippin.name}
+              projectId={roadtrippin.id}
+              initialDescriptions={roadtrippin.imageDescriptions}
               locale={locale}
               priority
             />
@@ -214,6 +216,8 @@ export function AiProductsLandingPage({
                   <ServiceProjectVisuals
                     visuals={project.visuals}
                     projectName={project.name}
+                    projectId={project.id}
+                    initialDescriptions={project.imageDescriptions}
                     locale={locale}
                   />
                 )}

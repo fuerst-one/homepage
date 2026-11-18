@@ -44,9 +44,13 @@ test("real provider answers persist and a supported paraphrase reuses an answer"
   try {
     for (const file of [
       "001-initial.sql",
+      "003-notion-resilience.sql",
+      "005-public-content.sql",
+      "008-project-dimensions.sql",
       "008-ai-admission.sql",
       "009-query-cache.sql",
       "010-query-cache-retention.sql",
+      "011-image-descriptions.sql",
     ])
       await sql.unsafe(
         await readFile(

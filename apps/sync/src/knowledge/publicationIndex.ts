@@ -18,9 +18,9 @@ export async function writeIndexPublication(
     if (current?.revision !== source.revision) return false;
     const documents = source.documents;
     for (const { doc, chunks, vectors } of prepared) {
-      await tx`INSERT INTO knowledge_documents(id,project_id,title,locale,href,hash,embedding_model)
-            VALUES (${doc.id},${doc.projectId},${doc.title},${doc.locale},${doc.href},${doc.hash},${model})
-            ON CONFLICT(id) DO UPDATE SET title=excluded.title,locale=excluded.locale,href=excluded.href,hash=excluded.hash,embedding_model=excluded.embedding_model,updated_at=now()`;
+      await tx`INSERT INTO knowledge_documents(id,project_id,title,locale,href,hash,embedding_model,provenance)
+            VALUES (${doc.id},${doc.projectId},${doc.title},${doc.locale},${doc.href},${doc.hash},${model},${tx.json(doc.image ? { kind: "image", ...doc.image } : { kind: "project" })})
+            ON CONFLICT(id) DO UPDATE SET title=excluded.title,locale=excluded.locale,href=excluded.href,hash=excluded.hash,embedding_model=excluded.embedding_model,provenance=excluded.provenance,updated_at=now()`;
       await tx`DELETE FROM knowledge_chunks WHERE document_id=${doc.id}`;
       for (let i = 0; i < chunks.length; i++) {
         await tx`INSERT INTO knowledge_chunks(id,document_id,content,embedding)

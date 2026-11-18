@@ -37,7 +37,11 @@ for (const locale of ["en", "de"]) {
       websiteLink > caseLink,
       "Project website follows the case study action",
     );
-    const metadataDetails = html.indexOf("<details");
+    const metadataLabel = locale === "de" ? "Kunden" : "Clients";
+    const metadataDetails =
+      [...html.matchAll(/<details\b[^>]*>[\s\S]*?<\/details>/g)].find(
+        ([details]) => details.includes(`<span>${metadataLabel}</span>`),
+      )?.index ?? -1;
     assert.ok(
       metadataDetails > caseLink,
       "Case study action precedes the detailed project metadata",

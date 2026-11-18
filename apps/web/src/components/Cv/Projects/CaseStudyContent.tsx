@@ -1,3 +1,5 @@
+import { ImageDescription } from "./ImageDescription";
+import type { PublicImageDescription } from "@homepage/database/imageDescriptions";
 import type { ReactNode } from "react";
 import type { RichTextContent as RichTextItemResponse } from "@homepage/content/models";
 import type { CaseStudyBlock } from "@homepage/content/models";
@@ -30,9 +32,15 @@ function RichText({ text }: { text: RichTextItemResponse[] }) {
 export function CaseStudyContent({
   blocks,
   projectName,
+  projectId,
+  locale = "en",
+  initialDescriptions,
 }: {
   blocks: CaseStudyBlock[];
   projectName: string;
+  projectId?: string;
+  locale?: "en" | "de";
+  initialDescriptions?: PublicImageDescription[];
 }) {
   const render = (items: CaseStudyBlock[]): ReactNode => {
     const output: ReactNode[] = [];
@@ -86,16 +94,28 @@ export function CaseStudyContent({
         case "image": {
           if (!block.imageUrl) break;
           const caption = block.caption.map((part) => part.plain_text).join("");
+          const generated = initialDescriptions?.find(
+            (row) => row.href === block.imageUrl,
+          );
           output.push(
             <figure key={block.id} className="space-y-3 py-3">
               {/* Images are mirrored and scoped by the published asset manifest. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={block.imageUrl}
-                alt={caption || projectName}
+                alt={caption || generated?.altText || projectName}
+                lang={!caption && generated?.altText ? "en" : undefined}
                 className="h-auto w-full border border-white/20"
                 loading="lazy"
               />
+              {projectId && (
+                <ImageDescription
+                  projectId={projectId}
+                  imageUrl={block.imageUrl}
+                  locale={locale}
+                  initialDescriptions={initialDescriptions}
+                />
+              )}
               {caption && (
                 <figcaption className="text-sm text-neutral-400">
                   <RichText text={block.caption} />

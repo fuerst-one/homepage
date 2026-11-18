@@ -1,4 +1,7 @@
 "use client";
+import { useImageDescriptions } from "./ImageDescription";
+import { GeneratedImageDescription } from "./GeneratedImageDescription";
+import type { PublicImageDescription } from "@homepage/database/imageDescriptions";
 
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { FaChevronLeft } from "@react-icons/all-files/fa/FaChevronLeft";
@@ -8,6 +11,8 @@ import { cn } from "../../../lib/utils";
 export const ProjectScreenshots = ({
   screenshots,
   projectName,
+  projectId,
+  initialDescriptions,
   locale = "en",
   imageDetails = {},
   fit = "cover",
@@ -15,6 +20,8 @@ export const ProjectScreenshots = ({
 }: {
   screenshots: string[];
   projectName: string;
+  projectId?: string;
+  initialDescriptions?: PublicImageDescription[];
   locale?: "en" | "de";
   imageDetails?: Record<
     string,
@@ -23,6 +30,11 @@ export const ProjectScreenshots = ({
   fit?: "cover" | "contain";
   priority?: boolean;
 }) => {
+  const descriptions = useImageDescriptions(
+    projectId,
+    locale,
+    initialDescriptions,
+  );
   const sanitizedScreenshots = useMemo(
     () => screenshots.filter(Boolean),
     [screenshots],
@@ -88,7 +100,14 @@ export const ProjectScreenshots = ({
                 src={src}
                 alt={
                   imageDetails[src]?.alt ||
+                  descriptions.find((row) => row.href === src)?.altText ||
                   `${projectName} ${de ? "Screenshot" : "screenshot"} ${index + 1}`
+                }
+                lang={
+                  !imageDetails[src]?.alt &&
+                  descriptions.find((row) => row.href === src)?.altText
+                    ? "en"
+                    : undefined
                 }
                 aria-hidden={index !== currentIndex}
                 loading={priority && index === 0 ? "eager" : "lazy"}
@@ -123,6 +142,15 @@ export const ProjectScreenshots = ({
           {current.caption && <p className="mt-1">{current.caption}</p>}
         </div>
       )}
+      <GeneratedImageDescription
+        key={sanitizedScreenshots[currentIndex]}
+        description={
+          descriptions.find(
+            (row) => row.href === sanitizedScreenshots[currentIndex],
+          )?.description ?? ""
+        }
+        locale={locale}
+      />
       {showNavigation && (
         <div className="mt-2 flex items-center justify-between gap-2">
           <button

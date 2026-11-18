@@ -1,3 +1,4 @@
+import { publishedImageDocuments } from "./imageDocuments";
 import { createHash } from "node:crypto";
 import { projectDeliveryModels } from "@homepage/content/projectTaxonomy";
 import { knowledgeDatabase } from "@homepage/database/database";
@@ -17,6 +18,14 @@ export type KnowledgeDocument = {
   href: string;
   text: string;
   hash: string;
+  image?: {
+    assetKey: string;
+    assetId: string;
+    href: string;
+    contentHash?: string;
+    descriptionKey?: string;
+    descriptionHash?: string;
+  };
 };
 const blockText = (blocks: CaseStudyBlock[]): string =>
   blocks
@@ -103,6 +112,9 @@ export function publishedKnowledgeDocuments(
         ...doc,
         hash: createHash("sha256").update(JSON.stringify(doc)).digest("hex"),
       });
+      documents.push(
+        ...publishedImageDocuments(publication, p, locale, doc.href),
+      );
     }
   }
   return documents;

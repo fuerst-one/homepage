@@ -216,6 +216,8 @@ export async function ServiceProductPage({
               <ServiceProjectVisuals
                 visuals={project.visuals}
                 projectName={project.name}
+                projectId={project.id}
+                initialDescriptions={project.imageDescriptions}
                 locale={locale}
               />
               <Link href={project.href} className={styles.textLink}>

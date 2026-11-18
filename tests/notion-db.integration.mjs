@@ -32,6 +32,7 @@ test("Notion schema is additive and rerunnable", async () => {
     "001-initial.sql",
     "005-public-content.sql",
     "008-project-dimensions.sql",
+    "011-image-descriptions.sql",
   ])
     await sql.unsafe(
       await readFile(

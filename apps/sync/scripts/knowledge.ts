@@ -18,6 +18,7 @@ async function main() {
         "008-ai-admission.sql",
         "009-query-cache.sql",
         "010-query-cache-retention.sql",
+        "011-image-descriptions.sql",
       ]) {
         const migration = await readFile(
           new URL(import.meta.resolve(`@homepage/database/migrations/${file}`)),

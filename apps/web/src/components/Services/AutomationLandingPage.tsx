@@ -11,7 +11,7 @@ import {
 } from "../../data/services";
 import { serializeJsonLd } from "../../lib/seo";
 import { serviceSchema } from "./serviceMetadata";
-import type { selectServiceEvidence } from "./serviceEvidence";
+import type { getServiceEvidence } from "../../server/content/getServiceEvidence";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
 import shared from "./services.module.css";
 import styles from "./automation.module.css";
@@ -73,7 +73,7 @@ export function AutomationLandingPage({
   evidence,
 }: {
   locale: ServiceLocale;
-  evidence: ReturnType<typeof selectServiceEvidence>;
+  evidence: Awaited<ReturnType<typeof getServiceEvidence>>;
 }) {
   const copy = serviceCopy["ai-automation"][locale];
   const t = ui[locale];
@@ -162,6 +162,8 @@ export function AutomationLandingPage({
                   <ServiceProjectVisuals
                     visuals={project.visuals}
                     projectName={project.name}
+                    projectId={project.id}
+                    initialDescriptions={project.imageDescriptions}
                     locale={locale}
                   />
                   <details className={styles.caseDetails}>

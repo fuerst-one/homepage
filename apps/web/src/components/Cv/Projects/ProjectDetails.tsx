@@ -17,6 +17,7 @@ import { projectPath, SITE_URL } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { Button } from "../../Button";
+import type { PublicImageDescription } from "@homepage/database/imageDescriptions";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -26,11 +27,13 @@ export const ProjectDetails = ({
   heading,
   inDialog = false,
   locale = "en",
+  initialDescriptions,
 }: {
   project: CvProject;
   heading?: ReactNode;
   inDialog?: boolean;
   locale?: "en" | "de";
+  initialDescriptions?: PublicImageDescription[];
 }) => {
   const {
     name,
@@ -70,7 +73,13 @@ export const ProjectDetails = ({
       </div>
       <div className="flex-1 space-y-6 overflow-y-auto p-6">
         {screenshots && screenshots.length > 0 && (
-          <ProjectScreenshots screenshots={screenshots} projectName={name} />
+          <ProjectScreenshots
+            screenshots={screenshots}
+            projectName={name}
+            projectId={project.id}
+            locale={locale}
+            initialDescriptions={initialDescriptions}
+          />
         )}
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs text-neutral-400">

@@ -6,8 +6,8 @@ import { serviceMetadata } from "../../../../../components/Services/serviceMetad
 
 type Props = { params: Promise<{ locale: string; service: string }> };
 
-// Retry an outage fallback instead of retaining an empty-evidence prerender forever.
-export const revalidate = 60;
+// Read current public image descriptions and withdrawals in the initial HTML.
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>

@@ -6,6 +6,7 @@ import { CaseStudyContent } from "../../../../../../components/Cv/Projects/CaseS
 import { getLocale } from "../../../../../../server/i18n/getLocale";
 import { getProjectCaseStudy } from "../../../../../../server/content/getProjectCaseStudy";
 import { getCachedCvProjects } from "../../../../../../server/content/getCachedCvProjects";
+import { getPublicImageDescriptions } from "../../../../../../server/content/getPublicImageDescriptions";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { hasGermanTranslation } from "@homepage/content/localizeContent";
 import { locales } from "@homepage/content/i18n";
@@ -18,7 +19,8 @@ import {
 } from "../../../../../../lib/seo";
 import type { Locale } from "@homepage/content/i18n";
 
-export const revalidate = 60;
+// Keep generated observations synchronized with current published image versions.
+export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function generateStaticParams() {
@@ -78,6 +80,10 @@ export default async function CaseStudyPage({ params }: Props) {
   const path = projectPath(project, locale);
   if (reference !== projectSlug(project))
     permanentRedirect(`${path}/case-study`);
+  const imageDescriptions = await getPublicImageDescriptions(
+    project.id,
+    locale,
+  );
   return (
     <Layout locale={locale} availableLocales={availableLocales}>
       <nav aria-label="Breadcrumb" className="mb-6 text-sm text-neutral-400">
@@ -102,7 +108,13 @@ export default async function CaseStudyPage({ params }: Props) {
             {project.name}
           </h1>
         </header>
-        <CaseStudyContent blocks={blocks} projectName={project.name} />
+        <CaseStudyContent
+          blocks={blocks}
+          projectName={project.name}
+          projectId={project.id}
+          locale={locale}
+          initialDescriptions={imageDescriptions}
+        />
         <footer className="mt-10 border-t border-white/20 pt-5 text-sm">
           <Link href={path} className="text-neutral-300 underline">
             {locale === "de" ? "Zurück zum Projekt" : "Back to project"}

@@ -9,6 +9,7 @@ import { Layout } from "../../../../../components/Layout";
 import { ProjectDetails } from "../../../../../components/Cv/Projects/ProjectDetails";
 import { StructuredData } from "../../../../../components/StructuredData";
 import { getCachedCvProjects } from "../../../../../server/content/getCachedCvProjects";
+import { getPublicImageDescriptions } from "../../../../../server/content/getPublicImageDescriptions";
 import {
   pageMetadata,
   personSchema,
@@ -19,7 +20,8 @@ import {
   SITE_URL,
 } from "../../../../../lib/seo";
 
-export const revalidate = 60;
+// Image URLs resolve current public assets; their alt text must use the same fresh publication.
+export const dynamic = "force-dynamic";
 
 const getProject = cache(async (reference: string, locale: Locale) => {
   const projects = await getCachedCvProjects(locale);
@@ -64,6 +66,10 @@ export default async function ProjectPage({ params }: Props) {
   const project = await getProject(reference, locale);
   if (reference !== projectSlug(project))
     permanentRedirect(projectPath(project, locale));
+  const imageDescriptions = await getPublicImageDescriptions(
+    project.id,
+    locale,
+  );
   return (
     <Layout
       locale={locale}
@@ -80,7 +86,11 @@ export default async function ProjectPage({ params }: Props) {
         / <span aria-current="page">{project.name}</span>
       </nav>
       <article>
-        <ProjectDetails project={project} locale={locale} />
+        <ProjectDetails
+          project={project}
+          locale={locale}
+          initialDescriptions={imageDescriptions}
+        />
       </article>
       <p className="text-sm text-neutral-300">
         {locale === "de"

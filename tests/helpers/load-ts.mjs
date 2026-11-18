@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,17 +12,21 @@ export function loadTs(sourceUrl) {
   const require = createRequire(path);
   const exports = {};
   const { outputText } = ts.transpileModule(readFileSync(path, "utf8"), {
+    fileName: path,
     compilerOptions: {
       module: ts.ModuleKind.CommonJS,
       target: ts.ScriptTarget.ES2022,
       esModuleInterop: true,
+      jsx: ts.JsxEmit.ReactJSX,
     },
   });
   new Function("exports", "require", outputText)(exports, (specifier) => {
     if (specifier.startsWith("@homepage/") && !specifier.endsWith(".json"))
       return loadTs(require.resolve(specifier));
-    if (specifier.startsWith(".") && !specifier.endsWith(".json"))
-      return loadTs(resolve(dirname(path), `${specifier}.ts`));
+    if (specifier.startsWith(".") && !specifier.endsWith(".json")) {
+      const local = resolve(dirname(path), specifier);
+      return loadTs([`${local}.ts`, `${local}.tsx`, local].find(existsSync));
+    }
     return require(specifier);
   });
   cache.set(path, exports);

@@ -8,6 +8,8 @@ export type KnowledgeSource = {
   title: string;
   href: string;
   content: string;
+  sourceKind?: "image";
+  imageHref?: string;
 };
 export type KnowledgeAction = {
   type: "navigate" | "filter" | "highlight";
@@ -178,9 +180,15 @@ export function validateKnowledgeAnswer(
     answer: value.answer.trim(),
     sources: [
       ...new Map(
-        sources.map(({ id, projectId, title, href }) => [
+        sources.map(({ id, projectId, title, href, sourceKind, imageHref }) => [
           id,
-          { id, projectId, title, href },
+          {
+            id,
+            projectId,
+            title,
+            href,
+            ...(sourceKind === "image" ? { sourceKind, imageHref } : {}),
+          },
         ]),
       ).values(),
     ],

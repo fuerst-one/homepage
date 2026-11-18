@@ -31,9 +31,13 @@ const sql = knowledgeDatabase();
 before(async () => {
   for (const file of [
     "001-initial.sql",
+    "003-notion-resilience.sql",
+    "005-public-content.sql",
+    "008-project-dimensions.sql",
     "008-ai-admission.sql",
     "009-query-cache.sql",
     "010-query-cache-retention.sql",
+    "011-image-descriptions.sql",
   ])
     await sql.unsafe(
       await readFile(
@@ -271,6 +275,7 @@ test("bilingual service reuse preserves every approved intent despite identical 
     const oldVersions = [
       "portfolio-answer-v1",
       "portfolio-answer-v2-strict-intents",
+      "portfolio-answer-v3-strict-intents",
     ];
     for (const version of oldVersions) {
       const legacyScope = createHash("sha256")

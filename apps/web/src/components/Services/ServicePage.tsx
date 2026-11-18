@@ -237,6 +237,8 @@ export async function ServicePage({
                   <ServiceProjectVisuals
                     visuals={project.visuals}
                     projectName={project.name}
+                    projectId={project.id}
+                    initialDescriptions={project.imageDescriptions}
                     locale={locale}
                   />
                   {kpis && (
