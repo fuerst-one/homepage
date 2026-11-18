@@ -72,7 +72,7 @@ test("disabled public AI performs no background checks or storage writes and pre
     await page.waitForFunction(
       () =>
         location.pathname === "/en/projects" &&
-        new URLSearchParams(location.search).get("experiences") ===
+        new URLSearchParams(location.search).get("capabilities") ===
           "AI Engineering",
       { timeout: 60000 },
     );

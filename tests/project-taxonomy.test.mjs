@@ -290,7 +290,7 @@ test("the facets endpoint exposes independent formats, markets, contexts and del
     {
       tools: [],
       industries: ["Travel & tourism", "Travel & tourism"],
-      experiences: [],
+      capabilities: [],
       languages: [],
       clients: [],
       productTypes: ["Web app"],

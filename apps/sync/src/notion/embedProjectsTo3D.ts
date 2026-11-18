@@ -15,7 +15,8 @@ type Vocabulary = {
 type Vocabularies = {
   tools: Vocabulary;
   industries: Vocabulary;
-  experiences: Vocabulary;
+  capabilities: Vocabulary;
+  methods: Vocabulary;
   languages: Vocabulary;
 };
 
@@ -43,7 +44,8 @@ const buildVocabulary = (
 const buildVocabularies = (projects: CvProjectInput[]): Vocabularies => ({
   tools: buildVocabulary(projects, (p) => p.tools),
   industries: buildVocabulary(projects, (p) => p.industries),
-  experiences: buildVocabulary(projects, (p) => p.experiences),
+  capabilities: buildVocabulary(projects, (p) => p.capabilities),
+  methods: buildVocabulary(projects, (p) => p.methods),
   languages: buildVocabulary(projects, (p) => p.languages),
 });
 
@@ -60,7 +62,8 @@ const buildFeatureVector = (
 ): number[] => [
   ...tfIdfBlock(vocab.tools, project.tools ?? []),
   ...tfIdfBlock(vocab.industries, project.industries ?? []),
-  ...tfIdfBlock(vocab.experiences, project.experiences ?? []),
+  ...tfIdfBlock(vocab.capabilities, project.capabilities ?? []),
+  ...tfIdfBlock(vocab.methods, project.methods ?? []),
   ...tfIdfBlock(vocab.languages, project.languages ?? []),
 ];
 

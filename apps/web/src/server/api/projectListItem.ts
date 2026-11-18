@@ -17,7 +17,8 @@ export type ProjectListItem = ProjectTaxonomy & {
   oneLineSummary: string;
   tools: string[];
   industries: string[];
-  experiences: string[];
+  capabilities: string[];
+  methods: string[];
   languages: string[];
   projectType: string;
   workplace: string;
@@ -43,7 +44,8 @@ export const toProjectListItem = (
   tools: project.tools,
   industries: project.industries,
   ...publicProjectTaxonomy(project),
-  experiences: project.experiences,
+  capabilities: project.capabilities,
+  methods: project.methods,
   languages: project.languages,
   projectType: project.projectType,
   workplace: project.workplace,

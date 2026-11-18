@@ -10,6 +10,7 @@ import {
   languageAlternates,
 } from "@homepage/content/i18n";
 import { hasGermanTranslation } from "@homepage/content/localizeContent";
+import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 
 export const revalidate = 60;
 
@@ -53,10 +54,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ]),
       );
       languages["x-default"] = `${SITE_URL}${projectPath(project, "en")}`;
-      return available.map((locale) => ({
-        url: `${SITE_URL}${projectPath(project, locale)}`,
-        alternates: { languages },
-      }));
+      const caseLocales = available.filter((locale) =>
+        caseStudyPageId(project, locale),
+      );
+      const caseLanguages = Object.fromEntries(
+        caseLocales.map((locale) => [
+          locale,
+          `${SITE_URL}${projectPath(project, locale)}/case-study`,
+        ]),
+      );
+      if (caseLocales.length)
+        caseLanguages["x-default"] =
+          `${SITE_URL}${projectPath(project, caseLocales[0])}/case-study`;
+      return [
+        ...available.map((locale) => ({
+          url: `${SITE_URL}${projectPath(project, locale)}`,
+          alternates: { languages },
+        })),
+        ...caseLocales.map((locale) => ({
+          url: `${SITE_URL}${projectPath(project, locale)}/case-study`,
+          alternates: { languages: caseLanguages },
+        })),
+      ];
     }),
   ];
 }

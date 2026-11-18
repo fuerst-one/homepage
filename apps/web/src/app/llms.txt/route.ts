@@ -63,7 +63,7 @@ The dataset is small (a few dozen projects). Start with /api/facets to discover 
 
 - [GET /api/profile](${API_BASE_URL}/api/profile) — public name, position, location, education, languages, availability, and avatar. Private contact details and rates are excluded.
 - [OpenAPI 3.1 spec](${API_BASE_URL}/api/openapi.json) — complete machine-readable schema for all endpoints.
-- [GET /api/projects](${API_BASE_URL}/api/projects) — slim list of projects with filters (tools, industries, experiences, languages, projectType, workplace, featured, clientId, from, to, q, sort).
+- [GET /api/projects](${API_BASE_URL}/api/projects) — slim list of projects with filters (tools, industries, capabilities, methods, languages, projectType, workplace, featured, clientId, from, to, q, sort).
 - [GET /api/projects/{id}](${API_BASE_URL}/api/projects) — full project record including rich-text description, KPIs, screenshots, logos, and clients.
 - [GET /api/facets](${API_BASE_URL}/api/facets) — counts of unique values per category, useful for discovering valid filter values.
 
@@ -76,7 +76,7 @@ curl ${API_BASE_URL}/api/projects
 # Projects using React or Next.js, scoped to e-commerce
 curl '${API_BASE_URL}/api/projects?tools=react,nextjs&industries=ecommerce'
 
-# Free-text search across name, description, KPIs, clients, tools, industries, experiences, languages
+# Free-text search across name, description, KPIs, clients, tools, industries, capabilities, methods, languages
 curl '${API_BASE_URL}/api/projects?q=visualization+dashboard'
 
 # Recent work

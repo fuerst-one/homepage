@@ -2,12 +2,7 @@ import { CvProject } from "@homepage/content/models";
 import { FilterParams, filterProjects } from "./Projects/Filter/utils";
 
 export type CvPresetId =
-  | "featured"
-  | "fullstack"
-  | "ai"
-  | "dataviz"
-  | "conversion"
-  | "all";
+  "featured" | "fullstack" | "ai" | "dataviz" | "conversion" | "all";
 
 export type CvPreset = {
   id: CvPresetId;
@@ -39,7 +34,7 @@ export const CV_PRESETS: Record<CvPresetId, CvPreset> = {
     label: "Fullstack",
     description: "From business logic to UI — full products.",
     headline: "Fullstack builds, from data model to polished UI.",
-    filter: { experiences: ["Fullstack-Development"] },
+    filter: { capabilities: ["Fullstack-Development"] },
     topN: 6,
   },
   ai: {
@@ -48,7 +43,7 @@ export const CV_PRESETS: Record<CvPresetId, CvPreset> = {
     description: "AI-powered projects — from data to insights.",
     headline: "AI-powered projects — from data to insights.",
     filter: {
-      experiences: [
+      capabilities: [
         "Artificial Intelligence",
         "AI Engineering",
         "Agent Harnesses",
@@ -61,7 +56,9 @@ export const CV_PRESETS: Record<CvPresetId, CvPreset> = {
     label: "Data Viz",
     description: "Maps, Charts, Canvases — data-driven design.",
     headline: "Transforming your bits and bytes to actionable design.",
-    filter: { experiences: ["Geospatial Visualization", "Data Visualization"] },
+    filter: {
+      capabilities: ["Geospatial Visualization", "Data Visualization"],
+    },
     topN: 6,
   },
   conversion: {
@@ -71,7 +68,7 @@ export const CV_PRESETS: Record<CvPresetId, CvPreset> = {
       "Where behavioral psychology meets the funnel — CRO work across industries.",
     headline: "Persuasive, accessible, conversion-driven design.",
     filter: {
-      experiences: ["Conversion Rate Optimization", "Behaviour Psychology"],
+      capabilities: ["Conversion Rate Optimization", "Behaviour Psychology"],
     },
     topN: 6,
   },

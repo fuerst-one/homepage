@@ -20,7 +20,8 @@ const projects = [
     oneLineSummary: "Interactive product configuration.",
     webUrl: "https://fuerst.one/projects/atlas",
     tools: ["React.js", "Three.js"],
-    experiences: ["Frontend-Development", "UI-Design"],
+    methods: [],
+    capabilities: ["Frontend-Development", "UI-Design"],
     industries: ["E-Commerce"],
     languages: ["TypeScript"],
     projectType: "Freelance",
@@ -34,7 +35,8 @@ const projects = [
     oneLineSummary: "AI automation and workflows.",
     webUrl: "https://fuerst.one/projects/agent",
     tools: ["React.js", "Docker"],
-    experiences: ["AI Engineering"],
+    methods: [],
+    capabilities: ["AI Engineering"],
     industries: ["Artificial Intelligence"],
     languages: ["Python"],
     projectType: "Hobby",
@@ -48,7 +50,8 @@ const projects = [
     oneLineSummary: "A shop interface.",
     webUrl: "https://fuerst.one/projects/shop",
     tools: ["Tailwind"],
-    experiences: ["UI-Design"],
+    methods: [],
+    capabilities: ["UI-Design"],
     industries: ["Retail"],
     languages: ["CSS"],
     projectType: "Employed",
@@ -58,6 +61,37 @@ const projects = [
   },
 ];
 const index = buildProjectSearchIndex(projects);
+
+test("German aliases follow methods and technologies into their current fields", () => {
+  const migrated = buildProjectSearchIndex(
+    [
+      {
+        ...projects[0],
+        tools: ["Graph Databases", "Vector Databases"],
+        methods: ["Site Audit"],
+        capabilities: [],
+      },
+    ],
+    "de",
+  );
+  for (const [query, field, value] of [
+    ["Graphdatenbanken", "tools", "Graph Databases"],
+    ["Vektordatenbanken", "tools", "Vector Databases"],
+    ["Website-Prüfung", "methods", "Site Audit"],
+    ["Website-Pruefung", "methods", "Site Audit"],
+  ]) {
+    const result = searchProjectIndex(migrated, query);
+    assert.deepEqual(
+      result.projects.map((project) => project.id),
+      ["atlas"],
+    );
+    assert.ok(
+      result.suggestions.some(
+        (item) => item.filter?.field === field && item.filter.value === value,
+      ),
+    );
+  }
+});
 
 test("German queries find canonical facets and localized chips", () => {
   const german = buildProjectSearchIndex(projects, "de");
@@ -73,7 +107,7 @@ test("German queries find canonical facets and localized chips", () => {
       "Frontend Entwicklung",
       ["atlas"],
       "Frontend-Entwicklung",
-      "experiences",
+      "capabilities",
       "Frontend-Development",
     ],
     ["freiberuflich", ["atlas"], "Freiberuflich", "projectType", "Freelance"],
@@ -127,15 +161,16 @@ test("German aliases cover expertise independently of industry and keep field id
     [
       {
         ...projects[0],
-        experiences: ["Artificial Intelligence", "Data Visualization"],
+        methods: [],
+        capabilities: ["Artificial Intelligence", "Data Visualization"],
         industries: ["Health"],
       },
     ],
     "de",
   );
   for (const [query, field, value] of [
-    ["KI", "experiences", "Artificial Intelligence"],
-    ["Datenvisualisierung", "experiences", "Data Visualization"],
+    ["KI", "capabilities", "Artificial Intelligence"],
+    ["Datenvisualisierung", "capabilities", "Data Visualization"],
     ["Gesundheit", "industries", "Health"],
   ]) {
     const result = searchProjectIndex(expertise, query);

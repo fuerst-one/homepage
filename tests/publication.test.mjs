@@ -44,7 +44,7 @@ const fixture = () => ({
       position3d: [0, 0, 0],
       tools: [],
       industries: [],
-      experiences: [],
+      capabilities: [],
       languages: [],
     },
     { id: "hidden", name: "Hidden", hidden: true },
@@ -75,7 +75,7 @@ const fixture = () => ({
 
 test("the worker publishes explicit public fields and locale variants before persistence", () => {
   const result = preparePublication(fixture());
-  assert.equal(result.version, 2);
+  assert.equal(result.version, 3);
   assert.deepEqual(
     result.locales.en.projects.map((p) => p.id),
     ["public"],

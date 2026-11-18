@@ -1,3 +1,4 @@
+import { ProjectScaleFacts } from "./ProjectScaleFacts";
 import { CvProject } from "@homepage/content/models";
 import { sectorLabel } from "@homepage/content/projectTaxonomy";
 import { Tag } from "./Tag";
@@ -9,7 +10,8 @@ const ROW_LABELS: Partial<Record<keyof CvProject, string>> = {
   targetMarket: "Customer market",
   usageContext: "Usage context",
   deliveryModel: "Delivery model",
-  experiences: "Experiences",
+  capabilities: "Capabilities",
+  methods: "Methods",
   tools: "Tools",
   languages: "Languages",
 };
@@ -42,7 +44,8 @@ export const ProjectMetaTable = ({
                 targetMarket: "Zielmarkt",
                 usageContext: "Nutzungskontext",
                 deliveryModel: "Bereitstellung",
-                experiences: "Erfahrungen",
+                capabilities: "Kompetenzen",
+                methods: "Methoden",
                 tools: "Tools",
                 languages: "Sprachen",
               } as Record<string, string>
@@ -52,12 +55,13 @@ export const ProjectMetaTable = ({
       value: project[key as keyof CvProject],
     }));
 
-  if (filteredFields.length === 0) {
+  if (filteredFields.length === 0 && !project.scale) {
     return null;
   }
 
   return (
     <div className="glass-panel space-y-3 border border-white/20 p-4 text-sm text-neutral-200">
+      <ProjectScaleFacts scale={project.scale} locale={locale} />
       {filteredFields.map(({ label, projectKey, value }) => {
         const preview = formatPreviewValue(
           projectKey === "industries" && Array.isArray(value)

@@ -41,7 +41,7 @@ for (const locale of ["en", "de"]) {
         );
       }
       await page.goto(
-        `${base}/${locale}/projects?experiences=AI+Engineering&tools=React.js`,
+        `${base}/${locale}/projects?capabilities=AI+Engineering&tools=React.js`,
         { waitUntil: "domcontentloaded", timeout: 90000 },
       );
       await page.waitForSelector(".filter-active-summary");
@@ -85,7 +85,7 @@ test("named filters remain visible and removable with the filter console collaps
     );
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 900 });
-    await page.goto(`${base}/en/projects?experiences=AI+Engineering`, {
+    await page.goto(`${base}/en/projects?capabilities=AI+Engineering`, {
       waitUntil: "domcontentloaded",
       timeout: 90000,
     });
@@ -104,21 +104,21 @@ test("named filters remain visible and removable with the filter console collaps
     );
     assert.ok(
       await page.$(
-        '.filter-active-summary button[aria-label="Remove Areas of expertise: AI Engineering"]',
+        '.filter-active-summary button[aria-label="Remove Capabilities: AI Engineering"]',
       ),
     );
     await page.click(
-      '.filter-active-summary button[aria-label="Remove Areas of expertise: AI Engineering"]',
+      '.filter-active-summary button[aria-label="Remove Capabilities: AI Engineering"]',
     );
     await page.waitForFunction(
-      () => !new URLSearchParams(location.search).has("experiences"),
+      () => !new URLSearchParams(location.search).has("capabilities"),
     );
     assert.equal(
       await page.$('.filter-active-summary button[aria-label^="Remove"]'),
       null,
     );
     await page.goto(
-      `${base}/en/projects?experiences=AI+Engineering&tools=React.js`,
+      `${base}/en/projects?capabilities=AI+Engineering&tools=React.js`,
       { waitUntil: "domcontentloaded", timeout: 90000 },
     );
     await page.waitForFunction(
@@ -181,7 +181,7 @@ test("named filters remain visible and removable with the filter console collaps
     );
     await page.screenshot({ path: "/tmp/homepage-active-filters-desktop.png" });
     await page.setViewport({ width: 390, height: 844 });
-    await page.goto(`${base}/de/projects?experiences=AI+Engineering`, {
+    await page.goto(`${base}/de/projects?capabilities=AI+Engineering`, {
       waitUntil: "domcontentloaded",
       timeout: 90000,
     });
@@ -192,7 +192,7 @@ test("named filters remain visible and removable with the filter console collaps
     );
     assert.ok(
       await page.$(
-        '.filter-active-summary button[aria-label="Entfernen Fachgebiete: AI Engineering"]',
+        '.filter-active-summary button[aria-label="Entfernen Kompetenzen: AI Engineering"]',
       ),
     );
     assert.equal(

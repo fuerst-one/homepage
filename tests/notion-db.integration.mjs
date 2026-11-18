@@ -28,13 +28,60 @@ test("Notion schema is additive and rerunnable", async () => {
   );
   await sql.unsafe(migration);
   await sql.unsafe(migration);
-  for (const name of ["001-initial.sql", "005-public-content.sql"])
+  for (const name of [
+    "001-initial.sql",
+    "005-public-content.sql",
+    "008-project-dimensions.sql",
+  ])
     await sql.unsafe(
       await readFile(
         new URL(`../packages/database/migrations/${name}`, import.meta.url),
         "utf8",
       ),
     );
+});
+
+test("new project publications do not replace the deployed publication or its assets", async () => {
+  const { readWebsiteSection, readWebsiteAsset } = loadTs(
+    new URL("../packages/database/src/websiteContent.ts", import.meta.url),
+  );
+  const oldAsset = randomUUID(),
+    newAsset = randomUUID();
+  for (const key of [oldAsset, newAsset])
+    await sql`INSERT INTO notion_assets(key,content,content_type) VALUES (${key},${Buffer.from(key)},'image/png')`;
+  const previous = {
+    version: 2,
+    locales: { en: { projects: [{ id: "old", experiences: ["Design"] }] } },
+    assets: { avatar: oldAsset },
+  };
+  const next = {
+    version: 3,
+    locales: {
+      en: { projects: [{ id: "new", capabilities: ["Design"], methods: [] }] },
+    },
+    assets: { avatar: newAsset },
+  };
+  for (const [key, payload] of [
+    ["website-v2", previous],
+    ["website-v3", next],
+  ])
+    await sql`INSERT INTO public_content(key,payload) VALUES (${key},${sql.json(payload)}) ON CONFLICT(key) DO UPDATE SET payload=excluded.payload`;
+  assert.deepEqual(
+    await readWebsiteSection("projects", sql),
+    next.locales.en.projects,
+  );
+  assert.equal(
+    (await readWebsiteAsset("avatar", sql)).content.toString(),
+    newAsset,
+  );
+  const [old] =
+    await sql`SELECT payload FROM public_content WHERE key='website-v2'`;
+  assert.deepEqual(old.payload, previous);
+  assert.equal(
+    (await sql`SELECT key FROM public_content_assets WHERE key=${oldAsset}`)
+      .length,
+    1,
+  );
 });
 
 test("database admission coordinates independent clients and never shortens a cooldown", async () => {
@@ -246,7 +293,7 @@ test("website sections and image bytes are read only from the current DB publica
     store,
     WEBSITE_CONTENT_KEY,
     async () => ({
-      version: 2,
+      version: 3,
       locales: { en: { projects: [{ id: "public" }] } },
       assets: { avatar: key },
     }),
@@ -264,7 +311,7 @@ test("website sections and image bytes are read only from the current DB publica
   await refreshSnapshot(
     store,
     WEBSITE_CONTENT_KEY,
-    async () => ({ version: 2, locales: { en: { projects: [] } }, assets: {} }),
+    async () => ({ version: 3, locales: { en: { projects: [] } }, assets: {} }),
     0,
   );
   assert.equal(
@@ -279,7 +326,7 @@ test("related website sections stay in one publication while a worker publishes 
     new URL("../packages/database/src/websiteContent.ts", import.meta.url),
   );
   const publish = async (version) =>
-    sql`UPDATE public_content SET payload=${sql.json({ version: 2, locales: { en: { projects: [{ id: version }], cases: [{ id: version }], icons: { version } } }, assets: {} })} WHERE key=${WEBSITE_CONTENT_KEY}`;
+    sql`UPDATE public_content SET payload=${sql.json({ version: 3, locales: { en: { projects: [{ id: version }], cases: [{ id: version }], icons: { version } } }, assets: {} })} WHERE key=${WEBSITE_CONTENT_KEY}`;
   await publish("initial");
   await Promise.all([
     (async () => {
@@ -305,16 +352,16 @@ test("an expired writer cannot change the public publication, and a successful p
     key = randomUUID(),
     token = await store.claim(key, 0);
   const [before] =
-    await sql`SELECT payload FROM public_content WHERE key='website-v2'`;
+    await sql`SELECT payload FROM public_content WHERE key='website-v3'`;
   await sql`UPDATE notion_snapshots SET lease_until=now()-interval '1 second' WHERE key=${key}`;
   const value = {
-    version: 2,
+    version: 3,
     locales: { en: { projects: [] }, de: { projects: [] } },
     assets: {},
   };
   assert.equal(await store.publish(key, token, value), false);
   const [after] =
-    await sql`SELECT payload FROM public_content WHERE key='website-v2'`;
+    await sql`SELECT payload FROM public_content WHERE key='website-v3'`;
   assert.deepEqual(after.payload, before.payload);
   const id = randomUUID();
   await sql`INSERT INTO knowledge_documents(id,project_id,title,locale,href,hash,embedding_model) VALUES (${id},'withdrawn','Withdrawn','en','/en/projects/withdrawn','old','test')`;

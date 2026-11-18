@@ -41,7 +41,8 @@ export const buildOpenApiSpec = () => ({
           listParam("usageContext", "string", "Filter by usage context."),
           listParam("deliveryModel", "string", "Filter by delivery model."),
           listParam("domains", "string", "Filter by project use case."),
-          listParam("experiences", "string", "Filter by experience tag."),
+          listParam("capabilities", "string", "Filter by capability tag."),
+          listParam("methods", "string", "Filter by method tag."),
           listParam("languages", "string", "Filter by language."),
           listParam("projectType", "string", "Filter by project type."),
           listParam("workplace", "string", "Filter by workplace."),
@@ -71,7 +72,7 @@ export const buildOpenApiSpec = () => ({
             in: "query",
             schema: { type: "string" },
             description:
-              "Free-text search. Whitespace-tokenized; every term must appear in name, description, KPIs, client names, tools, industries, experiences, languages, project type, or workplace.",
+              "Free-text search. Whitespace-tokenized; every term must appear in name, description, KPIs, client names, tools, industries, capabilities, methods, languages, project type, or workplace.",
           },
           {
             name: "sort",
@@ -195,7 +196,8 @@ export const buildOpenApiSpec = () => ({
           "targetMarket",
           "usageContext",
           "deliveryModel",
-          "experiences",
+          "capabilities",
+          "methods",
           "languages",
           "projectType",
           "workplace",
@@ -237,7 +239,8 @@ export const buildOpenApiSpec = () => ({
           targetMarket: { type: "array", items: { type: "string" } },
           usageContext: { type: "array", items: { type: "string" } },
           deliveryModel: { type: ["string", "null"] },
-          experiences: { type: "array", items: { type: "string" } },
+          capabilities: { type: "array", items: { type: "string" } },
+          methods: { type: "array", items: { type: "string" } },
           languages: { type: "array", items: { type: "string" } },
           projectType: { type: "string" },
           workplace: { type: "string" },
@@ -373,7 +376,11 @@ export const buildOpenApiSpec = () => ({
             type: "array",
             items: { $ref: "#/components/schemas/FacetCount" },
           },
-          experiences: {
+          methods: {
+            type: "array",
+            items: { $ref: "#/components/schemas/FacetCount" },
+          },
+          capabilities: {
             type: "array",
             items: { $ref: "#/components/schemas/FacetCount" },
           },

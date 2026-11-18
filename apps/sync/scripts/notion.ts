@@ -17,6 +17,7 @@ async function main() {
         "003-notion-resilience.sql",
         "005-public-content.sql",
         "007-malt-refresh.sql",
+        "008-project-dimensions.sql",
       ])
         await sql.unsafe(
           await readFile(
@@ -38,7 +39,7 @@ async function main() {
       await watchNotion(controller.signal);
     } else if (command === "status" || command === "health") {
       const [state] = await sql`SELECT
-        (SELECT refreshed_at FROM public_content WHERE key='website-v2') AS content_published_at,
+        (SELECT refreshed_at FROM public_content WHERE key='website-v3') AS content_published_at,
         (SELECT count(*) FROM notion_enquiry_outbox WHERE delivered_at IS NULL) AS pending_enquiries,
         (SELECT min(created_at) FROM notion_enquiry_outbox WHERE delivered_at IS NULL) AS oldest_pending_at,
         (SELECT max(attempts) FROM notion_enquiry_outbox WHERE delivered_at IS NULL) AS max_delivery_attempts,

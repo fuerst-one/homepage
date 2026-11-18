@@ -16,14 +16,14 @@ const { parseProjectSearchParams, reconcileProjectUrl } = loadTs(
 const projects = [
   {
     id: "ai",
-    experiences: ["AI Engineering"],
+    capabilities: ["AI Engineering"],
     featured: false,
     matching: {
       buyerNeeds: ["Add AI capabilities"],
       ownership: "Solo delivery",
     },
   },
-  { id: "other", experiences: ["UX"], featured: true },
+  { id: "other", capabilities: ["UX"], featured: true },
 ];
 test("semantic case filters survive URL parsing and select by public metadata", () => {
   const filters = parseProjectSearchParams({
@@ -40,10 +40,10 @@ test("semantic case filters survive URL parsing and select by public metadata", 
   );
 });
 test("named expertise filters include newly added matching projects without changing the URL", () => {
-  const filters = parseProjectSearchParams({ experiences: "AI Engineering" });
+  const filters = parseProjectSearchParams({ capabilities: "AI Engineering" });
   assert.deepEqual(
     filterProjects(
-      [...projects, { id: "new", experiences: ["AI Engineering"] }],
+      [...projects, { id: "new", capabilities: ["AI Engineering"] }],
       filters,
     ).map((p) => p.id),
     ["ai", "new"],
@@ -60,10 +60,10 @@ test("Not featured selects false booleans and composes with semantic facets", ()
 });
 test("semantic filter removal is written back without leaving stale facets in the URL", () => {
   const action = reconcileProjectUrl({
-    urlSearch: "buyerNeeds=Add+AI+capabilities&experiences=AI+Engineering",
-    filters: { experiences: ["AI Engineering"] },
+    urlSearch: "buyerNeeds=Add+AI+capabilities&capabilities=AI+Engineering",
+    filters: { capabilities: ["AI Engineering"] },
     focusedProjectId: null,
-    lastUrl: "buyerNeeds=Add+AI+capabilities&experiences=AI+Engineering",
+    lastUrl: "buyerNeeds=Add+AI+capabilities&capabilities=AI+Engineering",
     pendingUrl: null,
   });
   assert.equal(action.type, "write");

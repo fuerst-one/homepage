@@ -14,7 +14,7 @@ export async function writeIndexPublication(
 ) {
   return sql.begin(async (tx) => {
     const [current] =
-      await tx`SELECT refreshed_at::text AS revision FROM public_content WHERE key='website-v2' FOR SHARE`;
+      await tx`SELECT refreshed_at::text AS revision FROM public_content WHERE key='website-v3' FOR SHARE`;
     if (current?.revision !== source.revision) return false;
     const documents = source.documents;
     for (const { doc, chunks, vectors } of prepared) {

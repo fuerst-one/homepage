@@ -5,7 +5,7 @@ import { useId, useMemo, useState } from "react";
 import { CvProject } from "@homepage/content/models";
 import { ProjectGraph3D } from "./ProjectGraph3D";
 import { useFiltersStore } from "./filtersStore";
-import { filterProjects } from "./Filter/utils";
+import { filterProjects, getFilterOptionCounts } from "./Filter/utils";
 import { filterConfigs } from "./filterConfigs";
 import { FilterConfig } from "./Filter/types";
 import { BarChartFilter } from "./Filter/BarChartFilter";
@@ -41,7 +41,8 @@ export const ProjectAnalysisTabs = ({
               {
                 clients: "Kunden",
                 industries: "Branchen",
-                experiences: "Erfahrungen",
+                capabilities: "Kompetenzen",
+                methods: "Methoden",
                 tools: "Tools",
                 languages: "Sprachen",
                 projectType: "Projekttyp",
@@ -104,12 +105,28 @@ const ChartTabContent = ({
   filterConfig: FilterConfig | null;
   projects: CvProject[];
 }) => {
+  const locale = useLocale();
   if (!filterConfig) return null;
 
-  if (projects.length === 0) {
+  const hasValues =
+    getFilterOptionCounts(projects, filterConfig.projectKey).length > 0;
+  if (!projects.length || !hasValues) {
     return (
-      <div className="flex h-full w-full items-center justify-center px-6 text-xs text-neutral-500">
-        Nothing matches this filter — try loosening it.
+      <div
+        className="flex h-full w-full items-center justify-center px-6 text-xs text-neutral-400"
+        role="status"
+      >
+        {!projects.length
+          ? locale === "de"
+            ? "Keine passenden Projekte. Erweitere die Filter."
+            : "No matching projects. Try broadening the filters."
+          : filterConfig.projectKey === "methods"
+            ? locale === "de"
+              ? "Für diese Projekte sind keine Methoden erfasst."
+              : "No methods recorded for these projects."
+            : locale === "de"
+              ? "Für diese Ansicht sind keine Werte erfasst."
+              : "No values recorded for this view."}
       </div>
     );
   }

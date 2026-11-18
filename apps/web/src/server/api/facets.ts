@@ -17,7 +17,8 @@ export type Facets = {
   targetMarket: FacetCount[];
   usageContext: FacetCount[];
   deliveryModels: FacetCount[];
-  experiences: FacetCount[];
+  capabilities: FacetCount[];
+  methods: FacetCount[];
   languages: FacetCount[];
   projectTypes: FacetCount[];
   workplaces: FacetCount[];
@@ -32,7 +33,8 @@ export const computeFacets = (projects: CvProject[]): Facets => ({
   targetMarket: countMultiSelect(projects, "targetMarket"),
   usageContext: countMultiSelect(projects, "usageContext"),
   deliveryModels: countSingle(projects, "deliveryModel"),
-  experiences: countMultiSelect(projects, "experiences"),
+  capabilities: countMultiSelect(projects, "capabilities"),
+  methods: countMultiSelect(projects, "methods"),
   languages: countMultiSelect(projects, "languages"),
   projectTypes: countSingle(projects, "projectType"),
   workplaces: countSingle(projects, "workplace"),
@@ -45,7 +47,8 @@ const countMultiSelect = (
   key:
     | "tools"
     | "industries"
-    | "experiences"
+    | "capabilities"
+    | "methods"
     | "languages"
     | "productTypes"
     | "targetMarket"

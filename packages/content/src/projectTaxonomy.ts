@@ -176,7 +176,7 @@ const legacyUseCases: Record<string, string[]> = {
 export function matchesLegacyTaxonomy(
   project: ProjectTaxonomy & {
     industries?: string[];
-    experiences?: string[];
+    capabilities?: string[];
     matching?: {
       domains?: string[];
       aiUsage?: string[];
@@ -198,10 +198,10 @@ export function matchesLegacyTaxonomy(
         project.matching?.aiCapabilities?.length,
       );
     if (search === "consulting")
-      return includes(project.experiences, "Consulting");
+      return includes(project.capabilities, "Consulting");
     if (search === "design")
       return ["UI-Design", "UX-Design", "Fashion Design"].some((v) =>
-        includes(project.experiences, v),
+        includes(project.capabilities, v),
       );
     if (search === "e-commerce" && key === "industries")
       return includes(project.matching?.domains, "E-commerce");
