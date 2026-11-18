@@ -20,6 +20,7 @@ import { selectedPointFill } from "./spacePointStyle";
 import { useReducedMotion } from "./useReducedMotion";
 import type { SpaceViewport } from "./spaceViewport";
 import { useChartTooltip } from "./useChartTooltip";
+import { chartTooltipPosition } from "./spaceTooltip";
 
 export function SemanticNetwork({
   nodes,
@@ -62,6 +63,9 @@ export function SemanticNetwork({
         },
       },
       tooltip: {
+        position: (point, _params, _dom, _rect, size) =>
+          chartTooltipPosition(point, size),
+        transitionDuration: 0,
         confine: true,
         enterable: false,
         hideDelay: 0,

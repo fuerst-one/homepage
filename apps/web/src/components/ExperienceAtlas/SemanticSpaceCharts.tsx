@@ -20,6 +20,7 @@ import type { SpaceViewport } from "./spaceViewport";
 import { clusterTooltipElement } from "./SpaceClusterTooltip";
 import type { SpaceConnections } from "./spaceConnections";
 import { useChartTooltip } from "./useChartTooltip";
+import { chartTooltipPosition } from "./spaceTooltip";
 
 export type SpaceNode = {
   id: string;
@@ -165,6 +166,9 @@ export function SemanticSpaceCharts({
       fontSize: 10,
     },
     tooltip: {
+      position: (point, _params, _dom, _rect, size) =>
+        chartTooltipPosition(point, size),
+      transitionDuration: 0,
       confine: true,
       enterable: false,
       hideDelay: 0,

@@ -841,6 +841,14 @@
   width: min(260px, calc(100% - 32px));
   pointer-events: none;
 }
+.vs-space-3d[data-tooltip-corner="top-left"] .vs-spatial-tooltip {
+  left: 16px;
+  right: auto;
+}
+.vs-space-3d[data-tooltip-corner="bottom-right"] .vs-spatial-tooltip {
+  top: auto;
+  bottom: 16px;
+}
 .vs-project-tooltip {
   width: min(280px, calc(100vw - 100px));
   max-width: 100%;

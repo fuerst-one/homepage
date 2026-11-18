@@ -34,6 +34,7 @@ import type { SpaceConnections } from "./spaceConnections";
 import { SpaceClusterTooltip } from "./SpaceClusterTooltip";
 import { SpaceProjectTooltip } from "./SpaceProjectTooltip";
 import { prioritizeSpaceHits } from "./spacePicking";
+import { tooltipCorner } from "./spaceTooltip";
 
 type Point = [number, number, number];
 type MovingNode = SpaceNode & { point: Point; opacity: number };
@@ -597,6 +598,8 @@ export default function SemanticSpace3D(
   const pointerStart = useRef<[number, number] | null>(null);
   const dragged = useRef(false);
   const [hideTooltip, setHideTooltip] = useState(false);
+  const [corner, setCorner] =
+    useState<ReturnType<typeof tooltipCorner>>("top-right");
   const [hoveredCluster, setHoveredCluster] = useState<{
     index: number;
     nodes: SpaceNode[];
@@ -639,11 +642,19 @@ export default function SemanticSpace3D(
   return (
     <div
       className="vs-space-3d"
+      data-tooltip-corner={corner}
       onPointerDownCapture={(event) => {
         pointerStart.current = [event.clientX, event.clientY];
         dragged.current = false;
       }}
       onPointerMoveCapture={(event) => {
+        const bounds = event.currentTarget.getBoundingClientRect();
+        setCorner(
+          tooltipCorner(
+            [event.clientX - bounds.left, event.clientY - bounds.top],
+            [bounds.width, bounds.height],
+          ),
+        );
         if (
           event.buttons &&
           pointerStart.current &&
