@@ -13,6 +13,7 @@ import { getJsxFormattedTextFromTextBlock } from "./getJsxFormattedTextFromTextB
 import { getProjectLogoSources } from "./getProjectLogoSources";
 import { ProjectLogo } from "./ProjectLogo";
 import { ProjectIndustry } from "./ProjectIndustry";
+import { ContentUpdatedAt } from "../../ContentUpdatedAt";
 import { projectPath, SITE_URL } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
@@ -70,6 +71,7 @@ export const ProjectDetails = ({
         {heading ?? (
           <h1 className="text-3xl font-semibold text-white">{name}</h1>
         )}
+        <ContentUpdatedAt date={project.updatedAt} locale={locale} />
       </div>
       <div className="flex-1 space-y-6 overflow-y-auto p-6">
         {screenshots && screenshots.length > 0 && (

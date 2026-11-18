@@ -3,16 +3,22 @@ import { notFound, permanentRedirect } from "next/navigation";
 import Link from "../../../../../../components/i18n/LocalizedLink";
 import { Layout } from "../../../../../../components/Layout";
 import { CaseStudyContent } from "../../../../../../components/Cv/Projects/CaseStudyContent";
+import { ContentUpdatedAt } from "../../../../../../components/ContentUpdatedAt";
+import { StructuredData } from "../../../../../../components/StructuredData";
 import { getLocale } from "../../../../../../server/i18n/getLocale";
 import { getProjectCaseStudy } from "../../../../../../server/content/getProjectCaseStudy";
 import { getCachedCvProjects } from "../../../../../../server/content/getCachedCvProjects";
 import { getPublicImageDescriptions } from "../../../../../../server/content/getPublicImageDescriptions";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { hasGermanTranslation } from "@homepage/content/localizeContent";
-import { locales } from "@homepage/content/i18n";
+import { locales, localizedPath } from "@homepage/content/i18n";
+import { contentDate } from "@homepage/content/contentDates";
 import {
   pageMetadata,
-  projectDescription,
+  caseStudyDescription,
+  caseStudySchema,
+  personSchema,
+  projectSchema,
   projectPath,
   projectSlug,
   SITE_URL,
@@ -44,14 +50,14 @@ const getCase = cache(async (reference: string, locale: Locale) => {
 
 export async function generateMetadata({ params }: Props) {
   const locale = await getLocale(params);
-  const { project, availableLocales } = await getCase(
+  const { project, blocks, availableLocales } = await getCase(
     (await params).id,
     locale,
   );
   const metadata = pageMetadata(
     `${projectPath(project, locale)}/case-study`,
     `${project.name} — ${locale === "de" ? "Fallstudie" : "Case study"} | Fuerst.one`,
-    projectDescription(project),
+    caseStudyDescription(project, blocks),
     { locale, availableLocales },
   );
   metadata.alternates = {
@@ -66,6 +72,13 @@ export async function generateMetadata({ params }: Props) {
         `${SITE_URL}${projectPath(project, availableLocales[0])}/case-study`,
       ],
     ]),
+  };
+  const modifiedTime = contentDate(project.caseStudyUpdatedAt?.[locale]);
+  metadata.openGraph = {
+    ...metadata.openGraph,
+    type: "article",
+    authors: [`${SITE_URL}${localizedPath("/", locale)}`],
+    ...(modifiedTime && { modifiedTime }),
   };
   return metadata;
 }
@@ -107,6 +120,16 @@ export default async function CaseStudyPage({ params }: Props) {
           <h1 className="text-3xl font-semibold text-white sm:text-4xl">
             {project.name}
           </h1>
+          <p className="text-sm text-neutral-300">
+            {locale === "de" ? "Von" : "By"}{" "}
+            <Link href="/" rel="author" className="underline">
+              Alexander Fuerst
+            </Link>
+          </p>
+          <ContentUpdatedAt
+            date={project.caseStudyUpdatedAt?.[locale]}
+            locale={locale}
+          />
         </header>
         <CaseStudyContent
           blocks={blocks}
@@ -121,6 +144,38 @@ export default async function CaseStudyPage({ params }: Props) {
           </Link>
         </footer>
       </article>
+      <StructuredData
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            personSchema(undefined, locale),
+            projectSchema(project),
+            caseStudySchema(project, locale, blocks),
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  name: "Home",
+                  item: `${SITE_URL}${localizedPath("/", locale)}`,
+                },
+                {
+                  name: locale === "de" ? "Projekte" : "Projects",
+                  item: `${SITE_URL}${localizedPath("/projects", locale)}`,
+                },
+                { name: project.name, item: `${SITE_URL}${path}` },
+                {
+                  name: locale === "de" ? "Fallstudie" : "Case study",
+                  item: `${SITE_URL}${path}/case-study`,
+                },
+              ].map((item, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                ...item,
+              })),
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }

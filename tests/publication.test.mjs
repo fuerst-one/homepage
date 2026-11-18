@@ -148,3 +148,42 @@ test("unsupported or private nested content and upstream image URLs never enter 
     "/api/projects/public/case-study/images/image?locale=en",
   );
 });
+
+test("public edit dates come from the project and its published language-specific study", () => {
+  const source = fixture();
+  const en = "11111111-1111-4111-8111-111111111111";
+  const de = "22222222-2222-4222-8222-222222222222";
+  source.projects[0].caseStudyEn = `https://notion.so/${en}`;
+  source.projects[0].caseStudyDe = `https://notion.so/${de}`;
+  source.studies = { [en]: [], [de]: [] };
+  source.projectUpdatedAt = { public: "2026-11-16T10:00:00.000Z" };
+  source.studyUpdatedAt = {
+    [en]: "2026-11-15T10:00:00.000Z",
+    [de]: "2026-11-17T10:00:00.000Z",
+    private: "2026-11-18T10:00:00.000Z",
+  };
+  const result = preparePublication(source);
+  for (const locale of ["en", "de"]) {
+    const project = result.locales[locale].projects[0];
+    assert.equal(project.updatedAt, source.projectUpdatedAt.public);
+    assert.deepEqual(project.caseStudyUpdatedAt, {
+      en: source.projectUpdatedAt.public,
+      de: source.studyUpdatedAt[de],
+    });
+  }
+  assert.ok(!JSON.stringify(result).includes('"studyUpdatedAt"'));
+  delete source.studies[de];
+  const unpublished = preparePublication(source).locales.en.projects[0];
+  assert.equal(unpublished.caseStudyUpdatedAt.de, undefined);
+  assert.equal(unpublished.caseStudyIds.de, null);
+});
+
+test("legacy publications do not fabricate dates from refresh time or project lifetime", () => {
+  const source = fixture();
+  source.projects[0].startDate = "2020-01-01";
+  source.projects[0].endDate = "2025-01-01";
+  source.projectUpdatedAt = { public: "invalid" };
+  const project = preparePublication(source).locales.en.projects[0];
+  assert.equal(project.updatedAt, undefined);
+  assert.deepEqual(project.caseStudyUpdatedAt, {});
+});

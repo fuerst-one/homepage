@@ -212,6 +212,15 @@ export async function syncWebsiteContent(force = false) {
         copy,
         studies,
         assets,
+        projectUpdatedAt: Object.fromEntries(
+          pages.map((page) => [page.id, page.last_edited_time]),
+        ),
+        studyUpdatedAt: Object.fromEntries(
+          Object.entries(sourceCache).map(([id, cached]) => [
+            id,
+            cached.revision,
+          ]),
+        ),
       });
       return { ...publication, sourceCache };
     },

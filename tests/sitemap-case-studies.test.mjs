@@ -92,3 +92,35 @@ test("a German-only published case study uses its published URL as x-default", a
     "x-default": studies[0].url,
   });
 });
+
+test("sitemap freshness follows source edits and keeps each case-study language independent", async () => {
+  const published = {
+    ...project("dated", ["en", "de"], { en: studyId, de: studyId }),
+    updatedAt: "2026-11-16T10:00:00.000Z",
+    caseStudyUpdatedAt: {
+      en: "2026-11-17T10:00:00.000Z",
+      de: "2026-11-18T10:00:00.000Z",
+    },
+  };
+  const entries = await sitemapFor([published]);
+  const url = `${origin}/en/projects/dated-dated`;
+  assert.equal(
+    entries.find((e) => e.url === url).lastModified,
+    published.updatedAt,
+  );
+  assert.equal(
+    entries.find((e) => e.url === `${url}/case-study`).lastModified,
+    published.caseStudyUpdatedAt.en,
+  );
+  assert.equal(
+    entries.find((e) => e.url === `${url.replace("/en/", "/de/")}/case-study`)
+      .lastModified,
+    published.caseStudyUpdatedAt.de,
+  );
+  assert.equal(
+    entries.find((e) => e.url === `${origin}/en`).lastModified,
+    undefined,
+  );
+  const legacy = await sitemapFor([project("legacy", ["en"], { en: studyId })]);
+  assert.ok(legacy.every((entry) => entry.lastModified === undefined));
+});

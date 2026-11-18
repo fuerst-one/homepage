@@ -14,6 +14,7 @@ import {
 } from "@homepage/content/i18n";
 import { hasGermanTranslation } from "@homepage/content/localizeContent";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
+import { contentDate } from "@homepage/content/contentDates";
 
 export const revalidate = 60;
 
@@ -72,10 +73,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return [
         ...available.map((locale) => ({
           url: `${SITE_URL}${projectPath(project, locale)}`,
+          lastModified: contentDate(project.updatedAt),
           alternates: { languages },
         })),
         ...caseLocales.map((locale) => ({
           url: `${SITE_URL}${projectPath(project, locale)}/case-study`,
+          lastModified: contentDate(project.caseStudyUpdatedAt?.[locale]),
           alternates: { languages: caseLanguages },
         })),
       ];

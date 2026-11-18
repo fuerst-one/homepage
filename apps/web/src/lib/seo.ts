@@ -5,10 +5,12 @@ import {
   type Locale,
 } from "@homepage/content/i18n";
 import { hasGermanTranslation } from "@homepage/content/localizeContent";
+import { contentDate } from "@homepage/content/contentDates";
+import { hiringPlatforms } from "@homepage/content/data/hiringPlatforms";
 import type { Metadata } from "next";
 import projectSlugs from "@homepage/content/data/project-slugs.json";
 import type { CvOwnerPublic } from "@homepage/content/models";
-import type { CvProject } from "@homepage/content/models";
+import type { CaseStudyBlock, CvProject } from "@homepage/content/models";
 import {
   flattenRichText,
   truncateAtSentence,
@@ -19,8 +21,10 @@ export const SITE_URL = "https://fuerst.one";
 export const SITE_NAME = "Fuerst.one";
 export const PERSON_ID = `${SITE_URL}/#person`;
 export const PROFILE_LINKS = [
-  "https://github.com/fuerst-one",
-  "https://www.linkedin.com/in/fuerst-one/",
+  ...new Set([
+    "https://github.com/fuerst-one",
+    ...hiringPlatforms.map(({ href }) => href),
+  ]),
 ];
 export const SITE_DESCRIPTION =
   "Alexander Fuerst is a UX+AI engineer in Würzburg, Germany, building frontend interfaces, AI automation, data visualizations, and e-commerce experiences.";
@@ -132,6 +136,9 @@ export function projectSchema(project: CvProject) {
     description:
       flattenRichText(project.description) || projectDescription(project),
     creator: { "@id": PERSON_ID },
+    ...(contentDate(project.updatedAt) && {
+      dateModified: contentDate(project.updatedAt),
+    }),
     keywords: [
       ...new Set([
         ...project.tools,
@@ -144,6 +151,45 @@ export function projectSchema(project: CvProject) {
       image: project.screenshots.map((url) => new URL(url, SITE_URL).href),
     }),
     ...(project.websiteUrl && { sameAs: project.websiteUrl }),
+  };
+}
+
+export function caseStudyDescription(
+  project: CvProject,
+  blocks: CaseStudyBlock[],
+) {
+  const introduction = blocks
+    .filter((block) => block.type === "paragraph")
+    .map((block) =>
+      flattenRichText({ type: "rich_text", rich_text: block.richText }),
+    )
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(" ");
+  return introduction
+    ? truncateAtSentence(introduction, 160)
+    : projectDescription(project);
+}
+
+export function caseStudySchema(
+  project: CvProject,
+  locale: Locale,
+  blocks: CaseStudyBlock[],
+) {
+  const url = `${SITE_URL}${projectPath(project, locale)}/case-study`;
+  const modified = contentDate(project.caseStudyUpdatedAt?.[locale]);
+  return {
+    "@type": "Article",
+    "@id": `${url}#article`,
+    url,
+    headline: project.name,
+    description: caseStudyDescription(project, blocks),
+    inLanguage: locale,
+    author: { "@id": PERSON_ID },
+    about: { "@id": `${SITE_URL}${projectPath(project, locale)}#project` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+    ...(modified && { dateModified: modified }),
   };
 }
 

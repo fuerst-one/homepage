@@ -33,6 +33,8 @@ export type CvProject = ProjectTaxonomy & {
   contentLocale: Locale;
   availableLocales: Locale[];
   caseStudyIds: Record<Locale, string | null>;
+  updatedAt?: string;
+  caseStudyUpdatedAt?: Partial<Record<Locale, string>>;
   wowFactor: number;
   status: string;
   featured: boolean;

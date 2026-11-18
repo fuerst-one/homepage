@@ -1,4 +1,5 @@
 import { publicProjectScale } from "@homepage/content/projectScale";
+import { contentDate, latestContentDate } from "@homepage/content/contentDates";
 import { publicProjectTaxonomy } from "@homepage/content/projectTaxonomy";
 import {
   CASE_VOCABULARY,
@@ -177,6 +178,24 @@ export function preparePublication(value: unknown): PublicPublication {
         contentLocale: german ? "de" : "en",
         availableLocales: translated ? ["en", "de"] : ["en"],
         caseStudyIds: activeIds,
+        updatedAt: contentDate(record(source.projectUpdatedAt)[text(p.id)]),
+        caseStudyUpdatedAt: Object.fromEntries(
+          Object.entries(activeIds).flatMap(([lang, id]) => {
+            const studyDate =
+              id && contentDate(record(source.studyUpdatedAt)[id]);
+            return studyDate
+              ? [
+                  [
+                    lang,
+                    latestContentDate(
+                      studyDate,
+                      record(source.projectUpdatedAt)[text(p.id)],
+                    ),
+                  ],
+                ]
+              : [];
+          }),
+        ),
         wowFactor: typeof p.wowFactor === "number" ? p.wowFactor : 0,
         status: text(p.status),
         featured: p.featured === true,

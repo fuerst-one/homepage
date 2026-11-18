@@ -171,6 +171,10 @@ test("worker publishes public content and image bytes; DB readers require no Not
     projects.map((p) => p.id),
     [publicId],
   );
+  assert.equal(projects[0].updatedAt, "2026-11-16T12:00:00.000Z");
+  assert.deepEqual(projects[0].caseStudyUpdatedAt, {
+    en: "2026-11-16T12:00:00.000Z",
+  });
   assert.ok(await readWebsiteAsset(propertyAssetKey(publicId, "Logo", 0)));
   assert.ok(
     await readWebsiteAsset(propertyAssetKey(ownerId, "Avatar", 0)),
@@ -196,7 +200,19 @@ test("worker publishes public content and image bytes; DB readers require no Not
 
 test("unchanged case bodies reuse the private worker cache without exposing it to web readers", async () => {
   const before = requests.filter((p) => p.includes("/blocks/")).length;
+  const dates = (await readWebsiteSection("projects")).map((project) => ({
+    updatedAt: project.updatedAt,
+    caseStudyUpdatedAt: project.caseStudyUpdatedAt,
+  }));
   await syncWebsiteContent(true);
+  assert.deepEqual(
+    (await readWebsiteSection("projects")).map((project) => ({
+      updatedAt: project.updatedAt,
+      caseStudyUpdatedAt: project.caseStudyUpdatedAt,
+    })),
+    dates,
+    "a worker refresh must not make unchanged content appear newly edited",
+  );
   assert.equal(requests.filter((p) => p.includes("/blocks/")).length, before);
   const [publicRow] =
     await sql`SELECT payload FROM public_content WHERE key='website-v3'`;
