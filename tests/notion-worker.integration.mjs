@@ -34,7 +34,11 @@ await sql.unsafe(
     "utf8",
   ),
 );
-for (const name of ["001-initial.sql", "005-public-content.sql"])
+for (const name of [
+  "001-initial.sql",
+  "005-public-content.sql",
+  "008-project-dimensions.sql",
+])
   await sql.unsafe(
     await readFile(
       new URL(`../packages/database/migrations/${name}`, import.meta.url),
@@ -194,9 +198,9 @@ test("unchanged case bodies reuse the private worker cache without exposing it t
   await syncWebsiteContent(true);
   assert.equal(requests.filter((p) => p.includes("/blocks/")).length, before);
   const [publicRow] =
-    await sql`SELECT payload FROM public_content WHERE key='website-v2'`;
+    await sql`SELECT payload FROM public_content WHERE key='website-v3'`;
   const [workerRow] =
-    await sql`SELECT payload FROM notion_snapshots WHERE key='website-v2'`;
+    await sql`SELECT payload FROM notion_snapshots WHERE key='website-v3'`;
   assert.equal(publicRow.payload.sourceCache, undefined);
   assert.ok(workerRow.payload.sourceCache[studyId]);
 });

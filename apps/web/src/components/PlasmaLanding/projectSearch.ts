@@ -25,7 +25,8 @@ const FILTER_GROUPS = [
   { field: "maintenance", label: "Engagement status", shape: 2 },
   { field: "aiUsage", label: "AI use", shape: 5 },
   { field: "tools", label: "Tool", shape: 4 },
-  { field: "experiences", label: "Expertise", shape: 2 },
+  { field: "capabilities", label: "Capability", shape: 2 },
+  { field: "methods", label: "Method", shape: 3 },
   { field: "industries", label: "Industry", shape: 0 },
   { field: "languages", label: "Language", shape: 4 },
   { field: "projectType", label: "Project type", shape: 2 },
@@ -36,10 +37,22 @@ const FILTER_GROUPS = [
 
 type SearchField = (typeof FILTER_GROUPS)[number]["field"];
 const GERMAN_FACETS: Partial<Record<SearchField, Record<string, string[]>>> = {
-  experiences: {
-    Conception: ["Konzeption"],
+  tools: {
+    "Vector Databases": ["Vektordatenbanken"],
+    "Graph Databases": ["Graphdatenbanken"],
+  },
+  methods: {
     "User Testing": ["Nutzertests", "Benutzertests"],
     "Expert Research": ["Expertenrecherche"],
+    Prototyping: ["Prototypen", "Prototyping"],
+    Workshop: ["Workshop", "Workshops"],
+    "Site Audit": ["Website-Analyse", "Website-Prüfung", "Website-Pruefung"],
+    "A/B-Testing": ["A/B-Tests"],
+    Personas: ["Personas"],
+    "Jobs To Be Done": ["Jobs To Be Done"],
+  },
+  capabilities: {
+    Conception: ["Konzeption"],
     Usability: ["Benutzerfreundlichkeit", "Gebrauchstauglichkeit"],
     Consulting: ["Beratung"],
     "Artificial Intelligence": [
@@ -57,14 +70,11 @@ const GERMAN_FACETS: Partial<Record<SearchField, Record<string, string[]>>> = {
     "Agent Harnesses": ["Agenten-Harnesses", "Agentensysteme"],
     "Data Aggregation": ["Datenaggregation"],
     "Data Analysis": ["Datenanalyse"],
-    "Vector Databases": ["Vektordatenbanken"],
-    "Graph Databases": ["Graphdatenbanken"],
     Leadership: ["Führung", "Fuehrung"],
     "Geospatial Visualization": [
       "Geodatenvisualisierung",
       "Kartenvisualisierung",
     ],
-    "Site Audit": ["Website-Analyse", "Website-Prüfung", "Website-Pruefung"],
     Finance: ["Finanzen"],
     "Business Administration": ["Betriebswirtschaft"],
     Reporting: ["Berichterstattung"],
@@ -284,7 +294,8 @@ export const buildProjectSearchIndex = (
           ? [item.matching.maintenance]
           : [],
         tools: item.tools,
-        experiences: item.experiences,
+        capabilities: item.capabilities,
+        methods: item.methods,
         industries: item.industries,
         productTypes: item.productTypes ?? [],
         targetMarket: item.targetMarket ?? [],
@@ -316,7 +327,8 @@ export const buildProjectSearchIndex = (
               maintenance: "Zusammenarbeit",
               aiUsage: "KI-Einsatz",
               tools: "Tool",
-              experiences: "Erfahrung",
+              capabilities: "Kompetenz",
+              methods: "Methode",
               industries: "Branche",
               languages: "Sprache",
               projectType: "Projekttyp",

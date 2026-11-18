@@ -78,10 +78,16 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
         {getJsxFormattedTextFromTextBlock(project.description)}
       </p>
       <div className="text-xs">
-        <h4 className="mb-1 text-gray-400 dark:text-gray-600">Experiences:</h4>
+        <h4 className="mb-1 text-gray-400 dark:text-gray-600">Capabilities:</h4>
         <div className="mb-2 flex flex-wrap gap-1">
-          {project.experiences.map((experience, idx) => (
+          {project.capabilities.map((experience, idx) => (
             <Badge key={idx}>{experience}</Badge>
+          ))}
+        </div>
+        <h4 className="mb-1 text-gray-400 dark:text-gray-600">Methods:</h4>
+        <div className="mb-2 flex flex-wrap gap-1">
+          {project.methods.map((method) => (
+            <Badge key={method}>{method}</Badge>
           ))}
         </div>
         <h4 className="mb-1 text-gray-400 dark:text-gray-600">Tools:</h4>

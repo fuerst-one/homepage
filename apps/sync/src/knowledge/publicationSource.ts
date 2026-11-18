@@ -33,7 +33,7 @@ const blockText = (blocks: CaseStudyBlock[]): string =>
 /** Index exactly the public publication. This never calls the editorial source. */
 export async function readPublishedKnowledge(sql = knowledgeDatabase()) {
   const [row] =
-    await sql`SELECT payload,refreshed_at::text AS revision FROM public_content WHERE key=${PUBLICATION_KEY} AND payload->>'version'='2'`;
+    await sql`SELECT payload,refreshed_at::text AS revision FROM public_content WHERE key=${PUBLICATION_KEY} AND payload->>'version'='3'`;
   if (!row) throw new Error("Public content unavailable; seed before indexing");
   const publication = row.payload as PublicPublication;
   return {

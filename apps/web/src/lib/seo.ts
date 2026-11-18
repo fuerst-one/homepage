@@ -135,7 +135,8 @@ export function projectSchema(project: CvProject) {
     keywords: [
       ...new Set([
         ...project.tools,
-        ...project.experiences,
+        ...project.capabilities,
+        ...project.methods,
         ...project.industries,
       ]),
     ],

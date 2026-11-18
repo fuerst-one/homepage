@@ -1,3 +1,4 @@
+import { publicProjectScale } from "@homepage/content/projectScale";
 import { publicProjectTaxonomy } from "@homepage/content/projectTaxonomy";
 import {
   CASE_VOCABULARY,
@@ -186,7 +187,9 @@ export function preparePublication(value: unknown): PublicPublication {
         githubUrl: safeCaseStudyLink(text(p.githubUrl)),
         industries: strings(p.industries),
         ...publicProjectTaxonomy(p),
-        experiences: strings(p.experiences),
+        capabilities: strings(p.capabilities),
+        methods: strings(p.methods),
+        scale: publicProjectScale(p.scale),
         tools: strings(p.tools),
         languages: strings(p.languages),
         workplace: text(p.workplace),
@@ -269,7 +272,7 @@ export function preparePublication(value: unknown): PublicPublication {
       studies,
     };
   }
-  return { version: 2, locales, assets };
+  return { version: 3, locales, assets };
 }
 
 function publicCase(value: unknown): ProjectCase {

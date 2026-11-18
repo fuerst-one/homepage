@@ -1,3 +1,4 @@
+import type { ProjectScale } from "@homepage/content/projectScale";
 import type { ProjectCase } from "@homepage/content/projectCase";
 import type { ProjectTaxonomy } from "@homepage/content/projectTaxonomy";
 
@@ -49,7 +50,9 @@ export type CvProject = ProjectTaxonomy & {
   websiteUrl: string | null;
   githubUrl: string | null;
   industries: string[];
-  experiences: string[];
+  capabilities: string[];
+  methods: string[];
+  scale?: ProjectScale;
   tools: string[];
   languages: string[];
   workplace: string;

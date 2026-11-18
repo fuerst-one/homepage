@@ -1,3 +1,4 @@
+import type { ProjectScale } from "@homepage/content/projectScale";
 import type { EnquiryEvidence } from "./enquiryEvidence";
 import type { Locale } from "@homepage/content/i18n";
 import type { ProjectCase } from "@homepage/content/projectCase";
@@ -41,7 +42,9 @@ export type CvProject = ProjectTaxonomy & {
   websiteUrl: string | null;
   githubUrl: string | null;
   industries: string[];
-  experiences: string[];
+  capabilities: string[];
+  methods: string[];
+  scale?: ProjectScale;
   tools: string[];
   languages: string[];
   workplace: string;
@@ -86,11 +89,11 @@ export type WebsiteContent = {
   studies: Record<string, CaseStudyBlock[]>;
 };
 export type PublicPublication = {
-  version: 2;
+  version: 3;
   locales: Record<Locale, WebsiteContent>;
   assets: Record<string, string>;
 };
-export const PUBLICATION_KEY = "website-v2";
+export const PUBLICATION_KEY = "website-v3";
 export const propertyAssetKey = (id: string, property: string, index: number) =>
   `property:${id}:${property}:${index}`;
 export const caseAssetKey = (id: string, block: string) =>

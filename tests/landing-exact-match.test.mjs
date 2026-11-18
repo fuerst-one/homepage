@@ -61,14 +61,14 @@ test("AI Engineering uses the existing expertise filter rather than freezing pro
     keywords: [
       {
         label: "AI Engineering",
-        filter: { field: "experiences", value: "AI Engineering" },
+        filter: { field: "capabilities", value: "AI Engineering" },
       },
     ],
   };
   const params = new URLSearchParams(
     resolveSearchDestination(expertise, "AI Engineering").split("?")[1],
   );
-  assert.equal(params.get("experiences"), "AI Engineering");
+  assert.equal(params.get("capabilities"), "AI Engineering");
   assert.equal(params.has("id"), false);
 });
 test("case facets also retain semantic names and Featured maps to the native boolean", () => {

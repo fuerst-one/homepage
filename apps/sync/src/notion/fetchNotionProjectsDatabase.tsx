@@ -1,3 +1,5 @@
+import { readNotionProjectScale } from "@homepage/content/projectScale";
+import type { ProjectScale } from "@homepage/content/projectScale";
 import {
   PageObjectResponse,
   QueryDatabaseResponse,
@@ -53,7 +55,8 @@ export type NotionProjectPropertiesRaw = {
   "Website-URL": UrlField;
   "Github-URL": UrlField;
   Industries: RollupField;
-  Experiences: MultiSelectField;
+  Capabilities: MultiSelectField;
+  Methods: MultiSelectField;
   Tools: MultiSelectField;
   Languages: MultiSelectField;
   Workplace: SelectField;
@@ -85,7 +88,9 @@ export type NotionProject = ProjectTaxonomy & {
   websiteUrl: string;
   githubUrl: string;
   industries: string[];
-  experiences: string[];
+  capabilities: string[];
+  methods: string[];
+  scale?: ProjectScale;
   tools: string[];
   languages: string[];
   workplace: string;
@@ -119,7 +124,8 @@ const rawToInternalPropertiesMap: Record<
   "Website-URL": "websiteUrl",
   "Github-URL": "githubUrl",
   Industries: "industries",
-  Experiences: "experiences",
+  Capabilities: "capabilities",
+  Methods: "methods",
   Tools: "tools",
   Languages: "languages",
   Workplace: "workplace",
@@ -176,6 +182,9 @@ export const fetchNotionProjectsDatabase = async (
       projectRaw.properties,
       notionProject.name,
     );
+    notionProject.capabilities ??= [];
+    notionProject.methods ??= [];
+    notionProject.scale = readNotionProjectScale(projectRaw);
     Object.assign(notionProject, readNotionProjectTaxonomy(projectRaw));
     return notionProject;
   });

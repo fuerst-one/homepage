@@ -32,7 +32,7 @@ export function publicationStore(sql = knowledgeDatabase()) {
           doc.hash,
         ]),
       );
-      if (publication.version !== 2)
+      if (publication.version !== 3)
         throw new Error("Unsupported publication version");
       return sql.begin(async (tx) => {
         const [owned] =

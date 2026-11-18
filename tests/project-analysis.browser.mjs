@@ -10,17 +10,27 @@ for (const locale of ["en", "de"]) {
     try {
       const page = await browser.newPage();
       await page.setViewport({ width: 390, height: 844 });
-      await page.goto(`${base}/${locale}/projects?experiences=AI+Engineering`, {
-        waitUntil: "networkidle2",
-        timeout: 90000,
-      });
+      await page.goto(
+        `${base}/${locale}/projects?capabilities=AI+Engineering`,
+        {
+          waitUntil: "networkidle2",
+          timeout: 90000,
+        },
+      );
       const selector = "aside select";
       await page.waitForSelector(selector, { timeout: 3000 });
       assert.deepEqual(
         await page.$$eval(`${selector} option`, (options) =>
           options.map((option) => option.value),
         ),
-        ["graph", "experiences", "industries", "projectType", "tools"],
+        [
+          "graph",
+          "capabilities",
+          "methods",
+          "industries",
+          "projectType",
+          "tools",
+        ],
       );
       assert.equal(
         await page.$eval(selector, (select) => select.value),
@@ -46,7 +56,7 @@ for (const locale of ["en", "de"]) {
         new URLSearchParams(location.search).has("tools"),
       );
       assert.equal(
-        new URL(page.url()).searchParams.get("experiences"),
+        new URL(page.url()).searchParams.get("capabilities"),
         "AI Engineering",
       );
       await page.select(selector, "graph");

@@ -23,7 +23,8 @@ const ARRAY_COLUMNS: (keyof FilterParams)[] = [
   "productTypes",
   "targetMarket",
   "usageContext",
-  "experiences",
+  "capabilities",
+  "methods",
   "tools",
   "languages",
   "buyerNeeds",
@@ -34,7 +35,8 @@ const ARRAY_COLUMNS: (keyof FilterParams)[] = [
 ];
 
 type CliFilterKey =
-  | "experiences"
+  | "capabilities"
+  | "methods"
   | "industries"
   | "projectType"
   | "tools"
@@ -58,6 +60,7 @@ type CliFilterGroup = {
 };
 
 const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
+  { key: "methods", label: "Methods" },
   { key: "domains", label: "Use cases" },
   { key: "productTypes", label: "Product formats" },
   { key: "targetMarket", label: "Customer market" },
@@ -68,8 +71,8 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
     label: "Featured",
   },
   {
-    key: "experiences",
-    label: "Areas of expertise",
+    key: "capabilities",
+    label: "Capabilities",
   },
   {
     key: "industries",
@@ -96,7 +99,8 @@ const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
   usageContext: "Nutzungskontext",
   deliveryModel: "Bereitstellung",
   featured: "Ausgewählt",
-  experiences: "Fachgebiete",
+  capabilities: "Kompetenzen",
+  methods: "Methoden",
   industries: "Branchen",
   projectType: "Projekttypen",
   tools: "Tools",

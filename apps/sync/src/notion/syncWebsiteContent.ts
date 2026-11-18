@@ -32,8 +32,7 @@ export async function syncWebsiteContent(force = false) {
   const sql = knowledgeDatabase(),
     store = publicationStore(sql);
   const previous = (await store.read(WEBSITE_CONTENT_KEY))?.value as
-    | Published
-    | undefined;
+    Published | undefined;
   await refreshSnapshot(
     store,
     WEBSITE_CONTENT_KEY,
@@ -211,6 +210,6 @@ export async function syncWebsiteContent(force = false) {
   // Immutable old image versions are retained for a day for in-flight readers.
   await sql`DELETE FROM notion_assets WHERE created_at<clock_timestamp()-interval '1 day'
     AND key NOT IN (SELECT jsonb_object_values FROM public_content s,
-      LATERAL jsonb_each_text(s.payload->'assets') AS a(asset_key,jsonb_object_values) WHERE s.key=${WEBSITE_CONTENT_KEY}
+      LATERAL jsonb_each_text(s.payload->'assets') AS a(asset_key,jsonb_object_values)
       UNION SELECT a.value FROM notion_snapshots legacy, LATERAL jsonb_each_text(legacy.payload->'assets') a WHERE legacy.key='website-v1')`;
 }
