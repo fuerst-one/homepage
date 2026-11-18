@@ -60,6 +60,7 @@ export function RelatedExperience({
             </div>
             <Link
               href={projectPath(other, locale)}
+              data-profile-related={`${project.id}|${other.id}`}
               aria-label={`${de ? "Projekt ansehen" : "Explore project"}: ${other.name}`}
               className="mt-auto inline-flex items-center gap-2 self-start text-sm text-white underline decoration-white/30 underline-offset-4 hover:decoration-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >

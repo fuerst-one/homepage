@@ -1,5 +1,7 @@
 "use client";
 
+import { recordVisitorInteraction } from "../../VisitorProfile/profileStore";
+
 import { useLocale } from "../../i18n/LocaleProvider";
 import { getJsxFormattedTextFromTextBlock } from "./getJsxFormattedTextFromTextBlock";
 import { CvProject } from "@homepage/content/models";
@@ -45,7 +47,10 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const logos = getProjectLogoSources(project);
   const primaryLogo = logos[0];
   const thumbnail = screenshots?.[0];
-  const openDialog = () => setFocused(id);
+  const openDialog = () => {
+    recordVisitorInteraction("project_opened", id);
+    setFocused(id);
+  };
   const path = projectPath(project, locale);
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
   const { title, subtitle } = projectHeading(name);
@@ -72,6 +77,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
             {websiteUrl && (
               <Link
                 href={websiteUrl}
+                data-profile-proof={`${id}|live`}
                 target="_blank"
                 className="inline-flex items-center gap-2 border border-white/30 px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white print:ml-0 print:block"
               >
@@ -96,6 +102,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
             {githubUrl && (
               <Link
                 href={githubUrl}
+                data-profile-proof={`${id}|github`}
                 target="_blank"
                 className="inline-flex items-center gap-2 border border-white/30 px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white print:ml-0 print:block"
               >

@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  recordVisitorInteraction,
+  useVisitorProfileStore,
+} from "../VisitorProfile/profileStore";
 import { projectLensFacts } from "./projectLensFacts";
 import { useAtlasCopy } from "./useAtlasCopy";
 import Link from "../i18n/LocalizedLink";
@@ -299,6 +303,19 @@ export function SemanticSpaceWorkbench({
   const structured = space?.representation === "structured";
   const selectCluster = (index: number) => {
     if (!space || !connections?.groups[index]) return;
+    const catalog = useVisitorProfileStore.getState().catalog;
+    const group = connections.groups[index];
+    recordVisitorInteraction(
+      "explorer_cluster_selected",
+      displayedRecipe === "practice" ? "contribution" : displayedRecipe,
+    );
+    const selectedTerms = group.terms
+      .filter((item) => item.count >= 2 && item.count / item.total >= 0.5)
+      .slice(0, 2);
+    for (const item of selectedTerms) {
+      const term = catalog?.terms.find((term) => term.value === item.term);
+      if (term) recordVisitorInteraction("explorer_term_selected", term.id);
+    }
     focusInspector.current = true;
     setSelectedCluster({ space, index });
     onSelect("");
@@ -306,6 +323,7 @@ export function SemanticSpaceWorkbench({
     onClusterFocus(null);
   };
   const selectProject = (id: string, moveFocus = true) => {
+    if (id) recordVisitorInteraction("project_opened", id);
     focusInspector.current = moveFocus;
     setSelectedCluster(null);
     onClusterHover(null);
@@ -333,6 +351,11 @@ export function SemanticSpaceWorkbench({
             type="button"
             aria-pressed={recipe === item.id}
             onClick={() => {
+              if (recipe !== item.id)
+                recordVisitorInteraction(
+                  "explorer_lens_selected",
+                  item.id === "practice" ? "contribution" : item.id,
+                );
               onRecipe(item.id);
               setSelectedCluster(null);
               setExperiment(undefined);

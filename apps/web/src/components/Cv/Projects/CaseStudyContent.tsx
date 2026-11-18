@@ -1,3 +1,4 @@
+import { profileSectionKind } from "@homepage/content/visitorProfile";
 import { ImageDescription } from "./ImageDescription";
 import type { PublicImageDescription } from "@homepage/database/imageDescriptions";
 import type { ReactNode } from "react";
@@ -171,9 +172,33 @@ export function CaseStudyContent({
     }
     return output;
   };
+  const groups: {
+    kind: ReturnType<typeof profileSectionKind>;
+    blocks: CaseStudyBlock[];
+  }[] = [];
+  for (const block of blocks) {
+    if (block.type.startsWith("heading_") || !groups.length)
+      groups.push({
+        kind: block.type.startsWith("heading_")
+          ? profileSectionKind(block.richText.map((t) => t.plain_text).join(""))
+          : null,
+        blocks: [],
+      });
+    groups[groups.length - 1].blocks.push(block);
+  }
   return (
     <div className="space-y-5 break-words text-base leading-relaxed text-neutral-200">
-      {render(blocks)}
+      {groups.map((group, index) => (
+        <section
+          key={group.blocks[0]?.id ?? index}
+          data-profile-section={
+            projectId && group.kind ? `${projectId}|${group.kind}` : undefined
+          }
+          className="space-y-5"
+        >
+          {render(group.blocks)}
+        </section>
+      ))}
     </div>
   );
 }

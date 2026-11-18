@@ -24,7 +24,15 @@ test("profile migration is additive and rerunnable", async () => {
     "utf8",
   );
   await sql.unsafe(migration);
-  await sql.unsafe(migration);
+  const extended = await readFile(
+    new URL(
+      "../packages/database/migrations/013-visitor-profile-signals.sql",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  await sql.unsafe(extended);
+  await sql.unsafe(extended);
 });
 test("duplicate delivery and revocation cannot recreate shared data", async () => {
   const { storeProfileEvents, deleteProfileEvents } =
@@ -91,4 +99,39 @@ test("reports exclude expired events and never expose browser secrets", async ()
   report = await profileInsights(sql);
   assert.ok(!report.corrections.some((r) => r.subject === "tools:React"));
   await deleteProfileEvents(token, sql);
+});
+
+test("extended public signals can be shared and reported without publishing browser keys", async () => {
+  const { storeProfileEvents, profileInsights, deleteProfileEvents } =
+    await import("../packages/database/src/visitorProfile.ts");
+  const token = randomBytes(32).toString("hex");
+  const events = [
+    "project_details_viewed",
+    "case_study_viewed",
+    "gallery_explored",
+    "project_saved",
+    "project_unsaved",
+    "project_more",
+    "project_less",
+    "project_neutral",
+    "project_returned",
+  ].map((kind) => ({ id: randomUUID(), kind, subject: "a" }));
+  events.push(
+    { id: randomUUID(), kind: "project_section_read", subject: "a|outcomes" },
+    { id: randomUUID(), kind: "proof_opened", subject: "a|github" },
+    {
+      id: randomUUID(),
+      kind: "explorer_cluster_selected",
+      subject: "engineering",
+    },
+  );
+  try {
+    assert.equal(await storeProfileEvents(token, events, sql), true);
+    const report = await profileInsights(sql);
+    assert.ok(report.events.some((row) => row.kind === "gallery_explored"));
+    assert.ok(!JSON.stringify(report).includes(token));
+    assert.equal(report.ruleVersion, 2);
+  } finally {
+    await deleteProfileEvents(token, sql);
+  }
 });

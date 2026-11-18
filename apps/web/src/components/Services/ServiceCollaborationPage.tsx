@@ -141,6 +141,7 @@ export async function ServiceCollaborationPage({
         </header>
         <section
           id="engagements"
+          data-profile-service-section={`${slug}|collaboration`}
           className={styles.section}
           aria-labelledby="engagements-heading"
         >
@@ -177,7 +178,11 @@ export async function ServiceCollaborationPage({
             ))}
           </div>
         </section>
-        <section className={styles.section} aria-labelledby="milestone-heading">
+        <section
+          className={styles.section}
+          aria-labelledby="milestone-heading"
+          data-profile-service-section={`${slug}|process`}
+        >
           <p className={styles.eyebrow}>
             02 / {de ? "Der erste Meilenstein" : "The first milestone"}
           </p>
@@ -234,7 +239,11 @@ export async function ServiceCollaborationPage({
             </p>
           )}
         </section>
-        <section className={styles.section} aria-labelledby="questions-heading">
+        <section
+          className={styles.section}
+          aria-labelledby="questions-heading"
+          data-profile-service-section={`${slug}|commercial`}
+        >
           <p className={styles.eyebrow}>
             04 / {de ? "Praktische Fragen" : "Practical questions"}
           </p>

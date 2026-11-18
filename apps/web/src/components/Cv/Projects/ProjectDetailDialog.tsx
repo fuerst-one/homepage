@@ -1,11 +1,12 @@
 "use client";
 
+import { ProjectProfileActions } from "../../VisitorProfile/ProjectProfileActions";
+
 import { useLocale } from "../../i18n/LocaleProvider";
 import * as Dialog from "@radix-ui/react-dialog";
 import { FaTimes } from "@react-icons/all-files/fa/FaTimes";
 import { CvProject } from "@homepage/content/models";
 import { useProjectFocusStore } from "./projectFocusStore";
-import { useVisitorProfileStore } from "../../VisitorProfile/profileStore";
 import { Button } from "../../Button";
 import { ProjectScreenshots } from "./ProjectScreenshots";
 import { projectHeading } from "./projectHeading";
@@ -22,7 +23,6 @@ export const ProjectDetailDialog = ({
   projects: CvProject[];
 }) => {
   const locale = useLocale();
-  const liveProfileOpen = useVisitorProfileStore((s) => s.enabled && s.open);
   const focusedId = useProjectFocusStore((s) => s.focusedProjectId);
   const setFocused = useProjectFocusStore((s) => s.setFocusedProjectId);
   const project = focusedId
@@ -48,7 +48,7 @@ export const ProjectDetailDialog = ({
       scale.complexity
     );
   const actionClass =
-    "h-11 w-full whitespace-nowrap sm:w-44 [&>span]:gap-2 [&>span]:px-3";
+    "h-11 w-full whitespace-nowrap sm:w-auto [&>span]:gap-2 [&>span]:px-3";
   const secondaryActionClass = `${actionClass} border-white/30 bg-transparent text-neutral-200 hover:border-white hover:bg-transparent hover:text-white`;
 
   const handleOpenChange = (next: boolean) => {
@@ -58,29 +58,17 @@ export const ProjectDetailDialog = ({
   };
 
   return (
-    <Dialog.Root
-      modal={!liveProfileOpen}
-      open={isOpen}
-      onOpenChange={handleOpenChange}
-    >
+    <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm" />
         <Dialog.Content
           data-profile-project={project?.id}
-          style={liveProfileOpen ? { zIndex: 75 } : undefined}
-          onInteractOutside={(event) => {
-            if (
-              event.target instanceof Element &&
-              event.target.closest("[data-profile-ui]")
-            )
-              event.preventDefault();
-          }}
-          className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed left-1/2 top-1/2 z-[101] flex h-[90dvh] max-h-[90dvh] w-[min(64rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col border border-white/30 bg-black text-neutral-100 shadow-2xl outline-none [@media(max-height:500px)]:overflow-y-auto"
+          className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed left-1/2 top-1/2 z-[101] flex h-[90dvh] max-h-[90dvh] w-[min(64rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col overflow-y-auto border border-white/30 bg-black text-neutral-100 shadow-2xl outline-none [@media(max-height:500px)]:overflow-y-auto"
           aria-describedby={undefined}
         >
           {project ? (
             <>
-              <div className="relative shrink-0 border-b border-white/15 px-5 py-4 pr-16 [@media(max-height:500px)]:sticky [@media(max-height:500px)]:top-0 [@media(max-height:500px)]:z-10 [@media(max-height:500px)]:bg-black">
+              <div className="sticky top-0 z-10 shrink-0 border-b border-white/15 bg-black px-5 py-4 pr-16 sm:relative [@media(max-height:500px)]:sticky [@media(max-height:500px)]:top-0 [@media(max-height:500px)]:z-10 [@media(max-height:500px)]:bg-black">
                 <Dialog.Title className="text-xl font-semibold text-white">
                   {title}
                 </Dialog.Title>
@@ -100,7 +88,7 @@ export const ProjectDetailDialog = ({
                   <FaTimes className="text-base" />
                 </Dialog.Close>
               </div>
-              <div className="flex min-h-0 flex-1 flex-col p-2 sm:p-4 [@media(max-height:500px)]:h-48 [@media(max-height:500px)]:flex-none">
+              <div className="flex min-h-64 flex-none flex-col p-2 sm:min-h-0 sm:flex-1 sm:p-4 [@media(max-height:500px)]:h-48 [@media(max-height:500px)]:flex-none">
                 {project.screenshots?.some(Boolean) ? (
                   <ProjectScreenshots
                     key={project.id}
@@ -156,7 +144,7 @@ export const ProjectDetailDialog = ({
                   />
                 </section>
               )}
-              <div className="shrink-0 border-t border-white/15 px-4 py-3">
+              <div className="flex shrink-0 flex-col gap-3 border-t border-white/15 px-4 py-3 lg:flex-row lg:items-end lg:justify-between">
                 <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
                   <Button href={path} className={actionClass}>
                     {locale === "de" ? "Projektdetails" : "Project details"}
@@ -173,6 +161,7 @@ export const ProjectDetailDialog = ({
                   {project.websiteUrl && (
                     <Button
                       href={project.websiteUrl}
+                      data-profile-proof={`${project.id}|live`}
                       target="_blank"
                       className={secondaryActionClass}
                     >
@@ -182,12 +171,20 @@ export const ProjectDetailDialog = ({
                   {project.githubUrl && (
                     <Button
                       href={project.githubUrl}
+                      data-profile-proof={`${project.id}|github`}
                       target="_blank"
                       className={secondaryActionClass}
                     >
                       GitHub
                     </Button>
                   )}
+                </div>
+                <div className="flex shrink-0 justify-end border-t border-white/10 pt-3 lg:border-0 lg:pt-0">
+                  <ProjectProfileActions
+                    projectId={project.id}
+                    projectName={project.name}
+                    relatedHref={`${path}#related-projects`}
+                  />
                 </div>
               </div>
             </>

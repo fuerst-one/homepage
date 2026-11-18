@@ -6,22 +6,32 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
       <p>
         Die Website bietet ein freiwilliges Live-Interessenprofil. Erst nach
         „Mein Live-Profil starten“ werden gewählte Projektfilter, Projekt- und
-        Leistungsaufrufe, aktive Lesezeit, angezeigte oder geöffnete Vorschläge,
-        manuelle Interessensänderungen sowie Beginn und erfolgreicher Abschluss
-        einer Anfrage erfasst. Das Profil zeigt abgeleitete Interessen, deren
-        Gründe und Ihre eigenen Vorgaben. Es dient passenden Projektvorschlägen.
-        Suchtexte, Formularinhalte, Mausbewegungen und Kontaktdaten gehören
-        nicht zum Profil.
+        Leistungsaufrufe einschließlich Angebots- und Zusammenarbeitsseiten,
+        gelesene Projekt- und Leistungsabschnitte, bewusst erkundete Bilder,
+        geöffnete GitHub- oder Live-Produktbelege, gewählte
+        Explorer-Perspektiven und Gruppen, feste Suchthemen, Projektverbindungen
+        und Wiederbesuche, gemerkte Projekte und bewusst gewählte ähnliche
+        Projekte, angezeigte oder geöffnete Vorschläge, manuelle
+        Interessensänderungen sowie Beginn und erfolgreicher Abschluss einer
+        Anfrage erfasst. Das Profil zeigt abgeleitete Interessen, deren Gründe
+        und Ihre eigenen Vorgaben. Es dient passenden Projektvorschlägen. Das
+        Profil erklärt auch Muster aus mehreren Aktionen, etwa gemeinsamen
+        Bedarf in gelesenen Projekten oder die Reihenfolge Fallstudie,
+        Zusammenarbeit und Anfrage. Es leitet daraus keine Identität und keinen
+        Beruf ab. Suchtexte, Formularinhalte, Mausbewegungen und Kontaktdaten
+        gehören nicht zum Profil.
       </p>
       <p>
-        Standardmäßig bleibt es im Arbeitsspeicher dieses Tabs. „Interessen auf
-        diesem Gerät merken“ speichert Profil, Auswahl und gegebenenfalls eine
-        zufällige Kennung zum Löschen geteilter Daten im lokalen
-        Browserspeicher. Das Profil läuft 30 Tage nach dem Start ab und wird bei
-        der nächsten Verwendung entfernt; Sie können es jederzeit zurücksetzen
-        oder stoppen. Alte, nicht mehr verwendete Browserspeicherdaten können
-        bis zum nächsten Besuch oder Löschen der Website-Daten auf Ihrem Gerät
-        verbleiben.
+        Mit „Mein Live-Profil starten“ werden Profil, Auswahl und gegebenenfalls
+        eine zufällige Kennung zum Löschen geteilter Daten im lokalen
+        Browserspeicher gespeichert und bei späteren Besuchen wiederhergestellt.
+        Sie können „Interessen auf diesem Gerät merken“ ausschalten; dann werden
+        die gespeicherten Profildaten entfernt und das Profil bleibt bis zum
+        Neuladen im Arbeitsspeicher dieses Tabs. Das Profil läuft 30 Tage nach
+        dem Start ab und wird bei der nächsten Verwendung entfernt; Sie können
+        es jederzeit zurücksetzen oder stoppen. Alte, nicht mehr verwendete
+        Browserspeicherdaten können bis zum nächsten Besuch oder Löschen der
+        Website-Daten auf Ihrem Gerät verbleiben.
       </p>
       <p>
         Mit der gesonderten Auswahl „Signale und Korrekturen mit Alexander
@@ -56,19 +66,28 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
       <p>
         The website offers an optional live interest profile. Only after “Start
         my live profile” do we capture selected project filters, project and
-        service views, active reading, suggestions displayed or opened, manual
-        interest changes, and enquiry starts and successful submissions. The
-        profile displays inferred interests, their evidence and your own
-        preferences to suggest relevant projects. Search text, form contents,
-        pointer trails and contact details are excluded.
+        service views including focused offers and collaboration pages, active
+        reading of project and service sections, deliberate image exploration,
+        GitHub or live-product evidence links, selected Explorer perspectives
+        and clusters, fixed search topics, project connections and return
+        visits, saved projects and requests for similar projects, suggestions
+        displayed or opened, manual interest changes, and enquiry starts and
+        successful submissions. The profile displays inferred interests, their
+        evidence and your own preferences to suggest relevant projects. It also
+        explains patterns across actions, such as shared needs across projects
+        you read, or a case-study, collaboration and enquiry sequence. These do
+        not infer an identity or occupation. Search text, form contents, pointer
+        trails and contact details are excluded.
       </p>
       <p>
-        By default it stays in this tab’s memory. “Remember interests on this
-        device” saves the profile, your choices and, if applicable, a random key
-        for erasing shared data in local browser storage. The profile expires 30
-        days after it starts and is removed on next use; you can reset or stop
-        it at any time. Unused expired browser data may remain on your device
-        until your next visit or until you clear this website’s data.
+        “Start my live profile” saves the profile, your choices and, if
+        applicable, a random key for erasing shared data in local browser
+        storage and restores them on later visits. You can switch “Remember
+        interests on this device” off to remove the stored profile data and keep
+        it in this tab’s memory until you reload. The profile expires 30 days
+        after it starts and is removed on next use; you can reset or stop it at
+        any time. Unused expired browser data may remain on your device until
+        your next visit or until you clear this website’s data.
       </p>
       <p>
         With the separate “Share signals and corrections with Alexander” choice,

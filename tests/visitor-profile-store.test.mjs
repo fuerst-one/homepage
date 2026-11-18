@@ -35,12 +35,100 @@ test("capture and persistence stay off until explicitly enabled", () => {
   const { store, saved } = setup();
   store.getState().record("project_opened", "a");
   assert.equal(store.getState().profile.signals.length, 0);
+  assert.equal(saved.size, 0);
   store.getState().start();
   store.getState().record("project_opened", "a");
   assert.equal(store.getState().profile.signals.length, 1);
-  assert.equal(saved.size, 0);
+  assert.equal(store.getState().remember, true);
+  assert.equal(store.getState().sharing, false);
+  assert.equal(saved.size, 1);
 });
-test("remembering is independent and turning it off removes storage", () => {
+test("starting automatically restores interests and choices in a later session", () => {
+  const { store, storage } = setup();
+  store.getState().start();
+  store.getState().record("project_opened", "a");
+  store.getState().choose("tools:React", "priority");
+  const restored = m.createVisitorProfileStore(() => storage);
+  restored.getState().initialise(catalog);
+  assert.equal(restored.getState().enabled, true);
+  assert.equal(restored.getState().remember, true);
+  assert.equal(restored.getState().sharing, false);
+  assert.equal(
+    restored.getState().profile.preferences["tools:React"],
+    "priority",
+  );
+  assert.equal(restored.getState().profile.signals.length, 2);
+});
+test("local storage failure leaves the new profile usable and reports the failure", () => {
+  const store = m.createVisitorProfileStore(() => ({
+    getItem: () => null,
+    setItem() {
+      throw new Error("blocked");
+    },
+    removeItem() {},
+  }));
+  store.getState().initialise(catalog);
+  store.getState().start();
+  store.getState().record("project_opened", "a");
+  assert.equal(store.getState().enabled, true);
+  assert.equal(store.getState().storageFailed, true);
+  assert.equal(store.getState().remember, false);
+  assert.equal(store.getState().profile.signals.length, 1);
+});
+test("a later quota failure removes the stale profile before falling back to memory", () => {
+  const { store, storage, saved } = setup();
+  store.getState().start();
+  assert.equal(saved.size, 1);
+  const write = storage.setItem;
+  storage.setItem = () => {
+    throw new Error("quota");
+  };
+  store.getState().choose("tools:React", "priority");
+  assert.equal(store.getState().enabled, true);
+  assert.equal(store.getState().remember, false);
+  assert.equal(store.getState().storageFailed, true);
+  assert.equal(saved.size, 0);
+  const restored = m.createVisitorProfileStore(() => storage);
+  restored.getState().initialise(catalog);
+  assert.equal(restored.getState().enabled, false);
+  storage.setItem = write;
+  store.getState().setRemember(true);
+  assert.equal(store.getState().storageFailed, false);
+  const retried = m.createVisitorProfileStore(() => storage);
+  retried.getState().initialise(catalog);
+  assert.equal(
+    retried.getState().profile.preferences["tools:React"],
+    "priority",
+  );
+});
+test("starting a previously idle tab adopts the existing saved profile", () => {
+  const { store, storage } = setup();
+  const other = m.createVisitorProfileStore(() => storage);
+  other.getState().initialise(catalog);
+  store.getState().start();
+  store.getState().choose("tools:React", "priority");
+  other.getState().start();
+  assert.equal(other.getState().profile.preferences["tools:React"], "priority");
+  assert.equal(
+    other.getState().profile.startedAt,
+    store.getState().profile.startedAt,
+  );
+  store.getState().syncFromStorage();
+  assert.equal(store.getState().profile.preferences["tools:React"], "priority");
+});
+test("starting a previously idle tab respects a pending erasure from another tab", async () => {
+  const { store, storage } = setup(async () => ({ ok: false }));
+  const other = m.createVisitorProfileStore(() => storage);
+  other.getState().initialise(catalog);
+  store.getState().start();
+  await store.getState().setSharing(true);
+  await store.getState().stop();
+  other.getState().start();
+  assert.equal(other.getState().enabled, false);
+  assert.equal(other.getState().deletionToken, store.getState().deletionToken);
+  assert.equal(other.getState().network, "delete-error");
+});
+test("remembering can be disabled without stopping this session", () => {
   const { store, saved } = setup();
   store.getState().start();
   store.getState().setRemember(true);
@@ -172,6 +260,7 @@ test("one memory-only tab cannot erase another tab's failed-erasure receipt", as
       }),
   );
   store.getState().start();
+  store.getState().setRemember(false);
   await store.getState().setSharing(true);
   const other = m.createVisitorProfileStore(
     () => storage,
@@ -179,6 +268,7 @@ test("one memory-only tab cannot erase another tab's failed-erasure receipt", as
   );
   other.getState().initialise(catalog);
   other.getState().start();
+  other.getState().setRemember(false);
   await other.getState().setSharing(true);
   const erasing = store.getState().stop();
   await other.getState().stop();
@@ -209,4 +299,134 @@ test("a manual return to automatic survives activity-log truncation in an idle t
   }
   other.getState().syncFromStorage();
   assert.equal(other.getState().profile.preferences["tools:React"], undefined);
+});
+
+test("catalog loading is deduplicated and never opts the visitor in", async () => {
+  let calls = 0,
+    release;
+  const response = new Promise((resolve) => {
+    release = resolve;
+  });
+  const store = m.createVisitorProfileStore(
+    () => ({ getItem: () => null, setItem() {}, removeItem() {} }),
+    async () => {
+      calls++;
+      await response;
+      return { ok: true, json: async () => catalog };
+    },
+  );
+  const first = store.getState().loadCatalog();
+  const second = store.getState().loadCatalog();
+  await Promise.resolve();
+  assert.equal(calls, 1);
+  assert.equal(store.getState().catalogLoading, true);
+  release();
+  await Promise.all([first, second]);
+  assert.equal(store.getState().catalog.projects[0].id, "a");
+  assert.equal(store.getState().enabled, false);
+  assert.equal(store.getState().catalogLoading, false);
+});
+
+test("catalog failures stay retryable without starting capture", async () => {
+  let succeeds = false;
+  const store = m.createVisitorProfileStore(
+    () => ({ getItem: () => null, setItem() {}, removeItem() {} }),
+    async () => ({ ok: succeeds, json: async () => catalog }),
+  );
+  await store.getState().loadCatalog();
+  assert.equal(store.getState().catalogFailed, true);
+  assert.equal(store.getState().enabled, false);
+  succeeds = true;
+  await store.getState().loadCatalog();
+  assert.equal(store.getState().catalogFailed, false);
+  assert.ok(store.getState().catalog);
+});
+
+test("synchronous catalog failures can be retried", async () => {
+  let succeeds = false;
+  const store = m.createVisitorProfileStore(
+    () => ({ getItem: () => null, setItem() {}, removeItem() {} }),
+    () => {
+      if (!succeeds) throw new Error("offline");
+      return Promise.resolve({ ok: true, json: async () => catalog });
+    },
+  );
+  await store.getState().loadCatalog();
+  assert.equal(store.getState().catalogFailed, true);
+  succeeds = true;
+  await store.getState().loadCatalog();
+  assert.ok(store.getState().catalog);
+  assert.equal(store.getState().catalogFailed, false);
+});
+
+test("project choices remain off before opt-in and survive reload and stale-tab reconciliation", () => {
+  const { store, storage } = setup();
+  store.getState().record("project_saved", "a");
+  assert.equal(store.getState().profile.projectChoices?.a, undefined);
+  store.getState().start();
+  store.getState().record("project_saved", "a");
+  const other = m.createVisitorProfileStore(() => storage);
+  other.getState().initialise(catalog);
+  store.getState().record("project_unsaved", "a");
+  other.getState().record("project_more", "a");
+  assert.equal(other.getState().profile.projectChoices.a.saved, false);
+  assert.equal(other.getState().profile.projectChoices.a.feedback, "more");
+  const reloaded = m.createVisitorProfileStore(() => storage);
+  reloaded.getState().initialise(catalog);
+  assert.deepEqual(reloaded.getState().profile.projectChoices.a, {
+    saved: false,
+    feedback: "more",
+  });
+});
+test("sharing new project actions does not backfill local-only choices", async () => {
+  const bodies = [];
+  const { store } = setup(async (_url, options) => {
+    bodies.push(JSON.parse(options.body));
+    return { ok: true };
+  });
+  store.getState().start();
+  store.getState().record("project_saved", "a");
+  await store.getState().setSharing(true);
+  store.getState().record("project_more", "a");
+  await store.getState().flush();
+  assert.deepEqual(
+    bodies[0].events.map((e) => e.kind),
+    ["project_more"],
+  );
+});
+
+test("newer local project feedback survives reconciliation with an older saved snapshot", () => {
+  const { store, storage } = setup();
+  store.getState().start();
+  const key = "fuerst-one:visitor-profile:v1";
+  const old = JSON.parse(storage.getItem(key));
+  old.profile.startedAt -= 100;
+  old.profile.updatedAt = old.profile.startedAt;
+  storage.setItem(key, JSON.stringify(old));
+  store.setState({
+    profile: {
+      ...old.profile,
+      updatedAt: Date.now(),
+      projectChoices: { a: { saved: true, feedback: "more" } },
+      signals: [
+        {
+          id: crypto.randomUUID(),
+          kind: "project_saved",
+          subject: "a",
+          at: Date.now(),
+        },
+        {
+          id: crypto.randomUUID(),
+          kind: "project_more",
+          subject: "a",
+          at: Date.now(),
+        },
+      ],
+    },
+  });
+  store.getState().syncFromStorage();
+  assert.deepEqual(store.getState().profile.projectChoices.a, {
+    saved: true,
+    feedback: "more",
+  });
 });

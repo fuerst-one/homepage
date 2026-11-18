@@ -15,7 +15,13 @@ import {
   type ProfileSignalKind,
   type ProfilePreference,
   type SharedProfileEvent,
+  type ProjectChoice,
 } from "@homepage/content/visitorProfile";
+import {
+  applyProjectChoice,
+  isProjectChoiceKind,
+  EMPTY_PROJECT_CHOICE,
+} from "@homepage/content/visitorProfileSignals";
 
 export const PROFILE_ERASURE_KEY = "fuerst-one:profile-erasure:v1";
 type Catalog = ProfileCatalog & { sharingAvailable?: boolean };
@@ -30,7 +36,8 @@ type ProfileState = {
   token: string;
   pending: SharedProfileEvent[];
   deletionToken: string;
-  open: boolean;
+  catalogLoading: boolean;
+  catalogFailed: boolean;
   network:
     "idle" | "sending" | "shared" | "error" | "deleting" | "delete-error";
   storageFailed: boolean;
@@ -38,7 +45,7 @@ type ProfileState = {
   restoreErasure: () => void;
   syncFromStorage: () => void;
   start: () => void;
-  setOpen: (open: boolean) => void;
+  loadCatalog: () => Promise<void>;
   setRemember: (value: boolean) => void;
   setSharing: (value: boolean) => Promise<void>;
   record: (kind: ProfileSignalKind, subject: string) => void;
@@ -70,8 +77,16 @@ function mergeProfiles(a: VisitorProfile, b: VisitorProfile): VisitorProfile {
       if (event.preference === "auto") delete preferences[event.subject];
       else if (event.preference) preferences[event.subject] = event.preference;
     }
+  const projectChoices: Record<string, ProjectChoice> = { ...b.projectChoices };
+  for (const event of a.signals)
+    if (event.at > b.updatedAt && isProjectChoiceKind(event.kind))
+      projectChoices[event.subject] = applyProjectChoice(
+        projectChoices[event.subject] ?? EMPTY_PROJECT_CHOICE,
+        event.kind,
+      );
   return {
     ...b,
+    ...(a.projectChoices || b.projectChoices ? { projectChoices } : {}),
     updatedAt: Math.max(a.updatedAt, b.updatedAt),
     signals,
     preferences,
@@ -84,6 +99,7 @@ export function createVisitorProfileStore(
 ) {
   let controller: AbortController | null = null;
   let initialised = false;
+  let catalogRequest: Promise<void> | null = null;
   let erasureRestored = false;
   return create<ProfileState>((set, get) => {
     const erasureReceipts = (): { token: string; until: number }[] => {
@@ -127,9 +143,15 @@ export function createVisitorProfileStore(
             });
           writeErasures(receipts);
         }
-        if (s.storageFailed) set({ storageFailed: false });
+        if (s.storageFailed && s.enabled && s.remember)
+          set({ storageFailed: false });
       } catch {
-        set({ storageFailed: true });
+        try {
+          storage().removeItem(PROFILE_STORAGE_KEY);
+        } catch {
+          // The UI reports that an older saved profile may still remain.
+        }
+        set({ storageFailed: true, remember: false });
       }
     };
     const readSaved = () => {
@@ -224,7 +246,8 @@ export function createVisitorProfileStore(
       token: "",
       pending: [],
       deletionToken: "",
-      open: false,
+      catalogLoading: false,
+      catalogFailed: false,
       network: "idle",
       storageFailed: false,
       restoreErasure: () => {
@@ -315,12 +338,58 @@ export function createVisitorProfileStore(
           set({ storageFailed: true });
         }
       },
-      setOpen: (open) => set({ open }),
+      loadCatalog: () => {
+        if (get().catalog) return Promise.resolve();
+        if (catalogRequest) return catalogRequest;
+        set({ catalogLoading: true, catalogFailed: false });
+        catalogRequest = Promise.resolve().then(async () => {
+          try {
+            const response = await send("/api/profile/catalog");
+            if (!response.ok) throw new Error("catalog");
+            const value = await response.json();
+            if (
+              !Array.isArray(value.projects) ||
+              !Array.isArray(value.terms) ||
+              value.terms.some(
+                (term: { id?: unknown }) => typeof term?.id !== "string",
+              ) ||
+              new Set(value.terms.map((term: { id: string }) => term.id))
+                .size !== value.terms.length
+            )
+              throw new Error("catalog");
+            get().initialise(value);
+          } catch {
+            set({ catalogFailed: true });
+          } finally {
+            catalogRequest = null;
+            set({ catalogLoading: false });
+          }
+        });
+        return catalogRequest;
+      },
       start: () => {
-        if (!get().enabled && get().catalog && !get().deletionToken) {
-          set({ enabled: true, profile: emptyVisitorProfile(Date.now()) });
-          persist();
+        if (get().enabled || !get().catalog || get().deletionToken) return;
+        try {
+          // A tab opened before opt-in may now have a profile or erasure to adopt.
+          const receipts = erasureReceipts();
+          if (receipts.length) {
+            set({ deletionToken: receipts[0].token, network: "delete-error" });
+            return;
+          }
+          const saved = readSaved();
+          if (saved) {
+            set({ ...saved, enabled: true, remember: true });
+            return;
+          }
+        } catch {
+          set({ storageFailed: true });
         }
+        set({
+          enabled: true,
+          remember: true,
+          profile: emptyVisitorProfile(Date.now()),
+        });
+        persist();
       },
       setRemember: (remember) => {
         if (remember && !active()) return;

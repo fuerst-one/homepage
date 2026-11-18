@@ -18,7 +18,11 @@ export default function PrivacySettingsDialog({
   // Do not restore or reset consent on opening; memory-only choices may be active.
   const consent = useKnowledgeConsent(undefined);
   const profile = useVisitorProfileStore();
-  const transferToProfile = useRef(false);
+  const navigating = useRef(false);
+  const closeForNavigation = () => {
+    navigating.current = true;
+    onClose();
+  };
   return (
     <Dialog.Root
       open
@@ -32,11 +36,7 @@ export default function PrivacySettingsDialog({
           className="fixed left-1/2 top-1/2 z-[101] max-h-[90svh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto border border-white/30 bg-[#10100f] p-6 text-sm leading-relaxed text-neutral-200 shadow-2xl sm:p-8"
           onCloseAutoFocus={(event) => {
             event.preventDefault();
-            if (transferToProfile.current) {
-              requestAnimationFrame(() =>
-                document.querySelector<HTMLElement>(".profile-panel")?.focus(),
-              );
-            } else restoreFocus();
+            if (!navigating.current) restoreFocus();
           }}
         >
           <Dialog.Title className="mb-4 text-lg text-white">
@@ -89,19 +89,15 @@ export default function PrivacySettingsDialog({
               : de
                 ? "aus"
                 : "off"}.{" "}
-            <button
-              type="button"
-              className="min-h-11 underline underline-offset-4"
-              onClick={() => {
-                transferToProfile.current = true;
-                onClose();
-                profile.setOpen(true);
-              }}
+            <Link
+              href="/profile"
+              onNavigate={closeForNavigation}
+              className="inline-flex min-h-11 items-center underline underline-offset-4"
             >
               {de
                 ? "Profil und Einstellungen öffnen"
                 : "Open profile and settings"}
-            </button>
+            </Link>
             {profile.enabled && (
               <button
                 type="button"
@@ -134,7 +130,7 @@ export default function PrivacySettingsDialog({
               : "Manage optional visual preference storage in the "}
             <Link
               href="/plasma"
-              onClick={onClose}
+              onNavigate={closeForNavigation}
               className="underline underline-offset-4"
             >
               {de ? "Plasma-Spielplatz" : "plasma playground"}

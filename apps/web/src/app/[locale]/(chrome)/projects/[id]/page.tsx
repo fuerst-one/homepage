@@ -121,16 +121,25 @@ export default async function ProjectPage({ params }: Props) {
               : "See this project in Explorer ↗"}
           </Link>
         </p>
-        <ExplorerProjectConnections
-          project={project}
-          projects={projects}
-          locale={locale}
-        />
-        <RelatedExperience
-          project={project}
-          projects={projects}
-          locale={locale}
-        />
+        <section
+          id="related-projects"
+          tabIndex={-1}
+          className="scroll-mt-6 space-y-12"
+          aria-label={
+            locale === "de" ? "Ähnliche Projekte" : "Related projects"
+          }
+        >
+          <ExplorerProjectConnections
+            project={project}
+            projects={projects}
+            locale={locale}
+          />
+          <RelatedExperience
+            project={project}
+            projects={projects}
+            locale={locale}
+          />
+        </section>
         <p className="text-sm text-neutral-300">
           {locale === "de"
             ? "Interesse an einer ähnlichen Zusammenarbeit? "

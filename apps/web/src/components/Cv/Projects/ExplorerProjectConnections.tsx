@@ -68,6 +68,7 @@ export function ExplorerProjectConnections({
             </div>
             <Link
               href={projectPath(other, locale)}
+              data-profile-related={`${project.id}|${other.id}`}
               aria-label={`${locale === "de" ? "Verbundenes Projekt ansehen" : "View connected project"}: ${other.name}`}
               className="mt-auto inline-flex items-center gap-2 self-start py-2 text-sm text-white underline decoration-white/30 underline-offset-4 hover:decoration-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >

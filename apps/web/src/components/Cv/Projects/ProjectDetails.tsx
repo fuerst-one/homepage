@@ -1,3 +1,4 @@
+import { profileSectionKind } from "@homepage/content/visitorProfile";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 import { FaChartLine } from "@react-icons/all-files/fa/FaChartLine";
 import Link from "../../i18n/LocalizedLink";
@@ -91,6 +92,7 @@ export const ProjectDetails = ({
           {githubUrl && (
             <Link
               href={githubUrl}
+              data-profile-proof={`${project.id}|github`}
               target="_blank"
               className="inline-flex items-center gap-2 border border-white/30 px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white"
             >
@@ -100,7 +102,10 @@ export const ProjectDetails = ({
           )}
         </div>
         {kpis && (
-          <div className="flex items-start gap-2 text-sm text-white">
+          <div
+            data-profile-section={`${project.id}|outcomes`}
+            className="flex items-start gap-2 text-sm text-white"
+          >
             <FaChartLine className="mt-1 shrink-0 text-base" />
             <span>{kpis}</span>
           </div>
@@ -132,7 +137,15 @@ export const ProjectDetails = ({
                 : "Inside the work"}
             </h2>
             {casePreview.map(({ title, text }) => (
-              <div key={title} className="space-y-2">
+              <div
+                key={title}
+                data-profile-section={
+                  profileSectionKind(title)
+                    ? `${project.id}|${profileSectionKind(title)}`
+                    : undefined
+                }
+                className="space-y-2"
+              >
                 <h3 className="text-base font-medium text-white">{title}</h3>
                 <p className="text-sm leading-relaxed text-neutral-300">
                   {text}
@@ -153,6 +166,7 @@ export const ProjectDetails = ({
             {websiteUrl && (
               <Button
                 href={websiteUrl}
+                data-profile-proof={`${project.id}|live`}
                 target="_blank"
                 className="border-white/30 bg-transparent text-neutral-200 hover:border-white hover:bg-transparent hover:text-white"
                 arrow
@@ -165,6 +179,7 @@ export const ProjectDetails = ({
         <section
           className="border-t border-white/15 pt-5"
           aria-labelledby="project-facts-title"
+          data-profile-section={`${project.id}|architecture`}
         >
           <h2
             id="project-facts-title"

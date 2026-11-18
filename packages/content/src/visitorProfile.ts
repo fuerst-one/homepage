@@ -1,5 +1,28 @@
+import {
+  EXTRA_SIGNAL_WEIGHTS,
+  extraProfileSubjectTerms,
+  validExtraProfileSubject,
+  isProjectChoiceKind,
+  applyProjectChoice,
+  EMPTY_PROJECT_CHOICE,
+  profilePatterns,
+  isReturningProfileProject,
+  type ProjectChoice,
+} from "./visitorProfileSignals";
+export {
+  profileSectionKind,
+  profilePatterns,
+  isReturningProfileProject,
+  PROFILE_SECTIONS,
+} from "./visitorProfileSignals";
+export type {
+  ProfileSection,
+  ProfilePattern,
+  ProjectChoice,
+} from "./visitorProfileSignals";
 /** Scores are transparent v1 heuristics, not probabilities or identified people. */
 export const PROFILE_VERSION = 1;
+export const PROFILE_RULE_VERSION = 2;
 export const PROFILE_LIFETIME_MS = 30 * 86400_000;
 export const PROFILE_STORAGE_KEY = "fuerst-one:visitor-profile:v1";
 export const PROFILE_FACETS = [
@@ -24,6 +47,7 @@ export type ProfileCatalog = {
   projects: ProfileProject[];
 };
 export const SIGNAL_WEIGHTS = {
+  ...EXTRA_SIGNAL_WEIGHTS,
   project_opened: 2,
   project_read: 1,
   filter_selected: 6,
@@ -52,12 +76,17 @@ export type VisitorProfile = {
   updatedAt: number;
   signals: ProfileSignal[];
   preferences: Record<string, ProfilePreference>;
+  projectChoices?: Record<string, ProjectChoice>;
 };
 export type ProfileInterest = ProfileTerm & {
   score: number;
   inferredScore: number;
   preference?: ProfilePreference;
-  evidence: { signal: ProfileSignal; points: number }[];
+  evidence: {
+    signal: ProfileSignal;
+    points: number;
+    pattern?: "shared_need";
+  }[];
 };
 const HALF_LIFE = 7 * 86400_000;
 const WINDOW = 30 * 60_000;
@@ -116,7 +145,13 @@ export function profilePageSignal(
   const project = catalog.projects.find(
     (p) => path === p.href || path === `${p.href}/case-study`,
   );
-  if (project) return { kind: "project_opened", subject: project.id };
+  if (project)
+    return {
+      kind: path.endsWith("/case-study")
+        ? "case_study_viewed"
+        : "project_details_viewed",
+      subject: project.id,
+    };
   if (
     path === "/en/projects" &&
     focusedId &&
@@ -126,7 +161,18 @@ export function profilePageSignal(
   const service = path.match(
     /^\/en\/services\/(product-interfaces|ai-automation|ai-products)(?:\/|$)/,
   )?.[1];
-  return service ? { kind: "service_viewed", subject: service } : null;
+  if (!service) return null;
+  const suffix = path.split("/").slice(4).filter(Boolean).join("/");
+  const kind =
+    suffix === "collaboration"
+      ? "service_collaboration_viewed"
+      : (service === "product-interfaces" && suffix === "review") ||
+          (service === "ai-automation" && suffix === "assessment")
+        ? "service_offer_viewed"
+        : !suffix
+          ? "service_viewed"
+          : null;
+  return kind ? { kind, subject: service } : null;
 }
 
 export function profileSubjectTerms(
@@ -134,10 +180,28 @@ export function profileSubjectTerms(
   subject: string,
   catalog: ProfileCatalog,
 ): ProfileTerm[] {
+  const extra = extraProfileSubjectTerms(kind, subject, catalog);
+  if (extra) return extra;
+  if (
+    [
+      "gallery_explored",
+      "proof_opened",
+      "project_returned",
+      "explorer_lens_selected",
+      "explorer_cluster_selected",
+      "service_section_read",
+    ].includes(kind) ||
+    isProjectChoiceKind(kind)
+  )
+    return [];
   const ids =
     kind === "filter_selected" || kind === "preference_changed"
       ? [subject]
-      : kind === "service_viewed"
+      : [
+            "service_viewed",
+            "service_offer_viewed",
+            "service_collaboration_viewed",
+          ].includes(kind)
         ? (services[subject] ?? []).map((value) => `buyerNeeds:${value}`)
         : (catalog.projects.find((p) => p.id === subject)?.terms ?? []);
   return catalog.terms.filter((t) => ids.includes(t.id));
@@ -151,7 +215,16 @@ export function validProfileSubject(
   if (!own(SIGNAL_WEIGHTS, kind)) return false;
   if (kind === "filter_selected" || kind === "preference_changed")
     return catalog.terms.some((t) => t.id === subject);
-  if (kind === "service_viewed") return own(services, subject);
+  const extra = validExtraProfileSubject(kind, subject, catalog);
+  if (extra !== undefined) return extra;
+  if (
+    [
+      "service_viewed",
+      "service_offer_viewed",
+      "service_collaboration_viewed",
+    ].includes(kind)
+  )
+    return own(services, subject);
   if (kind === "enquiry_started" || kind === "enquiry_submitted")
     return subject === "enquiry";
   return catalog.projects.some((p) => p.id === subject);
@@ -168,16 +241,45 @@ export function recordProfileSignal(
     input.kind === "preference_changed" ||
     now < profile.startedAt ||
     now >= profile.startedAt + PROFILE_LIFETIME_MS ||
-    profile.signals.some(
-      (s) =>
-        s.kind === input.kind &&
-        s.subject === input.subject &&
-        now - s.at < WINDOW,
-    )
+    (!isProjectChoiceKind(input.kind) &&
+      input.kind !== "explorer_lens_selected" &&
+      profile.signals.some(
+        (s) =>
+          s.kind === input.kind &&
+          s.subject === input.subject &&
+          now - s.at < WINDOW,
+      ))
+  )
+    return profile;
+  if (
+    input.kind === "explorer_lens_selected" &&
+    [...profile.signals]
+      .reverse()
+      .find((s) => s.kind === "explorer_lens_selected")?.subject ===
+      input.subject
+  )
+    return profile;
+  const before =
+    profile.projectChoices?.[input.subject] ?? EMPTY_PROJECT_CHOICE;
+  const after = applyProjectChoice(before, input.kind);
+  if (
+    isProjectChoiceKind(input.kind) &&
+    before.saved === after.saved &&
+    before.feedback === after.feedback
+  )
+    return profile;
+  if (
+    input.kind === "project_returned" &&
+    !isReturningProfileProject(profile, input.subject, now)
   )
     return profile;
   return {
     ...profile,
+    ...(isProjectChoiceKind(input.kind)
+      ? {
+          projectChoices: { ...profile.projectChoices, [input.subject]: after },
+        }
+      : {}),
     updatedAt: now,
     signals: [
       ...profile.signals,
@@ -192,7 +294,34 @@ export function profileInterests(
   now: number,
 ): ProfileInterest[] {
   const rows = new Map<string, ProfileInterest>();
-  for (const signal of profile.signals) {
+  // A navigation chain contributes its strongest depth once per project/window.
+  const selected: ProfileSignal[] = [];
+  const depth = new Map<string, { at: number; index: number }>();
+  for (const signal of [...profile.signals].sort(
+    (a, b) => a.at - b.at || a.id.localeCompare(b.id),
+  )) {
+    if (signal.at > now) continue;
+    if (
+      [
+        "project_opened",
+        "project_details_viewed",
+        "case_study_viewed",
+      ].includes(signal.kind)
+    ) {
+      const prior = depth.get(signal.subject);
+      if (prior && signal.at - prior.at < WINDOW) {
+        if (
+          SIGNAL_WEIGHTS[signal.kind] >
+          SIGNAL_WEIGHTS[selected[prior.index].kind]
+        )
+          selected[prior.index] = signal;
+        continue;
+      }
+      depth.set(signal.subject, { at: signal.at, index: selected.length });
+    }
+    selected.push(signal);
+  }
+  for (const signal of selected) {
     const weight = SIGNAL_WEIGHTS[signal.kind];
     if (!weight || signal.at > now) continue;
     const terms = profileSubjectTerms(signal.kind, signal.subject, catalog);
@@ -210,6 +339,15 @@ export function profileInterests(
       row.evidence.push({ signal, points });
       rows.set(term.id, row);
     }
+  }
+  for (const pattern of profilePatterns(profile, catalog, now)) {
+    if (pattern.kind !== "shared_need" || !pattern.subject) continue;
+    const row = rows.get(pattern.subject);
+    if (!row) continue;
+    const signal = pattern.evidence[pattern.evidence.length - 1];
+    const points = 2 * 2 ** (-(now - signal.at) / HALF_LIFE);
+    row.inferredScore = Math.min(12, row.inferredScore + points);
+    row.evidence.push({ signal, points, pattern: "shared_need" });
   }
   for (const [id, preference] of Object.entries(profile.preferences)) {
     const term = catalog.terms.find((t) => t.id === id);
@@ -292,7 +430,21 @@ export function recommendProfileProjects(
   const interests = profileInterests(profile, catalog, now);
   const active = interests.filter((t) => t.score > 0);
   const facets = [...new Set(active.map((t) => t.facet))];
-  if (!facets.length) return [];
+  const choices = profile.projectChoices ?? {};
+  const affinity = (id: string) =>
+    Math.min(
+      3,
+      profile.signals
+        .filter(
+          (s) =>
+            s.at <= now &&
+            (s.subject === id || s.subject.startsWith(`${id}|`)) &&
+            ["gallery_explored", "proof_opened", "project_returned"].includes(
+              s.kind,
+            ),
+        )
+        .reduce((sum, s) => sum + 2 ** (-(now - s.at) / HALF_LIFE), 0),
+    );
   return catalog.projects
     .flatMap((project) => {
       if (
@@ -303,7 +455,7 @@ export function recommendProfileProjects(
         return [];
       const reasons = active.filter((t) => project.terms.includes(t.id));
       // One strong match in a dimension is sufficient; many tags cannot pad rank.
-      const score =
+      const topical =
         facets.reduce(
           (sum, facet) =>
             sum +
@@ -312,9 +464,32 @@ export function recommendProfileProjects(
               ...reasons.filter((t) => t.facet === facet).map((t) => t.score),
             ),
           0,
-        ) / facets.length;
+        ) / Math.max(1, facets.length);
+      const similarity = (otherId: string) => {
+        const other = catalog.projects.find((p) => p.id === otherId);
+        if (!other) return 0;
+        return (
+          project.terms.filter((id) => other.terms.includes(id)).length /
+          Math.max(1, new Set([...project.terms, ...other.terms]).size)
+        );
+      };
+      let feedback = 0;
+      for (const [id, choice] of Object.entries(choices)) {
+        const related = similarity(id);
+        feedback += related * (choice.feedback === "more" ? 3 : 0);
+        if (choice.saved) feedback += related;
+      }
+      const score = Math.max(0, topical + affinity(project.id) + feedback);
       return score > 0
-        ? [{ project, score, reasons: reasons.slice(0, 3) }]
+        ? [
+            {
+              project,
+              score,
+              reasons: reasons.slice(0, 3),
+              affinity: affinity(project.id),
+              feedback: feedback,
+            },
+          ]
         : [];
     })
     .sort(
@@ -345,6 +520,8 @@ export function restoreVisitorProfile(
     return null;
   const signals: ProfileSignal[] = [];
   for (const s of value.signals) {
+    // Retired negative feedback must not invalidate an otherwise remembered profile.
+    if (object(s) && s.kind === "project_less") continue;
     if (
       !object(s) ||
       typeof s.id !== "string" ||
@@ -381,8 +558,29 @@ export function restoreVisitorProfile(
     if (catalog.terms.some((t) => t.id === id))
       preferences[id] = choice as ProfilePreference;
   }
+  const projectChoices: Record<string, ProjectChoice> = {};
+  if (value.projectChoices !== undefined) {
+    if (!object(value.projectChoices)) return null;
+    for (const [id, choice] of Object.entries(value.projectChoices)) {
+      if (
+        !object(choice) ||
+        typeof choice.saved !== "boolean" ||
+        !["more", "less", "auto"].includes(String(choice.feedback))
+      )
+        return null;
+      if (catalog.projects.some((p) => p.id === id))
+        projectChoices[id] = {
+          saved: choice.saved,
+          feedback:
+            choice.feedback === "less"
+              ? "auto"
+              : (choice.feedback as ProjectChoice["feedback"]),
+        };
+    }
+  }
   return {
     version: 1,
+    ...(value.projectChoices !== undefined ? { projectChoices } : {}),
     startedAt: value.startedAt,
     updatedAt: value.updatedAt,
     signals,
@@ -504,4 +702,25 @@ export function parseProfileEventBatch(
     });
   }
   return { version: 1, consentAt: value.consentAt, token: value.token, events };
+}
+
+/** One tick represents one second; hidden, occluded, unfocused or idle content adds none. */
+export function advanceProfileReading(
+  seconds: number,
+  state: {
+    visible: boolean;
+    focused: boolean;
+    lastInteraction: number;
+    inView: boolean;
+    covered: boolean;
+  },
+  now: number,
+): number {
+  return Math.min(
+    15,
+    seconds +
+      (state.inView && !state.covered && isActiveProfileReading(state, now)
+        ? 1
+        : 0),
+  );
 }

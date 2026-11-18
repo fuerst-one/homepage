@@ -1,5 +1,6 @@
 "use client";
 
+import { ProfileTopicChips } from "../../VisitorProfile/ProfileTopicChips";
 import { useRef } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "../../Button";
@@ -120,6 +121,9 @@ export function ProjectListSearch({
           )}
         </p>
       </form>
+      <ProfileTopicChips
+        onSelect={(query) => actAndFocus(() => search.setQuery(query))}
+      />
       <p
         id="project-search-status"
         role="status"

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { LanguageSwitcher } from "../i18n/LanguageSwitcher";
+import { recordVisitorInteraction } from "../VisitorProfile/profileStore";
 import { useLocale } from "../i18n/LocaleProvider";
 import { localizedLinkPath } from "@homepage/content/i18n";
 import Link from "../i18n/LocalizedLink";
@@ -469,6 +470,11 @@ export const PlasmaLanding = ({
 
   const chooseSuggestion = (suggestion: DisplaySuggestion) => {
     if ("kind" in suggestion && suggestion.kind === "keyword") {
+      if (suggestion.filter)
+        recordVisitorInteraction(
+          "topic_selected",
+          `${suggestion.filter.field}:${suggestion.filter.value}`,
+        );
       setSearchFilter(suggestion.filter);
       setInput(suggestion.label);
       setStatus("");

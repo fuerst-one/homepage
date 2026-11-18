@@ -260,7 +260,7 @@ test("sharing needs a current, separate consent receipt", () => {
 
 test("page signals use the actual page rather than stale dialog focus", () => {
   assert.deepEqual(m.profilePageSignal("/en/projects/studio", "a", catalog), {
-    kind: "project_opened",
+    kind: "project_details_viewed",
     subject: "b",
   });
   assert.deepEqual(
@@ -274,7 +274,7 @@ test("page signals use the actual page rather than stale dialog focus", () => {
   });
   assert.deepEqual(
     m.profilePageSignal("/en/projects/atlas/case-study", null, catalog),
-    { kind: "project_opened", subject: "a" },
+    { kind: "case_study_viewed", subject: "a" },
   );
 });
 

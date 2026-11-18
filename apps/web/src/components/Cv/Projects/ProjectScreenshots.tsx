@@ -3,9 +3,14 @@ import { useImageDescriptions } from "./ImageDescription";
 import { GeneratedImageDescription } from "./GeneratedImageDescription";
 import type { PublicImageDescription } from "@homepage/database/imageDescriptions";
 
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState, useRef } from "react";
 import { FaChevronLeft } from "@react-icons/all-files/fa/FaChevronLeft";
 import { FaChevronRight } from "@react-icons/all-files/fa/FaChevronRight";
+import * as Dialog from "@radix-ui/react-dialog";
+import {
+  recordVisitorInteraction,
+  useVisitorProfileStore,
+} from "../../VisitorProfile/profileStore";
 import { cn } from "../../../lib/utils";
 import { useLocale } from "../../i18n/LocaleProvider";
 
@@ -19,6 +24,8 @@ export const ProjectScreenshots = ({
   imageDetails = {},
   fit = "cover",
   priority = false,
+  initialIndex = 0,
+  onImageChange,
 }: {
   screenshots: string[];
   projectName: string;
@@ -32,6 +39,8 @@ export const ProjectScreenshots = ({
   >;
   fit?: "cover" | "contain";
   priority?: boolean;
+  initialIndex?: number;
+  onImageChange?: (index: number) => void;
 }) => {
   const contextLocale = useLocale();
   const locale = localeOverride ?? contextLocale;
@@ -44,7 +53,13 @@ export const ProjectScreenshots = ({
     () => screenshots.filter(Boolean),
     [screenshots],
   );
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(initialIndex);
+  const [expanded, setExpanded] = useState(false);
+  const enabled = useVisitorProfileStore((s) => s.enabled);
+  const seen = useRef(new Set<number>());
+  useEffect(() => {
+    seen.current.clear();
+  }, [enabled, projectId]);
 
   useEffect(() => {
     if (!sanitizedScreenshots.length) {
@@ -73,7 +88,15 @@ export const ProjectScreenshots = ({
     if (!showNavigation) return;
     const nextIndex =
       (index + sanitizedScreenshots.length) % sanitizedScreenshots.length;
+    if (nextIndex === currentIndex) return;
     setActiveIndex(nextIndex);
+    onImageChange?.(nextIndex);
+    if (enabled && projectId) {
+      seen.current.add(currentIndex);
+      seen.current.add(nextIndex);
+      if (seen.current.size >= Math.min(3, sanitizedScreenshots.length))
+        recordVisitorInteraction("gallery_explored", projectId);
+    }
   };
 
   return (
@@ -143,6 +166,52 @@ export const ProjectScreenshots = ({
           ))}
         </div>
       </div>
+      {!viewer && (
+        <Dialog.Root
+          open={expanded}
+          onOpenChange={(open) => {
+            setExpanded(open);
+            if (open && projectId)
+              recordVisitorInteraction("gallery_explored", projectId);
+          }}
+        >
+          <Dialog.Trigger asChild>
+            <button
+              type="button"
+              className="mt-2 inline-flex min-h-11 items-center self-end text-xs text-neutral-300 underline underline-offset-4"
+            >
+              {de ? "Bilder vergrößern ↗" : "Enlarge images ↗"}
+            </button>
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 z-[110] bg-black/90" />
+            <Dialog.Content
+              className="fixed inset-3 z-[111] flex min-h-0 flex-col border border-white/25 bg-black p-4 sm:inset-8"
+              aria-describedby={undefined}
+            >
+              <div className="mb-3 flex shrink-0 items-center justify-between gap-4">
+                <Dialog.Title className="text-base text-white">
+                  {projectName}
+                </Dialog.Title>
+                <Dialog.Close className="min-h-11 px-3 text-sm text-white">
+                  {de ? "Schließen" : "Close"} ×
+                </Dialog.Close>
+              </div>
+              <ProjectScreenshots
+                screenshots={sanitizedScreenshots}
+                projectName={projectName}
+                projectId={projectId}
+                initialDescriptions={descriptions}
+                locale={locale}
+                imageDetails={imageDetails}
+                initialIndex={currentIndex}
+                onImageChange={setActiveIndex}
+                viewer
+              />
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      )}
       {current && (
         <div
           className="select-text border-x border-b border-white/20 p-3 text-xs leading-relaxed text-neutral-300"
@@ -185,7 +254,7 @@ export const ProjectScreenshots = ({
               <button
                 key={index}
                 type="button"
-                onClick={() => setActiveIndex(index)}
+                onClick={() => goToIndex(index)}
                 aria-label={
                   de ? `Bild ${index + 1} anzeigen` : `Show image ${index + 1}`
                 }

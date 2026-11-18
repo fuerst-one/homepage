@@ -9,15 +9,19 @@ const sql = knowledgeDatabase();
 try {
   const command = process.argv[2] || "report";
   if (command === "migrate") {
-    await sql.unsafe(
-      await readFile(
-        new URL(
-          "../packages/database/migrations/012-visitor-profile.sql",
-          import.meta.url,
+    for (const migration of [
+      "012-visitor-profile.sql",
+      "013-visitor-profile-signals.sql",
+    ])
+      await sql.unsafe(
+        await readFile(
+          new URL(
+            `../packages/database/migrations/${migration}`,
+            import.meta.url,
+          ),
+          "utf8",
         ),
-        "utf8",
-      ),
-    );
+      );
     console.log("Visitor profile schema ready.");
   } else if (command === "report" || command === "prune") {
     await pruneProfileEvents(sql);

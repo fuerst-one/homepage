@@ -140,6 +140,7 @@ export async function ServiceProductPage({
         </section>
         <section
           id="deliverables"
+          data-profile-service-section={`${slug}|deliverables`}
           className={styles.section}
           aria-labelledby="deliverables-heading"
         >
@@ -165,7 +166,11 @@ export async function ServiceProductPage({
             ))}
           </div>
         </section>
-        <section className={styles.section} aria-labelledby="inputs-heading">
+        <section
+          className={styles.section}
+          aria-labelledby="inputs-heading"
+          data-profile-service-section={`${slug}|process`}
+        >
           <p className={styles.eyebrow}>
             03 / {de ? "So starten wir" : "Getting started"}
           </p>
@@ -248,7 +253,10 @@ export async function ServiceProductPage({
           <h2 id="questions-heading">
             {de ? "Ein überschaubarer Anfang." : "A manageable first step."}
           </h2>
-          <div className={styles.faq}>
+          <div
+            className={styles.faq}
+            data-profile-service-section={`${slug}|commercial`}
+          >
             <details>
               <summary>
                 {de
