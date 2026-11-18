@@ -13,6 +13,7 @@ import {
 import { serializeJsonLd } from "../../lib/seo";
 import { serviceSchema } from "./serviceMetadata";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
+import { ServiceHeroActions } from "./ServiceHeroActions";
 import type { getServiceEvidence } from "../../server/content/getServiceEvidence";
 import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import shared from "./services.module.css";
@@ -117,19 +118,11 @@ export function AiProductsLandingPage({
           <p className={shared.eyebrow}>01 / {copy.label}</p>
           <h1>{copy.headline}</h1>
           <p className={shared.intro}>{copy.intro}</p>
-          <div className={shared.actions}>
-            <Button
-              href={enquiry}
-              variant="cta"
-              arrow
-              className={shared.primary}
-            >
-              {copy.cta}
-            </Button>
-            <a href="#work" className={shared.textLink}>
-              {t.jump} <span aria-hidden="true">↓</span>
-            </a>
-          </div>
+          <ServiceHeroActions
+            slug="ai-products"
+            locale={locale}
+            workLabel={t.jump}
+          />
           <p className={shared.micro}>{copy.reassurance}</p>
           <p className={shared.signature}>{t.by}</p>
         </header>

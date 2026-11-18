@@ -17,6 +17,7 @@ import { serviceSchema } from "./serviceMetadata";
 import { AutomationLandingPage } from "./AutomationLandingPage";
 import { AiProductsLandingPage } from "./AiProductsLandingPage";
 import { ServiceStartingOffer } from "./ServiceStartingOffer";
+import { ServiceHeroActions } from "./ServiceHeroActions";
 import { ServiceProjectVisuals } from "./ServiceProjectVisuals";
 import styles from "./services.module.css";
 
@@ -135,19 +136,7 @@ export async function ServicePage({
           <p className={styles.eyebrow}>01 / {copy.label}</p>
           <h1>{copy.headline}</h1>
           <p className={styles.intro}>{copy.intro}</p>
-          <div className={styles.actions}>
-            <Button
-              href={enquiry}
-              variant="cta"
-              arrow
-              className={styles.primary}
-            >
-              {copy.cta}
-            </Button>
-            <a href="#work" className={styles.textLink}>
-              {t.jump} <span aria-hidden="true">↓</span>
-            </a>
-          </div>
+          <ServiceHeroActions slug={slug} locale={locale} workLabel={t.jump} />
           <p className={styles.micro}>{copy.reassurance}</p>
           <p className={styles.signature}>{t.by}</p>
         </header>

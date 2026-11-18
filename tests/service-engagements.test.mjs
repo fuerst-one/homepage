@@ -12,6 +12,51 @@ const get = (path) =>
 const visible = (html) =>
   html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "");
 
+test("each service hero exposes its engagement paths before the detailed chooser", async () => {
+  for (const locale of ["en", "de"])
+    for (const service of services) {
+      const parent = `/${locale}/services/${service}`;
+      const html = visible(await (await get(parent)).text());
+      const hero = html.match(
+        /<article\b[^>]*>[\s\S]*?<header\b[^>]*>([\s\S]*?)<\/header>/,
+      )?.[1];
+      assert.ok(hero, `${parent}: service introduction is present`);
+      assert.ok(
+        hero.includes(`href="${parent}/collaboration"`),
+        `${parent}: collaboration is available in the introduction`,
+      );
+      const offer =
+        service === "product-interfaces"
+          ? "review"
+          : service === "ai-automation"
+            ? "assessment"
+            : null;
+      if (offer)
+        assert.ok(
+          hero.includes(`href="${parent}/${offer}"`),
+          `${parent}: the focused offer is available in the introduction`,
+        );
+      else assert.doesNotMatch(hero, /\/ai-products\/(?:review|assessment)/);
+      const contact = [...hero.matchAll(/href="([^"]+)"/g)]
+        .map(([, href]) => new URL(href.replaceAll("&amp;", "&"), origin))
+        .find((url) => url.pathname === `/${locale}/contact`);
+      assert.ok(contact, "An undecided visitor can still enquire directly");
+      assert.equal(contact.searchParams.get("service"), service);
+      assert.equal(contact.searchParams.get("intent"), "explore");
+      assert.ok(
+        hero.includes('href="#work"'),
+        "Visitors can still jump to the evidence",
+      );
+      const chooser = html.match(
+        /<section\b[^>]*aria-labelledby="starting-offer-heading"[^>]*>([\s\S]*?)<\/section>/,
+      )?.[1];
+      assert.ok(
+        chooser?.includes(`href="${parent}/collaboration"`),
+        "The detailed chooser remains available later in the page",
+      );
+    }
+});
+
 for (const service of services) {
   for (const locale of ["en", "de"]) {
     const parent = `/${locale}/services/${service}`;
