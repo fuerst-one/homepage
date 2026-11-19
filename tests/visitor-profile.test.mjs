@@ -326,3 +326,35 @@ test("only explicit same-site project category links supply filter signals", () 
     [],
   );
 });
+test("restoration skips signal kinds from a newer release", () => {
+  const p = add(fresh());
+  const newer = {
+    id: crypto.randomUUID(),
+    kind: "signal_from_a_newer_release",
+    subject: "a",
+    at: now,
+  };
+  const restored = m.restoreVisitorProfile(
+    { ...p, signals: [...p.signals, newer] },
+    catalog,
+    now,
+  );
+  assert.deepEqual(restored.signals, p.signals);
+});
+test("restoration tolerates a clock that moved back by a few minutes", () => {
+  const recordedAt = (offset) =>
+    add(
+      m.emptyVisitorProfile(now + offset),
+      "project_opened",
+      "a",
+      now + offset,
+    );
+  assert.notEqual(
+    m.restoreVisitorProfile(recordedAt(60_000), catalog, now),
+    null,
+  );
+  assert.equal(
+    m.restoreVisitorProfile(recordedAt(86400_000), catalog, now),
+    null,
+  );
+});

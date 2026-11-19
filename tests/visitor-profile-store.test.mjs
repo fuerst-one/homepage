@@ -578,3 +578,56 @@ test("unreadable browser storage never leaves the profile loading", async () => 
   await request;
   assert.equal(store.getState().loading, false);
 });
+const PROFILE_KEY = "fuerst-one:visitor-profile:v1";
+function savedProfile(startedAt) {
+  return JSON.stringify({
+    version: 1,
+    profile: {
+      version: 1,
+      startedAt,
+      updatedAt: startedAt,
+      signals: [],
+      preferences: {},
+    },
+    sharing: false,
+    token: "",
+    consentAt: startedAt,
+    pending: [],
+  });
+}
+test("a saved profile this release cannot read is kept, not erased", () => {
+  const { saved, storage } = setup();
+  const newer = JSON.stringify({ version: 2, profile: {} });
+  saved.set(PROFILE_KEY, newer);
+  const restored = m.createVisitorProfileStore(() => storage);
+  restored.getState().initialise(catalog);
+  assert.equal(restored.getState().enabled, false);
+  assert.equal(saved.get(PROFILE_KEY), newer);
+});
+test("a tab keeps its profile when another tab saves one it cannot read", () => {
+  const { store, saved } = setup();
+  store.getState().start();
+  store.getState().record("project_opened", "a");
+  const newer = JSON.stringify({ version: 2, profile: {} });
+  saved.set(PROFILE_KEY, newer);
+  store.getState().syncFromStorage();
+  assert.equal(store.getState().enabled, true);
+  assert.equal(store.getState().profile.signals.length, 1);
+  assert.equal(saved.get(PROFILE_KEY), newer);
+});
+test("an expired saved profile is erased", () => {
+  const { saved, storage } = setup();
+  saved.set(PROFILE_KEY, savedProfile(Date.now() - 31 * 86400_000));
+  const restored = m.createVisitorProfileStore(() => storage);
+  restored.getState().initialise(catalog);
+  assert.equal(restored.getState().enabled, false);
+  assert.equal(saved.has(PROFILE_KEY), false);
+});
+test("another tab stopping the profile still stops this tab", () => {
+  const { store, saved } = setup();
+  store.getState().start();
+  store.getState().record("project_opened", "a");
+  saved.delete(PROFILE_KEY);
+  store.getState().syncFromStorage();
+  assert.equal(store.getState().enabled, false);
+});

@@ -24,6 +24,8 @@ export type {
 export const PROFILE_VERSION = 1;
 export const PROFILE_RULE_VERSION = 2;
 export const PROFILE_LIFETIME_MS = 30 * 86400_000;
+/** Wall clocks can step back (e.g. a time sync after sleep); small skews must not invalidate a profile. */
+export const PROFILE_CLOCK_TOLERANCE_MS = 10 * 60_000;
 export const PROFILE_STORAGE_KEY = "fuerst-one:visitor-profile:v1";
 export const PROFILE_FACETS = [
   "buyerNeeds",
@@ -502,17 +504,18 @@ export function restoreVisitorProfile(
   catalog: ProfileCatalog,
   now: number,
 ): VisitorProfile | null {
+  const latest = now + PROFILE_CLOCK_TOLERANCE_MS;
   if (
     !object(value) ||
     value.version !== 1 ||
     typeof value.startedAt !== "number" ||
     !Number.isFinite(value.startedAt) ||
-    value.startedAt > now ||
+    value.startedAt > latest ||
     now - value.startedAt >= PROFILE_LIFETIME_MS ||
     typeof value.updatedAt !== "number" ||
     !Number.isFinite(value.updatedAt) ||
     value.updatedAt < value.startedAt ||
-    value.updatedAt > now ||
+    value.updatedAt > latest ||
     !Array.isArray(value.signals) ||
     value.signals.length > 240 ||
     !object(value.preferences)
@@ -520,8 +523,10 @@ export function restoreVisitorProfile(
     return null;
   const signals: ProfileSignal[] = [];
   for (const s of value.signals) {
-    // Retired negative feedback must not invalidate an otherwise remembered profile.
-    if (object(s) && s.kind === "project_less") continue;
+    // Retired kinds and kinds saved by a newer release in another tab must not
+    // invalidate an otherwise remembered profile.
+    if (object(s) && typeof s.kind === "string" && !own(SIGNAL_WEIGHTS, s.kind))
+      continue;
     if (
       !object(s) ||
       typeof s.id !== "string" ||
@@ -529,10 +534,9 @@ export function restoreVisitorProfile(
       typeof s.at !== "number" ||
       !Number.isFinite(s.at) ||
       s.at < value.startedAt ||
-      s.at > now ||
+      s.at > latest ||
       typeof s.kind !== "string" ||
-      typeof s.subject !== "string" ||
-      !own(SIGNAL_WEIGHTS, s.kind)
+      typeof s.subject !== "string"
     )
       return null;
     if (!validProfileSubject(s.kind, s.subject, catalog)) continue;

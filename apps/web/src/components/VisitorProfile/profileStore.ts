@@ -9,6 +9,7 @@ import {
   parseProfileEventBatch,
   PROFILE_STORAGE_KEY,
   PROFILE_LIFETIME_MS,
+  PROFILE_CLOCK_TOLERANCE_MS,
   validProfileToken,
   type ProfileCatalog,
   type VisitorProfile,
@@ -169,6 +170,13 @@ export function createVisitorProfileStore(
         set({ storageFailed: true, remember: false });
       }
     };
+    const expired = (saved: { profile?: { startedAt?: unknown } } | null) => {
+      const startedAt = saved?.profile?.startedAt;
+      return (
+        typeof startedAt === "number" &&
+        Date.now() - startedAt >= PROFILE_LIFETIME_MS
+      );
+    };
     const readSaved = () => {
       const catalog = get().catalog;
       if (!catalog) return null;
@@ -183,13 +191,15 @@ export function createVisitorProfileStore(
         !profile ||
         typeof saved.sharing !== "boolean" ||
         !Number.isFinite(saved.consentAt) ||
-        saved.consentAt > Date.now() ||
+        saved.consentAt > Date.now() + PROFILE_CLOCK_TOLERANCE_MS ||
         (saved.sharing &&
           (!validProfileToken(saved.token) ||
             saved.consentAt < profile.startedAt ||
             Date.now() - saved.consentAt >= PROFILE_LIFETIME_MS))
       ) {
-        storage().removeItem(PROFILE_STORAGE_KEY);
+        // Only expiry erases: a profile saved by a newer release in another
+        // tab, or under a skewed clock, must survive this tab not reading it.
+        if (expired(saved)) storage().removeItem(PROFILE_STORAGE_KEY);
         return null;
       }
       const pending: SharedProfileEvent[] = [];
@@ -345,6 +355,8 @@ export function createVisitorProfileStore(
           }
           const saved = readSaved();
           if (!saved) {
+            // Only a removed profile (stopped or expired) stops this tab.
+            if (storage().getItem(PROFILE_STORAGE_KEY) !== null) return;
             controller?.abort();
             set({
               enabled: false,
