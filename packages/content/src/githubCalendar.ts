@@ -55,6 +55,11 @@ export function hasWorkOutsideGitHub(cell: GitHubCalendarMonth) {
   return cell.projects.some((project) => project.outsideGitHub);
 }
 
+/** Without a mark, a zero-commit month with work elsewhere reads as idle. */
+export function marksWorkOutsideGitHub(cell: GitHubCalendarMonth) {
+  return cell.commits === 0 && hasWorkOutsideGitHub(cell);
+}
+
 export function adjacentGitHubMonth(
   years: GitHubCalendarYear[],
   month: string,

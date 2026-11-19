@@ -6,6 +6,7 @@ import {
   githubCommitBand,
   hasCalendarDetail,
   hasWorkOutsideGitHub,
+  marksWorkOutsideGitHub,
   type GitHubCalendarMonth,
   type GitHubCalendarYear,
 } from "@homepage/content/githubCalendar";
@@ -13,7 +14,13 @@ import type { Locale } from "@homepage/content/i18n";
 
 const OUTSIDE_MARK = "★";
 
-export function GitHubCommitLegend({ locale }: { locale: Locale }) {
+export function GitHubCommitLegend({
+  locale,
+  showOutsideGitHub,
+}: {
+  locale: Locale;
+  showOutsideGitHub: boolean;
+}) {
   return (
     <div
       className="home-commit-legend"
@@ -33,6 +40,16 @@ export function GitHubCommitLegend({ locale }: { locale: Locale }) {
           {label}
         </span>
       ))}
+      {showOutsideGitHub && (
+        <span>
+          <i className="home-commit-square" data-band={0} aria-hidden="true">
+            {OUTSIDE_MARK}
+          </i>
+          {locale === "de"
+            ? "keine Commits, Projektarbeit außerhalb dieser Repositories"
+            : "no commits, project work outside these repositories"}
+        </span>
+      )}
     </div>
   );
 }
@@ -144,7 +161,9 @@ export function GitHubCalendar({
                     ?.focus();
                 }
               }}
-            />
+            >
+              {marksWorkOutsideGitHub(cell) && OUTSIDE_MARK}
+            </button>
           ) : (
             <span
               className="home-commit-square is-unrecorded"

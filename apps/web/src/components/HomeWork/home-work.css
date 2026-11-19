@@ -594,17 +594,23 @@
   gap: 5px;
 }
 .home-commit-square {
-  display: block;
+  display: grid;
+  place-items: center;
   width: 100%;
   aspect-ratio: 1;
   padding: 0;
   border: 0;
   border-radius: 1px;
   background: #292b22;
+  color: #aaa79f;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1;
 }
 .home-commit-legend .home-commit-square {
   width: 11px;
   height: 11px;
+  font-size: 8px;
 }
 .home-commit-square[data-band="1"] {
   background: #606943;

@@ -127,6 +127,38 @@ test("a calendar month reports work outside GitHub when any active project is un
   ]);
 });
 
+test("only a recorded zero-commit month with work outside GitHub is marked on the calendar", () => {
+  const { githubCalendarYears, marksWorkOutsideGitHub } = subject();
+  const outside = [{ label: "GitLab client", outsideGitHub: true }];
+  const [year] = githubCalendarYears(
+    [
+      { month: "2020-09", commits: 0 },
+      { month: "2020-10", commits: 0 },
+      { month: "2020-11", commits: 3 },
+    ],
+    [
+      { month: "2020-08", projects: outside },
+      {
+        month: "2020-09",
+        projects: [{ label: "Open tool", outsideGitHub: false }],
+      },
+      { month: "2020-10", projects: outside },
+      { month: "2020-11", projects: outside },
+    ],
+  );
+  assert.deepEqual(
+    year.months
+      .slice(7, 11)
+      .map((cell) => [cell.month, marksWorkOutsideGitHub(cell)]),
+    [
+      ["2020-08", false],
+      ["2020-09", false],
+      ["2020-10", true],
+      ["2020-11", false],
+    ],
+  );
+});
+
 test("keyboard calendar movement reaches unrecorded months that have active projects", () => {
   const { githubCalendarYears, adjacentGitHubMonth } = subject();
   const years = githubCalendarYears(

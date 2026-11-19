@@ -45,9 +45,11 @@ in its tooltip. Project lists come from the public project model's dates, not fr
 commit attribution.
 
 In the card, a star marks projects with `hasConnectedRepo: false`, with a one-line
-note that they are not in the connected repositories. The squares themselves carry
-no marker: with long-running off-GitHub work, nearly every month would have one.
-While the flag is unknown no project is marked.
+note that they are not in the connected repositories. A square carries the star
+only when it is a recorded zero-commit month with such a project, so an apparently
+idle month shows that work happened elsewhere; the legend explains it. Months with
+commits are not starred, because long-running off-GitHub work would mark nearly
+all of them. While the flag is unknown nothing is marked.
 
 ## Project repositories
 
