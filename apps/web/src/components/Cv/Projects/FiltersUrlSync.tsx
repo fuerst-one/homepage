@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useFiltersStore } from "./filtersStore";
+import { useProjectListStore } from "./projectListStore";
 import { reconcileProjectUrl } from "./parseSearchParams";
 import { useProjectFocusStore } from "./projectFocusStore";
 
@@ -10,8 +10,8 @@ export const FiltersUrlSync = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const filters = useFiltersStore((state) => state.filters);
-  const setFilters = useFiltersStore((state) => state.setFilters);
+  const filters = useProjectListStore((state) => state.filters);
+  const setFilters = useProjectListStore((state) => state.setFilters);
   const focusedProjectId = useProjectFocusStore(
     (state) => state.focusedProjectId,
   );

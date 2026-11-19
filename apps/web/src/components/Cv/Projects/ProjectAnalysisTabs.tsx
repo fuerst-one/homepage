@@ -4,7 +4,7 @@ import { useLocale } from "../../i18n/LocaleProvider";
 import { useId, useMemo, useState } from "react";
 import { CvProject } from "@homepage/content/models";
 import { ProjectGraph3D } from "./ProjectGraph3D";
-import { useFiltersStore } from "./filtersStore";
+import { useProjectListStore } from "./projectListStore";
 import { filterProjects, getFilterOptionCounts } from "./Filter/utils";
 import { filterConfigs } from "./filterConfigs";
 import { FilterConfig } from "./Filter/types";
@@ -23,7 +23,7 @@ export const ProjectAnalysisTabs = ({
 }) => {
   const locale = useLocale();
   const [activeTab, setActiveTab] = useState<TabId>(GRAPH_TAB_ID);
-  const filterParams = useFiltersStore((s) => s.filters);
+  const filterParams = useProjectListStore((s) => s.filters);
   const filteredProjects = useMemo(
     () => filterProjects(projects, filterParams),
     [projects, filterParams],

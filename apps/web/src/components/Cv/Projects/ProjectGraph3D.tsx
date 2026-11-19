@@ -12,7 +12,7 @@ import {
 } from "@homepage/content/projectTaxonomy";
 import type { Locale } from "@homepage/content/i18n";
 import { useLocale } from "../../i18n/LocaleProvider";
-import { useFiltersStore } from "./filtersStore";
+import { useProjectListStore } from "./projectListStore";
 import { filterProjects } from "./Filter/utils";
 import { useProjectFocusStore } from "./projectFocusStore";
 
@@ -32,7 +32,7 @@ const getProjectRadius = (wowFactor: number) => {
 
 export const ProjectGraph3D = ({ projects }: { projects: CvProject[] }) => {
   const locale = useLocale();
-  const filterParams = useFiltersStore((s) => s.filters);
+  const filterParams = useProjectListStore((s) => s.filters);
   const highlightedIds = useMemo(() => {
     return new Set(filterProjects(projects, filterParams).map((p) => p.id));
   }, [projects, filterParams]);

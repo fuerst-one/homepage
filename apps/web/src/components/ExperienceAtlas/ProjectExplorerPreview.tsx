@@ -7,7 +7,7 @@ import { publishedExplorerData } from "./projectPresentation";
 import type { SemanticDataset } from "./spaceTypes";
 import { describeSpaceConnections } from "./spaceConnections";
 import { spaceNodes } from "./spaceNodes";
-import { CompactSpace3D } from "./CompactSpace3D";
+import { ResultsSyncedSpace3D } from "./ResultsSyncedSpace3D";
 
 export function ProjectExplorerPreview({
   projects: published,
@@ -28,7 +28,7 @@ export function ProjectExplorerPreview({
       aria-label={locale === "de" ? "Projekt-Explorer" : "Project Explorer"}
     >
       <div className="glass-panel h-[30vh] min-h-[240px] w-full overflow-hidden border border-white/30">
-        <CompactSpace3D
+        <ResultsSyncedSpace3D
           nodes={spaceNodes(space, projects, locale)}
           groups={describeSpaceConnections(space, projects, "").groups}
         />

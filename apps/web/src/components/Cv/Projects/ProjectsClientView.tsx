@@ -1,14 +1,15 @@
 "use client";
 
 import { useLocale } from "../../i18n/LocaleProvider";
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { X } from "lucide-react";
 import { CvProject } from "@homepage/content/models";
 import { FilterSqlConsole } from "./Filter/FilterSqlConsole";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectCollapse } from "./ProjectCollapse";
 import { ProjectDetailDialog } from "./ProjectDetailDialog";
 import { FiltersUrlSync } from "./FiltersUrlSync";
-import { useFiltersStore } from "./filtersStore";
+import { useProjectListStore } from "./projectListStore";
 import {
   CV_PRESETS,
   findActivePreset,
@@ -18,6 +19,7 @@ import {
 import { useProjectFocusStore } from "./projectFocusStore";
 import { useProjectListSearch } from "./useProjectListSearch";
 import { ProjectListSearch } from "./ProjectListSearch";
+import { useProjectsInView } from "./useProjectsInView";
 
 const SLICE_DEFAULT = 8;
 
@@ -29,10 +31,15 @@ export function ProjectsClientView({
   semanticEnabled?: boolean;
 }) {
   const locale = useLocale();
-  const filterParams = useFiltersStore((s) => s.filters);
+  const filterParams = useProjectListStore((s) => s.filters);
   const setHovered = useProjectFocusStore((s) => s.setHoveredProjectId);
 
-  const search = useProjectListSearch(projects, filterParams, semanticEnabled);
+  const cluster = useProjectListStore((s) => s.cluster);
+  const clearCluster = useProjectListStore((s) => s.clearCluster);
+  const revealId = useProjectListStore((s) => s.revealId);
+  const clearReveal = useProjectListStore((s) => s.clearReveal);
+
+  const search = useProjectListSearch(projects, semanticEnabled);
   const filteredProjects = search.results;
   const searching = !!search.query.trim();
 
@@ -46,6 +53,10 @@ export function ProjectsClientView({
       return locale === "de"
         ? `${filteredProjects.length} Projekte passen zu deiner Suche.`
         : `${filteredProjects.length} projects match your search.`;
+    if (cluster)
+      return locale === "de"
+        ? `${filteredProjects.length} Projekte im Cluster „${cluster.label}“.`
+        : `${filteredProjects.length} projects in the “${cluster.label}” cluster.`;
     const activePresetId = findActivePreset(normalizeFilters(filterParams));
     if (activePresetId) {
       return localizePreset(CV_PRESETS[activePresetId], locale).headline;
@@ -53,13 +64,38 @@ export function ProjectsClientView({
     return locale === "de"
       ? `${filteredProjects.length} Projekte passen zu deinem Filter.`
       : `${filteredProjects.length} projects matching your filter.`;
-  }, [filteredProjects.length, filterParams, locale, searching]);
+  }, [filteredProjects.length, filterParams, locale, searching, cluster]);
 
   const featuredProjects = searching
     ? filteredProjects
     : filteredProjects.slice(0, SLICE_DEFAULT);
   const otherProjects = searching ? [] : filteredProjects.slice(SLICE_DEFAULT);
   const hasOtherProjects = otherProjects.length > 0;
+
+  const [expanded, setExpanded] = useState(false);
+  if (expanded && !hasOtherProjects) setExpanded(false);
+  if (!expanded && otherProjects.some((project) => project.id === revealId))
+    setExpanded(true);
+  const list = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!revealId) return;
+    list.current
+      ?.querySelector(`[data-project-search-result="${CSS.escape(revealId)}"]`)
+      ?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+        block: "center",
+      });
+    clearReveal();
+  }, [revealId, clearReveal]);
+  useEffect(() => () => setHovered(null), [setHovered]);
+  useProjectsInView(
+    list,
+    (expanded ? filteredProjects : featuredProjects)
+      .map((project) => project.id)
+      .join(),
+  );
 
   return (
     <>
@@ -73,6 +109,22 @@ export function ProjectsClientView({
           <FilterSqlConsole filterParams={filterParams} projects={projects} />
         </div>
         <div className="mb-12 space-y-5">
+          {cluster && (
+            <button
+              type="button"
+              data-project-cluster-clear
+              onClick={clearCluster}
+              className="inline-flex min-h-11 items-center gap-2 border border-white/30 bg-black/60 px-3 text-xs text-neutral-200 transition hover:border-white hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            >
+              Cluster: {cluster.label}
+              <X aria-hidden="true" size={14} strokeWidth={1.5} />
+              <span className="sr-only">
+                {locale === "de"
+                  ? "Cluster-Filter entfernen"
+                  : "Clear cluster filter"}
+              </span>
+            </button>
+          )}
           <h2 className="text-xl font-medium leading-snug text-white">
             {headline}
           </h2>
@@ -82,7 +134,7 @@ export function ProjectsClientView({
               : "Explore a curated collection of recent projects, each showcasing thoughtful design and technical depth. Use the analysis tools to filter, compare, and discover the collaborations, technologies, and results that drive real impact."}
           </p>
         </div>
-        <div className="space-y-6">
+        <div ref={list} className="space-y-6">
           {featuredProjects.map((project) => (
             <ProjectCardWithHover
               key={project.id}
@@ -93,7 +145,10 @@ export function ProjectsClientView({
             />
           ))}
           {hasOtherProjects && (
-            <ProjectCollapse>
+            <ProjectCollapse
+              expanded={expanded}
+              onExpand={() => setExpanded(true)}
+            >
               {otherProjects.map((project) => (
                 <ProjectCardWithHover
                   key={project.id}

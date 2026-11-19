@@ -35,7 +35,11 @@ export async function Layout({
     </div>
   );
   const sidebarExtra = sidebarAfter && (
-    <div className={sidebarBelowContent ? "lg:order-2 lg:mt-6" : "mt-6"}>
+    <div
+      className={
+        sidebarBelowContent ? "lg:sticky lg:top-6 lg:order-2 lg:mt-6" : "mt-6"
+      }
+    >
       {sidebarAfter}
     </div>
   );

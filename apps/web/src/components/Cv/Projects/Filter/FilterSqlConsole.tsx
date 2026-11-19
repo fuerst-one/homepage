@@ -2,7 +2,7 @@
 
 import { useId, useMemo, useState } from "react";
 import { useLocale } from "../../../i18n/LocaleProvider";
-import { useFiltersStore } from "../filtersStore";
+import { useProjectListStore } from "../projectListStore";
 import clsx from "clsx";
 import { caseLabel } from "@homepage/content/projectCase";
 import {
@@ -138,8 +138,8 @@ export const FilterSqlConsole = ({
 }) => {
   const locale = useLocale();
   const de = locale === "de";
-  const setFilters = useFiltersStore((s) => s.setFilters);
-  const resetFilters = useFiltersStore((s) => s.reset);
+  const setFilters = useProjectListStore((s) => s.setFilters);
+  const resetFilters = useProjectListStore((s) => s.reset);
   const [searchQuery, setSearchQuery] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
   const panelId = useId();
