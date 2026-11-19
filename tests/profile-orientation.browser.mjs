@@ -443,7 +443,7 @@ test(
 );
 
 test(
-  "actual 192px and 60px SVG screenshots preserve every profile score",
+  "actual 192px, 60px and 32px SVG screenshots preserve every profile score",
   { timeout: 120000 },
   async () => {
     const { loadTs } = await import("./helpers/load-ts.mjs");
@@ -518,7 +518,7 @@ test(
       await verify("/en/projects?all=1", 60);
       await page.setViewport({ width: 390, height: 844 });
       await verify("/de/profile", 192);
-      await verify("/de/projects?all=1", 60);
+      await verify("/de/projects?all=1", 32);
       assert.equal(
         await page.evaluate(
           () => document.documentElement.scrollWidth > innerWidth,
@@ -737,6 +737,47 @@ test(
       await page.waitForFunction(() => location.pathname === "/en/profile");
       assert.equal((await openDialog(1100, 900)).paintedOnTop, false);
       assert.equal((await openDialog(390, 800)).paintedOnTop, false);
+    } finally {
+      await browser.close();
+    }
+  },
+);
+
+test(
+  "without a started profile the entry link stays away while a dialog is open",
+  { timeout: 120000 },
+  async () => {
+    const catalog = await fetch(`${base}/api/profile/catalog`).then((r) =>
+      r.json(),
+    );
+    const browser = await puppeteer.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      for (const [width, height] of [
+        [1360, 900],
+        [390, 800],
+      ]) {
+        await page.setViewport({ width, height });
+        await page.goto(
+          `${base}/en/projects?all=1&focus=${encodeURIComponent(catalog.projects[0].id)}`,
+          { waitUntil: "networkidle2" },
+        );
+        await page.waitForSelector('[role="dialog"][data-state="open"]');
+        await page.evaluate(
+          () =>
+            new Promise((resolve) =>
+              requestAnimationFrame(() => requestAnimationFrame(resolve)),
+            ),
+        );
+        assert.equal(
+          await page.$(".profile-entry-link"),
+          null,
+          `no entry link over the backdrop at ${width}px`,
+        );
+        await page.keyboard.press("Escape");
+        await page.waitForSelector('[role="dialog"]', { hidden: true });
+        await page.waitForSelector(".profile-entry-link");
+      }
     } finally {
       await browser.close();
     }

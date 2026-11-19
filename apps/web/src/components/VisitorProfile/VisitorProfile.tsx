@@ -18,7 +18,7 @@ import {
   PROFILE_ERASURE_KEY,
 } from "./profileStore";
 import { ProfilePixelGrid } from "./ProfilePixelGrid";
-import { ForYouHint, useForYouHintVisible } from "./ForYouHint";
+import { ForYouHint, useForYouHintVisible, useOpenDialog } from "./ForYouHint";
 import "./visitor-profile.css";
 import { profileOrientationAt } from "@homepage/content/profilePixels";
 import { useRichProfileSignals } from "./useRichProfileSignals";
@@ -250,8 +250,11 @@ export default function VisitorProfile() {
   const bottom = useFooterClearance(pathname);
   const launcher = useRef<HTMLAnchorElement>(null);
   const hintVisible = useForYouHintVisible();
+  // Unlike the launcher, the entry link has nothing to show beside a dialog.
+  const dialogOpen = useOpenDialog(!enabled);
   if (pathname === "/en/profile" || pathname === "/de/profile") return null;
   if (savedOnLoad && !profileSettled) return null;
+  if (!enabled && dialogOpen) return null;
   return enabled ? (
     <>
       <ForYouHint visible={hintVisible} bottom={bottom} launcher={launcher} />

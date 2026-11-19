@@ -136,6 +136,16 @@ for (const { locale, width, height, finish } of [
           false,
           "the hint does not take focus",
         );
+        // The hint slides in, so its final position is known once it has landed.
+        await page.waitForFunction(
+          (hint) =>
+            document
+              .querySelector(hint)
+              .getAnimations()
+              .every((animation) => animation.playState === "finished"),
+          {},
+          HINT,
+        );
         const hint = await page.$eval(HINT, (el) => {
           const box = el.getBoundingClientRect();
           const launcher = document
@@ -153,7 +163,14 @@ for (const { locale, width, height, finish } of [
               box.top >= 0 &&
               box.right <= innerWidth &&
               box.bottom <= innerHeight,
-            aboveLauncher: box.bottom <= launcher.top,
+            gapAboveLauncher: Math.round(launcher.top - box.bottom),
+            notchOverLauncher:
+              Math.abs(
+                box.right -
+                  parseFloat(getComputedStyle(el, "::after").right) -
+                  parseFloat(getComputedStyle(el, "::after").width) / 2 -
+                  (launcher.left + launcher.right) / 2,
+              ) <= 1,
             animated: getComputedStyle(el).animationName !== "none",
           };
         });
@@ -165,7 +182,8 @@ for (const { locale, width, height, finish } of [
           live: "polite",
           profileUi: true,
           inViewport: true,
-          aboveLauncher: true,
+          gapAboveLauncher: 12,
+          notchOverLauncher: true,
           animated: true,
         });
         assert.deepEqual(

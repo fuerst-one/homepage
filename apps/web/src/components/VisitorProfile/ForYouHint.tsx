@@ -6,9 +6,6 @@ import { useLocale } from "../i18n/LocaleProvider";
 import { useVisitorProfileStore } from "./profileStore";
 import { useForYouReady } from "./useForYouReady";
 
-// The 66px launcher plus the gap between it and the hint.
-const LAUNCHER_CLEARANCE = 78;
-
 // Dialogs are portalled into the body, so its child list is enough to watch.
 const subscribeToBodyChildren = (notify: () => void) => {
   const observer = new MutationObserver(notify);
@@ -20,7 +17,7 @@ const isDialogOpen = () =>
   !!document.querySelector('[role="dialog"][data-state="open"]');
 const noDialog = () => false;
 
-function useOpenDialog(watching: boolean) {
+export function useOpenDialog(watching: boolean) {
   return useSyncExternalStore(
     watching ? subscribeToBodyChildren : unsubscribed,
     watching ? isDialogOpen : noDialog,
@@ -69,7 +66,9 @@ export function ForYouHint({
           className="profile-for-you-hint"
           style={{
             bottom:
-              bottom === undefined ? undefined : bottom + LAUNCHER_CLEARANCE,
+              bottom === undefined
+                ? undefined
+                : `calc(${bottom}px + var(--profile-launcher-clearance))`,
           }}
           onKeyDown={(event) => {
             if (event.key === "Escape") dismiss();
