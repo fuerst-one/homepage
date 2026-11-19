@@ -222,6 +222,28 @@ test("a GitHub link is published only when the connected inventory verifies the 
   assert.equal(link("https://github.com/fuerst-one/open-tool", null), null);
 });
 
+test("a GitHub link is verified against the repository its URL resolves to", () => {
+  const link = (githubUrl) =>
+    publishedProject({ githubUrl }, connectedRepositories).githubUrl;
+  assert.equal(
+    link("https://github.com/fuerst-one/open-tool/../client-app"),
+    null,
+  );
+  assert.equal(
+    link("https://github.com/fuerst-one/open-tool/%2e%2e/client-app"),
+    null,
+  );
+  assert.equal(link("https://gist.github.com/fuerst-one/open-tool"), null);
+  assert.equal(
+    link("https://github.com/fuerst-one/open-tool/tree/main/docs"),
+    "https://github.com/fuerst-one/open-tool/tree/main/docs",
+  );
+  assert.equal(
+    link("https://www.github.com/Fuerst-One/Open-Tool.git"),
+    "https://www.github.com/Fuerst-One/Open-Tool.git",
+  );
+});
+
 test("links to other code hosts are published without a GitHub inventory check", () => {
   assert.equal(
     publishedProject(
