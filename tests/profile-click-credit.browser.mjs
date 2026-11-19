@@ -260,11 +260,12 @@ test(
       await startProfile(page);
       await page.goto(`${base}/en/explorer`, { waitUntil: "domcontentloaded" });
       await page.waitForSelector(".profile-pixel-launcher");
-      await page.waitForSelector(".vs-cluster-trigger");
-      await page.click(".vs-cluster-trigger");
+      // Locators wait for a clickable node; the explorer re-renders as it loads.
+      await page.locator(".vs-cluster-trigger").click();
       const selectMember = async (index) => {
-        await page.waitForSelector(".vs-members button");
-        await (await page.$$(".vs-members button"))[index].click();
+        await page
+          .locator(`.vs-members li:nth-child(${index + 1}) button`)
+          .click();
         await page.waitForSelector(".vs-selected");
         return page.evaluate(() =>
           new URL(location.href).searchParams.get("project"),
@@ -274,7 +275,7 @@ test(
       // Clicking through: a selection left before the stay records nothing.
       const passed = await selectMember(0);
       await pause(1000);
-      await page.click(".vs-back-cluster");
+      await page.locator(".vs-back-cluster").click();
       const stayed = await selectMember(1);
       assert.notEqual(stayed, passed);
       assert.equal(

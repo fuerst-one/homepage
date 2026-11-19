@@ -5,19 +5,29 @@ const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6895";
 const key = "fuerst-one:visitor-profile:v1";
 const read = (page) =>
   page.evaluate((key) => JSON.parse(localStorage.getItem(key) || "null"), key);
+// The server-rendered page is replaced while it hydrates, so a button found a
+// moment too early has no clickable box yet. Look again until it has one.
 async function clickText(page, text, scope = "body") {
-  const buttons = await page.$$(`${scope} button`);
-  for (const button of buttons) {
-    if (
-      (await button.evaluate((el) => el.textContent.trim())) === text ||
-      (await button.evaluate((el) => el.getAttribute("aria-label"))) === text
-    ) {
-      await button.scrollIntoView();
-      await button.click();
-      return;
+  const deadline = Date.now() + 10_000;
+  for (;;) {
+    try {
+      for (const button of await page.$$(`${scope} button`)) {
+        if (
+          (await button.evaluate((el) => el.textContent.trim())) === text ||
+          (await button.evaluate((el) => el.getAttribute("aria-label"))) ===
+            text
+        ) {
+          await button.scrollIntoView();
+          await button.click();
+          return;
+        }
+      }
+      throw new Error(`Button not found: ${text}`);
+    } catch (error) {
+      if (Date.now() > deadline) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
   }
-  throw new Error(`Button not found: ${text}`);
 }
 const hasSignal = (page, kind) =>
   page.waitForFunction(
@@ -83,12 +93,9 @@ test(
         null,
         "project cards have no save buttons",
       );
-      const previewButton = await page.$(
-        'button[aria-label*="View images for Konfig"]',
-      );
-      assert.ok(previewButton);
-      await previewButton.scrollIntoView();
-      await previewButton.click();
+      await page
+        .locator('button[aria-label*="View images for Konfig"]')
+        .click();
       await page.waitForSelector('[role="dialog"] button[data-project-save]');
       await page.waitForFunction(() =>
         document
@@ -146,7 +153,7 @@ test(
       );
       assert.ok(architecture);
       await architecture.scrollIntoView();
-      await page.click("#project-facts-title");
+      await page.locator("#project-facts-title").click();
       await hasSignal(page, "project_section_read");
       assert.ok(
         (await read(page)).profile.signals.some(
@@ -158,12 +165,9 @@ test(
       await page.screenshot({
         path: "/tmp/profile-signals-project-desktop.png",
       });
-      const caseLink = await page.$('a[href$="/case-study"]');
-      assert.ok(caseLink);
-      await caseLink.scrollIntoView();
       await Promise.all([
         page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-        caseLink.click(),
+        page.locator('a[href$="/case-study"]').click(),
       ]);
       await hasSignal(page, "case_study_viewed");
       await go("/en/services/ai-automation/collaboration");
@@ -173,7 +177,7 @@ test(
       );
       assert.ok(serviceSection);
       await serviceSection.scrollIntoView();
-      await page.click("#engagements-heading");
+      await page.locator("#engagements-heading").click();
       await hasSignal(page, "service_section_read");
       await go("/en/services/ai-automation/assessment");
       await hasSignal(page, "service_offer_viewed");
@@ -190,27 +194,20 @@ test(
         ),
       );
       await go("/en/explorer");
-      await page.waitForSelector(".vs-recipes button");
-      const lenses = await page.$$(".vs-recipes button");
-      await lenses[1].click();
+      await page.locator(".vs-recipes button:nth-child(2)").click();
       await hasSignal(page, "explorer_lens_selected");
       await page.waitForSelector(".vs-cluster-trigger");
       // If the browsing above made the profile ready, its hint sits over the
       // first cluster at this viewport until the visitor dismisses it.
       if (await page.$('button[aria-label="Dismiss hint"]'))
         await clickText(page, "Dismiss hint");
-      await page.click(".vs-cluster-trigger");
+      await page.locator(".vs-cluster-trigger").click();
       await hasSignal(page, "explorer_cluster_selected");
       await go("/en/projects/konfig-product-design-configurator");
-      const related = await page.$("a[data-profile-related]");
-      assert.ok(
-        related,
-        "published project includes related-project navigation",
-      );
-      await related.scrollIntoView();
+      // Fails here if a published project has no related-project navigation.
       await Promise.all([
         page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-        related.click(),
+        page.locator("a[data-profile-related]").click(),
       ]);
       await hasSignal(page, "related_project_opened");
       await go("/en/profile");
@@ -248,7 +245,7 @@ test(
         path: "/tmp/profile-signals-de-mobile.png",
         fullPage: true,
       });
-      await page.click(".profile-choice-list [data-project-save]");
+      await page.locator(".profile-choice-list [data-project-save]").click();
       await page.waitForFunction(
         () => document.activeElement?.id === "profile-choices-title",
       );
