@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLocale } from "../i18n/LocaleProvider";
 import Link from "../i18n/LocalizedLink";
@@ -18,6 +18,7 @@ import {
   PROFILE_ERASURE_KEY,
 } from "./profileStore";
 import { ProfilePixelGrid } from "./ProfilePixelGrid";
+import { ForYouHint, useForYouHintVisible } from "./ForYouHint";
 import "./visitor-profile.css";
 import { profileOrientationAt } from "@homepage/content/profilePixels";
 import { useRichProfileSignals } from "./useRichProfileSignals";
@@ -237,22 +238,33 @@ export default function VisitorProfile() {
   const enabled = useProfile((s) => s.enabled);
   useProfileRuntime();
   const bottom = useFooterClearance(pathname);
+  const launcher = useRef<HTMLAnchorElement>(null);
+  const hintVisible = useForYouHintVisible();
   if (pathname === "/en/profile" || pathname === "/de/profile") return null;
   return enabled ? (
-    <Link
-      href="/profile"
-      prefetch={false}
-      data-profile-ui
-      style={{ bottom }}
-      className="profile-pixel-launcher"
-      aria-label={
-        de
-          ? "Dein aktuelles Interessenprofil öffnen"
-          : "Open your current interest profile"
-      }
-    >
-      <ProfilePixelGrid />
-    </Link>
+    <>
+      <ForYouHint visible={hintVisible} bottom={bottom} launcher={launcher} />
+      <Link
+        ref={launcher}
+        href="/profile"
+        prefetch={false}
+        data-profile-ui
+        style={{ bottom }}
+        className="profile-pixel-launcher"
+        aria-label={
+          de
+            ? "Dein aktuelles Interessenprofil öffnen"
+            : "Open your current interest profile"
+        }
+        onClick={
+          hintVisible
+            ? () => useProfile.getState().markForYouHintSeen()
+            : undefined
+        }
+      >
+        <ProfilePixelGrid />
+      </Link>
+    </>
   ) : (
     <Link
       href="/profile"

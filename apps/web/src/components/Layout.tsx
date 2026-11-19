@@ -3,6 +3,7 @@ import { ReactNode, Suspense } from "react";
 import Link from "./i18n/LocalizedLink";
 import { LanguageSwitcher } from "./i18n/LanguageSwitcher";
 import { ContentNavLink } from "./ContentNavLink";
+import { ForYouNavLink } from "./VisitorProfile/ForYouNavLink";
 import type { Locale } from "@homepage/content/i18n";
 import { BackToTopButton } from "./BackToTopButton";
 import { getCachedCvOwnerPublic } from "../server/content/getCachedCvOwner";
@@ -86,6 +87,7 @@ export async function Layout({
               <span className="content-header-role">UX+AI Engineer</span>
             </div>
           </Link>
+          <ForYouNavLink />
           <Link
             href="/contact"
             className={`content-header-availability ${owner.available === true ? "text-emerald-300" : "text-neutral-300"}`}

@@ -237,6 +237,60 @@ Recovery survives reload; if browser storage is unavailable, keep the tab open t
 retry. Clearing
 browser data first loses its erasure key, so the normal server retention applies.
 
+## For you: readiness, hint and nav entry
+
+`isForYouReady(profile, catalog, now)` in
+`packages/content/src/forYouReadiness.ts` is the only decision about whether a
+profile is ready for personalised suggestions. `useForYouReady` applies it to
+the opted-in profile in the browser. The hint and the header link both read that
+hook and add no profile conditions of their own, so replacing the function's
+body changes both.
+
+The conditions are provisional until tracking can name a visitor's leading
+interest. A profile is ready with depth signals (`project_opened`,
+`project_details_viewed` or `case_study_viewed`) on at least three distinct
+public projects, or with one explicit choice: `filter_selected`,
+`topic_selected`, `explorer_term_selected`, or a manual term preference of
+interested or priority. Going deeper into one project, reading, saving,
+services, Explorer lenses, exclusions and a return to automatic do not count.
+Neither do signals later than `now`, an expired profile, or projects and terms
+that have left the public catalog.
+
+The hint is a small popover above the pixel signature: "Your profile is ready."
+/ „Dein Profil ist bereit." with a link "See your matches" / „Vorschläge
+ansehen". It is due from the moment the profile is ready and stays, across pages
+and reloads, until the visitor closes it (button or Escape), follows its link or
+clicks the signature. `forYouHintSeen` in the profile store records that. It is
+local metadata like the signature angle: it follows the Remember setting and
+cross-tab synchronization, an out-of-date snapshot from another tab cannot bring
+the hint back, and reset, stop and expiry clear it. Earlier saved profiles
+restore with the hint unseen. Marking it seen is not a signal, adds no interest
+points and does not count as an interaction.
+
+The hint is not rendered while any dialog is open, which covers the project
+dialog and the full-screen image view where the signature is inert, and not on
+the profile page. It sits in a polite live region that exists before the hint,
+never takes focus, and comes directly before the signature in the tab order;
+after a dismissal focus continues from the signature. It carries
+`data-profile-ui`, so it neither seeds the signature angle nor records a signal.
+Its entrance animation is skipped under `prefers-reduced-motion`.
+
+The header link "For you" / „Für dich" (`ForYouNavLink` in the shared Layout)
+renders only in the browser and only for a ready, opted-in profile. It overlays
+the top-right corner of the header, above the language switch, and takes no grid
+cell, so the header keeps its exact layout when the link appears. Visitors
+without a ready profile or without JavaScript get the header unchanged.
+
+Until the For you page exists, the hint and the header link both lead to the
+localized `/profile#suggestions`.
+
+Unit behaviour: `node --test tests/for-you-readiness.test.mjs tests/for-you-hint.test.mjs`.
+Browser behaviour: `SEO_TEST_BASE_URL=http://localhost:6895 node --test tests/for-you-hint.browser.mjs`
+runs the journey in English and German at 1360 and 375 pixels: three opened
+projects, the dialog and image-view exclusions, the unchanged header layout,
+and the three endings: keyboard dismissal, following the link and clicking the
+signature.
+
 ## Validation
 
 Unit behaviour: `node --test tests/visitor-profile.test.mjs tests/visitor-profile-signals.test.mjs tests/visitor-profile-reading.test.mjs tests/visitor-profile-store.test.mjs tests/profile-pixels.test.mjs`.
