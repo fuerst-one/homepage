@@ -1,8 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   PROFILE_FACETS,
+  PROFILE_STORAGE_KEY,
   SIGNAL_WEIGHTS,
   recommendProfileProjects,
   type ProfileFacet,
@@ -10,6 +18,10 @@ import {
 } from "@homepage/content/visitorProfile";
 import {
   PROFILE_PIXEL_LEVELS,
+  PROFILE_PIXEL_MAX_INTERACTIONS,
+  PROFILE_PIXEL_MIN_SHARE,
+  encodeProfilePayload,
+  encodeProfileText,
   profilePixelCapacity,
 } from "@homepage/content/profilePixels";
 import { useLocale } from "../i18n/LocaleProvider";
@@ -25,17 +37,70 @@ import { useProfileSnapshot } from "./useProfileSnapshot";
 import { facetNames, signalNames, subjectName } from "./profilePresentation";
 import "./visitor-profile.css";
 
+const LOADING_ATTRIBUTE = "data-profile-loading";
+// Runs while the HTML is parsed. The saved profile itself needs the catalog,
+// but its presence is known before the first paint, so the page never shows
+// the state without a profile to a visitor who has one.
+const LOADING_HINT = `try{if(localStorage.getItem(${JSON.stringify(PROFILE_STORAGE_KEY)}))document.currentScript.parentElement.setAttribute("${LOADING_ATTRIBUTE}","")}catch{}`;
+const LOADING_INTEREST_CARDS = 4;
+const noSubscription = () => () => {};
+/** True in server HTML and while it hydrates, false for renders in the browser. */
+const useServerRendered = () =>
+  useSyncExternalStore(
+    noSubscription,
+    () => false,
+    () => true,
+  );
+
 export default function VisitorProfilePage() {
   const locale = useLocale(),
     de = locale === "de",
     language = de ? 1 : 0;
   const s = useProfile();
   const { interests, snapshotAt } = useProfileSnapshot();
+  const rootRef = useRef<HTMLDivElement>(null);
+  // The signature only runs in when this page had to wait for the profile.
+  // Arriving by navigation, the profile is already there and shows at rest.
+  const [openedWithoutProfile] = useState(() => !useProfile.getState().enabled);
+  // React creates script elements inert and warns about them, so the hint is
+  // only part of the server HTML.
+  const serverRendered = useServerRendered();
+  const catalogSettled = s.catalog !== null || s.catalogFailed;
+  // Server HTML carries both the start state and the loading state; the hint
+  // attribute decides which one is displayed until the catalog has settled.
+  const mayBeLoading = !s.enabled && !catalogSettled;
+  useLayoutEffect(() => {
+    if (s.loading) rootRef.current?.setAttribute(LOADING_ATTRIBUTE, "");
+    else if (catalogSettled)
+      rootRef.current?.removeAttribute(LOADING_ATTRIBUTE);
+  }, [s.loading, catalogSettled]);
   const searchRef = useRef<HTMLInputElement>(null);
   const privacyTitleRef = useRef<HTMLHeadingElement>(null);
   const [announcement, setAnnouncement] = useState("");
   const [facet, setFacet] = useState<ProfileFacet | "all">("all");
   const [query, setQuery] = useState("");
+  const [codeCopied, setCodeCopied] = useState(false);
+  const codeCopiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const copyProfileCode = async () => {
+    if (!s.catalog) return;
+    try {
+      await navigator.clipboard.writeText(
+        encodeProfileText(
+          encodeProfilePayload(s.catalog.terms, interests, s.interactions),
+        ),
+      );
+      setCodeCopied(true);
+      clearTimeout(codeCopiedTimer.current);
+      codeCopiedTimer.current = setTimeout(() => setCodeCopied(false), 2000);
+      setAnnouncement(de ? "Profilcode kopiert." : "Profile code copied.");
+    } catch {
+      setAnnouncement(
+        de
+          ? "Der Profilcode konnte nicht kopiert werden."
+          : "The profile code could not be copied.",
+      );
+    }
+  };
   const recommendations = useMemo(
     () =>
       s.enabled && s.catalog
@@ -100,16 +165,22 @@ export default function VisitorProfilePage() {
     ? profilePixelCapacity(s.catalog.terms.length)
     : null;
 
-  return (
-    <div className="profile-page" data-profile-ui>
+  const summary = (view: "live" | "start" | "loading") => {
+    const profileCopy = view !== "start";
+    return (
       <section
-        className="profile-summary"
+        className={`profile-summary ${view === "start" ? "profile-hide-while-loading" : view === "loading" ? "profile-show-while-loading" : ""}`}
         aria-label={de ? "Dein aktuelles Profil" : "Your current profile"}
       >
-        {s.enabled ? (
+        {view === "live" ? (
           <div className="profile-page-signature">
-            <ProfilePixelGrid />
+            <ProfilePixelGrid runIn={openedWithoutProfile} />
           </div>
+        ) : view === "loading" ? (
+          <div
+            className="profile-page-signature profile-signature-loading"
+            aria-hidden="true"
+          />
         ) : (
           <div className="profile-page-off" aria-hidden="true">
             <span>?</span>
@@ -117,7 +188,7 @@ export default function VisitorProfilePage() {
         )}
         <div className="profile-summary-copy">
           <p className="profile-page-eyebrow">
-            {s.enabled
+            {profileCopy
               ? de
                 ? "Live in diesem Browser"
                 : "Live in this browser"
@@ -126,7 +197,7 @@ export default function VisitorProfilePage() {
                 : "You decide when it starts"}
           </p>
           <h2 className="text-2xl tracking-tight text-white">
-            {s.enabled
+            {profileCopy
               ? de
                 ? "Ein Bild deiner Interessen."
                 : "A picture of your interests."
@@ -135,7 +206,7 @@ export default function VisitorProfilePage() {
                 : "No profile generated yet."}
           </h2>
           <p className="content-reading text-sm leading-relaxed text-neutral-300">
-            {s.enabled
+            {profileCopy
               ? de
                 ? "Dein Pixelbild fasst die aktuellen Interessenswerte zusammen. Darunter findest du jede Vermutung, ihre Grundlage und deine eigenen Entscheidungen. Du kannst jederzeit korrigieren, zurücksetzen oder stoppen."
                 : "Your pixel signature summarises the current interest scores. Below, you can inspect every inference, its evidence and your own choices. Correct it, reset it or stop at any time."
@@ -144,7 +215,23 @@ export default function VisitorProfilePage() {
                 : "When you start, project depth, section reading, image exploration, proof links, service details, explorer choices, selected topics and your project feedback become visible signals. Your profile and choices are saved locally in this browser for 30 days, ready for your next visit. Sharing is a separate, optional choice."}
           </p>
           <div className="profile-summary-actions">
-            {s.enabled ? (
+            {view === "live" && s.catalog && (
+              <button
+                type="button"
+                className="profile-text-button text-sm"
+                data-profile-copy-code
+                onClick={() => void copyProfileCode()}
+              >
+                {codeCopied
+                  ? de
+                    ? "Kopiert"
+                    : "Copied"
+                  : de
+                    ? "Profilcode kopieren"
+                    : "Copy profile code"}
+              </button>
+            )}
+            {view === "live" && (
               <p className="text-primary text-sm">
                 {active} {de ? "aktive Interessen" : "active interests"} ·{" "}
                 {s.profile.signals.length} {de ? "Signale" : "signals"} ·{" "}
@@ -156,7 +243,27 @@ export default function VisitorProfilePage() {
                     ? "Nur lokal"
                     : "Local only"}
               </p>
-            ) : (
+            )}
+            {view === "loading" && (
+              // The final wording with stand-in numbers, so the row wraps the
+              // way the real one will.
+              <>
+                <span
+                  className="profile-text-button text-sm"
+                  aria-hidden="true"
+                >
+                  <span className="profile-loading-text">
+                    {de ? "Profilcode kopieren" : "Copy profile code"}
+                  </span>
+                </span>
+                <p className="profile-loading-text text-sm" aria-hidden="true">
+                  00 {de ? "aktive Interessen" : "active interests"} · 00{" "}
+                  {de ? "Signale" : "signals"} ·{" "}
+                  {de ? "Nur lokal" : "Local only"}
+                </p>
+              </>
+            )}
+            {view === "start" && (
               <Button
                 type="button"
                 variant="cta"
@@ -173,14 +280,21 @@ export default function VisitorProfilePage() {
               {de ? "Projekte erkunden ↗" : "Explore projects ↗"}
             </Link>
           </div>
-          {s.catalogLoading && (
+          {view === "loading" && (
+            <p role="status" className="sr-only">
+              {de
+                ? "Dein gespeichertes Profil wird geladen…"
+                : "Loading your saved profile…"}
+            </p>
+          )}
+          {view !== "loading" && s.catalogLoading && (
             <p role="status" className="text-sm text-neutral-400">
               {de
                 ? "Projektkategorien werden geladen…"
                 : "Loading project dimensions…"}
             </p>
           )}
-          {s.catalogFailed && (
+          {view !== "loading" && s.catalogFailed && (
             <p role="alert" className="text-sm text-neutral-300">
               {de
                 ? "Die Kategorien konnten nicht geladen werden."
@@ -196,6 +310,22 @@ export default function VisitorProfilePage() {
           )}
         </div>
       </section>
+    );
+  };
+
+  return (
+    <div
+      className="profile-page"
+      data-profile-ui
+      ref={rootRef}
+      // The hint script adds the loading attribute before React hydrates.
+      suppressHydrationWarning
+    >
+      {serverRendered && (
+        <script dangerouslySetInnerHTML={{ __html: LOADING_HINT }} />
+      )}
+      {summary(s.enabled ? "live" : "start")}
+      {mayBeLoading && summary("loading")}
 
       <nav
         className="profile-page-nav"
@@ -226,7 +356,7 @@ export default function VisitorProfilePage() {
               {de ? "Deine Interessen" : "Your interests"}
             </h2>
           </div>
-          <span>
+          <span className="profile-hide-while-loading">
             {active} {de ? "aktiv" : "active"}
           </span>
         </div>
@@ -399,11 +529,36 @@ export default function VisitorProfilePage() {
             </div>
           </>
         ) : (
-          <p className="profile-empty">
-            {de
-              ? "Deine Interessen erscheinen hier, sobald du die Profilgenerierung startest."
-              : "Your interests appear here once you start profile generation."}
-          </p>
+          <>
+            <p className="profile-empty profile-hide-while-loading">
+              {de
+                ? "Deine Interessen erscheinen hier, sobald du die Profilgenerierung startest."
+                : "Your interests appear here once you start profile generation."}
+            </p>
+            {mayBeLoading && (
+              <div
+                className="profile-interest-grid profile-show-while-loading"
+                aria-hidden="true"
+              >
+                {Array.from({ length: LOADING_INTEREST_CARDS }, (_, i) => (
+                  <div key={i} className="profile-interest">
+                    <div className="profile-interest-top">
+                      <strong className="profile-loading-text">
+                        {de ? "Interesse wird geladen" : "Loading interest"}
+                      </strong>
+                    </div>
+                    <progress max={12} value={0} />
+                    <div className="profile-interest-source">
+                      <span className="profile-loading-text">
+                        {facetNames[PROFILE_FACETS[0]][language]} ·{" "}
+                        {de ? "abgeleitet" : "inferred"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </section>
 
@@ -473,7 +628,7 @@ export default function VisitorProfilePage() {
           ))}
         </div>
         {!recommendations.length && (
-          <p className="profile-empty">
+          <p className="profile-empty profile-hide-while-loading">
             {de
               ? "Mit den ersten Interessen erscheinen hier begründete Vorschläge."
               : "Your first interests will give us something to recommend, with reasons."}
@@ -495,7 +650,9 @@ export default function VisitorProfilePage() {
               {de ? "Deine letzten Signale" : "Your recent signals"}
             </h2>
           </div>
-          <span>{s.enabled ? s.profile.signals.length : 0}</span>
+          <span className="profile-hide-while-loading">
+            {s.enabled ? s.profile.signals.length : 0}
+          </span>
         </div>
         <p className="profile-section-intro">
           {de
@@ -503,7 +660,7 @@ export default function VisitorProfilePage() {
             : "Interactions and corrections from this profile. Showing the latest 30 entries; the local history keeps up to 240. Search text, form contents and pointer trails are excluded."}
         </p>
         {!s.enabled || !s.profile.signals.length ? (
-          <p className="profile-empty">
+          <p className="profile-empty profile-hide-while-loading">
             {de
               ? "Dein nächster Schritt wird hier sichtbar, sobald das Profil aktiv ist."
               : "Your next interaction will appear here while the profile is active."}
@@ -634,13 +791,13 @@ export default function VisitorProfilePage() {
             </p>
             <p>
               {de
-                ? "Die Farbflächen zeigen grobe Interessensbereiche: Grün für Entwicklung und Hardware, Blau für KI und Daten, Pink für UX und Forschung, Orange für Geschäft und Umsetzung. Ihre Größe folgt deinen Werten für Bedarf, Kompetenzen und Methoden. Die Schattierungen kodieren alle Interessenswerte, einschließlich Tools, Branchen und Formaten. Mehrere Werte teilen sich einen Pixel."
-                : "Colour regions show broad interest families: green for engineering and hardware, blue for AI and data, pink for UX and research, orange for business and delivery. Their size follows your needs, capabilities and methods. The shades encode every interest score, including tools, sectors and formats. Several scores share a pixel."}
+                ? "Die Farbflächen zeigen grobe Interessensbereiche: Grün für Entwicklung und Hardware, Blau für KI und Daten, Magenta für UX und Forschung, Korallrot für Geschäft und Umsetzung. Ihre Größe folgt deinen Werten für Bedarf, Kompetenzen und Methoden. Die Schattierungen kodieren alle Interessenswerte, einschließlich Tools, Branchen und Formaten. Mehrere Werte teilen sich einen Pixel."
+                : "Colour regions show broad interest families: green for engineering and hardware, blue for AI and data, magenta for UX and research, coral for business and delivery. Their size follows your needs, capabilities and methods. The shades encode every interest score, including tools, sectors and formats. Several scores share a pixel."}
             </p>
             <p>
               {de
-                ? "Schwarze und weiße Muster in drei Ecken markieren die Orientierung. Die Farbbereiche haben keine reservierten Mindestflächen: Ein Farbton kann bei fehlendem Interesse vollständig verschwinden. Ohne Signale in Bedarf, Kompetenzen oder Methoden starten die vier Bereiche gleich groß. Ungenutzter Speicher liegt gebündelt bei den Ecken."
-                : "Black-and-white patterns in three corners mark orientation. Colour regions have no reserved minimum area: a hue can disappear when there is no interest in that family. Without signals in needs, capabilities or methods, the four regions start equally. Unused capacity gathers near the corners."}
+                ? `Schwarze und weiße Muster in drei Ecken markieren die Orientierung. Jede Farbe behält mindestens ${Math.round(PROFILE_PIXEL_MIN_SHARE * 100)} Prozent der farbigen Felder, sodass kein Farbton verschwindet; die übrige Fläche folgt deinem Interesse am jeweiligen Bereich. Ohne Signale in Bedarf, Kompetenzen oder Methoden starten die vier Bereiche gleich groß. Jede Interaktion, die dein Profil verändert, verschiebt die Farbwelle um einen Schritt und wird gezählt. Das Bild speichert diese Anzahl (bis ${PROFILE_PIXEL_MAX_INTERACTIONS.toLocaleString("de-DE")}) neben den Werten; wer das Bild erhält, kann also ablesen, wie viele Interaktionen es geprägt haben. Ungenutzter Speicher liegt gebündelt bei den Ecken.`
+                : `Black-and-white patterns in three corners mark orientation. Every colour keeps at least ${Math.round(PROFILE_PIXEL_MIN_SHARE * 100)} percent of the coloured cells, so no hue disappears; the remaining area follows your interest in each family. Without signals in needs, capabilities or methods, the four regions start equally. Each interaction that changes your profile moves the colour wave one step and is counted. The picture stores that count (up to ${PROFILE_PIXEL_MAX_INTERACTIONS.toLocaleString("en-GB")}) next to the scores, so anyone you give the image to can read how many interactions shaped it. Unused capacity gathers near the corners.`}
             </p>
             {pixelCapacity && (
               <p>

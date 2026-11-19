@@ -430,3 +430,151 @@ test("newer local project feedback survives reconciliation with an older saved s
     feedback: "more",
   });
 });
+
+test("interactions are counted after opt-in, once per accepted signal or manual choice", () => {
+  const { store } = setup();
+  store.getState().record("project_opened", "a");
+  assert.equal(store.getState().interactions, 0);
+  store.getState().start();
+  assert.equal(store.getState().interactions, 0);
+  store.getState().record("project_opened", "a");
+  assert.equal(store.getState().interactions, 1);
+  store.getState().choose("tools:React", "priority");
+  assert.equal(store.getState().interactions, 2);
+  // Repeats and unknown subjects change nothing, so they are not interactions.
+  store.getState().record("project_opened", "a");
+  store.getState().record("project_opened", "missing");
+  store.getState().choose("tools:React", "priority");
+  assert.equal(store.getState().interactions, 2);
+});
+test("the interaction count survives reload and outlives the bounded signal history", () => {
+  const { store, storage } = setup();
+  store.getState().start();
+  for (let i = 0; i < 130; i++) {
+    store.getState().choose("tools:React", "priority");
+    store.getState().choose("tools:React", "auto");
+  }
+  assert.equal(store.getState().profile.signals.length, 240);
+  assert.equal(store.getState().interactions, 260);
+  const restored = m.createVisitorProfileStore(() => storage);
+  restored.getState().initialise(catalog);
+  assert.equal(restored.getState().interactions, 260);
+});
+test("reset and stop clear the interaction count and memory-only mode keeps counting unsaved", async () => {
+  const { store, storage } = setup();
+  const key = "fuerst-one:visitor-profile:v1";
+  store.getState().start();
+  store.getState().record("project_opened", "a");
+  await store.getState().reset();
+  assert.equal(store.getState().interactions, 0);
+  assert.equal(JSON.parse(storage.getItem(key)).interactions, 0);
+  store.getState().setRemember(false);
+  store.getState().record("project_opened", "a");
+  assert.equal(store.getState().interactions, 1);
+  assert.equal(storage.getItem(key), null);
+  await store.getState().stop();
+  assert.equal(store.getState().interactions, 0);
+});
+test("tabs adopt each other's interactions and keep counting from the shared total", () => {
+  const { store, storage } = setup();
+  store.getState().start();
+  store.getState().record("project_opened", "a");
+  const other = m.createVisitorProfileStore(() => storage);
+  other.getState().initialise(catalog);
+  assert.equal(other.getState().interactions, 1);
+  other.getState().choose("tools:React", "priority");
+  assert.equal(other.getState().interactions, 2);
+  store.getState().choose("tools:React", "exclude");
+  assert.equal(store.getState().interactions, 3);
+  other.getState().syncFromStorage();
+  assert.equal(other.getState().interactions, 3);
+});
+test("missing or invalid saved interaction counts leave the profile usable", () => {
+  const key = "fuerst-one:visitor-profile:v1";
+  for (const [savedCount, restoredCount] of [
+    [undefined, 0],
+    [-1, 0],
+    [1.5, 0],
+    ["3", 0],
+    [null, 0],
+    [70000, 65535],
+  ]) {
+    const { store, storage } = setup();
+    store.getState().start();
+    const saved = JSON.parse(storage.getItem(key));
+    saved.interactions = savedCount;
+    storage.setItem(key, JSON.stringify(saved));
+    const restored = m.createVisitorProfileStore(() => storage);
+    restored.getState().initialise(catalog);
+    assert.equal(restored.getState().enabled, true);
+    assert.equal(restored.getState().interactions, restoredCount);
+  }
+});
+
+function savedProfileStorage() {
+  const { store, storage } = setup();
+  store.getState().start();
+  store.getState().record("project_opened", "a");
+  return storage;
+}
+test("a saved profile counts as loading until the catalog has arrived", async () => {
+  let release;
+  const response = new Promise((resolve) => {
+    release = resolve;
+  });
+  const store = m.createVisitorProfileStore(savedProfileStorage, async () => {
+    await response;
+    return { ok: true, json: async () => catalog };
+  });
+  assert.equal(store.getState().loading, false);
+  const request = store.getState().loadCatalog();
+  assert.equal(store.getState().loading, true);
+  assert.equal(store.getState().enabled, false);
+  release();
+  await request;
+  assert.equal(store.getState().loading, false);
+  assert.equal(store.getState().enabled, true);
+});
+test("without a saved profile the catalog loads without a loading state", async () => {
+  const store = m.createVisitorProfileStore(
+    () => ({ getItem: () => null, setItem() {}, removeItem() {} }),
+    async () => ({ ok: true, json: async () => catalog }),
+  );
+  const request = store.getState().loadCatalog();
+  assert.equal(store.getState().catalogLoading, true);
+  assert.equal(store.getState().loading, false);
+  await request;
+  assert.equal(store.getState().loading, false);
+});
+test("a failed catalog request ends the loading state and a retry shows it again", async () => {
+  let succeeds = false;
+  const store = m.createVisitorProfileStore(savedProfileStorage, async () => ({
+    ok: succeeds,
+    json: async () => catalog,
+  }));
+  await store.getState().loadCatalog();
+  assert.equal(store.getState().catalogFailed, true);
+  assert.equal(store.getState().loading, false);
+  succeeds = true;
+  const retry = store.getState().loadCatalog();
+  assert.equal(store.getState().loading, true);
+  await retry;
+  assert.equal(store.getState().loading, false);
+  assert.equal(store.getState().enabled, true);
+});
+test("unreadable browser storage never leaves the profile loading", async () => {
+  const store = m.createVisitorProfileStore(
+    () => ({
+      getItem() {
+        throw new Error("blocked");
+      },
+      setItem() {},
+      removeItem() {},
+    }),
+    async () => ({ ok: true, json: async () => catalog }),
+  );
+  const request = store.getState().loadCatalog();
+  assert.equal(store.getState().loading, false);
+  await request;
+  assert.equal(store.getState().loading, false);
+});

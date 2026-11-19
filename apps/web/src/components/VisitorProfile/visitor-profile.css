@@ -74,6 +74,33 @@
   color: #737373;
   font-size: 72px;
 }
+/* While a saved profile waits for the catalog, the page shows placeholders in
+   the final layout in place of the state without a profile. */
+.profile-page:not([data-profile-loading]) .profile-show-while-loading,
+.profile-page[data-profile-loading] .profile-hide-while-loading {
+  display: none;
+}
+.profile-signature-loading {
+  aspect-ratio: 1;
+  background: #ffffff14;
+}
+.profile-loading-text {
+  background: #ffffff14;
+  color: transparent;
+  text-decoration: none;
+  user-select: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .profile-signature-loading,
+  .profile-loading-text {
+    animation: profile-loading-pulse 0.9s ease-in-out infinite alternate;
+  }
+}
+@keyframes profile-loading-pulse {
+  to {
+    opacity: 0.45;
+  }
+}
 .profile-page-eyebrow {
   color: var(--profile-accent);
   font-size: 10px;
@@ -447,6 +474,16 @@
   .profile-interest-grid,
   .profile-explanation-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* From this width the launcher fits beside the 64rem project dialog, so it
+   stays in view above a dialog's backdrop. It shares the dialog content's
+   z-index and comes earlier in the document, so content still covers it.
+   Like the rest of the page it is inert while a dialog is open: a click on it
+   reaches the backdrop and closes the dialog. */
+@media (min-width: 1240px) {
+  .profile-pixel-launcher {
+    z-index: 101;
   }
 }
 @media (max-width: 600px) {

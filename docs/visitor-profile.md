@@ -7,10 +7,25 @@ preferences, recent signals, matching projects and data settings. The same page
 is reachable from the footer's Privacy settings. English and German UI and privacy
 text are included. The fixed entry adds no space after the footer and moves above it while the footer is visible.
 
+From 1240px viewport width the pixel signature fits beside the project dialog and
+stays in view above a dialog's backdrop, so it can be seen reacting to actions
+inside the dialog. It is inert there like the rest of the page: a click on it
+closes the dialog. On narrower viewports, and under the full-screen image view, it
+stays behind the backdrop.
+
 The page uses the site's shared Layout, content surface, typography, buttons and
 localized links. It is excluded from indexing. Capture/restore and delivery remain
 mounted across client navigation; the profile page itself does not add interest
 points.
+
+A saved profile can only be restored once the catalog has arrived. Until then the
+page shows a loading state in the layout of the finished profile: the summary copy,
+a placeholder for the signature and stand-ins for the statistics and the first
+interests. An inline script in the server HTML checks browser storage for a saved
+profile before the first paint and marks the page with `data-profile-loading`; the
+store's `loading` field takes over after hydration and for client navigation.
+Visitors without a saved profile get the start state unchanged, also without
+JavaScript.
 
 Capture and local persistence start together after the explicit opt-in. Profiles
 and manual choices restore on later visits and expire 30 days after their start.
@@ -91,36 +106,89 @@ are not backfilled. Page exit attempts bounded keepalive delivery.
 ## Pixel signature
 
 `packages/content/src/profilePixels.ts` encodes every catalog term, sorted by ID,
-into 128 quantized levels (seven bits per score). The full precision model remains
-authoritative. The current 168-term catalog fits a 12×12 grid. Seventeen fixed
-black-and-white pixels in three corners identify orientation. The top-left marker
-is 3×3; the top-right and bottom-left markers are 2×2 with different patterns.
-There are no reserved minimum areas or fixed corner pixels for any coloured hue.
-The image uses orange, brand lime, blue and pink, with saturation 50–82% and
-lightness 36–72%. Each hue has 4,096 distinct RGB shades, carrying 12 bits per cell.
+into 128 quantized levels (seven bits per score). The full precision scoring model
+remains authoritative; integers 0–127 are used at the image boundary. The current
+168-term catalog fits a 16×16 grid with 64 separated shades per hue. The shared SVG
+renders at 60px in the floating entry and 192px on the profile page.
 
-Hue areas summarize quantized needs, capabilities and methods: green for
-engineering/hardware, blue for AI/data, pink for UX/research, orange for
-business/delivery and unclassified terms within those facets. Without signals in
-these facets, the areas start equally. A hue can disappear entirely when its
-family has no interest. The entire non-marker area is allocated proportionally and
-assigned near stable corner anchors using minimum-cost assignment. The last
-layout is cached by grid size and hue counts. Every catalog field, including
-tools and sectors, is encoded independently in the shades.
+The hue arrangement is a mirrored wave, sampled from the same geometric field as
+the site's ASCII plasma. The field folds into a triangle wave, so the bands run
+magenta, coral, lime, azure from trough to crest and back again without a seam.
+The hues are coral 18°, lime 81.21°, azure 198° and magenta 300°; lime is the
+site's `--primary`, and the other three were chosen for the widest separation
+from it and from each other. The legacy decoder keeps its own earlier hues.
 
-Payload positions fill from the centre out in a deterministic order. Spare cells
-form corner pockets instead of a blank strip. At 168 fields, 72 format/checksum
-bits plus 1,176 score bits leave 276 bits (23 whole cells) unused. The 12×12 format
-supports 207 fields at 128 levels, leaving room for 39 additional fields. The
-shared SVG renders at 60px in the floating entry and 192px on the profile page.
+Hue areas summarize business/delivery (coral), engineering/hardware (lime),
+AI/data (azure) and UX/research (magenta) interest families. Each hue first
+receives `PROFILE_PIXEL_MIN_SHARE` (5%) of the wave cells, so none disappears;
+family interest divides the remaining cells. Every field, including tools and
+sectors, is carried independently by the shade values. Seventeen asymmetric
+black-and-white corner marker cells and eight fixed colour calibration cells
+keep their positions. Only the hue field rotates inside the upright square.
 
-The payload includes a version, term count, catalog fingerprint and checksum.
-Decoding validates those and padding against the matching catalog. The grid grows
-for catalogs that exceed its capacity rather than dropping terms. The same score
-levels and catalog produce the same image, independent of catalog input order.
-Decoding requires exact RGB values; this is not a camera-scannable code. The image
-contains the quantized interest scores, without a browser identifier or activity
-history. Sharing an image therefore shares those scores.
+The wave rests at a position set by the interaction count: every accepted signal
+and manual choice after opt-in adds one, and each one advances the field by
+`PROFILE_PIXEL_PHASE_PER_INTERACTION` (0.25) along the plasma's own angle
+increments. The count is local signature metadata next to the angle. It follows
+the Remember setting and cross-tab synchronization, keeps rising while old
+signals leave the 240-signal history, saturates at 65,535, and reset, stop and
+expiry clear it. Earlier saved profiles restore with a count of zero.
+
+`useProfileFlowPhase` plays the step when the count rises while a signature is
+on screen: six frames at 20 frames per second, about 0.3 seconds, and at most
+the last second of a burst. A reset and `prefers-reduced-motion` go straight to
+the resting frame. A profile that has just loaded does the same in the launcher,
+and so does the profile page when it is reached by navigation with the profile
+already in memory. Only a profile page that opened without the profile and then
+restored it lets the signature run in: over a fixed 0.8 seconds the wave
+eases across at most the last two steps and comes to rest on the counted frame,
+so a reload always ends on the same picture. Replaying more of the history in
+that time would change up to half of the cells per frame at some counts. Steps,
+the run-in and rotation only move hues between cells; the
+number of cells per hue stays fixed. `encodeProfilePayload` computes the fixed
+part once per profile state and `paintProfilePixels` colours a single frame.
+
+After opt-in, the first primary link or button activation outside profile controls
+chooses one of eight clockwise angles in 45-degree steps, based on its direction
+from the viewport centre. Keyboard activation uses the activated control's centre.
+Hover, scrolling, typing and profile controls do not seed it. Before that action,
+the badge uses 0°. The discrete angle is local visual metadata: coordinates are
+never retained and it does not create a scoring or shared event. It follows the
+existing Remember setting and cross-tab synchronization; reset, stop and expiry
+clear it. Earlier saved profiles restore without an angle and seed on their next
+eligible action.
+
+The payload includes a format version, the 16-bit interaction count, the catalog
+fingerprint and a CRC. The fingerprint already changes with the number of terms,
+so the count takes the place of a separate term-count field and the grid stays
+16×16. `decodeProfileInteractions` reads it back.
+
+The profile page offers the same payload as text: "Copy profile code" in the
+summary copies `encodeProfileText`, the payload bytes as base64url (208
+characters for 168 terms), without showing it. `decodeProfileText` checks the
+same version, fingerprint and CRC and returns the scores and the count, so a
+pasted code can be compared with a picture exactly.
+Seventeen Reed–Solomon parity bytes per block correct up to eight damaged bytes
+per block. Larger catalogs grow the grid and split into bounded correction blocks
+without dropping fields. All eight rotations carry the same quantized scores;
+rotation metadata is unnecessary for decoding. The decoder also accepts the
+previous exact-RGB 12×12 format, which carries no count. The image contains the
+scores and the number of interactions, without a browser identifier, interaction
+angle metadata or activity history. Sharing it shares those quantized scores and
+that count.
+
+Lossy copies such as JPEG or messenger re-encodes shift colours past the exact
+decoder. `recoverProfilePixels` takes one averaged colour per cell (sample the
+central part of each cell), matches it to the nearest shade by brightness and
+colour difference, and retries its twelve least certain cells with their
+second-nearest shade until error correction, checksum and fingerprint all pass.
+It returns a picture with the original shades or fails. Hues are outside those
+checks and stay as sampled, and a picture that cannot be repaired costs all
+4,096 retries (a few hundred milliseconds).
+
+Screenshot checks sample the centres of a known grid bounding box and verify all
+168 fields at 60 and 192 pixels. The decoder takes RGB pixels and the matching
+catalog; automatic code location and camera-photo recovery are not implemented.
 
 ## Owner insights
 

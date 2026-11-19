@@ -7,5 +7,8 @@
     "./data/*.json": "./src/data/*.json",
     "./data/*": "./src/data/*.ts",
     "./*": "./src/*.ts"
+  },
+  "dependencies": {
+    "@zxing/library": "0.23.0"
   }
 }

@@ -1,18 +1,34 @@
 "use client";
 
 import { useMemo } from "react";
-import { encodeProfilePixels } from "@homepage/content/profilePixels";
+import {
+  encodeProfilePayload,
+  paintProfilePixels,
+} from "@homepage/content/profilePixels";
 import { useLocale } from "../i18n/LocaleProvider";
+import { useVisitorProfileStore } from "./profileStore";
+import { useProfileFlowPhase } from "./useProfileFlowPhase";
 import { useProfileSnapshot } from "./useProfileSnapshot";
 
-export function ProfilePixelGrid() {
+/** With `runIn`, a profile that appears with interactions eases into its resting frame. */
+export function ProfilePixelGrid({ runIn = false }: { runIn?: boolean }) {
   const de = useLocale() === "de";
+  const orientation = useVisitorProfileStore((s) => s.orientation) ?? 0;
+  const interactions = useVisitorProfileStore((s) => s.interactions);
   const { catalog, interests } = useProfileSnapshot();
   const signature = useMemo(
-    () => (catalog ? encodeProfilePixels(catalog.terms, interests) : null),
-    [catalog, interests],
+    () =>
+      catalog
+        ? encodeProfilePayload(catalog.terms, interests, interactions)
+        : null,
+    [catalog, interests, interactions],
   );
-  if (!signature) return null;
+  const phase = useProfileFlowPhase(interactions, signature !== null, runIn);
+  const pixels = useMemo(
+    () => signature && paintProfilePixels(signature, orientation, phase),
+    [signature, orientation, phase],
+  );
+  if (!signature || !pixels) return null;
   return (
     <svg
       viewBox={`0 0 ${signature.size} ${signature.size}`}
@@ -22,13 +38,15 @@ export function ProfilePixelGrid() {
       data-profile-grid
       data-grid-size={signature.size}
       data-grid-levels={signature.levels}
+      data-grid-orientation={orientation}
+      data-grid-interactions={signature.interactions}
       aria-label={
         de
           ? `Dein Interessenprofil, ${signature.size} mal ${signature.size} Pixel, ${signature.levels} Stufen pro Interesse`
           : `Your interest profile, ${signature.size} by ${signature.size} pixels, ${signature.levels} levels per interest`
       }
     >
-      {signature.pixels.map((color, i) => (
+      {pixels.map((color, i) => (
         <rect
           key={i}
           x={i % signature.size}

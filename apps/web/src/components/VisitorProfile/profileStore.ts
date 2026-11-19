@@ -23,12 +23,22 @@ import {
   EMPTY_PROJECT_CHOICE,
 } from "@homepage/content/visitorProfileSignals";
 
+import {
+  clampProfileInteractions,
+  isProfileOrientation,
+  type ProfileOrientation,
+} from "@homepage/content/profilePixels";
+
 export const PROFILE_ERASURE_KEY = "fuerst-one:profile-erasure:v1";
 type Catalog = ProfileCatalog & { sharingAvailable?: boolean };
 type Storage = Pick<globalThis.Storage, "getItem" | "setItem" | "removeItem">;
 type ProfileState = {
   catalog: Catalog | null;
   profile: VisitorProfile;
+  orientation: ProfileOrientation | null;
+  setOrientation: (orientation: ProfileOrientation) => void;
+  /** Accepted signals and manual choices since the profile started. */
+  interactions: number;
   enabled: boolean;
   remember: boolean;
   sharing: boolean;
@@ -36,6 +46,8 @@ type ProfileState = {
   token: string;
   pending: SharedProfileEvent[];
   deletionToken: string;
+  /** A saved profile is waiting for the catalog it needs to be restored. */
+  loading: boolean;
   catalogLoading: boolean;
   catalogFailed: boolean;
   network:
@@ -55,6 +67,7 @@ type ProfileState = {
   reset: () => Promise<void>;
   stop: () => Promise<void>;
 };
+const UNSEEDED_SIGNATURE = { orientation: null, interactions: 0 } as const;
 const secret = () =>
   Array.from(crypto.getRandomValues(new Uint8Array(32)), (n) =>
     n.toString(16).padStart(2, "0"),
@@ -128,6 +141,8 @@ export function createVisitorProfileStore(
             JSON.stringify({
               version: 1,
               profile: s.profile,
+              orientation: s.orientation,
+              interactions: s.interactions,
               token: s.token,
               sharing: s.sharing,
               consentAt: s.consentAt,
@@ -193,6 +208,10 @@ export function createVisitorProfileStore(
         }
       return {
         profile,
+        orientation: isProfileOrientation(saved.orientation)
+          ? saved.orientation
+          : null,
+        interactions: clampProfileInteractions(saved.interactions),
         sharing: saved.sharing && !!catalog.sharingAvailable,
         token: validProfileToken(saved.token) ? saved.token : "",
         consentAt: saved.consentAt as number,
@@ -230,6 +249,7 @@ export function createVisitorProfileStore(
       };
       set({
         profile: next,
+        interactions: clampProfileInteractions(s.interactions + 1),
         ...(s.sharing && shared
           ? { pending: [...s.pending, shared].slice(-100) }
           : {}),
@@ -239,6 +259,17 @@ export function createVisitorProfileStore(
     return {
       catalog: null,
       profile: emptyVisitorProfile(0),
+      ...UNSEEDED_SIGNATURE,
+      setOrientation: (orientation) => {
+        if (
+          !isProfileOrientation(orientation) ||
+          !active() ||
+          get().orientation !== null
+        )
+          return;
+        set({ orientation });
+        persist();
+      },
       enabled: false,
       remember: false,
       sharing: false,
@@ -246,6 +277,7 @@ export function createVisitorProfileStore(
       token: "",
       pending: [],
       deletionToken: "",
+      loading: false,
       catalogLoading: false,
       catalogFailed: false,
       network: "idle",
@@ -259,6 +291,7 @@ export function createVisitorProfileStore(
           if (receipts.length)
             set({
               enabled: false,
+              ...UNSEEDED_SIGNATURE,
               remember: false,
               sharing: false,
               pending: [],
@@ -300,6 +333,7 @@ export function createVisitorProfileStore(
             controller?.abort();
             set({
               enabled: false,
+              ...UNSEEDED_SIGNATURE,
               remember: false,
               sharing: false,
               token: "",
@@ -314,6 +348,7 @@ export function createVisitorProfileStore(
             controller?.abort();
             set({
               enabled: false,
+              ...UNSEEDED_SIGNATURE,
               remember: false,
               sharing: false,
               token: "",
@@ -328,6 +363,14 @@ export function createVisitorProfileStore(
           set({
             ...saved,
             profile: mergeProfiles(s.profile, saved.profile),
+            orientation: saved.orientation,
+            // Every action syncs before it counts, so tabs normally agree.
+            // Keeping the larger value stops a tab that saved an out-of-date
+            // snapshot from lowering the count.
+            interactions:
+              saved.profile.startedAt === s.profile.startedAt
+                ? Math.max(s.interactions, saved.interactions)
+                : saved.interactions,
             pending:
               saved.sharing && sameToken
                 ? uniqueEvents([...s.pending, ...saved.pending]).slice(-100)
@@ -341,7 +384,13 @@ export function createVisitorProfileStore(
       loadCatalog: () => {
         if (get().catalog) return Promise.resolve();
         if (catalogRequest) return catalogRequest;
-        set({ catalogLoading: true, catalogFailed: false });
+        let saved = false;
+        try {
+          saved = !!storage().getItem(PROFILE_STORAGE_KEY);
+        } catch {
+          // Without readable storage there is no profile to wait for.
+        }
+        set({ catalogLoading: true, catalogFailed: false, loading: saved });
         catalogRequest = Promise.resolve().then(async () => {
           try {
             const response = await send("/api/profile/catalog");
@@ -362,7 +411,7 @@ export function createVisitorProfileStore(
             set({ catalogFailed: true });
           } finally {
             catalogRequest = null;
-            set({ catalogLoading: false });
+            set({ catalogLoading: false, loading: false });
           }
         });
         return catalogRequest;
@@ -388,6 +437,7 @@ export function createVisitorProfileStore(
           enabled: true,
           remember: true,
           profile: emptyVisitorProfile(Date.now()),
+          ...UNSEEDED_SIGNATURE,
         });
         persist();
       },
@@ -506,7 +556,10 @@ export function createVisitorProfileStore(
         }
       },
       reset: async () => {
-        set({ profile: emptyVisitorProfile(Date.now()) });
+        set({
+          profile: emptyVisitorProfile(Date.now()),
+          ...UNSEEDED_SIGNATURE,
+        });
         await get().deleteShared();
         persist();
       },
@@ -515,6 +568,7 @@ export function createVisitorProfileStore(
           enabled: false,
           remember: false,
           profile: emptyVisitorProfile(Date.now()),
+          ...UNSEEDED_SIGNATURE,
         });
         await get().deleteShared();
         persist();

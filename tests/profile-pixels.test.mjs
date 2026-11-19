@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { existsSync } from "node:fs";
 import { loadTs } from "./helpers/load-ts.mjs";
 const source = new URL(
-  "../packages/content/src/profilePixels.ts",
+  "../packages/content/src/profilePixelsLegacy.ts",
   import.meta.url,
 );
 const m = existsSync(source) ? loadTs(source) : {};

@@ -71,7 +71,7 @@ export function ProfileInsights() {
               {de ? "Deine gemerkten Projekte" : "Your saved projects"}
             </h2>
           </div>
-          <span>
+          <span className="profile-hide-while-loading">
             {
               choices.filter((p) => profile.projectChoices?.[p.id]?.saved)
                 .length
@@ -114,7 +114,7 @@ export function ProfileInsights() {
             ))}
           </div>
         ) : (
-          <p className="profile-empty">
+          <p className="profile-empty profile-hide-while-loading">
             {de
               ? "Klicke im Projektfenster auf das Herz. Deine gemerkten Projekte erscheinen dann hier."
               : "Click the heart in a project preview. Your saved projects will appear here."}
@@ -191,7 +191,7 @@ export function ProfileInsights() {
             ))}
           </div>
         ) : (
-          <p className="profile-empty">
+          <p className="profile-empty profile-hide-while-loading">
             {de
               ? "Wenn mehrere Schritte zusammenpassen, erscheinen hier die Belege und ihre Bedeutung."
               : "When several actions form a pattern, its evidence and interpretation will appear here."}

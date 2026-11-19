@@ -19,6 +19,7 @@ import {
 } from "./profileStore";
 import { ProfilePixelGrid } from "./ProfilePixelGrid";
 import "./visitor-profile.css";
+import { profileOrientationAt } from "@homepage/content/profilePixels";
 import { useRichProfileSignals } from "./useRichProfileSignals";
 
 function useProfileRuntime() {
@@ -26,6 +27,31 @@ function useProfileRuntime() {
   const enabled = useProfile((s) => s.enabled);
   const catalog = useProfile((s) => s.catalog);
   useRichProfileSignals(pathname, enabled);
+  const orientation = useProfile((s) => s.orientation);
+  useEffect(() => {
+    if (!enabled || orientation !== null) return;
+    const seed = (event: MouseEvent) => {
+      if (
+        !event.isTrusted ||
+        event.button !== 0 ||
+        !(event.target instanceof Element) ||
+        event.target.closest("[data-profile-ui]")
+      )
+        return;
+      const control = event.target.closest("a[href],button,[role=button]");
+      if (!control || control.matches(":disabled,[aria-disabled=true]")) return;
+      const bounds = control.getBoundingClientRect();
+      const x =
+        event.detail === 0 ? bounds.left + bounds.width / 2 : event.clientX;
+      const y =
+        event.detail === 0 ? bounds.top + bounds.height / 2 : event.clientY;
+      useProfile
+        .getState()
+        .setOrientation(profileOrientationAt(x, y, innerWidth, innerHeight));
+    };
+    document.addEventListener("click", seed, true);
+    return () => document.removeEventListener("click", seed, true);
+  }, [enabled, orientation]);
   const pending = useProfile((s) => s.pending);
   const network = useProfile((s) => s.network);
   const focusedId = useProjectFocusStore((s) => s.focusedProjectId);

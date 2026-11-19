@@ -1,0 +1,991 @@
+{
+  "catalog": [
+    {
+      "id": "buyerNeeds:Launch a new product",
+      "facet": "buyerNeeds",
+      "value": "Launch a new product"
+    },
+    {
+      "id": "buyerNeeds:Improve a complex interface",
+      "facet": "buyerNeeds",
+      "value": "Improve a complex interface"
+    },
+    {
+      "id": "buyerNeeds:Create an interactive experience",
+      "facet": "buyerNeeds",
+      "value": "Create an interactive experience"
+    },
+    {
+      "id": "buyerNeeds:Maintain and evolve a product",
+      "facet": "buyerNeeds",
+      "value": "Maintain and evolve a product"
+    },
+    {
+      "id": "buyerNeeds:Add AI capabilities",
+      "facet": "buyerNeeds",
+      "value": "Add AI capabilities"
+    },
+    {
+      "id": "buyerNeeds:Automate repetitive work",
+      "facet": "buyerNeeds",
+      "value": "Automate repetitive work"
+    },
+    { "id": "capabilities:3D", "facet": "capabilities", "value": "3D" },
+    {
+      "id": "capabilities:AI Engineering",
+      "facet": "capabilities",
+      "value": "AI Engineering"
+    },
+    {
+      "id": "capabilities:Agent Harnesses",
+      "facet": "capabilities",
+      "value": "Agent Harnesses"
+    },
+    {
+      "id": "capabilities:Animation",
+      "facet": "capabilities",
+      "value": "Animation"
+    },
+    {
+      "id": "capabilities:Artificial Intelligence",
+      "facet": "capabilities",
+      "value": "Artificial Intelligence"
+    },
+    {
+      "id": "capabilities:Backend-Development",
+      "facet": "capabilities",
+      "value": "Backend-Development"
+    },
+    {
+      "id": "capabilities:Behaviour Psychology",
+      "facet": "capabilities",
+      "value": "Behaviour Psychology"
+    },
+    {
+      "id": "capabilities:Conception",
+      "facet": "capabilities",
+      "value": "Conception"
+    },
+    {
+      "id": "capabilities:Consulting",
+      "facet": "capabilities",
+      "value": "Consulting"
+    },
+    {
+      "id": "capabilities:Conversion Rate Optimization",
+      "facet": "capabilities",
+      "value": "Conversion Rate Optimization"
+    },
+    {
+      "id": "capabilities:Data Aggregation",
+      "facet": "capabilities",
+      "value": "Data Aggregation"
+    },
+    {
+      "id": "capabilities:Data Analysis",
+      "facet": "capabilities",
+      "value": "Data Analysis"
+    },
+    {
+      "id": "capabilities:Data Visualization",
+      "facet": "capabilities",
+      "value": "Data Visualization"
+    },
+    {
+      "id": "capabilities:Frontend-Development",
+      "facet": "capabilities",
+      "value": "Frontend-Development"
+    },
+    {
+      "id": "capabilities:Fullstack-Development",
+      "facet": "capabilities",
+      "value": "Fullstack-Development"
+    },
+    {
+      "id": "capabilities:GPU Shaders",
+      "facet": "capabilities",
+      "value": "GPU Shaders"
+    },
+    {
+      "id": "capabilities:UI-Design",
+      "facet": "capabilities",
+      "value": "UI-Design"
+    },
+    {
+      "id": "capabilities:UX-Design",
+      "facet": "capabilities",
+      "value": "UX-Design"
+    },
+    {
+      "id": "capabilities:Usability",
+      "facet": "capabilities",
+      "value": "Usability"
+    },
+    {
+      "id": "capabilities:User Research",
+      "facet": "capabilities",
+      "value": "User Research"
+    },
+    {
+      "id": "methods:7-Level-Model",
+      "facet": "methods",
+      "value": "7-Level-Model"
+    },
+    { "id": "methods:A/B-Testing", "facet": "methods", "value": "A/B-Testing" },
+    { "id": "methods:CI/CD", "facet": "methods", "value": "CI/CD" },
+    {
+      "id": "methods:Expert Research",
+      "facet": "methods",
+      "value": "Expert Research"
+    },
+    {
+      "id": "methods:Jobs To Be Done",
+      "facet": "methods",
+      "value": "Jobs To Be Done"
+    },
+    {
+      "id": "methods:Limbic Types",
+      "facet": "methods",
+      "value": "Limbic Types"
+    },
+    {
+      "id": "methods:Prompt Engineering",
+      "facet": "methods",
+      "value": "Prompt Engineering"
+    },
+    { "id": "methods:Prototyping", "facet": "methods", "value": "Prototyping" },
+    {
+      "id": "methods:User Testing",
+      "facet": "methods",
+      "value": "User Testing"
+    },
+    {
+      "id": "industries:Automotive & mobility",
+      "facet": "industries",
+      "value": "Automotive & mobility"
+    },
+    {
+      "id": "productTypes:Web app",
+      "facet": "productTypes",
+      "value": "Web app"
+    },
+    { "id": "tools:Docker", "facet": "tools", "value": "Docker" },
+    { "id": "tools:Fabric.JS", "facet": "tools", "value": "Fabric.JS" },
+    { "id": "tools:Figma", "facet": "tools", "value": "Figma" },
+    {
+      "id": "tools:Headless Chrome",
+      "facet": "tools",
+      "value": "Headless Chrome"
+    },
+    { "id": "tools:Inkscape CLI", "facet": "tools", "value": "Inkscape CLI" },
+    { "id": "tools:Konva", "facet": "tools", "value": "Konva" },
+    { "id": "tools:Laravel", "facet": "tools", "value": "Laravel" },
+    { "id": "tools:MySQL", "facet": "tools", "value": "MySQL" },
+    { "id": "tools:React.js", "facet": "tools", "value": "React.js" },
+    { "id": "tools:Redis", "facet": "tools", "value": "Redis" },
+    { "id": "tools:Shaders", "facet": "tools", "value": "Shaders" },
+    { "id": "tools:Tailwind", "facet": "tools", "value": "Tailwind" },
+    { "id": "tools:Three.js", "facet": "tools", "value": "Three.js" },
+    { "id": "tools:WebGL", "facet": "tools", "value": "WebGL" },
+    { "id": "tools:Zustand", "facet": "tools", "value": "Zustand" },
+    { "id": "tools:n8n", "facet": "tools", "value": "n8n" },
+    { "id": "stages:Production", "facet": "stages", "value": "Production" },
+    {
+      "id": "stages:Ongoing maintenance",
+      "facet": "stages",
+      "value": "Ongoing maintenance"
+    },
+    {
+      "id": "buyerNeeds:Build internal tooling",
+      "facet": "buyerNeeds",
+      "value": "Build internal tooling"
+    },
+    {
+      "id": "capabilities:Chat Bot Design",
+      "facet": "capabilities",
+      "value": "Chat Bot Design"
+    },
+    {
+      "id": "capabilities:Reporting",
+      "facet": "capabilities",
+      "value": "Reporting"
+    },
+    {
+      "id": "capabilities:Web-Scraping",
+      "facet": "capabilities",
+      "value": "Web-Scraping"
+    },
+    {
+      "id": "industries:Software & business services",
+      "facet": "industries",
+      "value": "Software & business services"
+    },
+    { "id": "tools:Node", "facet": "tools", "value": "Node" },
+    { "id": "tools:SQLite", "facet": "tools", "value": "SQLite" },
+    { "id": "stages:Internal use", "facet": "stages", "value": "Internal use" },
+    {
+      "id": "buyerNeeds:Enable collaboration",
+      "facet": "buyerNeeds",
+      "value": "Enable collaboration"
+    },
+    {
+      "id": "buyerNeeds:Make data actionable",
+      "facet": "buyerNeeds",
+      "value": "Make data actionable"
+    },
+    {
+      "id": "capabilities:Geospatial Visualization",
+      "facet": "capabilities",
+      "value": "Geospatial Visualization"
+    },
+    {
+      "id": "industries:Travel & tourism",
+      "facet": "industries",
+      "value": "Travel & tourism"
+    },
+    {
+      "id": "productTypes:Mobile app",
+      "facet": "productTypes",
+      "value": "Mobile app"
+    },
+    { "id": "tools:DeckGL", "facet": "tools", "value": "DeckGL" },
+    { "id": "tools:Embeddings", "facet": "tools", "value": "Embeddings" },
+    { "id": "tools:Mapbox", "facet": "tools", "value": "Mapbox" },
+    { "id": "tools:Next.js", "facet": "tools", "value": "Next.js" },
+    { "id": "tools:PostgreSQL", "facet": "tools", "value": "PostgreSQL" },
+    { "id": "tools:Yjs", "facet": "tools", "value": "Yjs" },
+    {
+      "id": "stages:Production (restricted access)",
+      "facet": "stages",
+      "value": "Production (restricted access)"
+    },
+    {
+      "id": "capabilities:Native Development",
+      "facet": "capabilities",
+      "value": "Native Development"
+    },
+    { "id": "tools:Hono", "facet": "tools", "value": "Hono" },
+    {
+      "id": "buyerNeeds:Deliver an industry-specific workflow",
+      "facet": "buyerNeeds",
+      "value": "Deliver an industry-specific workflow"
+    },
+    {
+      "id": "buyerNeeds:Join an existing team",
+      "facet": "buyerNeeds",
+      "value": "Join an existing team"
+    },
+    {
+      "id": "capabilities:Leadership",
+      "facet": "capabilities",
+      "value": "Leadership"
+    },
+    { "id": "methods:Site Audit", "facet": "methods", "value": "Site Audit" },
+    { "id": "methods:Workshop", "facet": "methods", "value": "Workshop" },
+    {
+      "id": "industries:Maritime & logistics",
+      "facet": "industries",
+      "value": "Maritime & logistics"
+    },
+    { "id": "tools:Ant Design", "facet": "tools", "value": "Ant Design" },
+    { "id": "tools:ECharts", "facet": "tools", "value": "ECharts" },
+    {
+      "id": "tools:Excel / Google Sheets",
+      "facet": "tools",
+      "value": "Excel / Google Sheets"
+    },
+    { "id": "tools:Kubernetes", "facet": "tools", "value": "Kubernetes" },
+    { "id": "tools:NestJS", "facet": "tools", "value": "NestJS" },
+    { "id": "tools:Redux", "facet": "tools", "value": "Redux" },
+    { "id": "tools:Sketch", "facet": "tools", "value": "Sketch" },
+    {
+      "id": "tools:Styled Components",
+      "facet": "tools",
+      "value": "Styled Components"
+    },
+    { "id": "tools:Symfony", "facet": "tools", "value": "Symfony" },
+    { "id": "stages:Improvement", "facet": "stages", "value": "Improvement" },
+    {
+      "id": "capabilities:Business Administration",
+      "facet": "capabilities",
+      "value": "Business Administration"
+    },
+    { "id": "stages:MVP", "facet": "stages", "value": "MVP" },
+    { "id": "productTypes:API", "facet": "productTypes", "value": "API" },
+    { "id": "tools:Cosmograph", "facet": "tools", "value": "Cosmograph" },
+    {
+      "id": "tools:Graph Databases",
+      "facet": "tools",
+      "value": "Graph Databases"
+    },
+    { "id": "tools:Neo4j", "facet": "tools", "value": "Neo4j" },
+    {
+      "id": "tools:Vector Databases",
+      "facet": "tools",
+      "value": "Vector Databases"
+    },
+    {
+      "id": "buyerNeeds:Create a public website",
+      "facet": "buyerNeeds",
+      "value": "Create a public website"
+    },
+    {
+      "id": "capabilities:Online-Marketing",
+      "facet": "capabilities",
+      "value": "Online-Marketing"
+    },
+    { "id": "capabilities:SEO", "facet": "capabilities", "value": "SEO" },
+    {
+      "id": "productTypes:Website",
+      "facet": "productTypes",
+      "value": "Website"
+    },
+    { "id": "tools:Vue.js", "facet": "tools", "value": "Vue.js" },
+    { "id": "tools:Nuxt.js", "facet": "tools", "value": "Nuxt.js" },
+    { "id": "stages:Retired", "facet": "stages", "value": "Retired" },
+    {
+      "id": "buyerNeeds:Improve conversion",
+      "facet": "buyerNeeds",
+      "value": "Improve conversion"
+    },
+    { "id": "methods:Personas", "facet": "methods", "value": "Personas" },
+    {
+      "id": "industries:Public & nonprofit",
+      "facet": "industries",
+      "value": "Public & nonprofit"
+    },
+    { "id": "tools:Optimizely", "facet": "tools", "value": "Optimizely" },
+    {
+      "id": "capabilities:Finance",
+      "facet": "capabilities",
+      "value": "Finance"
+    },
+    { "id": "tools:Adobe XD", "facet": "tools", "value": "Adobe XD" },
+    {
+      "id": "tools:PowerPoint / Google Slides",
+      "facet": "tools",
+      "value": "PowerPoint / Google Slides"
+    },
+    {
+      "id": "buyerNeeds:Validate a product idea",
+      "facet": "buyerNeeds",
+      "value": "Validate a product idea"
+    },
+    { "id": "stages:Discovery", "facet": "stages", "value": "Discovery" },
+    { "id": "stages:Prototype", "facet": "stages", "value": "Prototype" },
+    {
+      "id": "buyerNeeds:Connect software and hardware",
+      "facet": "buyerNeeds",
+      "value": "Connect software and hardware"
+    },
+    {
+      "id": "industries:Home & garden",
+      "facet": "industries",
+      "value": "Home & garden"
+    },
+    {
+      "id": "productTypes:Hardware / embedded",
+      "facet": "productTypes",
+      "value": "Hardware / embedded"
+    },
+    {
+      "id": "productTypes:Physical product",
+      "facet": "productTypes",
+      "value": "Physical product"
+    },
+    { "id": "tools:FastAPI", "facet": "tools", "value": "FastAPI" },
+    { "id": "tools:ESP32-S3", "facet": "tools", "value": "ESP32-S3" },
+    { "id": "tools:Arduino", "facet": "tools", "value": "Arduino" },
+    { "id": "tools:YOLO", "facet": "tools", "value": "YOLO" },
+    { "id": "tools:build123d", "facet": "tools", "value": "build123d" },
+    { "id": "tools:MQTT", "facet": "tools", "value": "MQTT" },
+    {
+      "id": "tools:Home Assistant",
+      "facet": "tools",
+      "value": "Home Assistant"
+    },
+    {
+      "id": "productTypes:Chatbot",
+      "facet": "productTypes",
+      "value": "Chatbot"
+    },
+    {
+      "id": "tools:Notion Database",
+      "facet": "tools",
+      "value": "Notion Database"
+    },
+    {
+      "id": "industries:Education",
+      "facet": "industries",
+      "value": "Education"
+    },
+    { "id": "tools:Express", "facet": "tools", "value": "Express" },
+    { "id": "tools:MongoDB", "facet": "tools", "value": "MongoDB" },
+    { "id": "tools:WebAssembly", "facet": "tools", "value": "WebAssembly" },
+    {
+      "id": "industries:Media & entertainment",
+      "facet": "industries",
+      "value": "Media & entertainment"
+    },
+    { "id": "productTypes:Game", "facet": "productTypes", "value": "Game" },
+    {
+      "id": "capabilities:Library Development",
+      "facet": "capabilities",
+      "value": "Library Development"
+    },
+    {
+      "id": "capabilities:Open Source Software Development",
+      "facet": "capabilities",
+      "value": "Open Source Software Development"
+    },
+    {
+      "id": "methods:Automated Testing",
+      "facet": "methods",
+      "value": "Automated Testing"
+    },
+    {
+      "id": "productTypes:Developer tool",
+      "facet": "productTypes",
+      "value": "Developer tool"
+    },
+    {
+      "id": "productTypes:Plugin / integration",
+      "facet": "productTypes",
+      "value": "Plugin / integration"
+    },
+    { "id": "tools:ts-morph", "facet": "tools", "value": "ts-morph" },
+    { "id": "tools:Vitest", "facet": "tools", "value": "Vitest" },
+    { "id": "tools:tsup", "facet": "tools", "value": "tsup" },
+    {
+      "id": "productTypes:Interactive experience",
+      "facet": "productTypes",
+      "value": "Interactive experience"
+    },
+    {
+      "id": "buyerNeeds:Integrate business systems",
+      "facet": "buyerNeeds",
+      "value": "Integrate business systems"
+    },
+    { "id": "tools:Inertia.js", "facet": "tools", "value": "Inertia.js" },
+    { "id": "tools:Vite", "facet": "tools", "value": "Vite" },
+    { "id": "tools:shadcn/ui", "facet": "tools", "value": "shadcn/ui" },
+    {
+      "id": "tools:Laravel Horizon",
+      "facet": "tools",
+      "value": "Laravel Horizon"
+    },
+    {
+      "id": "industries:Retail & consumer goods",
+      "facet": "industries",
+      "value": "Retail & consumer goods"
+    },
+    { "id": "tools:Axure", "facet": "tools", "value": "Axure" },
+    {
+      "id": "industries:Manufacturing & packaging",
+      "facet": "industries",
+      "value": "Manufacturing & packaging"
+    },
+    { "id": "tools:Angular", "facet": "tools", "value": "Angular" },
+    { "id": "tools:PrestaShop", "facet": "tools", "value": "PrestaShop" },
+    { "id": "tools:TypeForm", "facet": "tools", "value": "TypeForm" },
+    { "id": "tools:WordPress", "facet": "tools", "value": "WordPress" },
+    { "id": "tools:Puppeteer", "facet": "tools", "value": "Puppeteer" },
+    {
+      "id": "tools:eurostat-searoutes",
+      "facet": "tools",
+      "value": "eurostat-searoutes"
+    },
+    { "id": "tools:Telegram Bot", "facet": "tools", "value": "Telegram Bot" },
+    {
+      "id": "industries:Food & lifestyle",
+      "facet": "industries",
+      "value": "Food & lifestyle"
+    },
+    {
+      "id": "industries:Healthcare",
+      "facet": "industries",
+      "value": "Healthcare"
+    },
+    { "id": "tools:React Native", "facet": "tools", "value": "React Native" },
+    { "id": "tools:Expo", "facet": "tools", "value": "Expo" },
+    {
+      "id": "buyerNeeds:Sell products",
+      "facet": "buyerNeeds",
+      "value": "Sell products"
+    },
+    {
+      "id": "capabilities:Fashion Design",
+      "facet": "capabilities",
+      "value": "Fashion Design"
+    },
+    { "id": "tools:Shopware 5", "facet": "tools", "value": "Shopware 5" },
+    { "id": "tools:Gatsby", "facet": "tools", "value": "Gatsby" }
+  ],
+  "scores": {
+    "buyerNeeds:Add AI capabilities": 14,
+    "buyerNeeds:Automate repetitive work": 80,
+    "buyerNeeds:Build internal tooling": 64,
+    "buyerNeeds:Connect software and hardware": 0,
+    "buyerNeeds:Create a public website": 0,
+    "buyerNeeds:Create an interactive experience": 12,
+    "buyerNeeds:Deliver an industry-specific workflow": 7,
+    "buyerNeeds:Enable collaboration": 7,
+    "buyerNeeds:Improve a complex interface": 28,
+    "buyerNeeds:Improve conversion": 0,
+    "buyerNeeds:Integrate business systems": 16,
+    "buyerNeeds:Join an existing team": 7,
+    "buyerNeeds:Launch a new product": 3,
+    "buyerNeeds:Maintain and evolve a product": 3,
+    "buyerNeeds:Make data actionable": 37,
+    "buyerNeeds:Sell products": 0,
+    "buyerNeeds:Validate a product idea": 16,
+    "capabilities:3D": 1,
+    "capabilities:AI Engineering": 13,
+    "capabilities:Agent Harnesses": 12,
+    "capabilities:Animation": 3,
+    "capabilities:Artificial Intelligence": 13,
+    "capabilities:Backend-Development": 11,
+    "capabilities:Behaviour Psychology": 3,
+    "capabilities:Business Administration": 0,
+    "capabilities:Chat Bot Design": 5,
+    "capabilities:Conception": 13,
+    "capabilities:Consulting": 3,
+    "capabilities:Conversion Rate Optimization": 3,
+    "capabilities:Data Aggregation": 6,
+    "capabilities:Data Analysis": 5,
+    "capabilities:Data Visualization": 5,
+    "capabilities:Fashion Design": 0,
+    "capabilities:Finance": 0,
+    "capabilities:Frontend-Development": 11,
+    "capabilities:Fullstack-Development": 10,
+    "capabilities:GPU Shaders": 1,
+    "capabilities:Geospatial Visualization": 5,
+    "capabilities:Leadership": 2,
+    "capabilities:Library Development": 0,
+    "capabilities:Native Development": 2,
+    "capabilities:Online-Marketing": 0,
+    "capabilities:Open Source Software Development": 0,
+    "capabilities:Reporting": 5,
+    "capabilities:SEO": 0,
+    "capabilities:UI-Design": 11,
+    "capabilities:UX-Design": 13,
+    "capabilities:Usability": 8,
+    "capabilities:User Research": 1,
+    "capabilities:Web-Scraping": 5,
+    "industries:Automotive & mobility": 21,
+    "industries:Education": 0,
+    "industries:Food & lifestyle": 0,
+    "industries:Healthcare": 0,
+    "industries:Home & garden": 0,
+    "industries:Manufacturing & packaging": 0,
+    "industries:Maritime & logistics": 32,
+    "industries:Media & entertainment": 0,
+    "industries:Public & nonprofit": 0,
+    "industries:Retail & consumer goods": 0,
+    "industries:Software & business services": 85,
+    "industries:Travel & tourism": 32,
+    "methods:7-Level-Model": 6,
+    "methods:A/B-Testing": 13,
+    "methods:Automated Testing": 0,
+    "methods:CI/CD": 43,
+    "methods:Expert Research": 2,
+    "methods:Jobs To Be Done": 6,
+    "methods:Limbic Types": 2,
+    "methods:Personas": 0,
+    "methods:Prompt Engineering": 113,
+    "methods:Prototyping": 80,
+    "methods:Site Audit": 4,
+    "methods:User Testing": 17,
+    "methods:Workshop": 4,
+    "productTypes:API": 11,
+    "productTypes:Chatbot": 0,
+    "productTypes:Developer tool": 0,
+    "productTypes:Game": 0,
+    "productTypes:Hardware / embedded": 0,
+    "productTypes:Interactive experience": 0,
+    "productTypes:Mobile app": 16,
+    "productTypes:Physical product": 0,
+    "productTypes:Plugin / integration": 0,
+    "productTypes:Web app": 127,
+    "productTypes:Website": 0,
+    "stages:Discovery": 0,
+    "stages:Improvement": 16,
+    "stages:Internal use": 74,
+    "stages:MVP": 0,
+    "stages:Ongoing maintenance": 11,
+    "stages:Production": 37,
+    "stages:Production (restricted access)": 32,
+    "stages:Prototype": 0,
+    "stages:Retired": 0,
+    "tools:Adobe XD": 0,
+    "tools:Angular": 0,
+    "tools:Ant Design": 2,
+    "tools:Arduino": 0,
+    "tools:Axure": 0,
+    "tools:Cosmograph": 2,
+    "tools:DeckGL": 5,
+    "tools:Docker": 15,
+    "tools:ECharts": 2,
+    "tools:ESP32-S3": 0,
+    "tools:Embeddings": 8,
+    "tools:Excel / Google Sheets": 2,
+    "tools:Expo": 0,
+    "tools:Express": 0,
+    "tools:Fabric.JS": 1,
+    "tools:FastAPI": 0,
+    "tools:Figma": 3,
+    "tools:Gatsby": 0,
+    "tools:Graph Databases": 2,
+    "tools:Headless Chrome": 8,
+    "tools:Home Assistant": 0,
+    "tools:Hono": 3,
+    "tools:Inertia.js": 0,
+    "tools:Inkscape CLI": 1,
+    "tools:Konva": 1,
+    "tools:Kubernetes": 2,
+    "tools:Laravel": 7,
+    "tools:Laravel Horizon": 0,
+    "tools:MQTT": 0,
+    "tools:Mapbox": 5,
+    "tools:MongoDB": 0,
+    "tools:MySQL": 1,
+    "tools:Neo4j": 2,
+    "tools:NestJS": 2,
+    "tools:Next.js": 4,
+    "tools:Node": 8,
+    "tools:Notion Database": 0,
+    "tools:Nuxt.js": 0,
+    "tools:Optimizely": 0,
+    "tools:PostgreSQL": 4,
+    "tools:PowerPoint / Google Slides": 0,
+    "tools:PrestaShop": 0,
+    "tools:Puppeteer": 0,
+    "tools:React Native": 0,
+    "tools:React.js": 15,
+    "tools:Redis": 8,
+    "tools:Redux": 2,
+    "tools:SQLite": 7,
+    "tools:Shaders": 3,
+    "tools:Shopware 5": 0,
+    "tools:Sketch": 2,
+    "tools:Styled Components": 2,
+    "tools:Symfony": 2,
+    "tools:Tailwind": 13,
+    "tools:Telegram Bot": 0,
+    "tools:Three.js": 1,
+    "tools:TypeForm": 0,
+    "tools:Vector Databases": 2,
+    "tools:Vite": 0,
+    "tools:Vitest": 0,
+    "tools:Vue.js": 0,
+    "tools:WebAssembly": 0,
+    "tools:WebGL": 3,
+    "tools:WordPress": 0,
+    "tools:YOLO": 0,
+    "tools:Yjs": 3,
+    "tools:Zustand": 7,
+    "tools:build123d": 0,
+    "tools:eurostat-searoutes": 0,
+    "tools:n8n": 1,
+    "tools:shadcn/ui": 0,
+    "tools:ts-morph": 0,
+    "tools:tsup": 0
+  },
+  "pixels": {
+    "0": [
+      16777215, 16777215, 16777215, 6191657, 9492212, 2254209, 2712186, 3109262,
+      2712186, 9222205, 11525466, 6458136, 12147249, 2712186, 16777215, 0,
+      16777215, 0, 16777215, 1214394, 1550824, 2712186, 9492212, 2712186,
+      10278196, 9618740, 8012073, 13403494, 8012073, 10831389, 0, 16777215,
+      16777215, 16777215, 16777215, 4569837, 4569837, 5421541, 1214394,
+      13234813, 6191657, 14911843, 8012073, 14911843, 13314763, 8006010,
+      12399293, 9492212, 13759632, 1550824, 2712186, 2460598, 2712186, 5090773,
+      1010837, 9618740, 10799454, 15832687, 11087273, 8006010, 15620334,
+      12924101, 8006010, 12199610, 6191657, 1147312, 2712186, 2712186, 2712186,
+      2326953, 9492212, 10803525, 11653493, 9062702, 8006010, 12789955, 8006010,
+      8006010, 13964757, 8006010, 9222205, 1550824, 2712186, 8702438, 4240098,
+      4569837, 2398668, 6191657, 8012073, 8006010, 14894563, 11812020, 8006010,
+      12924101, 14882531, 14882531, 6191657, 2712186, 10081002, 7326449,
+      2190476, 4240098, 2712186, 10017056, 14395796, 13197001, 8006010, 8006010,
+      8006010, 11087273, 8006010, 12924101, 13759632, 4240098, 2712186, 2712186,
+      1281731, 2712186, 9357537, 10339923, 13396030, 9311630, 12789955,
+      14894563, 15549933, 8006010, 9515153, 16027892, 10143814, 6191657,
+      2712186, 2326953, 1214394, 3381185, 6203849, 6191657, 6191657, 16035472,
+      12789955, 14058966, 14882531, 8006010, 8006010, 12789955, 9778959,
+      7706931, 2712186, 9492212, 4240098, 4104652, 2712186, 7311664, 10414103,
+      9778959, 15549933, 11812020, 8006010, 8006010, 8006010, 11087273, 8012073,
+      8040726, 4240098, 2712186, 2712186, 1147312, 4569837, 13759632, 10018582,
+      13396030, 8006010, 8006010, 8006010, 16027892, 11087273, 12924101,
+      15279593, 6191657, 2712186, 2712186, 2460598, 2712186, 9492212, 2712186,
+      13234813, 6191657, 14065029, 8006010, 8006010, 8006010, 11087273,
+      14445276, 13917908, 9291555, 2712186, 2712186, 2712186, 2712186, 7326449,
+      2712186, 6191657, 6191657, 10831389, 11087273, 8012073, 8006010, 10297501,
+      9511569, 8006010, 13984820, 11069998, 2712186, 4240098, 2712186, 1483743,
+      10735328, 4104652, 6191657, 10799454, 6191657, 8012073, 8012073, 16035472,
+      15248273, 16777215, 0, 10143814, 1214394, 2712186, 2712186, 2712186,
+      2712186, 2460598, 2712186, 6191657, 9292825, 6657295, 10278196, 16035472,
+      11326818, 16777215, 16777215, 16027892, 7706931, 9359339, 2712186,
+      2712186, 10081002, 2712186, 2712186, 2712186, 1416405, 10017056, 9025841,
+      11329613, 8012073
+    ],
+    "45": [
+      16777215, 16777215, 16777215, 6191657, 16035472, 12841327, 6191657,
+      3109262, 2712186, 3969204, 2460598, 10081002, 6274019, 2712186, 16777215,
+      0, 16777215, 0, 16777215, 13396030, 10414103, 6191657, 9492212, 2712186,
+      2398668, 1416405, 2712186, 6203849, 2712186, 3311017, 0, 16777215,
+      16777215, 16777215, 16777215, 10801490, 10801490, 5421541, 1214394,
+      2190476, 2712186, 2460598, 2712186, 2460598, 1214394, 2712186, 8110816,
+      9492212, 13759632, 13964757, 6191657, 11525466, 2712186, 5090773, 1010837,
+      1416405, 6203849, 3969204, 1147312, 2712186, 3381185, 7706931, 6191657,
+      10018582, 8006010, 12207378, 6191657, 2712186, 2712186, 2326953, 9492212,
+      5090773, 4104652, 10081002, 6191657, 6456611, 6191657, 6191657, 10414103,
+      6191657, 15832687, 10414103, 2712186, 8702438, 4240098, 4569837, 2398668,
+      2712186, 6191657, 6191657, 11329613, 13234813, 6191657, 9778959, 11288337,
+      10801490, 6191657, 6191657, 10081002, 7326449, 2190476, 4240098, 2712186,
+      10017056, 10803525, 10799454, 8012073, 8012073, 8012073, 12207378,
+      8012073, 9778959, 13759632, 4240098, 2712186, 2712186, 1281731, 2712186,
+      9357537, 10339923, 10018582, 9387289, 15248273, 14894563, 15549933,
+      8006010, 9515153, 16027892, 10143814, 2712186, 2712186, 2326953, 1214394,
+      3381185, 10799454, 6191657, 16035472, 16035472, 12789955, 14058966,
+      14882531, 8006010, 8006010, 12789955, 4240098, 4240098, 2712186, 9492212,
+      4240098, 4104652, 6191657, 7311664, 15361838, 12924101, 15549933,
+      11812020, 8006010, 8006010, 8006010, 11087273, 2712186, 1147312, 4240098,
+      2712186, 2712186, 8040726, 10801490, 16035472, 13314763, 13314763,
+      8006010, 8006010, 8006010, 16027892, 11087273, 12924101, 3045785, 2712186,
+      2712186, 2712186, 2460598, 6191657, 13759632, 8012073, 11812020, 8006010,
+      12194490, 8006010, 8006010, 8006010, 11087273, 9311630, 7518938, 7451856,
+      2712186, 2712186, 2712186, 6191657, 14772791, 8012073, 8006010, 8006010,
+      14445276, 11087273, 8006010, 8006010, 14172632, 15044581, 8006010,
+      4233663, 5488878, 2712186, 4240098, 6191657, 15248273, 13856837, 15279593,
+      8006010, 13197001, 8006010, 8006010, 11087273, 11874485, 14372315,
+      16777215, 0, 3045785, 1866144, 2712186, 6191657, 6191657, 8012073,
+      10949031, 8006010, 8006010, 14722016, 11874485, 14445276, 16035472,
+      13115080, 16777215, 16777215, 16027892, 6407663, 3969204, 6191657,
+      6191657, 9062702, 8012073, 8006010, 8006010, 15107302, 15279593, 10302621,
+      8793478, 8012073
+    ],
+    "90": [
+      16777215, 16777215, 16777215, 6191657, 16027892, 15044581, 8006010,
+      11606961, 8006010, 14058966, 14911843, 9062702, 8012073, 2712186,
+      16777215, 0, 16777215, 0, 16777215, 13314763, 15361838, 6191657, 13759632,
+      6191657, 10278196, 9618740, 6191657, 10799454, 6191657, 9817898, 0,
+      16777215, 16777215, 16777215, 16777215, 10801490, 10801490, 5421541,
+      1214394, 2190476, 2712186, 2460598, 2712186, 2460598, 1214394, 2712186,
+      5218756, 9492212, 13759632, 10414103, 2712186, 2460598, 2712186, 5090773,
+      1010837, 1416405, 6203849, 3969204, 1147312, 2712186, 3381185, 4240098,
+      2712186, 3178401, 2712186, 1147312, 2712186, 2712186, 2712186, 2326953,
+      9492212, 5090773, 4104652, 10081002, 2712186, 1483743, 2712186, 2712186,
+      1550824, 2712186, 3969204, 1550824, 2712186, 8702438, 4240098, 4569837,
+      2398668, 2712186, 2712186, 2712186, 4233663, 2190476, 2712186, 4240098,
+      4569837, 4569837, 2712186, 2712186, 10081002, 7326449, 2190476, 4240098,
+      2712186, 3311017, 5090773, 6203849, 2712186, 2712186, 2712186, 1147312,
+      2712186, 4240098, 9492212, 4240098, 2712186, 2712186, 1281731, 2712186,
+      8432942, 10339923, 10018582, 10478625, 1483743, 11329613, 6407663,
+      2712186, 1010837, 9492212, 1281731, 2712186, 2712186, 2326953, 10018582,
+      7315984, 10799454, 6191657, 15361838, 13759632, 6456611, 9222205,
+      10801490, 6191657, 6191657, 1483743, 4240098, 4240098, 6191657, 13759632,
+      7706931, 11653493, 8012073, 15106390, 13964757, 12924101, 12083773,
+      9519906, 8012073, 6191657, 6191657, 8040726, 2712186, 8040726, 7706931,
+      8012073, 8012073, 12207378, 14882531, 16027892, 13314763, 13314763,
+      8006010, 8006010, 8006010, 16035472, 8040726, 7706931, 1147312, 6191657,
+      8012073, 8012073, 10949031, 8006010, 16027892, 8006010, 11812020, 8006010,
+      12194490, 8006010, 8012073, 8012073, 8040726, 12841327, 7444777, 12901784,
+      8012073, 8006010, 8006010, 8006010, 9511569, 8006010, 8006010, 8006010,
+      14445276, 11087273, 8006010, 8006010, 15106390, 12446061, 8006010,
+      7311664, 15381145, 8006010, 12924101, 8006010, 12789955, 14722016,
+      15279593, 8006010, 13197001, 8006010, 8006010, 10037657, 15168064,
+      8500768, 16777215, 0, 15428919, 10562465, 8006010, 8006010, 8006010,
+      8006010, 10949031, 8006010, 8006010, 14722016, 12524991, 8012073,
+      16035472, 10803525, 16777215, 16777215, 16027892, 13403494, 15044581,
+      8006010, 8006010, 15374826, 8006010, 8006010, 8006010, 15044581, 15549933,
+      9778959, 8040726, 8012073
+    ],
+    "135": [
+      16777215, 16777215, 16777215, 6191657, 9492212, 2254209, 6191657,
+      12047745, 8012073, 14058966, 10949031, 15374826, 12199610, 2712186,
+      16777215, 0, 16777215, 0, 16777215, 1214394, 1550824, 2712186, 9492212,
+      2712186, 10278196, 9618740, 8012073, 13197001, 8006010, 10821029, 0,
+      16777215, 16777215, 16777215, 16777215, 4569837, 4569837, 5421541,
+      1214394, 2190476, 2712186, 2460598, 6191657, 14911843, 13314763, 8006010,
+      15549933, 9492212, 13759632, 1550824, 2712186, 2460598, 2712186, 5090773,
+      1010837, 1416405, 6203849, 3969204, 1147312, 6191657, 7315984, 12924101,
+      8006010, 12798915, 2712186, 1147312, 2712186, 2712186, 2712186, 2326953,
+      9492212, 5090773, 4104652, 10081002, 2712186, 1483743, 6191657, 6191657,
+      13964757, 8006010, 9222205, 10414103, 6191657, 9557269, 7706931, 4569837,
+      2398668, 2712186, 2712186, 2712186, 4233663, 2190476, 2712186, 7706931,
+      10801490, 11288337, 6191657, 6191657, 6458136, 8299575, 13234813, 7706931,
+      6191657, 10017056, 5090773, 6203849, 2712186, 2712186, 2712186, 1147312,
+      6191657, 7706931, 13759632, 9778959, 8012073, 8012073, 11686442, 6191657,
+      14122326, 10339923, 10018582, 6274019, 1483743, 4233663, 6407663, 2712186,
+      1010837, 9492212, 11686442, 8012073, 8006010, 14390491, 13314763,
+      13126937, 13403494, 8012073, 10799454, 13759632, 1483743, 3969204,
+      4569837, 2712186, 2712186, 1483743, 9778959, 9778959, 8006010, 16027892,
+      12924101, 15279593, 8006010, 15106390, 10414103, 7706931, 6407663,
+      2190476, 2712186, 2712186, 2712186, 1147312, 8006010, 11087273, 12924101,
+      8006010, 8006010, 11087273, 14882531, 16027892, 13396030, 10018582,
+      6191657, 2712186, 2712186, 9492212, 1147312, 4240098, 8006010, 8006010,
+      8006010, 8006010, 10949031, 8006010, 16027892, 8006010, 9519906, 8012073,
+      10278196, 6191657, 2712186, 2712186, 1147312, 6407663, 12789955, 16027892,
+      8006010, 8006010, 8006010, 8006010, 9511569, 8006010, 8006010, 8012073,
+      11069998, 8040726, 2712186, 2712186, 8573427, 1281731, 8006010, 14172632,
+      12199610, 8006010, 12924101, 8006010, 12789955, 14722016, 15279593,
+      6191657, 10799454, 6191657, 2712186, 10012893, 3975639, 3186639, 16777215,
+      0, 8793478, 12199610, 8006010, 8006010, 8006010, 8006010, 14911843,
+      8012073, 6191657, 9292825, 9492212, 6407663, 16035472, 2326953, 16777215,
+      16777215, 16027892, 14172632, 15168064, 8006010, 8006010, 9062702,
+      8012073, 6191657, 6191657, 8694841, 1281731, 1483743, 4240098, 8012073
+    ],
+    "180": [
+      16777215, 16777215, 16777215, 6191657, 9492212, 2254209, 2712186, 3109262,
+      2712186, 3969204, 2460598, 10081002, 15832687, 2712186, 16777215, 0,
+      16777215, 0, 16777215, 10018582, 10414103, 2712186, 9492212, 2712186,
+      2398668, 1416405, 2712186, 6203849, 8012073, 14624479, 0, 16777215,
+      16777215, 16777215, 16777215, 10801490, 10801490, 9027111, 1214394,
+      2190476, 2712186, 2460598, 2712186, 2460598, 10018582, 8006010, 14722016,
+      9492212, 13759632, 10414103, 8012073, 14911843, 6191657, 10803525,
+      12507532, 1416405, 6203849, 3969204, 1147312, 2712186, 7315984, 9778959,
+      8006010, 14372315, 6191657, 11087273, 8006010, 8006010, 8006010, 11193706,
+      13759632, 10803525, 4104652, 10081002, 2712186, 1483743, 6191657, 8012073,
+      13964757, 8006010, 15832687, 13964757, 8006010, 11286956, 12924101,
+      14882531, 14065029, 6191657, 2712186, 2712186, 4233663, 2190476, 2712186,
+      9778959, 14882531, 14882531, 8006010, 8006010, 15374826, 9511569,
+      11812020, 9778959, 8012073, 10017056, 5090773, 6203849, 2712186, 2712186,
+      2712186, 8040726, 8006010, 12924101, 16027892, 12924101, 8006010, 8006010,
+      15107302, 8006010, 14122326, 10339923, 10018582, 6274019, 1483743,
+      4233663, 6407663, 6191657, 9515153, 16027892, 11686442, 8006010, 8006010,
+      14390491, 13314763, 15620334, 13403494, 8012073, 1147312, 9492212,
+      1483743, 3969204, 4569837, 6191657, 8006010, 12789955, 12924101, 12924101,
+      8006010, 16027892, 12924101, 15279593, 8006010, 7311664, 10414103,
+      4240098, 6407663, 2190476, 2712186, 6191657, 8006010, 11087273, 8012073,
+      11087273, 12924101, 8006010, 8006010, 11087273, 11288337, 13759632,
+      1214394, 1214394, 2712186, 2712186, 2712186, 13759632, 12207378, 12924101,
+      10831389, 8012073, 8006010, 8006010, 14911843, 8012073, 13759632, 6191657,
+      2190476, 2712186, 2398668, 2712186, 2712186, 6191657, 11087273, 13385420,
+      8694841, 8299575, 8012073, 8012073, 8012073, 6191657, 8299575, 2712186,
+      2712186, 2712186, 6731995, 1147312, 2712186, 6191657, 13964757, 12798915,
+      8006010, 12841327, 11288337, 6191657, 7706931, 6191657, 6456611, 10735328,
+      4104652, 2712186, 6203849, 2712186, 2712186, 12446061, 13645264, 13385420,
+      16777215, 0, 12185176, 12378235, 6191657, 6191657, 2712186, 2712186,
+      2460598, 2712186, 2712186, 10735328, 2659523, 6657295, 16035472, 15620334,
+      16777215, 16777215, 16027892, 3311017, 8702438, 2712186, 2712186,
+      10081002, 2712186, 2712186, 2712186, 2326953, 5090773, 12507532, 11286956,
+      8012073
+    ],
+    "225": [
+      16777215, 16777215, 16777215, 6191657, 13759632, 12841327, 8012073,
+      12047745, 6191657, 3969204, 2460598, 10081002, 2205150, 2712186, 16777215,
+      0, 16777215, 0, 16777215, 13396030, 10414103, 8012073, 16027892, 8012073,
+      10278196, 9618740, 6191657, 6203849, 2712186, 1937087, 0, 16777215,
+      16777215, 16777215, 16777215, 11288337, 14882531, 14767841, 13314763,
+      9519906, 8012073, 11525466, 6191657, 2460598, 1214394, 2712186, 9357537,
+      9492212, 13759632, 15361838, 8006010, 10949031, 8006010, 10297501,
+      9515153, 13660624, 13403494, 9222205, 1147312, 2712186, 3381185, 4240098,
+      2712186, 5218756, 6191657, 12207378, 8006010, 8006010, 8006010, 14390491,
+      16027892, 10297501, 14726819, 6458136, 2712186, 1483743, 2712186, 2712186,
+      1550824, 6191657, 15832687, 13964757, 8006010, 11286956, 12924101,
+      14882531, 12194490, 8006010, 8012073, 6191657, 4233663, 2190476, 2712186,
+      4240098, 4569837, 10801490, 6191657, 8012073, 15374826, 9511569, 11812020,
+      12924101, 8006010, 12199610, 10803525, 6203849, 2712186, 2712186, 2712186,
+      1147312, 6191657, 9778959, 13759632, 9778959, 8012073, 8006010, 15107302,
+      8006010, 14122326, 10339923, 10018582, 6274019, 1483743, 4233663, 6407663,
+      2712186, 12507532, 16027892, 10143814, 6191657, 8012073, 14390491,
+      13396030, 13126937, 10799454, 6191657, 6407663, 9492212, 1483743, 3969204,
+      4569837, 6191657, 8006010, 12789955, 7706931, 7706931, 6191657, 13759632,
+      7706931, 11653493, 6191657, 7311664, 1550824, 4240098, 6407663, 2190476,
+      2712186, 8012073, 8006010, 11087273, 2712186, 8040726, 7706931, 6191657,
+      6191657, 8040726, 4569837, 9492212, 1214394, 1214394, 2712186, 2712186,
+      6191657, 16027892, 11087273, 12924101, 1010837, 2712186, 2712186, 2712186,
+      2460598, 2712186, 9492212, 2712186, 2190476, 2712186, 2398668, 6191657,
+      8006010, 8006010, 11087273, 10949031, 2976646, 1147312, 2712186, 2712186,
+      2712186, 2712186, 7326449, 2712186, 2712186, 2712186, 11069998, 12207378,
+      8006010, 8006010, 11812020, 8006010, 8006010, 8502485, 7451856, 2712186,
+      4240098, 2712186, 1483743, 10735328, 4104652, 6191657, 13403494, 8006010,
+      8006010, 13197001, 15279593, 15168743, 16777215, 0, 8047083, 2254209,
+      2712186, 2712186, 2712186, 2712186, 11525466, 8012073, 8006010, 14722016,
+      14445276, 14722016, 16035472, 13917908, 16777215, 16777215, 16027892,
+      2190476, 7451856, 2712186, 6191657, 6458136, 8012073, 8006010, 8006010,
+      13385420, 14722016, 12524991, 12789955, 8012073
+    ],
+    "270": [
+      16777215, 16777215, 16777215, 6191657, 9492212, 2254209, 6191657,
+      12047745, 6191657, 9222205, 11525466, 10081002, 8110816, 2712186,
+      16777215, 0, 16777215, 0, 16777215, 1214394, 10414103, 6191657, 13759632,
+      8012073, 14065029, 15292700, 6191657, 10799454, 6191657, 2712186, 0,
+      16777215, 16777215, 16777215, 16777215, 10801490, 11288337, 15168064,
+      13314763, 9519906, 8006010, 10949031, 8012073, 14911843, 10018582,
+      2712186, 4569837, 9492212, 13759632, 1550824, 6191657, 11525466, 8012073,
+      10297501, 9515153, 13660624, 13197001, 14058966, 12207378, 8012073,
+      7315984, 7706931, 6191657, 2190476, 2712186, 1147312, 2712186, 6191657,
+      8012073, 14390491, 16035472, 10297501, 15279593, 15374826, 8006010,
+      15248273, 6191657, 6191657, 10414103, 2712186, 3969204, 1550824, 2712186,
+      9557269, 7706931, 11288337, 12194490, 8006010, 8012073, 8012073, 11329613,
+      13234813, 6191657, 7706931, 4569837, 4569837, 2712186, 2712186, 10081002,
+      8299575, 13234813, 9778959, 8012073, 13006163, 14395796, 13403494,
+      6191657, 6191657, 2712186, 1147312, 2712186, 4240098, 9492212, 4240098,
+      2712186, 2712186, 1281731, 6191657, 8432942, 10339923, 10018582, 10478625,
+      6456611, 4233663, 6407663, 2712186, 1010837, 9492212, 1281731, 2712186,
+      2712186, 2326953, 1214394, 3381185, 6203849, 2712186, 3969204, 9492212,
+      1483743, 3969204, 4569837, 2712186, 2712186, 1483743, 4240098, 4240098,
+      2712186, 9492212, 4240098, 4104652, 2712186, 2659523, 1550824, 4240098,
+      6407663, 2190476, 2712186, 2712186, 2712186, 1147312, 2712186, 1147312,
+      4240098, 2712186, 2712186, 1147312, 4569837, 9492212, 1214394, 1214394,
+      2712186, 2712186, 2712186, 9492212, 1147312, 7706931, 9222205, 6191657,
+      6191657, 2712186, 2460598, 2712186, 9492212, 2712186, 2190476, 2712186,
+      2398668, 2712186, 6191657, 6191657, 12207378, 13660624, 15168743, 9311630,
+      8006010, 8012073, 8012073, 6191657, 8299575, 6191657, 6191657, 8012073,
+      14445276, 11087273, 8006010, 8006010, 12784579, 12524991, 8006010,
+      13660624, 9515153, 8006010, 12924101, 8006010, 12789955, 14722016,
+      15279593, 8006010, 13197001, 8006010, 8006010, 13374668, 14449372,
+      10037657, 16777215, 0, 12524991, 14767841, 8006010, 8006010, 8006010,
+      8006010, 10949031, 8006010, 8006010, 14722016, 9768853, 13197001,
+      16035472, 13385420, 16777215, 16777215, 16027892, 8854663, 15415275,
+      8006010, 8006010, 15374826, 8006010, 8006010, 8006010, 11087273, 11087273,
+      15230184, 10297501, 8012073
+    ],
+    "315": [
+      16777215, 16777215, 16777215, 6191657, 9492212, 2254209, 2712186, 3109262,
+      2712186, 3969204, 2460598, 10081002, 1214394, 2712186, 16777215, 0,
+      16777215, 0, 16777215, 1214394, 1550824, 2712186, 9492212, 2712186,
+      10278196, 9618740, 2712186, 6203849, 2712186, 3060458, 0, 16777215,
+      16777215, 16777215, 16777215, 4569837, 4569837, 5421541, 1214394,
+      13234813, 8012073, 11525466, 6191657, 11525466, 1214394, 2712186, 9224921,
+      9492212, 13759632, 10414103, 2712186, 2460598, 2712186, 5090773, 12507532,
+      9618740, 10799454, 15832687, 8040726, 6191657, 7315984, 4240098, 2712186,
+      2976646, 8012073, 8040726, 2712186, 2712186, 2712186, 2326953, 9492212,
+      10803525, 14726819, 9062702, 8006010, 15248273, 8012073, 6191657, 1550824,
+      2712186, 14058966, 15361838, 6191657, 8702438, 4240098, 4569837, 10278196,
+      6191657, 6191657, 8006010, 14894563, 11812020, 8006010, 9778959, 10801490,
+      4569837, 8006010, 8006010, 6458136, 7326449, 2190476, 4240098, 2712186,
+      3311017, 14395796, 13403494, 8006010, 8012073, 8012073, 8040726, 6191657,
+      7706931, 16027892, 12924101, 8006010, 2712186, 1281731, 2712186, 9357537,
+      10339923, 10018582, 9387289, 15248273, 14894563, 12083773, 8012073,
+      12507532, 9492212, 15107302, 8006010, 8006010, 8666399, 10018582, 3381185,
+      6203849, 2712186, 8502485, 13759632, 6456611, 15832687, 11288337, 6191657,
+      6191657, 1483743, 12924101, 12924101, 8006010, 16027892, 9778959,
+      11653493, 2712186, 2659523, 1550824, 4240098, 11726149, 13234813, 6191657,
+      6191657, 6191657, 1147312, 8006010, 11087273, 12924101, 8006010, 8006010,
+      12207378, 10801490, 9492212, 1214394, 1214394, 2712186, 6191657, 6191657,
+      9492212, 1147312, 4240098, 13964757, 8006010, 8006010, 8006010, 10949031,
+      8006010, 16027892, 2712186, 2190476, 2712186, 2398668, 2712186, 2712186,
+      2712186, 1147312, 8573427, 13385420, 10297501, 8006010, 8006010, 8006010,
+      8006010, 9511569, 8012073, 6191657, 2712186, 6731995, 1147312, 2712186,
+      2712186, 10012893, 2323349, 8006010, 15374826, 9311630, 8006010, 12924101,
+      8006010, 12789955, 14722016, 15279593, 8012073, 10799454, 2712186,
+      2712186, 9224921, 3311017, 2138069, 16777215, 0, 15168743, 14372315,
+      8006010, 8006010, 8006010, 8006010, 10949031, 8006010, 8006010, 9292825,
+      11985763, 9222205, 16035472, 3123162, 16777215, 16777215, 16027892,
+      13651664, 14172632, 8006010, 8006010, 15374826, 8006010, 8006010, 8006010,
+      14445276, 14911843, 14915704, 13234813, 8012073
+    ]
+  },
+  "interactions": {
+    "0": 0,
+    "45": 1,
+    "90": 2,
+    "135": 3,
+    "180": 4,
+    "225": 5,
+    "270": 6,
+    "315": 7
+  }
+}
