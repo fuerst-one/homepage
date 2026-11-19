@@ -391,9 +391,9 @@
       "value": "Deliver an industry-specific workflow"
     },
     {
-      "id": "buyerNeeds:Join an existing team",
+      "id": "buyerNeeds:Work in a team",
       "facet": "buyerNeeds",
-      "value": "Join an existing team"
+      "value": "Work in a team"
     },
     {
       "id": "capabilities:Leadership",
@@ -1024,7 +1024,7 @@
         "buyerNeeds:Improve a complex interface",
         "buyerNeeds:Make data actionable",
         "buyerNeeds:Deliver an industry-specific workflow",
-        "buyerNeeds:Join an existing team",
+        "buyerNeeds:Work in a team",
         "capabilities:AI Engineering",
         "capabilities:Animation",
         "capabilities:Artificial Intelligence",
@@ -1208,7 +1208,7 @@
       "terms": [
         "buyerNeeds:Improve conversion",
         "buyerNeeds:Make data actionable",
-        "buyerNeeds:Join an existing team",
+        "buyerNeeds:Work in a team",
         "capabilities:Behaviour Psychology",
         "capabilities:Business Administration",
         "capabilities:Conception",
@@ -1658,7 +1658,7 @@
         "buyerNeeds:Improve a complex interface",
         "buyerNeeds:Improve conversion",
         "buyerNeeds:Integrate business systems",
-        "buyerNeeds:Join an existing team",
+        "buyerNeeds:Work in a team",
         "capabilities:Backend-Development",
         "capabilities:Behaviour Psychology",
         "capabilities:Conversion Rate Optimization",
