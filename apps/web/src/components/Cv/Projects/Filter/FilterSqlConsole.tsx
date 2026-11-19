@@ -10,7 +10,7 @@ import {
   projectDeliveryModels,
 } from "@homepage/content/projectTaxonomy";
 import { CvProject } from "@homepage/content/models";
-import { FilterParams, filterProjects } from "./utils";
+import { FilterParams } from "./utils";
 import {
   CV_PRESETS,
   localizePreset,
@@ -132,9 +132,11 @@ const CLI_FILTER_LABEL_LOOKUP = Object.fromEntries(
 export const FilterSqlConsole = ({
   filterParams,
   projects,
+  resultsCount,
 }: {
   filterParams: FilterParams;
   projects: CvProject[];
+  resultsCount: number;
 }) => {
   const locale = useLocale();
   const de = locale === "de";
@@ -161,11 +163,6 @@ export const FilterSqlConsole = ({
         label: de ? GROUP_LABELS_DE[group.key] : group.label,
       })),
     [projects, de],
-  );
-
-  const resultsCount = useMemo(
-    () => filterProjects(projects, filterParams).length,
-    [projects, filterParams],
   );
 
   const handleToggleValue = (key: CliFilterKey, optionValue: string) => {

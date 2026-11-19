@@ -106,7 +106,11 @@ export function ProjectsClientView({
       <div>
         <ProjectListSearch search={search} />
         <div className="mb-8">
-          <FilterSqlConsole filterParams={filterParams} projects={projects} />
+          <FilterSqlConsole
+            filterParams={filterParams}
+            projects={projects}
+            resultsCount={filteredProjects.length}
+          />
         </div>
         <div className="mb-12 space-y-5">
           {cluster && (
