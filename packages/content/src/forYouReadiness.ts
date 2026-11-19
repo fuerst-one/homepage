@@ -1,26 +1,18 @@
 import {
   PROFILE_LIFETIME_MS,
+  profileInterests,
   type ProfileCatalog,
-  type ProfileSignalKind,
   type VisitorProfile,
 } from "./visitorProfile";
 
-const DEPTH_KINDS: readonly ProfileSignalKind[] = [
-  "project_opened",
-  "project_details_viewed",
-  "case_study_viewed",
-];
-const EXPLICIT_CHOICE_KINDS: readonly ProfileSignalKind[] = [
-  "filter_selected",
-  "topic_selected",
-  "explorer_term_selected",
-];
-const READY_PROJECT_COUNT = 3;
+export const FOR_YOU_MIN_LEADING_SCORE = 4;
+export const FOR_YOU_MIN_LEAD_OVER_THIRD = 1;
 
 /**
- * The only decision about whether a profile is worth a "For you" hint.
- * These conditions are provisional: replace this body once tracking can name
- * a visitor's leading interest. Callers rely on the signature alone.
+ * The only decision about whether a profile is worth a "For you" hint: the
+ * leading buyer need is strong enough and separated from the third, so the
+ * top two are a reliable guess. Held to `tests/profile-benchmark.test.mjs`.
+ * The result can turn false again as scores decay; the store latches it.
  */
 export function isForYouReady(
   profile: VisitorProfile,
@@ -29,25 +21,13 @@ export function isForYouReady(
 ): boolean {
   if (now < profile.startedAt || now >= profile.startedAt + PROFILE_LIFETIME_MS)
     return false;
-  const terms = new Set(catalog.terms.map((term) => term.id));
-  const projects = new Set(catalog.projects.map((project) => project.id));
-  if (
-    Object.entries(profile.preferences).some(
-      ([id, choice]) =>
-        terms.has(id) && (choice === "interested" || choice === "priority"),
-    )
-  )
-    return true;
-  const explored = new Set<string>();
-  for (const signal of profile.signals) {
-    if (signal.at > now) continue;
-    if (
-      EXPLICIT_CHOICE_KINDS.includes(signal.kind) &&
-      terms.has(signal.subject)
-    )
-      return true;
-    if (DEPTH_KINDS.includes(signal.kind) && projects.has(signal.subject))
-      explored.add(signal.subject);
-  }
-  return explored.size >= READY_PROJECT_COUNT;
+  const needs = profileInterests(profile, catalog, now).filter(
+    (interest) => interest.facet === "buyerNeeds",
+  );
+  const leading = needs[0]?.score ?? 0;
+  const third = needs[2]?.score ?? 0;
+  return (
+    leading >= FOR_YOU_MIN_LEADING_SCORE &&
+    leading - third >= FOR_YOU_MIN_LEAD_OVER_THIRD
+  );
 }
