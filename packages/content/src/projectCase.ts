@@ -21,7 +21,7 @@ export const CASE_VOCABULARY = {
     "Connect software and hardware": "Software und Hardware verbinden",
     "Maintain and evolve a product":
       "Ein Produkt betreuen und weiterentwickeln",
-    "Join an existing team": "Ein bestehendes Team verstärken",
+    "Work in a team": "Im Team arbeiten",
     "Sell products": "Produkte verkaufen",
   },
   stages: {

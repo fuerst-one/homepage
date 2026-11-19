@@ -76,7 +76,7 @@ const GROUPS: Record<AtlasLens, GroupDefinition[]> = {
       id: "growth",
       label: "Commerce & conversion",
       color: "#d69ca6",
-      tags: ["Improve conversion", "Create a public website"],
+      tags: ["Improve conversion", "Sell products", "Create a public website"],
     },
     {
       id: "systems",
@@ -86,7 +86,7 @@ const GROUPS: Record<AtlasLens, GroupDefinition[]> = {
         "Integrate business systems",
         "Connect software and hardware",
         "Maintain and evolve a product",
-        "Join an existing team",
+        "Work in a team",
       ],
     },
   ],

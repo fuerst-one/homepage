@@ -101,7 +101,7 @@ const aliases: Record<string, string[]> = {
     "wartung",
     "betreuung",
   ],
-  "Join an existing team": [
+  "Work in a team": [
     "existing team",
     "team support",
     "bestehendes team",
@@ -232,7 +232,7 @@ const intentNeeds: Record<string, string[]> = {
     "Automate repetitive work",
     "Maintain and evolve a product",
   ],
-  team: ["Join an existing team"],
+  team: ["Work in a team"],
 };
 const intentStages: Record<string, string[]> = {
   prototype: ["Discovery", "Prototype"],
