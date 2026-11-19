@@ -65,12 +65,21 @@ test("the shared input previews search, submits chat, and returns to search", as
         });
       } else void request.continue();
     });
+    // Clicking resumes a closed conversation and moves the input, so the text is
+    // selected explicitly instead of with a triple click at a fixed position.
+    const selectInput = async () => {
+      await page.click("#landing-command");
+      await page.$eval("#landing-command", (input) => input.select());
+    };
     await page.goto(`${base}/en`, {
       waitUntil: "networkidle2",
       timeout: 90000,
     });
     await page.waitForSelector("#landing-command");
     await page.waitForSelector(".landing-backdrop canvas");
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.screenshot({
       path: "/tmp/homepage-inline-discovery-desktop.png",
     });
@@ -93,7 +102,7 @@ test("the shared input previews search, submits chat, and returns to search", as
     await page.setViewport({ width: 390, height: 844 });
     await page.screenshot({ path: "/tmp/homepage-inline-chat-mobile.png" });
     await page.setViewport({ width: 1280, height: 900 });
-    await page.click("#landing-command", { clickCount: 3 });
+    await selectInput();
     await page.type("#landing-command", "Retry this question");
     await page.keyboard.press("Enter");
     await page.waitForFunction(
@@ -131,14 +140,11 @@ test("the shared input previews search, submits chat, and returns to search", as
       await page.$eval(".landing-quick-access", (nav) => nav.inert),
       false,
     );
-    assert.equal(
-      await page.$eval(
-        "#landing-command",
-        (input) => document.activeElement === input,
-      ),
-      true,
+    // Closing the chat returns focus on the next animation frame.
+    await page.waitForFunction(
+      () => document.activeElement?.id === "landing-command",
     );
-    await page.click("#landing-command", { clickCount: 3 });
+    await selectInput();
     await page.keyboard.press("Backspace");
     await page.type("#landing-command", "AI automation");
     await page.waitForSelector(".knowledge-inline");
@@ -148,7 +154,7 @@ test("the shared input previews search, submits chat, and returns to search", as
       "clicking the input resumes the earlier conversation",
     );
     assert.equal(paidRequests, 2);
-    await page.click("#landing-command", { clickCount: 3 });
+    await selectInput();
     await page.type("#landing-command", "Slow question");
     await page.keyboard.press("Enter");
     await page.waitForSelector('.landing-submit[aria-label="Stop answer"]');
@@ -164,7 +170,7 @@ test("the shared input previews search, submits chat, and returns to search", as
       false,
     );
     await page.click(".knowledge-back");
-    await page.click("#landing-command", { clickCount: 3 });
+    await selectInput();
     await page.type("#landing-command", "zzzzzz-no-project");
     await page.keyboard.press("Enter");
     await page.waitForFunction(

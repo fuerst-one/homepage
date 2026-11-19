@@ -34,6 +34,9 @@ test("discovery keeps search suggestions below a separate project list", async (
       timeout: 90000,
     });
     await page.waitForSelector(".landing-backdrop canvas");
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "ai");
     await page.waitForSelector(".landing-discovery-panel");
     assert.equal(
@@ -149,6 +152,9 @@ test("discovery keeps search suggestions below a separate project list", async (
       timeout: 90000,
     });
     await page.waitForSelector(".landing-backdrop canvas");
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", exactProject.name);
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,
@@ -183,6 +189,9 @@ test("mobile results keep a complete project readable after viewport changes and
       waitUntil: "networkidle2",
       timeout: 90000,
     });
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "Seabo");
     await page.waitForSelector("a.landing-search-result");
     // Focusing a search field and collapsing browser chrome changes the visible
