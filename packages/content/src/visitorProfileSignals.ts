@@ -1,6 +1,7 @@
 import type {
   ProfileCatalog,
   ProfileFacet,
+  ProfileTerm,
   ProfileSignal,
   ProfileSignalKind,
   VisitorProfile,
@@ -142,6 +143,44 @@ export function extraProfileSubjectTerms(
     );
   }
   return undefined;
+}
+export const PROFILE_PROJECT_REGIONS = ["needs", "details"] as const;
+const projectRegionFacets: Record<
+  (typeof PROFILE_PROJECT_REGIONS)[number],
+  readonly ProfileFacet[]
+> = {
+  needs: ["buyerNeeds"],
+  details: ["industries", "productTypes", "capabilities", "methods", "tools"],
+};
+
+/** A region tag names a place on the page; this says what that place displays. */
+export function profileRegionTerms(
+  region: string,
+  catalog: ProfileCatalog,
+): ProfileTerm[] | null {
+  const card = /^card:([^|]+)$/.exec(region);
+  const page = /^project:([^|]+)\|([^|]+)$/.exec(region);
+  const project = catalog.projects.find((p) => p.id === (card ?? page)?.[1]);
+  if (!project) return null;
+  const facetOf = (id: string) => catalog.terms.find((t) => t.id === id)?.facet;
+  if (card) {
+    const leadingNeeds = project.terms
+      .filter((id) => facetOf(id) === "buyerNeeds")
+      .slice(0, CARD_BUYER_NEED_COUNT);
+    return catalog.terms.filter(
+      (t) =>
+        leadingNeeds.includes(t.id) ||
+        (project.terms.includes(t.id) &&
+          (t.facet === "industries" || t.facet === "productTypes")),
+    );
+  }
+  const kind = page?.[2] as (typeof PROFILE_PROJECT_REGIONS)[number];
+  if (!PROFILE_PROJECT_REGIONS.includes(kind)) return null;
+  return catalog.terms.filter(
+    (t) =>
+      project.terms.includes(t.id) &&
+      projectRegionFacets[kind].includes(t.facet),
+  );
 }
 export function validExtraProfileSubject(
   kind: string,

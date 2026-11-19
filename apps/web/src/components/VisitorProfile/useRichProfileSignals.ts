@@ -1,18 +1,51 @@
 "use client";
 
 import { useEffect } from "react";
-import { advanceProfileReading } from "@homepage/content/visitorProfile";
 import {
   recordVisitorInteraction,
   useVisitorProfileStore,
 } from "./profileStore";
+import {
+  createProfileViewTracker,
+  type ProfileViewTracker,
+} from "./profileViewTracker";
 
-/** One reader for all annotated public sections, including nested scrolling dialogs. */
-export function useRichProfileSignals(pathname: string, enabled: boolean) {
+const READ_SECONDS = 15;
+const SECTION_READINGS = {
+  "section:": "project_section_read",
+  "service-section:": "service_section_read",
+} as const;
+type SectionFamily = keyof typeof SECTION_READINGS;
+/** The one runtime of the mounted profile; React state would re-render every second. */
+let runtime: {
+  view: ProfileViewTracker;
+  readSections: Set<string>;
+  project: { id: string; read: boolean } | null;
+} | null = null;
+
+/** One view tracker for all tagged public content, including nested scrolling dialogs. */
+export function useRichProfileSignals(
+  pathname: string,
+  enabled: boolean,
+  activeProject?: string,
+) {
   useEffect(() => {
     if (!enabled) return;
-    const seconds = new Map<string, number>();
+    const current: NonNullable<typeof runtime> = {
+      view: createProfileViewTracker(Date.now()),
+      readSections: new Set<string>(),
+      project: null,
+    };
+    runtime = current;
+    const { view, readSections } = current;
     let lastInteraction = Date.now();
+    const activity = () => ({
+      visible: document.visibilityState === "visible",
+      focused:
+        document.hasFocus() &&
+        !document.activeElement?.closest("[data-profile-ui]"),
+      lastInteraction,
+    });
     const interact = (event: Event) => {
       if (
         event.target instanceof Element &&
@@ -25,69 +58,70 @@ export function useRichProfileSignals(pathname: string, enabled: boolean) {
     events.forEach((name) =>
       window.addEventListener(name, interact, { passive: true }),
     );
+    let frame = 0;
+    const look = () => {
+      frame = 0;
+      view.measure(Date.now(), activity(), false);
+    };
+    // Scrolling moves regions in and out of view between the one-second ticks.
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(look);
+    };
+    window.addEventListener("scroll", schedule, {
+      capture: true,
+      passive: true,
+    });
+    window.addEventListener("resize", schedule, { passive: true });
     const tick = setInterval(() => {
       if (!useVisitorProfileStore.getState().enabled) return;
-      const modal = document.querySelector(
-        '[role="dialog"][data-state="open"]',
-      );
-      const now = Date.now();
-      const state = {
-        visible: document.visibilityState === "visible",
-        focused:
-          document.hasFocus() &&
-          !document.activeElement?.closest("[data-profile-ui]"),
-        lastInteraction,
-      };
-      const counted = new Set<string>();
-      document
-        .querySelectorAll<HTMLElement>(
-          "[data-profile-section], [data-profile-service-section]",
+      view.measure(Date.now(), activity(), true);
+      for (const key of view.keys()) {
+        const family = key.slice(0, key.indexOf(":") + 1);
+        if (
+          !(family in SECTION_READINGS) ||
+          readSections.has(key) ||
+          view.activeSeconds(key) < READ_SECONDS
         )
-        .forEach((el) => {
-          const subject =
-            el.dataset.profileSection ?? el.dataset.profileServiceSection;
-          if (!subject) return;
-          const kind = el.dataset.profileSection
-            ? "project_section_read"
-            : "service_section_read";
-          const key = `${kind}:${subject}`;
-          if ((seconds.get(key) ?? 0) >= 15 || counted.has(key)) return;
-          const box = el.getBoundingClientRect();
-          const height =
-            Math.min(box.bottom, innerHeight) - Math.max(box.top, 0);
-          const width = Math.min(box.right, innerWidth) - Math.max(box.left, 0);
-          const x = Math.max(0, box.left) + Math.max(0, width) / 2;
-          const y = Math.max(0, box.top) + Math.max(0, height) / 2;
-          const top =
-            height > 0 && width > 0 ? document.elementFromPoint(x, y) : null;
-          const covered =
-            !!(modal && !modal.contains(el)) ||
-            !top ||
-            !(el.contains(top) || top.contains(el));
-          const inView =
-            height >= Math.min(80, box.height * 0.5) &&
-            width > 0 &&
-            box.height > 0;
-          if (inView && !covered) counted.add(key);
-          const count = advanceProfileReading(
-            seconds.get(key) ?? 0,
-            {
-              ...state,
-              inView:
-                height >= Math.min(80, box.height * 0.5) &&
-                width > 0 &&
-                box.height > 0,
-              covered,
-            },
-            now,
-          );
-          seconds.set(key, count);
-          if (count === 15) recordVisitorInteraction(kind, subject);
-        });
+          continue;
+        readSections.add(key);
+        recordVisitorInteraction(
+          SECTION_READINGS[family as SectionFamily],
+          key.slice(family.length),
+        );
+      }
+      const project = current.project;
+      if (
+        project &&
+        !project.read &&
+        view.activeSeconds(`project:${project.id}`) >= READ_SECONDS
+      ) {
+        project.read = true;
+        recordVisitorInteraction("project_read", project.id);
+      }
     }, 1000);
     return () => {
       clearInterval(tick);
+      cancelAnimationFrame(frame);
       events.forEach((name) => window.removeEventListener(name, interact));
+      window.removeEventListener("scroll", schedule, { capture: true });
+      window.removeEventListener("resize", schedule);
+      if (runtime === current) runtime = null;
     };
+  }, [enabled]);
+  // Section reading starts over on every page.
+  useEffect(() => {
+    if (!enabled || !runtime) return;
+    for (const family of Object.keys(SECTION_READINGS)) {
+      runtime.view.restart(family, Date.now());
+      for (const key of runtime.readSections)
+        if (key.startsWith(family)) runtime.readSections.delete(key);
+    }
   }, [pathname, enabled]);
+  // "Project read" starts over whenever another project, or none, is active.
+  useEffect(() => {
+    if (!enabled || !runtime) return;
+    runtime.project = activeProject ? { id: activeProject, read: false } : null;
+    if (activeProject)
+      runtime.view.restart(`project:${activeProject}`, Date.now());
+  }, [activeProject, enabled]);
 }
