@@ -257,3 +257,24 @@ export function portfolioTimeline(
   return result;
 }
 export type PortfolioMonth = ReturnType<typeof portfolioTimeline>[number];
+
+export type TimelineProject = { label: string };
+export type TimelineMonth = { month: string; projects: TimelineProject[] };
+
+export function timelineProjects(
+  months: PortfolioMonth[],
+  projects: { id: string; label: string; startDate: string }[],
+): TimelineMonth[] {
+  const byId = new Map(projects.map((project) => [project.id, project]));
+  return months.map(({ month, engagements }) => ({
+    month,
+    projects: engagements
+      .flatMap((id) => byId.get(id) ?? [])
+      .sort(
+        (a, b) =>
+          a.startDate.localeCompare(b.startDate) ||
+          a.label.localeCompare(b.label),
+      )
+      .map(({ label }) => ({ label })),
+  }));
+}

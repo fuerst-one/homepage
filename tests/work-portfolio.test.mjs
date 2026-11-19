@@ -117,3 +117,28 @@ test("German projects use their translated description rather than English sourc
   assert.equal(p.summary, "Ein komplexer Arbeitsablauf.");
   assert.equal(p.contentLocale, "de");
 });
+
+test("each timeline month names its active projects, longest-running first", () => {
+  const { portfolioTimeline, timelineProjects } = subject();
+  const projects = [
+    project("b", { startDate: "2026-02-10", endDate: "2026-03-05" }),
+    project("a", { startDate: "2026-01-15", endDate: "2026-02-20" }),
+  ];
+  const labelled = projects.map((p) => ({
+    id: p.id,
+    label: `Project ${p.id.toUpperCase()}`,
+    startDate: p.startDate,
+  }));
+  assert.deepEqual(
+    timelineProjects(portfolioTimeline(projects, "2026-04-20"), labelled),
+    [
+      { month: "2026-01", projects: [{ label: "Project A" }] },
+      {
+        month: "2026-02",
+        projects: [{ label: "Project A" }, { label: "Project B" }],
+      },
+      { month: "2026-03", projects: [{ label: "Project B" }] },
+      { month: "2026-04", projects: [] },
+    ],
+  );
+});

@@ -37,10 +37,12 @@ renewed database lease.
 
 The homepage renders monthly counts as a Jan–Dec matrix, with one row per year.
 Colour intensity saturates at 25 commits (bands 0, 1–2, 3–7, 8–24, 25+), while
-hover, focus and tap expose exact values. Hatched cells fall outside recorded
-coverage; neutral cells are recorded zero months. Arrow keys move between months.
-Seabo's separately hosted GitLab work has a linked note with dates from the public
-project model, not an overlay marking presumed gaps in GitHub activity.
+hover, focus and tap open a card with the exact value and the projects whose
+recorded period overlaps that month. Hatched cells fall outside recorded coverage;
+neutral cells are recorded zero months. Arrow keys move between months that have a
+commit figure or active projects. The project-history chart lists the same projects
+in its tooltip. Project lists come from the public project model's dates, not from
+commit attribution.
 
 ## Release order
 

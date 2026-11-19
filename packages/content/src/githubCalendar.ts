@@ -1,6 +1,11 @@
 import type { GitHubMonth } from "./githubActivity";
+import type { TimelineMonth, TimelineProject } from "./workPortfolio";
 
-export type GitHubCalendarMonth = { month: string; commits: number | null };
+export type GitHubCalendarMonth = {
+  month: string;
+  commits: number | null;
+  projects: TimelineProject[];
+};
 export type GitHubCalendarYear = {
   year: number;
   months: GitHubCalendarMonth[];
@@ -9,9 +14,11 @@ export type GitHubCalendarYear = {
 /** Missing coverage and future months stay distinct from recorded zero activity. */
 export function githubCalendarYears(
   months: Pick<GitHubMonth, "month" | "commits">[],
+  timeline: TimelineMonth[] = [],
 ): GitHubCalendarYear[] {
   if (!months.length) return [];
   const counts = new Map(months.map((row) => [row.month, row.commits]));
+  const projects = new Map(timeline.map((row) => [row.month, row.projects]));
   const first = Number(months[0].month.slice(0, 4));
   const last = Number(months.at(-1)!.month.slice(0, 4));
   return Array.from({ length: last - first + 1 }, (_, index) => {
@@ -20,7 +27,11 @@ export function githubCalendarYears(
       year,
       months: Array.from({ length: 12 }, (_, monthIndex) => {
         const month = `${year}-${String(monthIndex + 1).padStart(2, "0")}`;
-        return { month, commits: counts.get(month) ?? null };
+        return {
+          month,
+          commits: counts.get(month) ?? null,
+          projects: projects.get(month) ?? [],
+        };
       }),
     };
   });
@@ -35,6 +46,11 @@ export function githubCommitBand(commits: number): 0 | 1 | 2 | 3 | 4 {
   return 4;
 }
 
+/** Months with a commit figure or active projects have something to show. */
+export function hasCalendarDetail(cell: GitHubCalendarMonth) {
+  return cell.commits !== null || cell.projects.length > 0;
+}
+
 export function adjacentGitHubMonth(
   years: GitHubCalendarYear[],
   month: string,
@@ -44,7 +60,9 @@ export function adjacentGitHubMonth(
   date.setUTCMonth(date.getUTCMonth() + offset);
   const target = date.toISOString().slice(0, 7);
   return years.some((year) =>
-    year.months.some((cell) => cell.month === target && cell.commits !== null),
+    year.months.some(
+      (cell) => cell.month === target && hasCalendarDetail(cell),
+    ),
   )
     ? target
     : month;

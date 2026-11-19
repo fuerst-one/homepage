@@ -4,11 +4,10 @@ import type { CSSProperties } from "react";
 import { githubCalendarYears } from "@homepage/content/githubCalendar";
 import { GitHubCalendar, GitHubCommitLegend } from "./GitHubCalendar";
 import dynamic from "next/dynamic";
-import type { PortfolioMonth } from "@homepage/content/workPortfolio";
+import type { TimelineMonth } from "@homepage/content/workPortfolio";
 import type { GitHubActivity } from "@homepage/content/githubActivity";
 import type { Locale } from "@homepage/content/i18n";
 import { DeferredWorkView } from "./DeferredWorkView";
-import Link from "../i18n/LocalizedLink";
 const Chart = dynamic(() => import("./WorkTimelineChart"), {
   ssr: false,
   loading: () => (
@@ -21,28 +20,25 @@ const Chart = dynamic(() => import("./WorkTimelineChart"), {
 export function WorkTimeline({
   months,
   projectCount,
-  seabo,
   github,
   locale,
 }: {
-  months: PortfolioMonth[];
+  months: TimelineMonth[];
   projectCount: number;
-  seabo: { href: string; startDate: string; endDate: string | null } | null;
   github: GitHubActivity | null;
   locale: Locale;
 }) {
   const de = locale === "de";
-  const calendar = githubCalendarYears(github?.months ?? []);
+  const calendar = githubCalendarYears(github?.months ?? [], months);
+  const projectRows = months.map((m) => ({
+    month: m.month,
+    count: m.projects.length,
+    projects: m.projects.map((project) => project.label),
+  }));
   const chartStyle = {
     "--home-history-chart-height": `${Math.max(270, (calendar.length + 1) * 26 + 48)}px`,
   } as CSSProperties;
-  const periodDate = (date: string) =>
-    new Intl.DateTimeFormat(de ? "de-DE" : "en-GB", {
-      month: "short",
-      year: "numeric",
-      timeZone: "UTC",
-    }).format(new Date(date));
-  const peak = Math.max(0, ...months.map((m) => m.engagements.length));
+  const peak = Math.max(0, ...projectRows.map((row) => row.count));
   return (
     <div className="home-work-history" style={chartStyle}>
       <header className="home-work-heading">
@@ -96,13 +92,7 @@ export function WorkTimeline({
             }
           >
             <DeferredWorkView>
-              <Chart
-                rows={months.map((m) => ({
-                  month: m.month,
-                  count: m.engagements.length,
-                }))}
-                locale={locale}
-              />
+              <Chart rows={projectRows} locale={locale} />
             </DeferredWorkView>
           </div>
           <AccessibleChartData
@@ -110,10 +100,7 @@ export function WorkTimeline({
             caption={
               de ? "Monatliche Projektzeiträume" : "Monthly engagement periods"
             }
-            rows={months.map((m) => ({
-              month: m.month,
-              count: m.engagements.length,
-            }))}
+            rows={projectRows}
             locale={locale}
           />
           <div className="home-history-notes home-work-map-note">
@@ -171,32 +158,6 @@ export function WorkTimeline({
                 locale={locale}
               />
               <div className="home-history-notes home-work-map-note">
-                {seabo && (
-                  <p className="home-commit-client-work">
-                    <Link prefetch={false} href={seabo.href}>
-                      <strong>Seabo</strong> ·{" "}
-                      <time dateTime={seabo.startDate}>
-                        {periodDate(seabo.startDate)}
-                      </time>{" "}
-                      –{" "}
-                      {seabo.endDate ? (
-                        <time dateTime={seabo.endDate}>
-                          {periodDate(seabo.endDate)}
-                        </time>
-                      ) : de ? (
-                        "heute"
-                      ) : (
-                        "present"
-                      )}{" "}
-                      ↗
-                    </Link>
-                    <span>
-                      {de
-                        ? "Produktentwicklung auf GitLab. Diese Arbeit ist in den GitHub-Zahlen nicht enthalten."
-                        : "Client product development on GitLab. This work is additional to the GitHub figures."}
-                    </span>
-                  </p>
-                )}
                 <p>
                   {de
                     ? `${github.repositoryCount} verbundene Repositories${github.includesPrivate ? ", einschließlich privater" : ""}. Eigene Commits auf den Standard-Branches, über Repositories hinweg dedupliziert. Monatswerte in UTC.`
@@ -253,9 +214,10 @@ function AccessibleChartData({
 }: {
   id: string;
   caption: string;
-  rows: { month: string; count: number }[];
+  rows: { month: string; count: number; projects?: string[] }[];
   locale: Locale;
 }) {
+  const withProjects = rows.some((row) => row.projects);
   const format = new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-GB", {
     month: "long",
     year: "numeric",
@@ -269,6 +231,9 @@ function AccessibleChartData({
           <tr>
             <th scope="col">{locale === "de" ? "Monat" : "Month"}</th>
             <th scope="col">{locale === "de" ? "Anzahl" : "Count"}</th>
+            {withProjects && (
+              <th scope="col">{locale === "de" ? "Projekte" : "Projects"}</th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -278,6 +243,7 @@ function AccessibleChartData({
                 {format.format(new Date(`${row.month}-01T00:00:00Z`))}
               </th>
               <td>{row.count}</td>
+              {withProjects && <td>{row.projects?.join(", ")}</td>}
             </tr>
           ))}
         </tbody>

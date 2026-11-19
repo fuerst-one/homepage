@@ -633,7 +633,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 8px 0 30px;
+  padding: 8px 0;
 }
 .home-commit-scroll {
   width: 100%;
@@ -660,33 +660,44 @@
 .home-commit-months {
   text-align: center;
 }
-.home-commit-client-work a {
-  display: block;
-  min-height: 44px;
-  padding-block: 5px;
-  color: #b8d2e6;
+.home-commit-tooltip {
+  --tooltip-shift-x: -50%;
+  --tooltip-shift-y: 6px;
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: max-content;
+  max-width: 220px;
+  padding: 8px 10px;
+  border: 1px solid #55554b;
+  background: #171714;
+  color: #f0eee8;
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: left;
+  pointer-events: none;
+  transform: translate(var(--tooltip-shift-x), var(--tooltip-shift-y));
 }
-.home-commit-client-work a:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+.home-commit-tooltip[data-side="above"] {
+  --tooltip-shift-y: calc(-100% - 6px);
 }
-.home-commit-client-work strong {
+.home-commit-tooltip[data-align="start"] {
+  --tooltip-shift-x: -12px;
+}
+.home-commit-tooltip[data-align="end"] {
+  --tooltip-shift-x: calc(-100% + 12px);
+}
+.home-commit-tooltip strong {
   font-weight: 500;
 }
-.home-commit-client-work span {
-  display: block;
+.home-commit-tooltip span,
+.home-commit-tooltip em {
+  color: #aaa79f;
+  font-style: normal;
 }
-.home-commit-tooltip {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  min-height: 22px;
-  color: #e8e6df;
-  font-size: 11px;
-  line-height: 1.8;
-  text-align: center;
-  pointer-events: none;
+.home-commit-tooltip em {
+  margin-top: 6px;
+  font-size: 10px;
 }
 .home-github-pending {
   grid-row: span 4;
