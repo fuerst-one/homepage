@@ -142,3 +142,14 @@ export function mutedProjectIds(
   const results = new Set(resultIds);
   return projectIds.filter((id) => !results.has(id));
 }
+
+/** For views beside the list: the projects it currently shows, or the facet-filtered set before it reports. */
+export function publishedResultProjects(
+  projects: CvProject[],
+  resultIds: string[] | null,
+  filters: FilterParams,
+) {
+  if (!resultIds) return filterProjects(projects, filters);
+  const results = new Set(resultIds);
+  return projects.filter((project) => results.has(project.id));
+}

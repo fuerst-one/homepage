@@ -176,3 +176,38 @@ for (const locale of ["en", "de"]) {
     }
   });
 }
+
+test("analysis charts follow the list search, not only the facet filters", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    const analysis = await page.waitForSelector(
+      "aside [role=region][aria-label]",
+    );
+    assert.equal(await analysis.$("[role=status]"), null);
+    await page.type("#project-search", "zzzzqq no such project");
+    await page.waitForFunction(
+      () => !document.querySelector("[data-project-search-result]"),
+    );
+    await page.waitForSelector(
+      "aside [role=region][aria-label] [role=status]",
+      {
+        timeout: 5000,
+      },
+    );
+    await page.click("[data-project-search-clear]");
+    await page.waitForFunction(
+      () =>
+        !document.querySelector(
+          "aside [role=region][aria-label] [role=status]",
+        ),
+    );
+  } finally {
+    await browser.close();
+  }
+});

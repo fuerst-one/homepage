@@ -2,7 +2,12 @@ import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 
-const { useProjectListStore, selectProjectResults, mutedProjectIds } = loadTs(
+const {
+  useProjectListStore,
+  selectProjectResults,
+  mutedProjectIds,
+  publishedResultProjects,
+} = loadTs(
   new URL(
     "../apps/web/src/components/Cv/Projects/projectListStore.ts",
     import.meta.url,
@@ -179,4 +184,23 @@ test("the explorer mutes every project that is not a current result", () => {
     "atlas",
     "studio",
   ]);
+});
+
+test("charts fall back to the facet filters until the list publishes its results", () => {
+  assert.deepEqual(
+    publishedResultProjects(projects, null, { tools: ["Vue"] }).map(
+      (p) => p.id,
+    ),
+    ["harbor"],
+  );
+});
+
+test("charts count exactly the published results, whatever the facet filters say", () => {
+  assert.deepEqual(
+    publishedResultProjects(projects, ["meadow", "atlas", "elsewhere"], {
+      tools: ["Vue"],
+    }).map((p) => p.id),
+    ["atlas", "meadow"],
+  );
+  assert.deepEqual(publishedResultProjects(projects, [], {}), []);
 });

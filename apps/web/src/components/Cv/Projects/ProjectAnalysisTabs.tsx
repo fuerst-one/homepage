@@ -3,8 +3,11 @@
 import { useLocale } from "../../i18n/LocaleProvider";
 import { useId, useMemo, useState } from "react";
 import { CvProject } from "@homepage/content/models";
-import { useProjectListStore } from "./projectListStore";
-import { filterProjects, getFilterOptionCounts } from "./Filter/utils";
+import {
+  publishedResultProjects,
+  useProjectListStore,
+} from "./projectListStore";
+import { getFilterOptionCounts } from "./Filter/utils";
 import { filterConfigs } from "./filterConfigs";
 import { FilterConfig } from "./Filter/types";
 import { BarChartFilter } from "./Filter/BarChartFilter";
@@ -21,9 +24,10 @@ export const ProjectAnalysisTabs = ({
     filterConfigs[0].projectKey,
   );
   const filterParams = useProjectListStore((s) => s.filters);
+  const resultIds = useProjectListStore((s) => s.resultIds);
   const filteredProjects = useMemo(
-    () => filterProjects(projects, filterParams),
-    [projects, filterParams],
+    () => publishedResultProjects(projects, resultIds, filterParams),
+    [projects, resultIds, filterParams],
   );
 
   const selectorId = useId();
