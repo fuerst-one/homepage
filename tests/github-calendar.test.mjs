@@ -98,7 +98,7 @@ test("calendar months carry their active projects, also outside recorded commit 
   });
 });
 
-test("a calendar month is starred when any active project is outside GitHub", () => {
+test("a calendar month reports work outside GitHub when any active project is unconnected", () => {
   const { githubCalendarYears, hasWorkOutsideGitHub } = subject();
   const [year] = githubCalendarYears(
     [

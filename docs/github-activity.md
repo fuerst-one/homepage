@@ -44,10 +44,10 @@ commit figure or active projects. The project-history chart lists the same proje
 in its tooltip. Project lists come from the public project model's dates, not from
 commit attribution.
 
-A star marks every month in which a project with `hasConnectedRepo: false` was
-active, so visitors can see where recorded work is not part of the commit figures.
-The card repeats the star next to those projects and the legend explains it. While
-the flag is unknown no stars or legend entry are shown.
+In the card, a star marks projects with `hasConnectedRepo: false`, with a one-line
+note that they are not in the connected repositories. The squares themselves carry
+no marker: with long-running off-GitHub work, nearly every month would have one.
+While the flag is unknown no project is marked.
 
 ## Project repositories
 

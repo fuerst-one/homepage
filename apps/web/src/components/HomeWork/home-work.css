@@ -618,29 +618,6 @@
 .home-commit-square[data-band="4"] {
   background: #c6dc96;
 }
-.home-commit-square[data-starred],
-.home-commit-tooltip li[data-starred] {
-  --commit-star: "★";
-}
-.home-commit-square[data-starred] {
-  display: grid;
-  place-items: center;
-  color: #f0eee8;
-  font-size: 11px;
-  line-height: 1;
-}
-.home-commit-legend .home-commit-square[data-starred] {
-  font-size: 8px;
-}
-.home-commit-square[data-starred]::after {
-  content: var(--commit-star);
-}
-.home-commit-square[data-starred]:is([data-band="3"], [data-band="4"]) {
-  color: #171714;
-}
-.home-commit-tooltip li[data-starred]::before {
-  content: var(--commit-star) " ";
-}
 .home-commit-square.is-unrecorded {
   background: repeating-linear-gradient(
     135deg,
@@ -718,9 +695,13 @@
   color: #aaa79f;
   font-style: normal;
 }
-.home-commit-tooltip em {
+.home-commit-tooltip em,
+.home-commit-tooltip small {
   margin-top: 6px;
   font-size: 10px;
+}
+.home-commit-tooltip small {
+  color: #aaa79f;
 }
 .home-github-pending {
   grid-row: span 4;

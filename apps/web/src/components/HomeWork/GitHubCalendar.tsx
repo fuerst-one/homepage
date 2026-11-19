@@ -11,13 +11,9 @@ import {
 } from "@homepage/content/githubCalendar";
 import type { Locale } from "@homepage/content/i18n";
 
-export function GitHubCommitLegend({
-  locale,
-  showOutsideGitHub,
-}: {
-  locale: Locale;
-  showOutsideGitHub: boolean;
-}) {
+const OUTSIDE_MARK = "★";
+
+export function GitHubCommitLegend({ locale }: { locale: Locale }) {
   return (
     <div
       className="home-commit-legend"
@@ -37,14 +33,6 @@ export function GitHubCommitLegend({
           {label}
         </span>
       ))}
-      {showOutsideGitHub && (
-        <span>
-          <i className="home-commit-square" data-starred aria-hidden="true" />
-          {locale === "de"
-            ? "Projektarbeit außerhalb dieser Repositories"
-            : "project work outside these repositories"}
-        </span>
-      )}
     </div>
   );
 }
@@ -127,7 +115,6 @@ export function GitHubCalendar({
                   : githubCommitBand(cell.commits)
               }
               data-month={cell.month}
-              data-starred={hasWorkOutsideGitHub(cell) || undefined}
               tabIndex={cell.month === entryMonth ? 0 : -1}
               aria-label={cellLabel(cell)}
               onPointerEnter={(event) => show(cell, event)}
@@ -214,17 +201,22 @@ export function GitHubCalendar({
             <>
               <em>{projectsHeading}</em>
               <ul>
-                {/* The star itself comes from CSS, shared with the squares. */}
                 {active.cell.projects.map((project, index) => (
-                  <li
-                    // Two projects may share a short name.
-                    key={`${index}-${project.label}`}
-                    data-starred={project.outsideGitHub || undefined}
-                  >
+                  // Two projects may share a short name.
+                  <li key={`${index}-${project.label}`}>
+                    {project.outsideGitHub && `${OUTSIDE_MARK} `}
                     {project.label}
                   </li>
                 ))}
               </ul>
+              {hasWorkOutsideGitHub(active.cell) && (
+                <small>
+                  {OUTSIDE_MARK}{" "}
+                  {de
+                    ? "nicht in den verbundenen Repositories"
+                    : "not in the connected repositories"}
+                </small>
+              )}
             </>
           )}
         </div>
