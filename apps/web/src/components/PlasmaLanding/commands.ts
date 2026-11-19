@@ -6,6 +6,7 @@ export type LandingCommand = {
   shape: number;
   href?: string;
   action?: "pause" | "play";
+  primary?: boolean;
 };
 
 const COMMANDS: LandingCommand[] = [
@@ -15,6 +16,7 @@ const COMMANDS: LandingCommand[] = [
     caption: "The people, products, and pixels along the way.",
     shape: 0,
     href: "/projects",
+    primary: true,
   },
   {
     id: "contact",

@@ -291,6 +291,22 @@
   background: #ffffff14;
   border-color: #ffffff70;
 }
+.landing-chip[data-primary="true"] {
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  font-weight: 600;
+}
+.landing-chip[data-primary="true"] span {
+  opacity: 1;
+}
+.landing-chip[data-primary="true"]:hover {
+  background: hsl(var(--primary-hover));
+  border-color: hsl(var(--primary-hover));
+}
+.landing .landing-chip[data-primary="true"]:focus-visible {
+  outline-color: hsl(var(--primary));
+}
 .landing-rail-arrow {
   display: grid;
   place-items: center;
