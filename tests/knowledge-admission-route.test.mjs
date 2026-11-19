@@ -4,13 +4,20 @@ import { readFileSync } from "node:fs";
 import ts from "typescript";
 import { loadTs } from "./helpers/load-ts.mjs";
 
-function route(name, admit, healthy = true, text = "Relevant projects?") {
+function route(
+  name,
+  admit,
+  healthy = true,
+  text = "Relevant projects?",
+  { allowance = true } = {},
+) {
   const calls = [];
   const rawRequests = [];
   const privacy = loadTs(
     new URL("../apps/web/src/lib/knowledgeConsent.ts", import.meta.url),
   );
   const fallback = { answer: "Browse projects.", sources: [], actions: [] };
+  class KnowledgeQuotaError extends Error {}
   const dependencies = {
     "next/server": {
       NextResponse: { json: (body, options) => Response.json(body, options) },
@@ -23,9 +30,7 @@ function route(name, admit, healthy = true, text = "Relevant projects?") {
     "@/server/siteFeatures": {
       getSiteFeatures: () => ({ assistantEnabled: true }),
     },
-    "@homepage/knowledge/usage": {
-      KnowledgeQuotaError: class extends Error {},
-    },
+    "@homepage/knowledge/usage": { KnowledgeQuotaError },
     "@homepage/knowledge/policy": { recordKnowledgeAdmission: async () => {} },
     "@/server/knowledge/admission": {
       getKnowledgeAdmission: async () => {
@@ -33,6 +38,10 @@ function route(name, admit, healthy = true, text = "Relevant projects?") {
         return { allowed: admit, retryAt: Date.now() + 60000 };
       },
       knowledgeClientAddress: () => "local",
+      hasKnowledgeAllowance: async () => {
+        calls.push("allowance");
+        return allowance;
+      },
     },
   };
   for (const prefix of ["../../../", "../../../../"]) {
@@ -41,6 +50,7 @@ function route(name, admit, healthy = true, text = "Relevant projects?") {
     };
     dependencies[`${prefix}server/knowledge/chat`] = {
       answerKnowledge: async (...args) => {
+        if (!allowance) throw new KnowledgeQuotaError("allowance reached");
         calls.push("paid");
         rawRequests.push(args);
         return fallback;
@@ -49,7 +59,14 @@ function route(name, admit, healthy = true, text = "Relevant projects?") {
     dependencies[`${prefix}server/knowledge/availability`] = {
       knowledgeAvailability: () => ({
         status: () => ({ available: healthy, verified: healthy, retryAt: 0 }),
-        run: async (work) => work(new AbortController().signal),
+        run: async (work, fallback, shouldTrip) => {
+          try {
+            return await work(new AbortController().signal);
+          } catch (error) {
+            shouldTrip(error);
+            return fallback();
+          }
+        },
       }),
       probeKnowledgeServices: async () => {},
     };
@@ -137,3 +154,34 @@ for (const healthy of [true, false]) {
     assert.equal(result.available, healthy);
   });
 }
+
+for (const healthy of [true, false]) {
+  test(`selected status reports AI unavailable while the allowance is used up, without a paid probe (${healthy})`, async () => {
+    process.env.KNOWLEDGE_DATABASE_URL = "postgres://localhost/test";
+    process.env.OPENROUTER_API_KEY = "fixture";
+    const { exports, calls } = route("status/route.ts", true, healthy, "", {
+      allowance: false,
+    });
+    const result = await (
+      await exports.GET(
+        new Request("https://example.test/api/assistant/status"),
+      )
+    ).json();
+    assert.equal(result.eligible, true);
+    assert.ok(result.eligibleUntil > Date.now());
+    assert.equal(result.available, false);
+    assert.equal(result.verified, false);
+    assert.ok(result.retryAt > Date.now());
+    assert.deepEqual(calls, ["admission", "allowance"]);
+  });
+}
+test("a question refused by the allowance tells the browser that AI is unavailable", async () => {
+  const { exports, request } = route("route.ts", true, true, undefined, {
+    allowance: false,
+  });
+  const result = await (await exports.POST(request)).json();
+  assert.equal(result.mode, "fallback");
+  assert.equal(result.availability.available, false);
+  assert.equal(result.availability.verified, false);
+  assert.ok(result.availability.retryAt > Date.now());
+});

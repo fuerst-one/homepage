@@ -11,7 +11,7 @@ const history = loadTs(
   new URL("../apps/web/src/lib/knowledgeHistory.ts", import.meta.url),
 );
 
-function mountConsent(enabled, decision, run) {
+function mountConsent(enabled, decision, run, { asked = false } = {}) {
   const names = ["sessionStorage", "localStorage", "window"];
   const previous = names.map((name) =>
     Object.getOwnPropertyDescriptor(globalThis, name),
@@ -23,11 +23,16 @@ function mountConsent(enabled, decision, run) {
   const choices = new Map([
     [consent.KNOWLEDGE_CONSENT_KEY, JSON.stringify(decision)],
   ]);
+  if (asked) sessions.set(consent.KNOWLEDGE_CONSENT_ASKED_KEY, "1");
   const effects = [];
   const listeners = new Map();
-  let restored = null;
+  // State slots in declaration order: the saved decision, then the session's asked marker.
+  const states = [];
   try {
-    globalThis.sessionStorage = { removeItem: (key) => sessions.delete(key) };
+    globalThis.sessionStorage = {
+      getItem: (key) => sessions.get(key) ?? null,
+      removeItem: (key) => sessions.delete(key),
+    };
     globalThis.localStorage = {
       getItem: (key) => choices.get(key) ?? null,
       removeItem: (key) => choices.delete(key),
@@ -55,12 +60,15 @@ function mountConsent(enabled, decision, run) {
     new Function("exports", "require", outputText)(exports, (name) => {
       if (name === "react")
         return {
-          useState: (initial) => [
-            initial,
-            (next) => {
-              restored = next;
-            },
-          ],
+          useState: (initial) => {
+            const slot = states.push(initial) - 1;
+            return [
+              initial,
+              (next) => {
+                states[slot] = next;
+              },
+            ];
+          },
           useCallback: (callback) => callback,
           useEffect: (effect) => effects.push(effect),
         };
@@ -70,7 +78,13 @@ function mountConsent(enabled, decision, run) {
     });
     exports.useKnowledgeConsent(enabled);
     const cleanups = effects.map((effect) => effect());
-    run({ sessions, choices, restored, listeners });
+    run({
+      sessions,
+      choices,
+      restored: states[0],
+      asked: states[1],
+      listeners,
+    });
     cleanups.forEach((cleanup) => cleanup?.());
   } finally {
     names.forEach((name, index) => {
@@ -129,5 +143,38 @@ test("pending eligibility leaves saved choices and history untouched and install
       assert.equal(choices.size, 1);
       assert.equal(listeners.size, 0);
     },
+  );
+});
+
+test("a remembered refusal may be questioned once in a new browser session", () => {
+  mountConsent(true, decision(false), ({ asked }) => {
+    assert.equal(asked, false);
+  });
+});
+
+test("a refusal already questioned in this session is not questioned again", () => {
+  mountConsent(
+    true,
+    decision(false),
+    ({ asked, sessions }) => {
+      assert.equal(asked, true);
+      assert.equal(
+        sessions.size,
+        1,
+        "the marker outlives cleared chat and status",
+      );
+    },
+    { asked: true },
+  );
+});
+
+test("an AI-disabled release also clears the session's asked marker", () => {
+  mountConsent(
+    false,
+    decision(false),
+    ({ sessions }) => {
+      assert.equal(sessions.size, 0);
+    },
+    { asked: true },
   );
 });

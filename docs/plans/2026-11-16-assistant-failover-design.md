@@ -1,5 +1,11 @@
 # Silent assistant failover
 
+> Amended 19 November 2026: the fallback response no longer opens a chat. When
+> generation is unavailable, consent was declined, or budgets/request caps are
+> used up, the landing behaves as plain search. The fallback below applies only
+> inside a conversation that is already open. See
+> [knowledge assistant](../knowledge-assistant.md#silent-fallback).
+
 Keep normal navigation/search independent from the vector database and AI gateway.
 Use the existing chat/result surface for a deterministic project/link response
 when generation is unavailable, with no outage labels or warning banners.

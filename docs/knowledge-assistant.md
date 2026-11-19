@@ -20,8 +20,11 @@ assistant. Try “Show projects with AI automation”. Answers cite
 published projects; the buttons can filter the landing page, open a known page,
 or highlight its search, project results, and contact area. Each question is
 independent. Available AI asks for opt-in before sending a question; allow and
-decline are remembered for 180 days without renewal on visits. Unknown/unavailable
-AI goes directly to local suggestions. The last five exchanges are saved in this
+decline are remembered for 180 days without renewal on visits. A remembered
+refusal is asked again at most once per browser session, on a submitted question;
+after that, and after a refusal or withdrawal made in the session, Enter is plain
+search. Unknown/unavailable AI is plain search too: no chat opens, no opt-in is
+offered and the input shows the search-only copy. The last five exchanges are saved in this
 tab for two hours after the latest answer only when the separate history option
 is selected; otherwise they remain in page memory. Chat replaces
 the entire discovery section, with messages above the shared input. The page
@@ -57,11 +60,20 @@ recipients requires another privacy review and notice-version update.
 
 ## Silent fallback
 
-If the vector DB, corpus freshness or OpenRouter fails, the same chat shows up to
-three matching projects from the public search index, or project/contact links.
-There are no outage banners. The first failure is bounded to eight seconds on the
-server (nine seconds including a browser transport timeout); later questions use
-local suggestions immediately. Stop and Clear still cancel pending questions.
+The fallback only appears inside a conversation that is already open. If the
+vector DB, corpus freshness or OpenRouter fails while a question is pending or
+after earlier answers, that chat shows up to three matching projects from the
+public search index, or project/contact links. There are no outage banners. The
+first failure is bounded to eight seconds on the server (nine seconds including a
+browser transport timeout); later questions in the open chat use local
+suggestions immediately. Stop and Clear still cancel pending questions. Once the
+chat is closed, Enter no longer opens it until AI is verified again.
+
+Used-up budgets and request caps count as unavailable. The status endpoint checks
+the shared allowance (daily/monthly budget, global and per-visitor caps) without
+reserving anything and reports `available: false` with no recovery probe; a
+question refused by the allowance returns the same state so the tab stops
+offering questions until status confirms the allowance is back.
 
 A process-local circuit starts with a 30-second cooldown, increasing failed
 recovery checks to a maximum five minutes. Active pages check status in the

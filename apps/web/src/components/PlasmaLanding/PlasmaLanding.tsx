@@ -126,6 +126,12 @@ export const PlasmaLanding = ({
   const assistantEnabled = assistant.enabled;
   const chatMode = assistantEnabled && chatOpen;
   const consent = assistant.consent;
+  // A question is only invited while AI can answer it, so nobody lands in a chat of
+  // canned replies; a conversation that is already open carries on through an outage.
+  const canAsk =
+    assistantEnabled &&
+    (chatMode ||
+      (assistant.available && (!consent.declined || consent.reaskable)));
   const askAssistant = assistant.ask;
   const suggestAssistantProjects = assistant.suggest;
   const [consentQuestion, setConsentQuestion] = useState<string | null>(null);
@@ -535,10 +541,8 @@ export const PlasmaLanding = ({
       queuedQuestion.current = null;
       return;
     }
-    if (consentQuestion === null || assistant.available) return;
-    setConsentQuestion(null);
-    if (consentQuestion.trim()) suggestProjects(consentQuestion);
-  }, [assistantEnabled, consentQuestion, assistant.available, suggestProjects]);
+    if (!assistant.available) setConsentQuestion(null);
+  }, [assistantEnabled, assistant.available]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -554,14 +558,15 @@ export const PlasmaLanding = ({
       navigate(destination);
       return;
     }
-    if (assistantEnabled) {
+    if (canAsk) {
       if (!hasQuery || assistant.busy) return;
-      if (!assistant.available || consent.declined) {
+      if (!assistant.available) {
         suggestProjects(input);
         return;
       }
       if (!parseKnowledgeConsent(consent.receipt)) {
-        consent.forget();
+        if (consent.declined) consent.markAsked();
+        else consent.forget();
         setConsentQuestion(input);
         return;
       }
@@ -608,10 +613,8 @@ export const PlasmaLanding = ({
         <KnowledgeConsentDialog
           onCancel={() => setConsentQuestion(null)}
           onDecline={() => {
-            const question = consentQuestion;
             setConsentQuestion(null);
             consent.revoke();
-            if (question.trim()) suggestProjects(question);
           }}
           onAllow={(remember) => {
             queuedQuestion.current = consentQuestion.trim()
@@ -940,7 +943,7 @@ export const PlasmaLanding = ({
               tabIndex={-1}
               className="landing-input-box"
               onSubmit={submit}
-              aria-busy={assistantEnabled ? assistant.busy : busy}
+              aria-busy={canAsk ? assistant.busy : busy}
             >
               <span className="landing-prompt" aria-hidden="true">
                 ↳
@@ -1001,7 +1004,7 @@ export const PlasmaLanding = ({
                 type="search"
                 aria-controls={showDiscovery ? suggestionsId : undefined}
                 placeholder={
-                  assistantEnabled
+                  canAsk
                     ? chatMode
                       ? de
                         ? "Stelle eine weitere Frage …"
@@ -1015,7 +1018,7 @@ export const PlasmaLanding = ({
                 }
                 autoComplete="off"
                 spellCheck={false}
-                maxLength={assistantEnabled ? 1000 : 240}
+                maxLength={canAsk ? 1000 : 240}
                 readOnly={assistant.busy}
                 aria-describedby="landing-input-help landing-status"
               />
@@ -1031,7 +1034,7 @@ export const PlasmaLanding = ({
                 }
                 className="landing-submit"
                 aria-label={
-                  assistantEnabled
+                  canAsk
                     ? assistant.busy
                       ? de
                         ? "Antwort stoppen"
@@ -1042,7 +1045,7 @@ export const PlasmaLanding = ({
                     : progress || (de ? "Los" : "Go")
                 }
                 disabled={
-                  assistantEnabled
+                  canAsk
                     ? (!hasQuery && !assistant.busy) ||
                       navigating ||
                       (!assistant.busy && !explicitCommand && searchLoading)
@@ -1053,7 +1056,7 @@ export const PlasmaLanding = ({
               >
                 {assistant.busy ? (
                   <span aria-hidden="true">■</span>
-                ) : !assistantEnabled && busy ? (
+                ) : !canAsk && busy ? (
                   <LoaderCircle
                     size={18}
                     className="landing-loading-icon"
@@ -1066,7 +1069,7 @@ export const PlasmaLanding = ({
             </form>
             <div className="landing-console-meta">
               <span id="landing-input-help">
-                {assistantEnabled
+                {canAsk
                   ? chatMode
                     ? de
                       ? "Enter fragen · Esc Chat schließen"
@@ -1082,7 +1085,7 @@ export const PlasmaLanding = ({
                       ? "Bedarf, Funktionen, Projekte, Tools oder ein Hallo"
                       : "needs, capabilities, projects, tools, or a hello"}
               </span>
-              {!hasQuery && !assistantEnabled && (
+              {!hasQuery && !canAsk && (
                 <span aria-hidden="true">
                   {de ? "tippen & Enter ↵" : "type & enter ↵"}
                 </span>
