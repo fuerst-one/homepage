@@ -48,7 +48,7 @@ const conversion = project("conversion", {
   ownership: "Product engineering owner",
 });
 const seabo = project("seabo", {
-  buyerNeeds: ["Join an existing team", "Improve a complex interface"],
+  buyerNeeds: ["Work in a team", "Improve a complex interface"],
   stages: ["Production", "Improvement"],
   domains: ["Logistics and maritime"],
   ownership: "Team contributor",

@@ -72,7 +72,7 @@ const CHALLENGES = [
       "Integrate business systems",
       "Connect software and hardware",
       "Maintain and evolve a product",
-      "Join an existing team",
+      "Work in a team",
     ],
   },
 ] as const;

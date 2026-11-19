@@ -236,3 +236,23 @@ test("migrated methods remain searchable and explain cross-sector related work",
     ["a", "b"],
   );
 });
+
+test("every public buyer need has an Atlas use-case group and a German term", () => {
+  const { CASE_VOCABULARY } = loadTs(
+    new URL("../packages/content/src/projectCase.ts", import.meta.url),
+  );
+  const { ATLAS_DE } = loadTs(
+    new URL(
+      "../apps/web/src/components/ExperienceAtlas/atlasCopy.ts",
+      import.meta.url,
+    ),
+  );
+  for (const need of Object.keys(CASE_VOCABULARY.buyerNeeds)) {
+    const memberships = atlasMemberships(
+      { matching: { buyerNeeds: [need], domains: [] } },
+      "challenge",
+    );
+    assert.ok(!memberships.includes("unmapped"), `${need} has no Atlas group`);
+    assert.ok(ATLAS_DE[need], `${need} has no German Atlas term`);
+  }
+});

@@ -53,7 +53,10 @@
             "name": "Maintain and evolve a product"
           },
           {
-            "name": "Join an existing team"
+            "name": "Work in a team"
+          },
+          {
+            "name": "Sell products"
           }
         ]
       }
@@ -1402,7 +1405,7 @@
           "Improve a complex interface",
           "Improve conversion",
           "Integrate business systems",
-          "Join an existing team"
+          "Work in a team"
         ],
         "Delivery Stages": ["Improvement"],
         "Project Domains": ["E-commerce", "Product configuration"],
@@ -1526,7 +1529,7 @@
         "Buyer Needs": [
           "Improve conversion",
           "Make data actionable",
-          "Join an existing team"
+          "Work in a team"
         ],
         "Delivery Stages": ["Improvement"],
         "Project Domains": ["Marketing and research"],
@@ -1959,7 +1962,7 @@
           "Improve a complex interface",
           "Make data actionable",
           "Deliver an industry-specific workflow",
-          "Join an existing team"
+          "Work in a team"
         ],
         "Delivery Stages": ["Production", "Improvement"],
         "Project Domains": ["Logistics operations", "Route planning"],
