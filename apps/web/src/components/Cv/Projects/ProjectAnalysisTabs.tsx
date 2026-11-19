@@ -3,7 +3,6 @@
 import { useLocale } from "../../i18n/LocaleProvider";
 import { useId, useMemo, useState } from "react";
 import { CvProject } from "@homepage/content/models";
-import { ProjectGraph3D } from "./ProjectGraph3D";
 import { useProjectListStore } from "./projectListStore";
 import { filterProjects, getFilterOptionCounts } from "./Filter/utils";
 import { filterConfigs } from "./filterConfigs";
@@ -12,17 +11,15 @@ import { BarChartFilter } from "./Filter/BarChartFilter";
 import { PieChartFilter } from "./Filter/PieChartFilter";
 import { TreemapFilter } from "./Filter/TreemapFilter";
 
-const GRAPH_TAB_ID = "graph";
-
-type TabId = typeof GRAPH_TAB_ID | string;
-
 export const ProjectAnalysisTabs = ({
   projects,
 }: {
   projects: CvProject[];
 }) => {
   const locale = useLocale();
-  const [activeTab, setActiveTab] = useState<TabId>(GRAPH_TAB_ID);
+  const [activeTab, setActiveTab] = useState<string>(
+    filterConfigs[0].projectKey,
+  );
   const filterParams = useProjectListStore((s) => s.filters);
   const filteredProjects = useMemo(
     () => filterProjects(projects, filterParams),
@@ -31,27 +28,24 @@ export const ProjectAnalysisTabs = ({
 
   const selectorId = useId();
   const panelId = `${selectorId}-panel`;
-  const tabs: { id: TabId; label: string }[] = [
-    { id: GRAPH_TAB_ID, label: "3D Scatter" },
-    ...filterConfigs.map((c) => ({
-      id: c.projectKey,
-      label:
-        locale === "de"
-          ? ((
-              {
-                clients: "Kunden",
-                industries: "Branchen",
-                capabilities: "Kompetenzen",
-                methods: "Methoden",
-                tools: "Tools",
-                languages: "Sprachen",
-                projectType: "Projekttyp",
-                workplace: "Arbeitsort",
-              } as Record<string, string>
-            )[c.projectKey] ?? c.label)
-          : c.label,
-    })),
-  ];
+  const tabs = filterConfigs.map((c) => ({
+    id: c.projectKey,
+    label:
+      locale === "de"
+        ? ((
+            {
+              clients: "Kunden",
+              industries: "Branchen",
+              capabilities: "Kompetenzen",
+              methods: "Methoden",
+              tools: "Tools",
+              languages: "Sprachen",
+              projectType: "Projekttyp",
+              workplace: "Arbeitsort",
+            } as Record<string, string>
+          )[c.projectKey] ?? c.label)
+        : c.label,
+  }));
 
   return (
     <div>
@@ -82,14 +76,10 @@ export const ProjectAnalysisTabs = ({
         aria-label={`${locale === "de" ? "Projektanalyse" : "Project analysis"}: ${tabs.find((tab) => tab.id === activeTab)?.label}`}
         className="glass-panel relative -mt-px h-[30vh] w-full overflow-hidden border border-white/30"
       >
-        {activeTab === GRAPH_TAB_ID ? (
-          <ProjectGraph3D projects={projects} />
-        ) : (
-          <ChartTabContent
-            filterConfig={getFilterConfig(activeTab)}
-            projects={filteredProjects}
-          />
-        )}
+        <ChartTabContent
+          filterConfig={getFilterConfig(activeTab)}
+          projects={filteredProjects}
+        />
       </div>
     </div>
   );

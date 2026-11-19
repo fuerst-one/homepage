@@ -133,3 +133,46 @@ for (const locale of ["en", "de"]) {
     }
   });
 }
+
+for (const locale of ["en", "de"]) {
+  test(`${locale}: analysis box sits below the sidebar Explorer and offers chart views only`, async () => {
+    const browser = await puppeteer.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      const errors = [];
+      page.on("pageerror", (error) => errors.push(error.message));
+      await page.setViewport({ width: 1280, height: 900 });
+      await page.goto(`${base}/${locale}/projects?all=1`, {
+        waitUntil: "domcontentloaded",
+        timeout: 90000,
+      });
+      const views = await page.waitForSelector("aside select");
+      assert.deepEqual(
+        await views.$$eval("option", (options) =>
+          options.map((option) => option.textContent),
+        ),
+        locale === "de"
+          ? ["Kompetenzen", "Methoden", "Branchen", "Projekttyp", "Tools"]
+          : ["Capabilities", "Methods", "Industries", "Types", "Tools"],
+      );
+      assert.equal(
+        await views.evaluate((select) => select.value),
+        "capabilities",
+      );
+      const analysis = await page.waitForSelector(
+        "aside [role=region][aria-label]",
+      );
+      assert.equal(await analysis.$("button"), null);
+      const preview = await page.waitForSelector(
+        "aside [data-explorer-preview]",
+      );
+      assert.ok(
+        (await preview.boundingBox()).y < (await views.boundingBox()).y,
+        "the Explorer preview stays above the analysis box",
+      );
+      assert.deepEqual(errors, []);
+    } finally {
+      await browser.close();
+    }
+  });
+}
