@@ -483,3 +483,87 @@ test("recovery refuses pictures it cannot repair, misplaced markers and wrong si
     /dimensions/i,
   );
 });
+
+const clampChannel = (v) => Math.max(0, Math.min(255, v));
+test("recovery undoes colour compression that differs between the colour families", () => {
+  const image = m.encodeProfilePixels(terms, interests, 135, 6);
+  const palette = m.profilePixelPalette();
+  // Gain and offset per family and channel, as a colour-space conversion leaves them.
+  const conversion = [
+    [
+      [0.95, 6],
+      [1.02, -3],
+      [1.05, -2],
+    ],
+    [
+      [1.03, -4],
+      [0.96, 5],
+      [0.97, 3],
+    ],
+    [
+      [1.04, -3],
+      [0.98, 2],
+      [0.95, 7],
+    ],
+    [
+      [0.94, 8],
+      [1.03, -2],
+      [0.95, 6],
+    ],
+  ];
+  const converted = image.pixels.map((color) => {
+    const index = palette.indexOf(color);
+    if (index < 0) return color;
+    return colorOf(
+      channelsOf(color).map((v, k) => {
+        const [gain, offset] = conversion[index >> 6][k];
+        return clampChannel(gain * v + offset);
+      }),
+    );
+  });
+  assert.throws(
+    () => m.decodeProfilePixels(nearestPaletteColors(converted), terms),
+    "the converted colours no longer match their shades",
+  );
+  const recovered = m.recoverProfilePixels(converted, terms);
+  assert.deepEqual(recovered, image.pixels);
+  assert.equal(m.decodeProfileInteractions(recovered, terms), 6);
+});
+
+test("recovery also retries uncertain cells beyond the twelve least certain", () => {
+  const legacy = loadTs(
+    new URL("../packages/content/src/profilePixelsLegacy.ts", import.meta.url),
+  );
+  const image = m.encodeProfilePixels(terms, interests, 0, 6);
+  const palette = m.profilePixelPalette();
+  const { shades } = m.encodeProfilePayload(terms, interests, 6);
+  const inPayloadOrder = legacy
+    .payloadOrder(16)
+    .filter((at) => shades[at] >= 0);
+  const towardsNeighbour = (at, share) => {
+    const index = palette.indexOf(image.pixels[at]);
+    const own = channelsOf(image.pixels[at]);
+    const neighbour = palette
+      .filter((_, k) => k >> 6 === index >> 6 && k !== index)
+      .map(channelsOf)
+      .reduce((a, b) => (distance(b, own) < distance(a, own) ? b : a));
+    return colorOf(own.map((v, k) => v + (neighbour[k] - v) * share));
+  };
+  const misleading = [...image.pixels];
+  // Fourteen cells are right but barely: they are the least certain ones.
+  for (let i = 0; i < 14; i++) {
+    const at = inPayloadOrder[3 + i * 16];
+    misleading[at] = towardsNeighbour(at, 0.47);
+  }
+  // Eight cells are wrong and less uncertain than those. Each spans two bytes,
+  // so error correction alone cannot repair them.
+  for (let i = 0; i < 8; i++) {
+    const at = inPayloadOrder[9 + i * 28];
+    misleading[at] = towardsNeighbour(at, 0.56);
+  }
+  assert.throws(
+    () => m.decodeProfilePixels(nearestPaletteColors(misleading), terms),
+    "matching every cell to its nearest shade is not enough here",
+  );
+  assert.deepEqual(m.recoverProfilePixels(misleading, terms), image.pixels);
+});

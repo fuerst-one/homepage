@@ -1,6 +1,6 @@
-import GenericGF from "@zxing/library/cjs/core/common/reedsolomon/GenericGF";
-import ReedSolomonEncoder from "@zxing/library/cjs/core/common/reedsolomon/ReedSolomonEncoder";
-import ReedSolomonDecoder from "@zxing/library/cjs/core/common/reedsolomon/ReedSolomonDecoder";
+import GenericGFModule from "@zxing/library/cjs/core/common/reedsolomon/GenericGF";
+import ReedSolomonEncoderModule from "@zxing/library/cjs/core/common/reedsolomon/ReedSolomonEncoder";
+import ReedSolomonDecoderModule from "@zxing/library/cjs/core/common/reedsolomon/ReedSolomonDecoder";
 import type { ProfileTerm, ProfileInterest } from "./visitorProfile";
 import {
   rgb,
@@ -15,6 +15,13 @@ import {
   decodeProfilePixels as decodeLegacy,
 } from "./profilePixelsLegacy";
 import { driftField } from "./profilePixelDrift";
+// Bundlers hand over the class these CommonJS files export; Node's own module
+// loader, which scripts run under, hands over { default: Class }.
+const fromCommonJs = <T>(loaded: T): T =>
+  (loaded as { default?: T }).default ?? loaded;
+const GenericGF = fromCommonJs(GenericGFModule),
+  ReedSolomonEncoder = fromCommonJs(ReedSolomonEncoderModule),
+  ReedSolomonDecoder = fromCommonJs(ReedSolomonDecoderModule);
 /**
  * Coral, lime, azure, magenta, indexed by interest family. Lime is the site's
  * primary colour; the other three were chosen to stay apart from it and from
@@ -423,38 +430,157 @@ export function decodeProfileText(text: string, terms: readonly Term[]) {
 }
 // Image compression stores colour as brightness plus two colour differences
 // and is coarsest in the latter, so shades are compared in that space.
-const lumaChroma = (color: number) => {
-  const [r, g, b] = channels(color);
-  return [
-    0.299 * r + 0.587 * g + 0.114 * b,
-    -0.169 * r - 0.331 * g + 0.5 * b,
-    0.5 * r - 0.419 * g - 0.081 * b,
-  ];
-};
+const lumaChroma = ([r, g, b]: readonly number[]) => [
+  0.299 * r + 0.587 * g + 0.114 * b,
+  -0.169 * r - 0.331 * g + 0.5 * b,
+  0.5 * r - 0.419 * g - 0.081 * b,
+];
+const shadeDistance = (a: readonly number[], b: readonly number[]) =>
+  (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+let paletteLumaChroma: number[][] | undefined;
+/** The nearest palette colour and the nearest one with another shade number. */
+function nearestShades(rgb: readonly number[]) {
+  paletteLumaChroma ??= profilePixelPalette().map((color) =>
+    lumaChroma(channels(color)),
+  );
+  const seen = lumaChroma(rgb);
+  let first = 0,
+    firstDistance = Infinity;
+  paletteLumaChroma.forEach((candidate, index) => {
+    const distance = shadeDistance(candidate, seen);
+    if (distance < firstDistance) {
+      first = index;
+      firstDistance = distance;
+    }
+  });
+  let second = first,
+    secondDistance = Infinity;
+  paletteLumaChroma.forEach((candidate, index) => {
+    if (index % SHADES === first % SHADES) return;
+    const distance = shadeDistance(candidate, seen);
+    if (distance < secondDistance) {
+      second = index;
+      secondDistance = distance;
+    }
+  });
+  return {
+    first,
+    second,
+    distance: firstDistance,
+    margin: Math.sqrt(secondDistance) - Math.sqrt(firstDistance),
+  };
+}
+// The colour fit repeats this often and learns only from cells this close to
+// a shade, in units of the distance above.
+const FAMILY_FIT_ROUNDS = 4,
+  FAMILY_FIT_REACH = 5,
+  CALIBRATION_WEIGHT = 6;
+/**
+ * Colour-space conversions and compression scale each colour family a little
+ * differently, by more than the distance between two shades. This estimates a
+ * gain and an offset per family and channel from the family's two calibration
+ * cells and from the cells that already sit close to a shade, and returns the
+ * colours with that undone.
+ */
+function fitColorFamilies(
+  observed: readonly (readonly number[])[],
+  size: number,
+) {
+  const palette = profilePixelPalette().map(channels);
+  let corrected = observed;
+  for (let round = 0; round < FAMILY_FIT_ROUNDS; round++) {
+    const families = PROFILE_PIXEL_HUES.map(
+      () =>
+        [] as { seen: readonly number[]; truth: number[]; weight: number }[],
+    );
+    for (const cell of calibration(size))
+      families[cell.hue].push({
+        seen: observed[cell.at],
+        truth: palette[cell.hue * SHADES + cell.code],
+        weight: CALIBRATION_WEIGHT,
+      });
+    const hues = corrected.map((color, at) => {
+      if (markerColor(at, size) !== null) return -1;
+      const { first, distance } = nearestShades(color);
+      const hue = Math.floor(first / SHADES);
+      if (distance <= FAMILY_FIT_REACH ** 2)
+        families[hue].push({
+          seen: observed[at],
+          truth: palette[first],
+          weight: 1,
+        });
+      return hue;
+    });
+    const fits = families.map((pairs) =>
+      [0, 1, 2].map((k) => {
+        const total = pairs.reduce((sum, p) => sum + p.weight, 0);
+        const meanTruth =
+          pairs.reduce((sum, p) => sum + p.weight * p.truth[k], 0) / total;
+        const meanSeen =
+          pairs.reduce((sum, p) => sum + p.weight * p.seen[k], 0) / total;
+        const gain =
+          pairs.reduce(
+            (sum, p) =>
+              sum +
+              p.weight * (p.truth[k] - meanTruth) * (p.seen[k] - meanSeen),
+            0,
+          ) /
+          pairs.reduce(
+            (sum, p) => sum + p.weight * (p.truth[k] - meanTruth) ** 2,
+            0,
+          );
+        // A family without usable cells keeps its colours as they are.
+        return Number.isFinite(gain) && gain > 0.5 && gain < 2
+          ? { gain, offset: meanSeen - gain * meanTruth }
+          : { gain: 1, offset: 0 };
+      }),
+    );
+    corrected = observed.map((color, at) =>
+      hues[at] < 0
+        ? color
+        : color.map(
+            (v, k) => (v - fits[hues[at]][k].offset) / fits[hues[at]][k].gain,
+          ),
+    );
+  }
+  return corrected;
+}
 // Cells whose two nearest shades are closest together are the likeliest
-// mismatches; this many of them are retried with their second-nearest shade.
-const RECOVERY_RETRY_CELLS = 12;
+// mismatches. Every combination of the twelve least certain is retried with
+// the second shade, then up to four at a time of the 24 least certain.
+const RETRY_ALL_CELLS = 12,
+  RETRY_SOME_CELLS = 24,
+  RETRY_SOME_AT_ONCE = 4;
 let retryMasks: number[] | undefined;
-/** Every choice of retried cells, fewest changes first. */
+/** Every choice of retried cells as a bit mask, fewest changes first in each part. */
 function recoveryRetryMasks() {
+  if (retryMasks) return retryMasks;
   const bitsSet = (mask: number) => {
     let count = 0;
     for (; mask; mask &= mask - 1) count++;
     return count;
   };
-  retryMasks ??= Array.from(
-    { length: 1 << RECOVERY_RETRY_CELLS },
-    (_, mask) => mask,
-  ).sort((a, b) => bitsSet(a) - bitsSet(b) || a - b);
+  const byCount = (a: number, b: number) => bitsSet(a) - bitsSet(b) || a - b;
+  const all = Array.from({ length: 1 << RETRY_ALL_CELLS }, (_, mask) => mask);
+  const some: number[] = [];
+  const choose = (from: number, mask: number, left: number) => {
+    // Choices within the first twelve cells are already part of `all`.
+    if (mask >= 1 << RETRY_ALL_CELLS) some.push(mask);
+    if (left)
+      for (let bit = from; bit < RETRY_SOME_CELLS; bit++)
+        choose(bit + 1, mask | (1 << bit), left - 1);
+  };
+  choose(0, 0, RETRY_SOME_AT_ONCE);
+  retryMasks = [...all.sort(byCount), ...some.sort(byCount)];
   return retryMasks;
 }
 /**
  * Rebuilds a decodable picture from one averaged colour per cell, as sampled
- * from a compressed or rescaled copy. The shades are the original ones: they
- * still have to pass error correction, the checksum and the catalog
+ * from a compressed, converted or rescaled copy. The shades are the original
+ * ones: they still have to pass error correction, the checksum and the catalog
  * fingerprint. Hues are not covered by those checks, so each cell keeps the
- * hue it was sampled with. A picture that cannot be repaired costs all 4,096
- * retries, a few hundred milliseconds, so keep this off a browser's main thread.
+ * hue it was sampled with. A picture that cannot be repaired costs about
+ * 16,000 retries, one to two seconds, so keep this off a browser's main thread.
  */
 export function recoverProfilePixels(
   colors: readonly number[],
@@ -472,39 +598,13 @@ export function recoverProfilePixels(
       throw Error("Pixel format orientation mismatch");
   }
   const palette = profilePixelPalette(),
-    paletteChannels = palette.map(lumaChroma),
-    waveCells = payloadOrder(size);
-  const guesses = waveCells.map((at) => {
-    const seen = lumaChroma(colors[at]);
-    let first = 0,
-      second = 0,
-      firstDistance = Infinity,
-      secondDistance = Infinity;
-    paletteChannels.forEach((candidate, index) => {
-      const distance = candidate.reduce(
-        (sum, v, k) => sum + (v - seen[k]) ** 2,
-        0,
-      );
-      if (distance < firstDistance) {
-        second = first;
-        secondDistance = firstDistance;
-        first = index;
-        firstDistance = distance;
-      } else if (distance < secondDistance) {
-        second = index;
-        secondDistance = distance;
-      }
-    });
-    return {
-      first,
-      second,
-      margin: Math.sqrt(secondDistance) - Math.sqrt(firstDistance),
-    };
-  });
+    waveCells = payloadOrder(size),
+    corrected = fitColorFamilies(colors.map(channels), size);
+  const guesses = waveCells.map((at) => nearestShades(corrected[at]));
   const uncertain = guesses
     .map((guess, cell) => ({ cell, margin: guess.margin }))
     .sort((a, b) => a.margin - b.margin || a.cell - b.cell)
-    .slice(0, RECOVERY_RETRY_CELLS)
+    .slice(0, RETRY_SOME_CELLS)
     .map((entry) => entry.cell);
   for (const mask of recoveryRetryMasks()) {
     const chosen = guesses.map((guess) => guess.first);
@@ -517,7 +617,9 @@ export function recoverProfilePixels(
         chosen.map((index) => index % SHADES),
         ids,
       );
-    } catch {
+    } catch (error) {
+      // Only a failed correction or check means that this choice was wrong.
+      if (error instanceof TypeError) throw error;
       continue;
     }
     const bytes = Array.from(
@@ -530,7 +632,7 @@ export function recoverProfilePixels(
       pixels[cell.at] = palette[cell.hue * SHADES + cell.code];
     waveCells.forEach((at, i) => {
       pixels[at] =
-        palette[Math.floor(chosen[i] / SHADES) * SHADES + waveShades[i]];
+        palette[Math.floor(guesses[i].first / SHADES) * SHADES + waveShades[i]];
     });
     return pixels;
   }

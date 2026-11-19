@@ -178,17 +178,45 @@ angle metadata or activity history. Sharing it shares those quantized scores and
 that count.
 
 Lossy copies such as JPEG or messenger re-encodes shift colours past the exact
-decoder. `recoverProfilePixels` takes one averaged colour per cell (sample the
-central part of each cell), matches it to the nearest shade by brightness and
-colour difference, and retries its twelve least certain cells with their
-second-nearest shade until error correction, checksum and fingerprint all pass.
-It returns a picture with the original shades or fails. Hues are outside those
-checks and stay as sampled, and a picture that cannot be repaired costs all
-4,096 retries (a few hundred milliseconds).
+decoder. `recoverProfilePixels` takes one averaged colour per cell and works in
+three steps. It first undoes the gain and offset that colour-space conversion
+and compression give each colour family, estimated per channel from the family's
+two calibration cells and from the cells that already sit close to a shade. It
+then matches every cell to the nearest shade by brightness and colour
+difference. Finally it retries uncertain cells with their second-nearest shade
+until error correction, checksum and fingerprint all pass: every combination of
+the twelve least certain cells, then up to four at a time of the 24 least
+certain. It returns a picture with the original shades or fails. Hues are
+outside those checks and stay as sampled, and a picture that cannot be repaired
+costs about 16,000 retries (one to two seconds).
 
-Screenshot checks sample the centres of a known grid bounding box and verify all
-168 fields at 60 and 192 pixels. The decoder takes RGB pixels and the matching
-catalog; automatic code location and camera-photo recovery are not implemented.
+`profileSignatureImage.ts` reads a signature from raw image pixels without any
+dependency. `locateProfileSignature` finds the white square with the black
+centre in the top left corner at any size and position, settles the cell size
+by where the markers in the other two corners turn up, and refines the four
+corners until the cells line up. `sampleProfileSignature` averages the inner
+half of each cell in linear light; measured on compressed screenshots, the
+inner half misreads a third as many cells as the inner two thirds.
+`readProfileSignatureImage` combines both with the recovery.
+
+```sh
+pnpm profile:read screenshot.png --site https://example.com
+pnpm profile:read screenshot.jpg --catalog catalog.json --json
+```
+
+The script prints the interaction count, the active interests and the text
+code. A picture only verifies against the catalog it was made with, so the
+script loads `/api/profile/catalog` from the given site (the local dev server by
+default) or a saved copy of that response.
+
+The image has to be upright and undistorted, which screenshots are. Photos of a
+screen are out of reach of this format: neighbouring shades are five to seven
+colour units apart, while in the best of four test photos cells of the same
+true colour differed by about three units even after sampling only the centres
+and removing the brightness drift measured on the markers.
+
+Browser tests verify all 168 fields from real screenshots at 60 and 192
+pixels.
 
 ## Owner insights
 
