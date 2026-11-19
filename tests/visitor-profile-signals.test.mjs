@@ -372,3 +372,72 @@ test("retired negative action history does not discard saved projects", () => {
     feedback: "auto",
   });
 });
+
+test("a region key names where, and the region function says which terms it displays", () => {
+  const { profileRegionTerms, CARD_BUYER_NEED_COUNT } = loadTs(
+    new URL(
+      "../packages/content/src/visitorProfileSignals.ts",
+      import.meta.url,
+    ),
+  );
+  const regionTerms = [
+    ["industries", "Retail"],
+    ["productTypes", "Web app"],
+    ["buyerNeeds", "Launch a new product"],
+    ["buyerNeeds", "Automate repetitive work"],
+    ["buyerNeeds", "Make data actionable"],
+    ["capabilities", "Integration"],
+    ["methods", "Research"],
+    ["tools", "React"],
+    ["stages", "Production"],
+  ].map(([facet, value]) => ({ id: `${facet}:${value}`, facet, value }));
+  const regions = {
+    terms: regionTerms,
+    projects: [
+      {
+        id: "a",
+        name: "A",
+        href: "/en/projects/a",
+        terms: regionTerms.map((t) => t.id),
+      },
+    ],
+  };
+  const ids = (region) =>
+    profileRegionTerms(region, regions)
+      ?.map((t) => t.id)
+      .sort();
+  assert.equal(CARD_BUYER_NEED_COUNT, 2);
+  assert.deepEqual(
+    ids("card:a"),
+    [
+      "buyerNeeds:Automate repetitive work",
+      "buyerNeeds:Launch a new product",
+      "industries:Retail",
+      "productTypes:Web app",
+    ],
+    "a card shows the industry, the product type and the first two needs in source order",
+  );
+  assert.deepEqual(ids("project:a|needs"), [
+    "buyerNeeds:Automate repetitive work",
+    "buyerNeeds:Launch a new product",
+    "buyerNeeds:Make data actionable",
+  ]);
+  assert.deepEqual(ids("project:a|details"), [
+    "capabilities:Integration",
+    "industries:Retail",
+    "methods:Research",
+    "productTypes:Web app",
+    "tools:React",
+  ]);
+  for (const invalid of [
+    "card:missing",
+    "card:a|needs",
+    "project:a",
+    "project:a|outcomes",
+    "project:missing|needs",
+    "project:a|needs|x",
+    "page:a",
+    "",
+  ])
+    assert.equal(profileRegionTerms(invalid, regions), null, invalid);
+});

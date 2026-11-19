@@ -7,7 +7,6 @@ import Link from "../i18n/LocalizedLink";
 import { useProjectFocusStore } from "../Cv/Projects/projectFocusStore";
 import {
   PROFILE_STORAGE_KEY,
-  isActiveProfileReading,
   profilePageSignal,
   profileLinkSignals,
   isReturningProfileProject,
@@ -35,7 +34,6 @@ function useProfileRuntime() {
   const pathname = usePathname();
   const enabled = useProfile((s) => s.enabled);
   const catalog = useProfile((s) => s.catalog);
-  useRichProfileSignals(pathname, enabled);
   const orientation = useProfile((s) => s.orientation);
   useEffect(() => {
     if (!enabled || orientation !== null) return;
@@ -143,58 +141,7 @@ function useProfileRuntime() {
       recordVisitorInteraction(pageKind, pageSubject);
     }
   }, [enabled, pageKind, pageSubject]);
-  useEffect(() => {
-    if (!enabled || !activeProject) return;
-    let lastInteraction = Date.now();
-    let activeSeconds = 0;
-    const interact = (event: Event) => {
-      if (
-        event.target instanceof Element &&
-        event.target.closest("[data-profile-ui]")
-      )
-        return;
-      lastInteraction = Date.now();
-    };
-    const events = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
-    events.forEach((event) =>
-      window.addEventListener(event, interact, { passive: true }),
-    );
-    const timer = setInterval(() => {
-      const target = document.querySelector(
-        `[data-profile-project="${activeProject}"]`,
-      );
-      const bounds = target?.getBoundingClientRect();
-      const modal = document.querySelector(
-        '[role="dialog"][data-state="open"]',
-      );
-      const inView =
-        !!bounds &&
-        !!target &&
-        (!modal || modal.contains(target)) &&
-        Math.min(bounds.bottom, innerHeight) - Math.max(bounds.top, 0) >= 80;
-      if (
-        isActiveProfileReading(
-          {
-            visible: document.visibilityState === "visible" && inView,
-            focused:
-              document.hasFocus() &&
-              !document.activeElement?.closest("[data-profile-ui]"),
-            lastInteraction,
-          },
-          Date.now(),
-        )
-      )
-        activeSeconds++;
-      if (activeSeconds >= 15) {
-        recordVisitorInteraction("project_read", activeProject);
-        clearInterval(timer);
-      }
-    }, 1000);
-    return () => {
-      clearInterval(timer);
-      events.forEach((event) => window.removeEventListener(event, interact));
-    };
-  }, [enabled, activeProject]);
+  useRichProfileSignals(pathname, enabled, activeProject);
   useEffect(() => {
     if (!pending.length || network === "error" || network === "sending") return;
     const timer = setTimeout(() => void useProfile.getState().flush(), 1500);
