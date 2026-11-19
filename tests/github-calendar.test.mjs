@@ -98,6 +98,35 @@ test("calendar months carry their active projects, also outside recorded commit 
   });
 });
 
+test("a calendar month is starred when any active project is outside GitHub", () => {
+  const { githubCalendarYears, hasWorkOutsideGitHub } = subject();
+  const [year] = githubCalendarYears(
+    [
+      { month: "2020-10", commits: 4 },
+      { month: "2020-11", commits: 0 },
+      { month: "2020-12", commits: 1 },
+    ],
+    [
+      {
+        month: "2020-10",
+        projects: [{ label: "Open tool", outsideGitHub: false }],
+      },
+      {
+        month: "2020-11",
+        projects: [
+          { label: "Open tool", outsideGitHub: false },
+          { label: "GitLab client", outsideGitHub: true },
+        ],
+      },
+    ],
+  );
+  assert.deepEqual(year.months.slice(9).map(hasWorkOutsideGitHub), [
+    false,
+    true,
+    false,
+  ]);
+});
+
 test("keyboard calendar movement reaches unrecorded months that have active projects", () => {
   const { githubCalendarYears, adjacentGitHubMonth } = subject();
   const years = githubCalendarYears(

@@ -187,6 +187,7 @@ export function workProject(project: CvProject, href: string, locale: Locale) {
     startDate: project.startDate,
     endDate: project.endDate,
     status: project.status,
+    hasConnectedRepo: project.hasConnectedRepo,
   };
 }
 export type WorkProject = ReturnType<typeof workProject>;
@@ -258,12 +259,15 @@ export function portfolioTimeline(
 }
 export type PortfolioMonth = ReturnType<typeof portfolioTimeline>[number];
 
-export type TimelineProject = { label: string };
+export type TimelineProject = { label: string; outsideGitHub: boolean };
 export type TimelineMonth = { month: string; projects: TimelineProject[] };
 
 export function timelineProjects(
   months: PortfolioMonth[],
-  projects: { id: string; label: string; startDate: string }[],
+  projects: Pick<
+    WorkProject,
+    "id" | "label" | "startDate" | "hasConnectedRepo"
+  >[],
 ): TimelineMonth[] {
   const byId = new Map(projects.map((project) => [project.id, project]));
   return months.map(({ month, engagements }) => ({
@@ -275,6 +279,10 @@ export function timelineProjects(
           a.startDate.localeCompare(b.startDate) ||
           a.label.localeCompare(b.label),
       )
-      .map(({ label }) => ({ label })),
+      // An unchecked project is not evidence of work outside GitHub.
+      .map(({ label, hasConnectedRepo }) => ({
+        label,
+        outsideGitHub: hasConnectedRepo === false,
+      })),
   }));
 }

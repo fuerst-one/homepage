@@ -44,6 +44,11 @@ commit figure or active projects. The project-history chart lists the same proje
 in its tooltip. Project lists come from the public project model's dates, not from
 commit attribution.
 
+A star marks every month in which a project with `hasConnectedRepo: false` was
+active, so visitors can see where recorded work is not part of the commit figures.
+The card repeats the star next to those projects and the legend explains it. While
+the flag is unknown no stars or legend entry are shown.
+
 ## Project repositories
 
 Notion projects name their code in two properties. `Github-URL` is the single link

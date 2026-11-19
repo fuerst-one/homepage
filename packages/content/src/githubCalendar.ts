@@ -51,6 +51,10 @@ export function hasCalendarDetail(cell: GitHubCalendarMonth) {
   return cell.commits !== null || cell.projects.length > 0;
 }
 
+export function hasWorkOutsideGitHub(cell: GitHubCalendarMonth) {
+  return cell.projects.some((project) => project.outsideGitHub);
+}
+
 export function adjacentGitHubMonth(
   years: GitHubCalendarYear[],
   month: string,

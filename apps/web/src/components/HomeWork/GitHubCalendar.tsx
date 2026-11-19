@@ -5,12 +5,19 @@ import {
   adjacentGitHubMonth,
   githubCommitBand,
   hasCalendarDetail,
+  hasWorkOutsideGitHub,
   type GitHubCalendarMonth,
   type GitHubCalendarYear,
 } from "@homepage/content/githubCalendar";
 import type { Locale } from "@homepage/content/i18n";
 
-export function GitHubCommitLegend({ locale }: { locale: Locale }) {
+export function GitHubCommitLegend({
+  locale,
+  showOutsideGitHub,
+}: {
+  locale: Locale;
+  showOutsideGitHub: boolean;
+}) {
   return (
     <div
       className="home-commit-legend"
@@ -30,6 +37,14 @@ export function GitHubCommitLegend({ locale }: { locale: Locale }) {
           {label}
         </span>
       ))}
+      {showOutsideGitHub && (
+        <span>
+          <i className="home-commit-square" data-starred aria-hidden="true" />
+          {locale === "de"
+            ? "Projektarbeit außerhalb dieser Repositories"
+            : "project work outside these repositories"}
+        </span>
+      )}
     </div>
   );
 }
@@ -76,15 +91,21 @@ export function GitHubCalendar({
         : "outside the recorded period"
       : `${numbers.format(commits)} ${de ? "Commits" : commits === 1 ? "commit" : "commits"}`;
   const projectsHeading = de ? "Aktive Projekte" : "Active projects";
-  const cellLabel = (cell: GitHubCalendarMonth) =>
-    [
+  const outsideHeading = de
+    ? "Außerhalb dieser Repositories"
+    : "Outside these repositories";
+  const cellLabel = (cell: GitHubCalendarMonth) => {
+    const names = (projects: typeof cell.projects) =>
+      projects.map((project) => project.label).join(", ");
+    const outside = cell.projects.filter((project) => project.outsideGitHub);
+    return [
       `${dateLabel(cell.month)}: ${commitLabel(cell.commits)}`,
       ...(cell.projects.length
-        ? [
-            `${projectsHeading}: ${cell.projects.map((project) => project.label).join(", ")}`,
-          ]
+        ? [`${projectsHeading}: ${names(cell.projects)}`]
         : []),
+      ...(outside.length ? [`${outsideHeading}: ${names(outside)}`] : []),
     ].join(". ");
+  };
   const row = (year: GitHubCalendarYear) => (
     <div className="home-commit-row" role="row" key={year.year}>
       <span className="home-commit-year" role="rowheader">
@@ -106,6 +127,7 @@ export function GitHubCalendar({
                   : githubCommitBand(cell.commits)
               }
               data-month={cell.month}
+              data-starred={hasWorkOutsideGitHub(cell) || undefined}
               tabIndex={cell.month === entryMonth ? 0 : -1}
               aria-label={cellLabel(cell)}
               onPointerEnter={(event) => show(cell, event)}
@@ -192,8 +214,15 @@ export function GitHubCalendar({
             <>
               <em>{projectsHeading}</em>
               <ul>
-                {active.cell.projects.map((project) => (
-                  <li key={project.label}>{project.label}</li>
+                {/* The star itself comes from CSS, shared with the squares. */}
+                {active.cell.projects.map((project, index) => (
+                  <li
+                    // Two projects may share a short name.
+                    key={`${index}-${project.label}`}
+                    data-starred={project.outsideGitHub || undefined}
+                  >
+                    {project.label}
+                  </li>
                 ))}
               </ul>
             </>

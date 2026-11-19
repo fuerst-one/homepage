@@ -1,7 +1,10 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { githubCalendarYears } from "@homepage/content/githubCalendar";
+import {
+  githubCalendarYears,
+  hasWorkOutsideGitHub,
+} from "@homepage/content/githubCalendar";
 import { GitHubCalendar, GitHubCommitLegend } from "./GitHubCalendar";
 import dynamic from "next/dynamic";
 import type { TimelineMonth } from "@homepage/content/workPortfolio";
@@ -139,7 +142,12 @@ export function WorkTimeline({
                     : "authored commits on GitHub"}
                 </span>
               </div>
-              <GitHubCommitLegend locale={locale} />
+              <GitHubCommitLegend
+                locale={locale}
+                showOutsideGitHub={calendar.some((year) =>
+                  year.months.some(hasWorkOutsideGitHub),
+                )}
+              />
               <div
                 className="home-history-chart home-history-calendar"
                 aria-details="github-history-data"
