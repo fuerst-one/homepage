@@ -39,6 +39,13 @@ const localImage = (value: unknown): string | null =>
   )
     ? value
     : null;
+const GITHUB_REPOSITORY =
+  /^(?:https?:\/\/(?:www\.)?github\.com\/)?([a-z\d-]+\/[\w.-]+?)(?:\.git)?(?:[/?#].*)?$/i;
+/** Inventory key for a GitHub repository URL or `owner/name` shorthand. */
+const githubRepository = (reference: string) =>
+  reference.match(GITHUB_REPOSITORY)?.[1].toLowerCase() ?? null;
+const isGitHubLink = (link: string) =>
+  /^(?:www\.)?github\.com$/i.test(new URL(link).hostname);
 const supported = new Set([
   "paragraph",
   "heading_1",
@@ -63,6 +70,31 @@ export function preparePublication(value: unknown): PublicPublication {
     .map(record)
     .filter(
       (p) => p.hidden === false && !p.archived && !p.in_trash && text(p.id),
+    );
+  // Null means the worker has no GitHub inventory yet, which is not "no repository".
+  const repositoryPrivacy = Array.isArray(source.repositories)
+    ? new Map(
+        source.repositories
+          .map(record)
+          .filter((r) => text(r.full_name) && typeof r.private === "boolean")
+          .map((r) => [text(r.full_name).toLowerCase(), r.private === true]),
+      )
+    : null;
+  // Notion also holds links to private repositories; only verified public ones leave.
+  const publicCodeLink = (value: string) => {
+    const link = safeCaseStudyLink(value);
+    if (!link || !isGitHubLink(link)) return link;
+    const repository = githubRepository(link);
+    return repository && repositoryPrivacy?.get(repository) === false
+      ? link
+      : null;
+  };
+  const hasConnectedRepo = (p: Record<string, unknown>) =>
+    [text(p.githubUrl), ...text(p.githubRepos).split(/[\s,]+/)].some(
+      (reference) => {
+        const repository = githubRepository(reference);
+        return repository !== null && repositoryPrivacy!.has(repository);
+      },
     );
   const sourceOwner = record(source.owner);
   const keepAsset = (key: string) => {
@@ -203,7 +235,8 @@ export function preparePublication(value: unknown): PublicPublication {
         startDate: text(p.startDate),
         endDate: text(p.endDate) || null,
         websiteUrl: safeCaseStudyLink(text(p.websiteUrl)),
-        githubUrl: safeCaseStudyLink(text(p.githubUrl)),
+        githubUrl: publicCodeLink(text(p.githubUrl)),
+        ...(repositoryPrivacy && { hasConnectedRepo: hasConnectedRepo(p) }),
         industries: strings(p.industries),
         ...publicProjectTaxonomy(p),
         capabilities: strings(p.capabilities),

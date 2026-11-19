@@ -54,6 +54,7 @@ export type NotionProjectPropertiesRaw = {
   Status: SelectField;
   "Website-URL": UrlField;
   "Github-URL": UrlField;
+  "GitHub Repos"?: RichTextField;
   Industries: RollupField;
   Capabilities: MultiSelectField;
   Methods: MultiSelectField;
@@ -87,6 +88,7 @@ export type NotionProject = ProjectTaxonomy & {
   duration: string;
   websiteUrl: string;
   githubUrl: string;
+  githubRepos?: string;
   industries: string[];
   capabilities: string[];
   methods: string[];
@@ -123,6 +125,7 @@ const rawToInternalPropertiesMap: Record<
   Duration: "duration",
   "Website-URL": "websiteUrl",
   "Github-URL": "githubUrl",
+  "GitHub Repos": "githubRepos",
   Industries: "industries",
   Capabilities: "capabilities",
   Methods: "methods",

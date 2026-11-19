@@ -44,6 +44,27 @@ commit figure or active projects. The project-history chart lists the same proje
 in its tooltip. Project lists come from the public project model's dates, not from
 commit attribution.
 
+## Project repositories
+
+Notion projects name their code in two properties. `Github-URL` is the single link
+shown on the site. `GitHub Repos` is a worker-only text property listing every
+repository behind the project, one `owner/name` or GitHub URL per line; it may
+contain private repositories and is never published.
+
+When the website publication is prepared, the worker checks both against its own
+GitHub inventory (`github_worker_snapshots`):
+
+- A `github.com` link in `Github-URL` is published only when the inventory lists
+  that repository as public. Private, renamed, deleted and unconnected repositories
+  are withheld. Links to other code hosts are published unchanged.
+- Each project gets the public boolean `hasConnectedRepo`: true when any repository
+  from either property is in the inventory. Without an inventory (no token, first
+  run) the flag is omitted and GitHub links are withheld, so "unknown" is never
+  published as "no repository".
+
+The website publication refreshes at most every five minutes, so a visibility change
+reaches the site after the next hourly GitHub collection.
+
 ## Release order
 
 Production preparation on 18 November 2026: a custom-format database backup was
