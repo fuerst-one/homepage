@@ -25,10 +25,12 @@ export const FiltersUrlSync = () => {
   useEffect(() => {
     const urlSearch = searchParams.toString();
     // A single writer keeps filter and dialog changes from cancelling each other.
+    // Compare against the stores as they are now: Strict Mode re-runs this effect with the
+    // values rendered before a read, which would write those stale filters back to the URL.
     const action = reconcileProjectUrl({
       urlSearch,
-      filters,
-      focusedProjectId,
+      filters: useProjectListStore.getState().filters,
+      focusedProjectId: useProjectFocusStore.getState().focusedProjectId,
       ...sync.current,
     });
     if (action.type === "read") {
