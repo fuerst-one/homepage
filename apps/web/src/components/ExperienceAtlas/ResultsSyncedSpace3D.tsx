@@ -58,11 +58,11 @@ export function ResultsSyncedSpace3D({
       </div>
       <p
         data-explorer-lens-question
-        className="glass-panel -mt-px border border-white/30 px-3 py-2 text-xs text-neutral-300"
+        className="-mt-px border border-white/30 bg-black px-3 py-2 text-xs text-neutral-300"
       >
         {t(lens.question)}
       </p>
-      <div className="glass-panel -mt-px h-[30vh] min-h-[240px] w-full overflow-hidden border border-white/30">
+      <div className="-mt-px h-[30vh] min-h-[240px] w-full overflow-hidden border border-white/30 bg-black">
         <CompactSpace3D
           nodes={lens.nodes}
           groups={lens.groups}
