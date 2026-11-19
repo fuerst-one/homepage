@@ -17,6 +17,7 @@ import {
   type ProfilePreference,
   type SharedProfileEvent,
   type ProjectChoice,
+  type ProfileStrength,
 } from "@homepage/content/visitorProfile";
 import {
   applyProjectChoice,
@@ -67,7 +68,11 @@ type ProfileState = {
   loadCatalog: () => Promise<void>;
   setRemember: (value: boolean) => void;
   setSharing: (value: boolean) => Promise<void>;
-  record: (kind: ProfileSignalKind, subject: string) => void;
+  record: (
+    kind: ProfileSignalKind,
+    subject: string,
+    strength?: ProfileStrength,
+  ) => void;
   choose: (id: string, choice: ProfilePreference | "auto") => void;
   flush: () => Promise<void>;
   deleteShared: () => Promise<void>;
@@ -190,16 +195,20 @@ export function createVisitorProfileStore(
         Date.now() - startedAt >= PROFILE_LIFETIME_MS
       );
     };
+    // The gate's leading score equals one explicit choice, and decay lowers it
+    // from the next millisecond on, so it is also judged as of the latest
+    // evidence; a manual preference that does not decay can pass it later.
     const latchForYou = (unlocked: boolean, profile: VisitorProfile) => {
       const catalog = get().catalog;
       return (
         unlocked ||
         (!!catalog &&
-          isForYouReady(
-            profile,
-            catalog,
-            Math.max(Date.now(), profile.updatedAt),
-          ))
+          (isForYouReady(profile, catalog, profile.updatedAt) ||
+            isForYouReady(
+              profile,
+              catalog,
+              Math.max(Date.now(), profile.updatedAt),
+            )))
       );
     };
     const readSaved = () => {
@@ -275,6 +284,7 @@ export function createVisitorProfileStore(
         id: last.id,
         kind: last.kind,
         subject: last.subject,
+        ...(last.strength !== undefined ? { strength: last.strength } : {}),
         ...(last.kind === "preference_changed"
           ? {
               preference: last.preference,
@@ -519,13 +529,13 @@ export function createVisitorProfileStore(
           persist();
         } else await get().deleteShared();
       },
-      record: (kind, subject) => {
+      record: (kind, subject, strength) => {
         if (!active()) return;
         const s = get();
         accept(
           recordProfileSignal(
             s.profile,
-            { kind, subject },
+            { kind, subject, strength },
             s.catalog!,
             Date.now(),
           ),
@@ -634,4 +644,5 @@ export const useVisitorProfileStore = createVisitorProfileStore();
 export const recordVisitorInteraction = (
   kind: ProfileSignalKind,
   subject: string,
-) => useVisitorProfileStore.getState().record(kind, subject);
+  strength?: ProfileStrength,
+) => useVisitorProfileStore.getState().record(kind, subject, strength);

@@ -441,3 +441,264 @@ test("a region key names where, and the region function says which terms it disp
   ])
     assert.equal(profileRegionTerms(invalid, regions), null, invalid);
 });
+
+const v3 = (() => {
+  const terms = [
+    ["industries", "Retail"],
+    ["productTypes", "Web app"],
+    ["buyerNeeds", "Launch a new product"],
+    ["buyerNeeds", "Automate repetitive work"],
+    ["buyerNeeds", "Make data actionable"],
+    ["capabilities", "Integration"],
+    ["methods", "Research"],
+    ["tools", "React"],
+    ["stages", "Production"],
+  ].map(([facet, value]) => ({ id: `${facet}:${value}`, facet, value }));
+  return {
+    terms,
+    projects: ["a", "b"].map((id) => ({
+      id,
+      name: id.toUpperCase(),
+      href: `/en/projects/${id}`,
+      terms: terms.map((t) => t.id),
+    })),
+  };
+})();
+const record3 = (p, kind, subject, strength, at = now) =>
+  m.recordProfileSignal(
+    p,
+    { kind, subject, ...(strength === undefined ? {} : { strength }) },
+    v3,
+    at,
+  );
+const scores3 = (p, at = now) =>
+  Object.fromEntries(
+    m
+      .profileInterests(p, v3, at)
+      .map((t) => [t.id, Math.round(t.inferredScore * 1000) / 1000]),
+  );
+
+test("Rules v3: a card click credits only what the card shows, scaled by its strength", () => {
+  assert.equal(m.PROFILE_RULE_VERSION, 3);
+  assert.equal(m.SIGNAL_WEIGHTS.project_card_clicked, 2);
+  assert.deepEqual(scores3(record3(fresh(), "project_card_clicked", "a", 1)), {
+    "buyerNeeds:Automate repetitive work": 1,
+    "buyerNeeds:Launch a new product": 1,
+    "industries:Retail": 2,
+    "productTypes:Web app": 2,
+  });
+  assert.deepEqual(
+    scores3(record3(fresh(), "project_card_clicked", "a", 0.5)),
+    {
+      "buyerNeeds:Automate repetitive work": 0.5,
+      "buyerNeeds:Launch a new product": 0.5,
+      "industries:Retail": 1,
+      "productTypes:Web app": 1,
+    },
+  );
+  assert.deepEqual(
+    scores3(record3(fresh(), "project_card_clicked", "a")),
+    scores3(record3(fresh(), "project_card_clicked", "a", 1)),
+    "absent strength means full strength",
+  );
+});
+
+test("Rules v3: a stayed page credits its header; regions credit what they display", () => {
+  assert.deepEqual(
+    scores3(record3(fresh(), "project_details_viewed", "a", 1)),
+    { "industries:Retail": 3 },
+    "the project page header shows only the industry",
+  );
+  const preview = record3(fresh(), "project_opened", "a", 1);
+  assert.equal(preview.signals.length, 1, "a stayed preview is still recorded");
+  assert.deepEqual(
+    scores3(preview),
+    {},
+    "its header shows none of the seven dimensions",
+  );
+  assert.equal(
+    Object.keys(scores3(record3(fresh(), "case_study_viewed", "a", 1))).length,
+    v3.terms.length,
+    "a case study keeps crediting the whole project",
+  );
+  assert.equal(
+    m.SIGNAL_WEIGHTS.project_region_viewed,
+    m.SIGNAL_WEIGHTS.project_details_viewed,
+  );
+  assert.deepEqual(
+    scores3(record3(fresh(), "project_region_viewed", "a|needs", 0.75)),
+    {
+      "buyerNeeds:Automate repetitive work": 0.75,
+      "buyerNeeds:Launch a new product": 0.75,
+      "buyerNeeds:Make data actionable": 0.75,
+    },
+  );
+  assert.deepEqual(
+    Object.keys(
+      scores3(record3(fresh(), "project_region_viewed", "a|details", 1)),
+    ).sort(),
+    [
+      "capabilities:Integration",
+      "industries:Retail",
+      "methods:Research",
+      "productTypes:Web app",
+      "tools:React",
+    ],
+  );
+  for (const subject of ["a", "a|outcomes", "a|needs|x", "missing|needs"])
+    assert.equal(
+      record3(fresh(), "project_region_viewed", subject, 1).signals.length,
+      0,
+      subject,
+    );
+});
+
+test("Rules v3: the strongest depth per project compares weight times strength", () => {
+  let p = record3(fresh(), "project_details_viewed", "a", 0.5);
+  p = record3(p, "case_study_viewed", "a", 1, now + 1);
+  assert.equal(
+    scores3(p, now + 1)["tools:React"],
+    4,
+    "a full case study outweighs a half-strength page",
+  );
+  p = record3(fresh(), "project_details_viewed", "a", 1);
+  p = record3(p, "case_study_viewed", "a", 0.5, now + 1);
+  assert.deepEqual(
+    scores3(p, now + 1),
+    { "industries:Retail": 3 },
+    "a half-strength case study (2) does not replace a full page (3)",
+  );
+});
+
+test("Rules v3: click levels and the strength a click carries to the page", () => {
+  assert.equal(m.profileClickLevel(0, false), "none");
+  assert.equal(m.profileClickLevel(499, false), "none");
+  assert.equal(m.profileClickLevel(500, false), "half");
+  assert.equal(m.profileClickLevel(2999, false), "half");
+  assert.equal(m.profileClickLevel(3000, false), "full");
+  assert.equal(m.profileClickLevel(0, true), "full", "exempt clicks earn full");
+  assert.equal(m.profileArrivalStrength("full"), 1);
+  assert.equal(m.profileArrivalStrength("half"), 0.75);
+  assert.equal(m.profileArrivalStrength("none"), 0.5);
+  assert.equal(m.profileArrivalStrength("link"), 1);
+  assert.equal(m.profileArrivalStrength(null), 0.5);
+});
+
+test("Rules v3: strength is accepted only with its values and on kinds that carry it", () => {
+  assert.equal(
+    record3(fresh(), "project_card_clicked", "a", 0.6).signals.length,
+    0,
+  );
+  assert.equal(
+    record3(fresh(), "filter_selected", "tools:React", 0.5).signals.length,
+    0,
+  );
+  const saved = record3(
+    record3(fresh(), "project_card_clicked", "a", 0.5),
+    "project_region_viewed",
+    "a|needs",
+    0.75,
+    now + 1,
+  );
+  const restored = m.restoreVisitorProfile(
+    JSON.parse(JSON.stringify(saved)),
+    v3,
+    now + 2,
+  );
+  assert.deepEqual(
+    restored.signals.map((s) => [s.kind, s.subject, s.strength]),
+    [
+      ["project_card_clicked", "a", 0.5],
+      ["project_region_viewed", "a|needs", 0.75],
+    ],
+  );
+  const old = record3(fresh(), "project_opened", "a");
+  assert.deepEqual(
+    m.restoreVisitorProfile(JSON.parse(JSON.stringify(old)), v3, now + 1),
+    old,
+    "a profile saved without strength restores unchanged",
+  );
+  for (const [kind, strength] of [
+    ["project_card_clicked", 0.25],
+    ["project_card_clicked", "1"],
+    ["filter_selected", 1],
+  ]) {
+    const broken = JSON.parse(JSON.stringify(saved));
+    broken.signals[0] = {
+      ...broken.signals[0],
+      kind,
+      subject: kind === "filter_selected" ? "tools:React" : "a",
+      strength,
+    };
+    assert.equal(
+      m.restoreVisitorProfile(broken, v3, now + 2),
+      null,
+      `${kind} ${strength}`,
+    );
+  }
+  const batch = (events) => ({
+    version: 1,
+    token: "a".repeat(64),
+    consentAt: now,
+    events: events.map((e) => ({ id: crypto.randomUUID(), ...e })),
+  });
+  assert.deepEqual(
+    m
+      .parseProfileEventBatch(
+        batch([
+          { kind: "project_card_clicked", subject: "a", strength: 0.5 },
+          { kind: "project_region_viewed", subject: "a|details", strength: 1 },
+          { kind: "project_details_viewed", subject: "a", strength: 0.75 },
+          { kind: "project_details_viewed", subject: "b" },
+        ]),
+        v3,
+        now,
+      )
+      .events.map((e) => [e.kind, e.subject, e.strength]),
+    [
+      ["project_card_clicked", "a", 0.5],
+      ["project_region_viewed", "a|details", 1],
+      ["project_details_viewed", "a", 0.75],
+      ["project_details_viewed", "b", undefined],
+    ],
+  );
+  for (const event of [
+    { kind: "project_card_clicked", subject: "a", strength: 0.3 },
+    { kind: "topic_selected", subject: "tools:React", strength: 1 },
+    { kind: "project_region_viewed", subject: "a|private text" },
+  ])
+    assert.equal(m.parseProfileEventBatch(batch([event]), v3, now), null);
+});
+
+test("the two Rules v3 signals name the card and the region they credit", () => {
+  const presentation = loadTs(
+    new URL(
+      "../apps/web/src/components/VisitorProfile/profilePresentation.ts",
+      import.meta.url,
+    ),
+  );
+  assert.equal(
+    presentation.subjectName(
+      { kind: "project_region_viewed", subject: "a|needs" },
+      catalog,
+      "en",
+    ),
+    "A · Buyer needs",
+  );
+  assert.equal(
+    presentation.subjectName(
+      { kind: "project_region_viewed", subject: "a|details" },
+      catalog,
+      "de",
+    ),
+    "A · Projektdaten",
+  );
+  assert.equal(
+    presentation.subjectName(
+      { kind: "project_card_clicked", subject: "a" },
+      catalog,
+      "en",
+    ),
+    "A",
+  );
+});

@@ -37,8 +37,9 @@ queries, form text, pointer trails, third-party SDK or paid AI is involved.
 
 The pure model is `packages/content/src/visitorProfile.ts`; additional public-subject
 rules and derived patterns are in `visitorProfileSignals.ts`. The browser protocol
-and stored profile remain version 1 for compatibility, while shared events record
-rule version 2. Public project dimensions remain the only term source.
+and stored profile remain version 1 for compatibility. Public project dimensions
+remain the only term source. [Rules v3](#rules-v3) changes what clicks and project
+pages credit; everything else here still applies.
 
 - Preview +2, details +3 and case-study open +4 are a progression: only the strongest
   depth contributes for a project within 30 minutes. Active project reading adds +1
@@ -102,6 +103,70 @@ The local history keeps at most 240 signals. Manual choices remain authoritative
 when old activity drops out. Unsent signals persist only when remembering is enabled,
 and sharing starts with new actions after its separate opt-in. Earlier local actions
 are not backfilled. Page exit attempts bounded keepalive delivery.
+
+## View tracker
+
+One listener, `useRichProfileSignals` with `createProfileViewTracker`
+(`profileViewTracker.ts`), measures every tagged element once a second and
+whenever the page or a dialog scrolls or resizes. Tags name where, never what:
+`data-profile-section`, `data-profile-service-section`, `data-profile-project`
+and `data-profile-region` (`card:<project>`, `project:<project>|needs`,
+`project:<project>|details`). For each tag it holds, in memory only, how long
+the element has been continuously in view, its seconds in view and how many of
+those were active (visible, focused, recently used tab). Sections keep their
+in-view rule (enough visible height, nothing covering them); a region is in view
+when at least half of it, or half the viewport if it is taller, is visible, the
+tab is visible and no dialog covers it. Section reading, service-section reading
+and "project read" are read from the tracker. `profileRegionTerms` in
+`visitorProfileSignals.ts` says which public terms a region displays: a card its
+industries, product types and first two buyer needs (`CARD_BUYER_NEED_COUNT`);
+the needs block all buyer needs; the details table industries, product types,
+capabilities, methods and tools.
+
+Cards show their product types in the meta line and their first two buyer needs
+as filter links; the project page and the preview dialog list every buyer need
+below the screenshots. A click on a need link is a filter choice.
+
+## Rules v3
+
+Shared events record rule version 3. A signal may carry a `strength` of 0.5,
+0.75 or 1 (absent means 1); it earns its weight times its strength, and the
+strongest-depth rule per project compares weight times strength. Saved profiles
+without strength restore unchanged; restore and the sharing API accept strength
+only with those values and only on the kinds that can carry it.
+
+- **Card click** (`project_card_clicked`, +2): a click on a card's own link, its
+  thumbnail or its case-study pill credits what the card displays, nothing
+  else. Strength from the card's continuous time in view: under 0.5 s no signal,
+  0.5–3 s half, from 3 s full (`profileClickLevel`). Card clicks while the list
+  shows typed search results, and landing-page search results, count as full.
+  Website and GitHub pills stay `proof_opened`; need links stay filter choices.
+- **Stay rule:** project previews, project pages, case studies and service pages
+  record their signal only after 10 s with the tab visible or an interaction
+  inside the page's or dialog's own content (a link, button, gallery image,
+  expandable item or form field). Scrolling, the header and footer, the
+  profile's own controls, closing the dialog and going back do not count;
+  leaving earlier records nothing. `project_returned` waits for the same moment.
+- **What a page credits:** a stayed project page credits only its header, the
+  industry; a stayed preview credits none of the seven dimensions but still
+  counts for returns. Once a project page has been stayed on, each region that
+  has been in view for 3 s in total during the visit records
+  `project_region_viewed` (+3, the page's weight): the needs block all buyer
+  needs, the details table its facts. The preview's needs block works the same
+  way. Case studies and service pages keep crediting what they did before.
+- **Arrival strength** (`profileArrivalStrength`), applied to the page signal
+  and its regions: 1 after a full or exempt card click or another in-site link,
+  0.75 after a half-strength card click, 0.5 after a card click that earned
+  nothing or an arrival without a click the profile saw (pasted URL, back
+  button, another site). The last click is held in memory and matched to the
+  next page signal for the same target; a reload loses it.
+- Section reading and "project read" keep their rules and weights on top.
+
+The 0.5 s and 3 s marks are the owner's; the 10 s come from the bounce evidence
+in the intent model design. None is validated on this site. Shared events need
+`packages/database/migrations/014-visitor-profile-strength.sql` (strength column,
+the two kinds, rule version 3); sharing is offered only once the table accepts
+them, and local profiling works without it.
 
 ## Pixel signature
 
@@ -292,8 +357,11 @@ browser data first loses its erasure key, so the normal server retention applies
 `packages/content/src/forYouReadiness.ts` is the only decision about whether a
 profile is ready for personalised suggestions. It is a confidence gate on the
 visitor's buyer needs as scored by `profileInterests`: the leading need scores
-at least `FOR_YOU_MIN_LEADING_SCORE` (4) and leads the third-ranked need by at
-least `FOR_YOU_MIN_LEAD_OVER_THIRD` (1). The aim is that the visitor's real need
+at least `FOR_YOU_MIN_LEADING_SCORE` (6) and leads the third-ranked need by at
+least `FOR_YOU_MIN_LEAD_OVER_THIRD` (1). The thresholds were re-fitted to Rules
+v3 from a five-seed sweep of the benchmark: (4, 1), fitted on Rules v2, left the
+six-card focused visitor right only 73.5% of the time (firing for 94%); (6, 1) is
+right 82.7% for it and 92.4% for the twelve-card one, firing for 81% and 90%. The aim is that the visitor's real need
 is among the top two when the gate fires. Because manual choices count, one
 explicit choice of a buyer need passes at once: a filter or topic choice (+6),
 or a manual preference of interested (6) or priority (12). Choices of a tool,
@@ -305,7 +373,9 @@ left the public catalog do not count, as everywhere in `profileInterests`.
 The gate can turn false again as scores decay or a new view narrows the lead.
 The store latches it: `forYouUnlocked` in the profile store is set the first
 time the gate passes, after any profile change or a restore, and is never set
-back. A saved profile that already passes restores unlocked, also when it was
+back. The latch judges the gate both now and as of the profile's latest
+evidence, because a single choice of exactly 6 decays below the threshold a
+moment later. A saved profile that already passes restores unlocked, also when it was
 saved before the field existed. Like `forYouHintSeen` it follows the Remember
 setting, merges across tabs (an unlock in any tab wins for the same profile),
 and is cleared by reset, stop and expiry. `useForYouReady` reads
@@ -315,14 +385,20 @@ and add no profile conditions of their own.
 The gate is held to a simulation benchmark, `tests/profile-benchmark.test.mjs`.
 Seeded simulated visitors, each with one real buyer need, browse
 `tests/fixtures/profile-catalog.json` (a snapshot of `/api/profile/catalog`
-with project ids, names and links replaced) through the real scoring code. For
-focused visitors (65% of picks go to a project with their need, six or twelve
+with project ids, names and links replaced) through the real scoring code. Each
+pick is a card click with a time-in-view level, then a bounce or a stay on the
+project page, then whether the needs block and the details table came into
+view, then possibly a deep read; a visitor recognises their need only on cards
+that show it. The behavioural assumptions are named constants in the test. For
+focused visitors (65% of picks go to a card showing their need, six or twelve
 cards seen per pick) the test fails if the real need is among the top two less
 than 75% of the time when the gate fires, or if the gate fires for fewer than
-60% of them. Loose visitors (40%) and aimless visitors (no real need) are
-reported only. At the time of writing: focused visitors 81% and 91% right, the
-gate firing for 89% and 95% after a median of four projects; loose visitors 77%
-right; and the gate fires for about 70% of aimless visitors, a known limit.
+60% of them; it also fails if the gate fires for 5% or more of rapid clickers
+(hasty clicks, never staying). Loose visitors (40%) and aimless visitors (no
+real need) are reported only. At the time of writing (seed 23): focused
+visitors 82.5% and 92.0% right, the gate firing for 79.8% and 90.0% after a
+median of five and four projects; loose visitors 83.8% right; rapid clickers
+0%; and the gate fires for about 39% of aimless visitors, a known limit.
 The visitor behaviour is an assumption, not traffic data: the benchmark holds
 signal and gate changes to one bar, it does not measure real accuracy. Refresh
 the fixture when the public catalog changes materially. Run it with
@@ -367,10 +443,11 @@ signature.
 
 ## Validation
 
-Unit behaviour: `node --test tests/visitor-profile.test.mjs tests/visitor-profile-signals.test.mjs tests/visitor-profile-reading.test.mjs tests/visitor-profile-store.test.mjs tests/profile-pixels.test.mjs`.
+Unit behaviour: `node --test tests/visitor-profile.test.mjs tests/visitor-profile-signals.test.mjs tests/visitor-profile-reading.test.mjs tests/profile-view-tracker.test.mjs tests/visitor-profile-store.test.mjs tests/profile-pixels.test.mjs`.
 Database integration uses `tests/visitor-profile-db.integration.mjs` with an
 explicit localhost database whose name ends `_test`; it never targets production.
-Browser behavior uses `SEO_TEST_BASE_URL=http://localhost:6895 node --test tests/visitor-profile-signals.browser.mjs`.
+Browser behavior uses `SEO_TEST_BASE_URL=http://localhost:6895 node --test tests/visitor-profile-signals.browser.mjs`;
+Rules v3 clicks, stays and regions use `tests/profile-click-credit.browser.mjs` in English and German.
 HTTP behaviour uses `SEO_TEST_BASE_URL=http://localhost:6894 node --test tests/visitor-profile-http.test.mjs`
 against the local migrated database. The profile-page HTTP test also checks EN/DE rendering and noindex metadata. Browser acceptance covers the live signature across navigation, explicit filters, project evidence, manual corrections, remembering, sharing and erasure, footer clearance, responsive spacing and keyboard controls.
 

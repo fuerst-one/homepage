@@ -140,11 +140,11 @@ test("remembering can be disabled without stopping this session", () => {
 test("sharing only queues interactions after its own opt in", async () => {
   const { store } = setup();
   store.getState().start();
-  store.getState().record("project_opened", "a");
+  store.getState().record("case_study_viewed", "a");
   await store.getState().setSharing(true);
   assert.equal(store.getState().pending.length, 0);
   store.getState().choose("tools:React", "exclude");
-  assert.ok(Math.abs(store.getState().pending[0].inferredScore - 2) < 0.001);
+  assert.ok(Math.abs(store.getState().pending[0].inferredScore - 4) < 0.001);
   assert.equal(store.getState().pending[0].previous, "auto");
 });
 test("successful sends clear only acknowledged events", async () => {
@@ -630,4 +630,51 @@ test("another tab stopping the profile still stops this tab", () => {
   saved.delete(PROFILE_KEY);
   store.getState().syncFromStorage();
   assert.equal(store.getState().enabled, false);
+});
+
+test("a signal's strength reaches the saved profile and the shared event, and survives a reload", async () => {
+  const { store, storage } = setup();
+  store.getState().start();
+  store.getState().setRemember(true);
+  await store.getState().setSharing(true);
+  store.getState().record("project_card_clicked", "a", 0.5);
+  store.getState().record("project_details_viewed", "a", 0.75);
+  store.getState().record("project_returned", "a", 0.5);
+  assert.deepEqual(
+    store
+      .getState()
+      .profile.signals.map((s) => [s.kind, s.strength])
+      .sort(),
+    [
+      ["project_card_clicked", 0.5],
+      ["project_details_viewed", 0.75],
+    ],
+    "a kind that cannot carry strength is refused with one",
+  );
+  assert.deepEqual(
+    store
+      .getState()
+      .pending.map((e) => [e.kind, e.strength])
+      .sort(),
+    [
+      ["project_card_clicked", 0.5],
+      ["project_details_viewed", 0.75],
+    ],
+  );
+  const restored = m.createVisitorProfileStore(() => storage);
+  restored.getState().initialise(catalog);
+  assert.deepEqual(
+    restored
+      .getState()
+      .profile.signals.map((s) => s.strength)
+      .sort(),
+    [0.5, 0.75],
+  );
+  assert.deepEqual(
+    restored
+      .getState()
+      .pending.map((e) => e.strength)
+      .sort(),
+    [0.5, 0.75],
+  );
 });

@@ -23,6 +23,9 @@ let runtime: {
   project: { id: string; read: boolean } | null;
 } | null = null;
 
+/** What the mounted profile has seen in view; null while the profile is off. */
+export const currentProfileView = () => runtime?.view ?? null;
+
 /** One view tracker for all tagged public content, including nested scrolling dialogs. */
 export function useRichProfileSignals(
   pathname: string,

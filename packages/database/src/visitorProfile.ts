@@ -10,7 +10,7 @@ const hashToken = (token: string) =>
 export async function profileCollectionAvailable(sql = knowledgeDatabase()) {
   try {
     const [row] =
-      await sql`SELECT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid=to_regclass('visitor_profile_events') AND conname='visitor_profile_events_kind_check' AND pg_get_constraintdef(oid) LIKE '%project_saved%') AS available`;
+      await sql`SELECT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid=to_regclass('visitor_profile_events') AND conname='visitor_profile_events_kind_check' AND pg_get_constraintdef(oid) LIKE '%project_region_viewed%') AS available`;
     return row?.available === true;
   } catch {
     return false;
@@ -39,8 +39,8 @@ export async function storeProfileEvents(
       await tx`SELECT count(*) AS n FROM visitor_profile_events WHERE session_hash=${hash}`;
     if (Number(count.n) + events.length > 1000) return false;
     for (const event of events)
-      await tx`INSERT INTO visitor_profile_events(event_id,session_hash,rule_version,consent_at,kind,subject,preference,previous,inferred_score,basis)
-        VALUES (${event.id},${hash},${PROFILE_RULE_VERSION},${new Date(consentAt)},${event.kind},${event.subject},${event.preference ?? null},${event.previous ?? null},${event.inferredScore ?? null},${tx.json(event.basis ?? {})})
+      await tx`INSERT INTO visitor_profile_events(event_id,session_hash,rule_version,consent_at,kind,subject,strength,preference,previous,inferred_score,basis)
+        VALUES (${event.id},${hash},${PROFILE_RULE_VERSION},${new Date(consentAt)},${event.kind},${event.subject},${event.strength ?? null},${event.preference ?? null},${event.previous ?? null},${event.inferredScore ?? null},${tx.json(event.basis ?? {})})
         ON CONFLICT (event_id) DO NOTHING`;
     return true;
   });

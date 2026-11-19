@@ -1,7 +1,5 @@
 "use client";
 
-import { recordVisitorInteraction } from "../../VisitorProfile/profileStore";
-
 import { useLocale } from "../../i18n/LocaleProvider";
 import { getJsxFormattedTextFromTextBlock } from "./getJsxFormattedTextFromTextBlock";
 import { CvProject } from "@homepage/content/models";
@@ -50,10 +48,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const logos = getProjectLogoSources(project);
   const primaryLogo = logos[0];
   const thumbnail = screenshots?.[0];
-  const openDialog = () => {
-    recordVisitorInteraction("project_opened", id);
-    setFocused(id);
-  };
+  const openDialog = () => setFocused(id);
   const path = projectPath(project, locale);
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
   const { title, subtitle } = projectHeading(name);

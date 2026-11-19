@@ -9,7 +9,6 @@ import {
   PROFILE_STORAGE_KEY,
   profilePageSignal,
   profileLinkSignals,
-  isReturningProfileProject,
 } from "@homepage/content/visitorProfile";
 import {
   useVisitorProfileStore as useProfile,
@@ -21,6 +20,7 @@ import { ForYouHint, useForYouHintVisible, useOpenDialog } from "./ForYouHint";
 import "./visitor-profile.css";
 import { profileOrientationAt } from "@homepage/content/profilePixels";
 import { useRichProfileSignals } from "./useRichProfileSignals";
+import { useProfileArrivals } from "./useProfileArrivals";
 
 function hasSavedProfile() {
   try {
@@ -124,23 +124,7 @@ function useProfileRuntime() {
     )
       ? pageSignal.subject
       : undefined;
-  const pageKind = pageSignal?.kind;
-  const pageSubject = pageSignal?.subject;
-  useEffect(() => {
-    if (enabled && pageKind && pageSubject) {
-      const state = useProfile.getState();
-      if (
-        [
-          "project_opened",
-          "project_details_viewed",
-          "case_study_viewed",
-        ].includes(pageKind) &&
-        isReturningProfileProject(state.profile, pageSubject, Date.now())
-      )
-        recordVisitorInteraction("project_returned", pageSubject);
-      recordVisitorInteraction(pageKind, pageSubject);
-    }
-  }, [enabled, pageKind, pageSubject]);
+  useProfileArrivals(enabled, catalog, pageSignal);
   useRichProfileSignals(pathname, enabled, activeProject);
   useEffect(() => {
     if (!pending.length || network === "error" || network === "sending") return;

@@ -45,4 +45,9 @@ export const richSignalNames: Record<
     "Cleared project feedback",
     "Projektfeedback zurückgesetzt",
   ],
+  project_card_clicked: ["Clicked a project card", "Projektkarte angeklickt"],
+  project_region_viewed: [
+    "Saw part of a project page",
+    "Teil einer Projektseite gesehen",
+  ],
 };

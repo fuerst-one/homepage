@@ -41,6 +41,8 @@ function fresh() {
 function add(p, kind = "project_opened", subject = "a", at = now) {
   return m.recordProfileSignal(p, { kind, subject }, catalog, at);
 }
+// Under Rules v3 a case study is the page signal that still credits every term.
+const read = (p) => add(p, "case_study_viewed");
 function score(p, id, at = now) {
   return (
     m.profileInterests(p, catalog, at).find((x) => x.id === id)
@@ -52,9 +54,9 @@ test("a fresh profile does not invent interests", () => {
   assert.deepEqual(m.profileInterests(fresh(), catalog, now), []);
 });
 test("a project splits its signal across tags within each dimension", () => {
-  const p = add(fresh());
-  assert.equal(score(p, "tools:React"), 1);
-  assert.equal(score(p, "capabilities:UX"), 2);
+  const p = read(fresh());
+  assert.equal(score(p, "tools:React"), 2);
+  assert.equal(score(p, "capabilities:UX"), 4);
 });
 test("duplicate delivery and repeated opens cannot inflate a visit", () => {
   const p = add(fresh());
@@ -79,12 +81,12 @@ test("unknown projects, terms and event types cannot create interests", () => {
     assert.deepEqual(add(p, kind, subject), p);
 });
 test("inferred interests decay with a seven day half life", () => {
-  const p = add(fresh());
-  assert.equal(score(p, "tools:React", now + 7 * 86400_000), 0.5);
+  const p = read(fresh());
+  assert.equal(score(p, "tools:React", now + 7 * 86400_000), 1);
 });
 test("manual rejection wins over strong inferred interest", () => {
   const p = m.setProfilePreference(
-    add(fresh()),
+    read(fresh()),
     "tools:React",
     "exclude",
     catalog,
@@ -95,11 +97,11 @@ test("manual rejection wins over strong inferred interest", () => {
     .find((x) => x.id === "tools:React");
   assert.equal(interest.score, 0);
   assert.equal(interest.preference, "exclude");
-  assert.equal(interest.inferredScore, 1);
+  assert.equal(interest.inferredScore, 2);
 });
 test("removing a manual preference restores the underlying evidence", () => {
   const p = m.setProfilePreference(
-    add(fresh()),
+    read(fresh()),
     "tools:React",
     "priority",
     catalog,
@@ -113,17 +115,17 @@ test("removing a manual preference restores the underlying evidence", () => {
     catalog,
     now,
   );
-  assert.equal(score(restored, "tools:React"), 1);
+  assert.equal(score(restored, "tools:React"), 2);
   assert.equal(restored.preferences["tools:React"], undefined);
 });
 test("correction feedback records the inference before the visitor changes it", () => {
-  const p = add(fresh());
+  const p = read(fresh());
   const feedback = m
     .setProfilePreference(p, "tools:React", "exclude", catalog, now)
     .signals.at(-1);
-  assert.equal(feedback.inferredScore, 1);
+  assert.equal(feedback.inferredScore, 2);
   assert.equal(feedback.previous, "auto");
-  assert.equal(feedback.basis.project_opened, 1);
+  assert.equal(feedback.basis.case_study_viewed, 2);
   assert.equal(feedback.preference, "exclude");
 });
 test("recommendations explain matches and respect explicit exclusions", () => {

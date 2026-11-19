@@ -7,22 +7,28 @@ import {
   EMPTY_PROJECT_CHOICE,
   profilePatterns,
   isReturningProfileProject,
+  validProfileStrength,
   type ProjectChoice,
+  type ProfileStrength,
 } from "./visitorProfileSignals";
 export {
   profileSectionKind,
   profilePatterns,
   isReturningProfileProject,
   PROFILE_SECTIONS,
+  profileClickLevel,
+  profileArrivalStrength,
 } from "./visitorProfileSignals";
 export type {
+  ProfileStrength,
+  ProfileClickLevel,
   ProfileSection,
   ProfilePattern,
   ProjectChoice,
 } from "./visitorProfileSignals";
 /** Scores are transparent v1 heuristics, not probabilities or identified people. */
 export const PROFILE_VERSION = 1;
-export const PROFILE_RULE_VERSION = 2;
+export const PROFILE_RULE_VERSION = 3;
 export const PROFILE_LIFETIME_MS = 30 * 86400_000;
 /** Wall clocks can step back (e.g. a time sync after sleep); small skews must not invalidate a profile. */
 export const PROFILE_CLOCK_TOLERANCE_MS = 10 * 60_000;
@@ -67,6 +73,8 @@ export type ProfileSignal = {
   kind: ProfileSignalKind;
   subject: string;
   at: number;
+  /** Absent means 1: a signal earns its weight times its strength. */
+  strength?: ProfileStrength;
   preference?: ProfilePreference | "auto";
   inferredScore?: number;
   basis?: Partial<Record<ProfileSignalKind, number>>;
@@ -91,6 +99,8 @@ export type ProfileInterest = ProfileTerm & {
   }[];
 };
 const HALF_LIFE = 7 * 86400_000;
+const signalPoints = (signal: ProfileSignal) =>
+  SIGNAL_WEIGHTS[signal.kind] * (signal.strength ?? 1);
 const WINDOW = 30 * 60_000;
 const choices = ["exclude", "interested", "priority"];
 const services: Record<string, string[]> = {
@@ -234,12 +244,14 @@ export function validProfileSubject(
 
 export function recordProfileSignal(
   profile: VisitorProfile,
-  input: { kind: ProfileSignalKind; subject: string },
+  input: { kind: ProfileSignalKind; subject: string; strength?: number },
   catalog: ProfileCatalog,
   now: number,
 ): VisitorProfile {
   if (
     !validProfileSubject(input.kind, input.subject, catalog) ||
+    (input.strength !== undefined &&
+      !validProfileStrength(input.kind, input.strength)) ||
     input.kind === "preference_changed" ||
     now < profile.startedAt ||
     now >= profile.startedAt + PROFILE_LIFETIME_MS ||
@@ -285,7 +297,15 @@ export function recordProfileSignal(
     updatedAt: now,
     signals: [
       ...profile.signals,
-      { ...input, id: crypto.randomUUID(), at: now },
+      {
+        kind: input.kind,
+        subject: input.subject,
+        ...(input.strength !== undefined
+          ? { strength: input.strength as ProfileStrength }
+          : {}),
+        id: crypto.randomUUID(),
+        at: now,
+      },
     ].slice(-240),
   };
 }
@@ -312,10 +332,7 @@ export function profileInterests(
     ) {
       const prior = depth.get(signal.subject);
       if (prior && signal.at - prior.at < WINDOW) {
-        if (
-          SIGNAL_WEIGHTS[signal.kind] >
-          SIGNAL_WEIGHTS[selected[prior.index].kind]
-        )
+        if (signalPoints(signal) > signalPoints(selected[prior.index]))
           selected[prior.index] = signal;
         continue;
       }
@@ -324,7 +341,7 @@ export function profileInterests(
     selected.push(signal);
   }
   for (const signal of selected) {
-    const weight = SIGNAL_WEIGHTS[signal.kind];
+    const weight = signalPoints(signal);
     if (!weight || signal.at > now) continue;
     const terms = profileSubjectTerms(signal.kind, signal.subject, catalog);
     for (const term of terms) {
@@ -541,11 +558,16 @@ export function restoreVisitorProfile(
       return null;
     if (!validProfileSubject(s.kind, s.subject, catalog)) continue;
     if (!validCorrection(s)) return null;
+    if (s.strength !== undefined && !validProfileStrength(s.kind, s.strength))
+      return null;
     signals.push({
       id: s.id,
       kind: s.kind as ProfileSignalKind,
       subject: s.subject,
       at: s.at,
+      ...(s.strength !== undefined
+        ? { strength: s.strength as ProfileStrength }
+        : {}),
       ...(s.kind === "preference_changed"
         ? {
             preference: s.preference as ProfilePreference | "auto",
@@ -687,15 +709,21 @@ export function parseProfileEventBatch(
             "inferredScore",
             "previous",
             "basis",
+            "strength",
           ].includes(k),
       ) ||
-      !validCorrection(event)
+      !validCorrection(event) ||
+      (event.strength !== undefined &&
+        !validProfileStrength(event.kind, event.strength))
     )
       return null;
     events.push({
       id: event.id,
       kind: event.kind as ProfileSignalKind,
       subject: event.subject,
+      ...(event.strength !== undefined
+        ? { strength: event.strength as ProfileStrength }
+        : {}),
       ...(event.kind === "preference_changed"
         ? {
             preference: event.preference as ProfilePreference | "auto",

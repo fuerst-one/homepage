@@ -195,9 +195,10 @@ test(
       await lenses[1].click();
       await hasSignal(page, "explorer_lens_selected");
       await page.waitForSelector(".vs-cluster-trigger");
-      // The topic chosen above made the profile ready; at this viewport its
-      // hint sits over the first cluster until the visitor dismisses it.
-      await clickText(page, "Dismiss hint");
+      // If the browsing above made the profile ready, its hint sits over the
+      // first cluster at this viewport until the visitor dismisses it.
+      if (await page.$('button[aria-label="Dismiss hint"]'))
+        await clickText(page, "Dismiss hint");
       await page.click(".vs-cluster-trigger");
       await hasSignal(page, "explorer_cluster_selected");
       await go("/en/projects/konfig-product-design-configurator");
@@ -236,6 +237,8 @@ test(
         ),
       );
       await go("/de/profile");
+      // go() returns on the loading placeholder; the list needs the restore.
+      await page.waitForSelector(".profile-choice-list");
       assert.ok(
         (
           await page.$eval(".profile-choice-list", (el) => el.textContent)

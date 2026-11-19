@@ -10,6 +10,9 @@ import { loadTs } from "./helpers/load-ts.mjs";
 const model = loadTs(
   new URL("../packages/content/src/visitorProfile.ts", import.meta.url),
 );
+const { CARD_BUYER_NEED_COUNT } = loadTs(
+  new URL("../packages/content/src/visitorProfileSignals.ts", import.meta.url),
+);
 const { isForYouReady } = loadTs(
   new URL("../packages/content/src/forYouReadiness.ts", import.meta.url),
 );
@@ -29,6 +32,9 @@ const SEED = 23;
 
 const needsOf = (project) =>
   project.terms.filter((id) => id.startsWith("buyerNeeds:"));
+// A card shows its leading needs; a visitor recognises a need only there.
+const cardNeedsOf = (project) =>
+  needsOf(project).slice(0, CARD_BUYER_NEED_COUNT);
 const realNeeds = catalog.terms
   .filter((term) => term.facet === "buyerNeeds")
   .map((term) => term.id)
@@ -38,11 +44,43 @@ const realNeeds = catalog.terms
         .length >= MIN_PROJECTS_PER_NEED,
   );
 
+// Behavioural assumptions, fixed before the Rules v3 numbers were known.
+// How long a clicked card was in view: "full" from 3 s, "half" from 0.5 s.
+const CLICK_LEVEL_CHANCES = {
+  focused: { full: 0.7, half: 0.25, none: 0.05 },
+  loose: { full: 0.5, half: 0.4, none: 0.1 },
+  aimless: { full: 0.3, half: 0.5, none: 0.2 },
+  rapid: { full: 0, half: 0.3, none: 0.7 },
+};
+// Staying 10 s (or interacting) on the project page the card leads to.
+// "wanted": the project carries the visitor's need; "other": it does not.
+const STAY_CHANCE = { wanted: 0.8, other: 0.4, aimless: 0.5, rapid: 0 };
+// After a stay: the needs block sits below the screenshots, the details table
+// at the end of the page.
+const NEEDS_IN_VIEW_CHANCE = 0.8;
+const DETAILS_IN_VIEW_CHANCE = 0.5;
+// A deep read after a stay; times STAY_CHANCE this keeps the Rules v2
+// benchmark's deep-read rates (0.6, 0.2 and 0.3 per pick).
+const DEEP_READ_CHANCE = { wanted: 0.75, other: 0.5, aimless: 0.6 };
+
 const VISITOR_TYPES = {
-  "focused, 6 cards": { focus: 0.65, cards: 6 },
-  "focused, 12 cards": { focus: 0.65, cards: 12 },
-  "loose, 12 cards": { focus: 0.4, cards: 12 },
-  "aimless, 12 cards": { focus: 0, cards: 12, aimless: true },
+  "focused, 6 cards": { focus: 0.65, cards: 6, clicks: "focused" },
+  "focused, 12 cards": { focus: 0.65, cards: 12, clicks: "focused" },
+  "loose, 12 cards": { focus: 0.4, cards: 12, clicks: "loose" },
+  "aimless, 12 cards": {
+    focus: 0,
+    cards: 12,
+    aimless: true,
+    clicks: "aimless",
+  },
+  // Scrolls the list and clicks everything without looking; never stays.
+  "rapid clicker": {
+    focus: 0,
+    cards: 12,
+    aimless: true,
+    clicks: "rapid",
+    rapid: true,
+  },
 };
 
 function seededRandom(seed) {
@@ -53,7 +91,7 @@ function seededRandom(seed) {
   };
 }
 
-function journey(need, { focus, cards, aimless }, random) {
+function journey(need, { focus, cards, aimless, clicks, rapid }, random) {
   const pick = (items) => items[Math.floor(random() * items.length)];
   const draw = (items, count) => {
     const pool = [...items];
@@ -64,14 +102,19 @@ function journey(need, { focus, cards, aimless }, random) {
   };
   let now = START;
   let profile = model.emptyVisitorProfile(now);
-  const record = (kind, subject) => {
+  const record = (kind, subject, strength) => {
     now += SIGNAL_STEP_MS;
     profile = model.recordProfileSignal(
       profile,
-      { kind, subject },
+      { kind, subject, strength },
       catalog,
       now,
     );
+  };
+  const clickLevel = () => {
+    const { full, half } = CLICK_LEVEL_CHANCES[clicks];
+    const roll = random();
+    return roll < full ? "full" : roll < full + half ? "half" : "none";
   };
   const visited = new Set();
   while (visited.size < MAX_PICKS) {
@@ -81,20 +124,29 @@ function journey(need, { focus, cards, aimless }, random) {
     );
     const matching = aimless
       ? []
-      : seen.filter((project) => needsOf(project).includes(need));
+      : seen.filter((project) => cardNeedsOf(project).includes(need));
     const project =
       random() < focus && matching.length ? pick(matching) : pick(seen);
-    const deepReadChance = aimless
-      ? 0.3
-      : needsOf(project).includes(need)
-        ? 0.6
-        : 0.2;
-    const deep = random() < deepReadChance;
+    const interest = rapid
+      ? "rapid"
+      : aimless
+        ? "aimless"
+        : needsOf(project).includes(need)
+          ? "wanted"
+          : "other";
     visited.add(project.id);
-    record("project_opened", project.id);
-    if (deep) {
-      record("project_details_viewed", project.id);
-      record("project_read", project.id);
+    const level = clickLevel();
+    if (level !== "none")
+      record("project_card_clicked", project.id, level === "full" ? 1 : 0.5);
+    if (random() < STAY_CHANCE[interest]) {
+      const strength = model.profileArrivalStrength(level);
+      record("project_details_viewed", project.id, strength);
+      if (random() < NEEDS_IN_VIEW_CHANCE)
+        record("project_region_viewed", `${project.id}|needs`, strength);
+      if (random() < DETAILS_IN_VIEW_CHANCE)
+        record("project_region_viewed", `${project.id}|details`, strength);
+      if (random() < DEEP_READ_CHANCE[interest])
+        record("project_read", project.id);
     }
     if (isForYouReady(profile, catalog, now)) {
       const topTwo = model
@@ -165,3 +217,12 @@ for (const type of ["loose, 12 cards", "aimless, 12 cards"])
   test(`${type}: reported only`, (t) => {
     report(t, type, run(type));
   });
+
+test("rapid clicker: scrolling and clicking everything almost never fires the gate", (t) => {
+  const result = run("rapid clicker");
+  report(t, "rapid clicker", result);
+  assert.ok(
+    result.firesFor < 0.05,
+    `fires for ${percent(result.firesFor)} of rapid clickers, expected under 5%`,
+  );
+});
