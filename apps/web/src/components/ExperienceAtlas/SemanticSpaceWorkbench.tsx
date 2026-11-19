@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import type { AtlasProject } from "./model";
 import {
-  SPACE_RECIPES,
   type SemanticDataset,
   type SpaceLens,
   type SpaceView,
@@ -35,7 +34,7 @@ import {
   type ComparisonMode,
 } from "./EmbeddingPlayground";
 import type { ExperimentComparison } from "./embeddingExperiments";
-import { SCALE_FIELDS, type ScaleField } from "./scaleSpace";
+import { SCALE_FIELDS, SPACE_LENSES, type ScaleField } from "./scaleSpace";
 import { useScaleSpace } from "./useScaleSpace";
 import { ScaleSpaceControls } from "./ScaleSpaceControls";
 import { createSpaceViewport } from "./spaceViewport";
@@ -49,16 +48,6 @@ import {
   SpaceClusterSidebar,
 } from "./SpaceConnectionSidebar";
 import "./semantic-space.css";
-
-const LENSES = [
-  ...SPACE_RECIPES,
-  {
-    id: "scale",
-    label: "Scale & delivery",
-    question: "What scale have I worked at?",
-    fields: SCALE_FIELDS.map((f) => f.label),
-  },
-] as const;
 
 function SpaceLoading() {
   const { t } = useAtlasCopy();
@@ -144,7 +133,7 @@ export function SemanticSpaceWorkbench({
     pending: scalePending,
     error: scaleError,
   } = useScaleSpace(scaleProjects, scaleFields);
-  const definition = LENSES.find((r) => r.id === recipe)!;
+  const definition = SPACE_LENSES.find((r) => r.id === recipe)!;
   const requestedSpace =
     recipe === "scale"
       ? scaleResult?.space
@@ -327,7 +316,7 @@ export function SemanticSpaceWorkbench({
         role="group"
         aria-label={t("Experience lenses")}
       >
-        {LENSES.map((item, index) => (
+        {SPACE_LENSES.map((item, index) => (
           <button
             key={item.id}
             type="button"
@@ -577,8 +566,8 @@ export function SemanticSpaceWorkbench({
               <span>
                 {" "}
                 {t(
-                  LENSES.find((item) => item.id === displayedRecipe)?.label ??
-                    "",
+                  SPACE_LENSES.find((item) => item.id === displayedRecipe)
+                    ?.label ?? "",
                 ).toUpperCase()}
               </span>
             </div>

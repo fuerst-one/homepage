@@ -50,7 +50,12 @@ const index = buildProjectSearchIndex(projects, "en");
 const ids = (input) =>
   selectProjectResults({ projects, index, ...input }).map((p) => p.id);
 const state = () => useProjectListStore.getState();
-const webApps = { index: 2, ids: ["atlas", "harbor"], label: "Web app" };
+const webApps = {
+  lens: "product",
+  index: 2,
+  ids: ["atlas", "harbor"],
+  label: "Web app",
+};
 
 beforeEach(() => {
   useProjectListStore.setState(useProjectListStore.getInitialState(), true);
@@ -76,10 +81,27 @@ test("selecting the active cluster again clears it", () => {
 });
 
 test("selecting another cluster replaces the active one", () => {
-  const other = { index: 5, ids: ["studio"], label: "Dashboard" };
+  const other = {
+    lens: "product",
+    index: 5,
+    ids: ["studio"],
+    label: "Dashboard",
+  };
   state().toggleCluster(webApps);
   state().toggleCluster(other);
   assert.deepEqual(state().cluster, other);
+});
+
+test("the same cluster number in another lens is a different cluster", () => {
+  const sameNumber = {
+    lens: "engineering",
+    index: webApps.index,
+    ids: ["studio"],
+    label: "Dashboard",
+  };
+  state().toggleCluster(webApps);
+  state().toggleCluster(sameNumber);
+  assert.deepEqual(state().cluster, sameNumber);
 });
 
 test("a new query discards the semantic matches of the previous one", () => {

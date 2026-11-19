@@ -8,7 +8,13 @@ import {
 } from "../../PlasmaLanding/projectSearch";
 import { filterProjects, type FilterParams } from "./Filter/utils";
 
-export type ClusterSelection = { index: number; ids: string[]; label: string };
+/** Cluster numbers repeat across Explorer lenses, so the lens is part of a cluster's identity. */
+export type ClusterSelection = {
+  lens: string;
+  index: number;
+  ids: string[];
+  label: string;
+};
 export type SemanticMatches = { query: string; ids: string[] };
 export type SearchStatus = "idle" | "busy" | "complete" | "error";
 
@@ -84,7 +90,9 @@ export const useProjectListStore = create<ProjectListState>((set, get) => ({
     set({ semantic, searchStatus: semantic ? "complete" : "idle" }),
   setSearchStatus: (searchStatus) => set({ searchStatus }),
   toggleCluster: (cluster) => {
-    if (get().cluster?.index === cluster.index) return set({ cluster: null });
+    const active = get().cluster;
+    if (active?.lens === cluster.lens && active.index === cluster.index)
+      return set({ cluster: null });
     set({ cluster, filters: withoutDefaultFeatured(get().filters) });
   },
   clearCluster: () => set({ cluster: null }),

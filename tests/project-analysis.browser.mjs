@@ -5,7 +5,7 @@ import puppeteer from "puppeteer";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6894";
 
 for (const locale of ["en", "de"]) {
-  test(`${locale}: sidebar Explorer shows cluster and project hover cards without controls`, async () => {
+  test(`${locale}: sidebar Explorer shows cluster and project hover cards with lens tabs as its only controls`, async () => {
     const browser = await puppeteer.launch({ headless: true });
     try {
       const page = await browser.newPage();
@@ -26,8 +26,29 @@ for (const locale of ["en", "de"]) {
       const canvas = await page.waitForSelector(
         "[data-explorer-preview] canvas",
       );
+      assert.deepEqual(
+        await page.$$eval("[data-explorer-preview] button", (buttons) =>
+          buttons.map((button) => [
+            button.textContent.trim(),
+            button.getAttribute("aria-pressed"),
+          ]),
+        ),
+        locale === "de"
+          ? [
+              ["Produkt & Nutzen", "true"],
+              ["Technologie", "false"],
+              ["Mein Beitrag", "false"],
+              ["Umfang & Umsetzung", "false"],
+            ]
+          : [
+              ["Product purpose", "true"],
+              ["Engineering", "false"],
+              ["Contribution model", "false"],
+              ["Scale & delivery", "false"],
+            ],
+      );
       assert.equal(
-        await page.$("[data-explorer-preview] :is(button,select,input)"),
+        await page.$("[data-explorer-preview] :is(select,input)"),
         null,
       );
       assert.equal(
@@ -152,12 +173,12 @@ for (const locale of ["en", "de"]) {
           options.map((option) => option.textContent),
         ),
         locale === "de"
-          ? ["Kompetenzen", "Methoden", "Branchen", "Projekttyp", "Tools"]
-          : ["Capabilities", "Methods", "Industries", "Types", "Tools"],
+          ? ["Branchen", "Kompetenzen", "Methoden", "Projekttyp", "Tools"]
+          : ["Industries", "Capabilities", "Methods", "Types", "Tools"],
       );
       assert.equal(
         await views.evaluate((select) => select.value),
-        "capabilities",
+        "industries",
       );
       const analysis = await page.waitForSelector(
         "aside [role=region][aria-label]",
@@ -207,6 +228,40 @@ test("analysis charts follow the list search, not only the facet filters", async
           "aside [role=region][aria-label] [role=status]",
         ),
     );
+  } finally {
+    await browser.close();
+  }
+});
+
+test("switching the sidebar Explorer's lens changes the question it answers", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "domcontentloaded",
+      timeout: 90000,
+    });
+    await page.waitForSelector("[data-explorer-preview] canvas");
+    const pressed = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll("[data-explorer-preview] button")].map(
+          (button) => button.getAttribute("aria-pressed"),
+        ),
+      );
+    const question = () =>
+      page.evaluate(
+        () =>
+          document.querySelector("[data-explorer-lens-question]").textContent,
+      );
+    assert.equal(await question(), "What does it help people do?");
+    await page.click("[data-explorer-preview] button:nth-of-type(4)");
+    assert.equal(await question(), "What scale have I worked at?");
+    assert.deepEqual(await pressed(), ["false", "false", "false", "true"]);
+    assert.ok(await page.waitForSelector("[data-explorer-preview] canvas"));
+    assert.deepEqual(errors, []);
   } finally {
     await browser.close();
   }
