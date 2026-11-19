@@ -4,7 +4,7 @@ import {
 } from "@homepage/content/projectScale";
 import { projectDistances, neighbourEdges } from "../ProjectLab/clustering";
 import { adaptiveClusters } from "./adaptiveClusters";
-import type { SemanticSpace } from "./spaceTypes";
+import { SPACE_RECIPES, type SemanticSpace } from "./spaceTypes";
 import type { AxisDescription } from "./spaceAxes";
 
 export const SCALE_FIELDS = [
@@ -34,6 +34,17 @@ export const SCALE_FIELDS = [
   },
 ] as const;
 export type ScaleField = (typeof SCALE_FIELDS)[number]["id"];
+
+/** The fitted embedding lenses plus the numeric one, in the order the Explorer shows them. */
+export const SPACE_LENSES = [
+  ...SPACE_RECIPES,
+  {
+    id: "scale",
+    label: "Scale & delivery",
+    question: "What scale have I worked at?",
+    fields: SCALE_FIELDS.map((f) => f.label),
+  },
+] as const;
 type ScaleProject = { id: string; scale?: Partial<ProjectScale> };
 
 /** Only complete, comparable measurements enter a selected numeric feature. */

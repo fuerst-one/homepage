@@ -206,3 +206,26 @@ test("named filters remain visible and removable with the filter console collaps
     await browser.close();
   }
 });
+
+for (const query of ["?all=1", "?tools=React.js"]) {
+  test(`opening the project list with ${query} never rewrites the URL to other filters`, async () => {
+    const browser = await puppeteer.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      const visited = [];
+      page.on("framenavigated", (frame) => {
+        if (frame === page.mainFrame())
+          visited.push(new URL(frame.url()).search);
+      });
+      await page.goto(`${base}/en/projects${query}`, {
+        waitUntil: "networkidle2",
+        timeout: 90000,
+      });
+      await page.waitForSelector("[data-project-search-result]");
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      assert.deepEqual([...new Set(visited)], [query]);
+    } finally {
+      await browser.close();
+    }
+  });
+}

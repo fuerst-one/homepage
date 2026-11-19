@@ -17,10 +17,17 @@ test("calendar distinguishes recorded zero months from months outside coverage",
     [2020, 2021],
   );
   assert.equal(years[0].months.length, 12);
-  assert.deepEqual(years[0].months[9], { month: "2020-10", commits: null });
-  assert.deepEqual(years[0].months[10], { month: "2020-11", commits: 2 });
-  assert.deepEqual(years[0].months[11], { month: "2020-12", commits: 0 });
-  assert.deepEqual(years[1].months[1], { month: "2021-02", commits: null });
+  assert.deepEqual(
+    [years[0].months[9], years[0].months[10], years[0].months[11]].map(
+      ({ month, commits }) => ({ month, commits }),
+    ),
+    [
+      { month: "2020-10", commits: null },
+      { month: "2020-11", commits: 2 },
+      { month: "2020-12", commits: 0 },
+    ],
+  );
+  assert.equal(years[1].months[1].commits, null);
 });
 
 test("calendar grows by calendar year without inventing missing commit figures", () => {
@@ -61,4 +68,104 @@ test("keyboard calendar movement crosses year boundaries and stays within record
   assert.equal(adjacentGitHubMonth(years, "2021-12", 12), "2022-12");
   assert.equal(adjacentGitHubMonth(years, "2021-12", -1), "2021-12");
   assert.equal(adjacentGitHubMonth(years, "2022-01", 1), "2022-01");
+});
+
+test("calendar months carry their active projects, also outside recorded commit coverage", () => {
+  const { githubCalendarYears } = subject();
+  const [year] = githubCalendarYears(
+    [{ month: "2020-11", commits: 2 }],
+    [
+      { month: "2020-10", projects: [{ label: "Early client" }] },
+      {
+        month: "2020-11",
+        projects: [{ label: "Early client" }, { label: "Side project" }],
+      },
+    ],
+  );
+  assert.deepEqual(year.months[9], {
+    month: "2020-10",
+    commits: null,
+    projects: [{ label: "Early client" }],
+  });
+  assert.deepEqual(year.months[10].projects, [
+    { label: "Early client" },
+    { label: "Side project" },
+  ]);
+  assert.deepEqual(year.months[11], {
+    month: "2020-12",
+    commits: null,
+    projects: [],
+  });
+});
+
+test("a calendar month reports work outside GitHub when any active project is unconnected", () => {
+  const { githubCalendarYears, hasWorkOutsideGitHub } = subject();
+  const [year] = githubCalendarYears(
+    [
+      { month: "2020-10", commits: 4 },
+      { month: "2020-11", commits: 0 },
+      { month: "2020-12", commits: 1 },
+    ],
+    [
+      {
+        month: "2020-10",
+        projects: [{ label: "Open tool", outsideGitHub: false }],
+      },
+      {
+        month: "2020-11",
+        projects: [
+          { label: "Open tool", outsideGitHub: false },
+          { label: "GitLab client", outsideGitHub: true },
+        ],
+      },
+    ],
+  );
+  assert.deepEqual(year.months.slice(9).map(hasWorkOutsideGitHub), [
+    false,
+    true,
+    false,
+  ]);
+});
+
+test("only a recorded zero-commit month with work outside GitHub is marked on the calendar", () => {
+  const { githubCalendarYears, marksWorkOutsideGitHub } = subject();
+  const outside = [{ label: "GitLab client", outsideGitHub: true }];
+  const [year] = githubCalendarYears(
+    [
+      { month: "2020-09", commits: 0 },
+      { month: "2020-10", commits: 0 },
+      { month: "2020-11", commits: 3 },
+    ],
+    [
+      { month: "2020-08", projects: outside },
+      {
+        month: "2020-09",
+        projects: [{ label: "Open tool", outsideGitHub: false }],
+      },
+      { month: "2020-10", projects: outside },
+      { month: "2020-11", projects: outside },
+    ],
+  );
+  assert.deepEqual(
+    year.months
+      .slice(7, 11)
+      .map((cell) => [cell.month, marksWorkOutsideGitHub(cell)]),
+    [
+      ["2020-08", false],
+      ["2020-09", false],
+      ["2020-10", true],
+      ["2020-11", false],
+    ],
+  );
+});
+
+test("keyboard calendar movement reaches unrecorded months that have active projects", () => {
+  const { githubCalendarYears, adjacentGitHubMonth } = subject();
+  const years = githubCalendarYears(
+    [{ month: "2020-11", commits: 2 }],
+    [{ month: "2020-10", projects: [{ label: "Early client" }] }],
+  );
+  assert.equal(adjacentGitHubMonth(years, "2020-11", -1), "2020-10");
+  assert.equal(adjacentGitHubMonth(years, "2020-10", -1), "2020-10");
+  assert.equal(adjacentGitHubMonth(years, "2020-11", 1), "2020-11");
 });

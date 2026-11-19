@@ -69,6 +69,9 @@ test("outages silently show project suggestions, bypass slow requests across pag
         timeout: 90000,
       });
       await page.waitForSelector(".landing-backdrop canvas");
+      await page.waitForSelector(
+        ".landing-console:not([inert]) #landing-command",
+      );
     };
     await home();
     await page.type("#landing-command", "AI automation");
@@ -178,6 +181,9 @@ test("a stalled transport quietly falls back by its deadline, then answers local
       timeout: 90000,
     });
     await page.waitForSelector(".landing-backdrop canvas");
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "What can you build for my team?");
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,
@@ -260,6 +266,9 @@ test("an older completed answer carrying an outage does not clear the latch", as
       timeout: 90000,
     });
     await page.waitForSelector(".landing-backdrop canvas");
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "What do you enjoy building?");
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,

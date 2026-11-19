@@ -6,10 +6,17 @@ export default function WorkTimelineChart({
   locale,
   cumulative = false,
 }: {
-  rows: { month: string; count: number }[];
+  rows: { month: string; count: number; projects?: string[] }[];
   locale: string;
   cumulative?: boolean;
 }) {
+  const de = locale === "de";
+  const monthLabel = new Intl.DateTimeFormat(de ? "de-DE" : "en-GB", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const numbers = new Intl.NumberFormat(locale);
   return (
     <WorkChart
       style={{ height: "100%", width: "100%" }}
@@ -44,8 +51,23 @@ export default function WorkTimelineChart({
           backgroundColor: "#171714",
           borderColor: "#55554b",
           textStyle: { color: "#f0eee8", fontFamily: "monospace" },
-          valueFormatter: (v: number) =>
-            new Intl.NumberFormat(locale).format(v),
+          confine: true,
+          formatter: (params: { dataIndex: number }[]) => {
+            const row = rows[params[0]?.dataIndex];
+            if (!row) return "";
+            const unit = de
+              ? row.count === 1
+                ? "Projekt"
+                : "Projekte"
+              : row.count === 1
+                ? "project"
+                : "projects";
+            return [
+              monthLabel.format(new Date(`${row.month}-01T00:00:00Z`)),
+              `${numbers.format(row.count)} ${unit}`,
+              ...(row.projects?.length ? ["", ...row.projects] : []),
+            ].join("\n");
+          },
         },
         series: [
           {

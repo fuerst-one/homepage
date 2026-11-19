@@ -292,3 +292,36 @@ test("declined, expired and outdated permissions never expose semantic search or
     await browser.close();
   }
 });
+
+test("the filter console's result count follows the search, not only the facet filters", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    const announced = () =>
+      page.$eval('main [role=status][aria-label="Project results"]', (status) =>
+        status.textContent.trim(),
+      );
+    await page.type("#project-search", "React");
+    await page.waitForFunction(
+      () => document.querySelector("#project-search-status")?.textContent,
+    );
+    const cards = await page.$$eval(
+      "[data-project-search-result]",
+      (found) => found.length,
+    );
+    assert.ok(cards > 0);
+    assert.equal(await announced(), `${cards} results`);
+    await page.type("#project-search", " zzzzqq no such project");
+    await page.waitForFunction(
+      () => !document.querySelector("[data-project-search-result]"),
+    );
+    assert.equal(await announced(), "0 results");
+  } finally {
+    await browser.close();
+  }
+});

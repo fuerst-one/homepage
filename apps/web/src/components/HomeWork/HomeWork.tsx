@@ -4,6 +4,7 @@ import type { Locale } from "@homepage/content/i18n";
 import {
   portfolioTimeline,
   selectedWork,
+  timelineProjects,
   workProject,
 } from "@homepage/content/workPortfolio";
 import { projectPath } from "../../lib/seo";
@@ -26,9 +27,6 @@ export function HomeWork({
   const de = locale === "de";
   const data = projects.map((p) =>
     workProject(p, projectPath(p, locale), locale),
-  );
-  const seabo = data.find(
-    (project) => project.id === "153f6668-f4d6-490a-8345-0b999b35305a",
   );
   const first = projects
     .map((p) => p.startDate)
@@ -82,17 +80,8 @@ export function HomeWork({
         <HomeProjectViews projects={projects} locale={locale} />
         <HomeExplorer projects={projects} locale={locale} />
         <WorkTimeline
-          months={portfolioTimeline(projects, today)}
+          months={timelineProjects(portfolioTimeline(projects, today), data)}
           projectCount={data.length}
-          seabo={
-            seabo?.caseHref
-              ? {
-                  href: seabo.caseHref,
-                  startDate: seabo.startDate,
-                  endDate: seabo.endDate,
-                }
-              : null
-          }
           github={github}
           locale={locale}
         />

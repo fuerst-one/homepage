@@ -3,11 +3,19 @@ import { test } from "node:test";
 import puppeteer from "puppeteer";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 
-test("unavailable AI shows project suggestions without asking for consent", async () => {
+const settle = () => new Promise((resolve) => setTimeout(resolve, 400));
+const composer = (page) =>
+  page.$eval("#landing-command", (e) => ({
+    placeholder: e.placeholder,
+    maxLength: e.maxLength,
+  }));
+
+test("unavailable AI leaves the landing as plain search: no chat, consent prompt or request", async () => {
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
     let posts = 0;
+    let available = false;
     await page.setRequestInterception(true);
     page.on("request", (request) => {
       if (request.url().includes("/api/projects?"))
@@ -23,9 +31,9 @@ test("unavailable AI shows project suggestions without asking for consent", asyn
           body: JSON.stringify({
             eligible: true,
             eligibleUntil: Date.now() + 60000,
-            available: false,
+            available,
             verified: true,
-            retryAt: Date.now() + 300000,
+            retryAt: available ? 0 : Date.now() + 300000,
           }),
         });
       else if (request.url().endsWith("/api/assistant")) {
@@ -40,15 +48,52 @@ test("unavailable AI shows project suggestions without asking for consent", asyn
     await page.waitForSelector(
       ".landing-console:not([inert]) #landing-command",
     );
-    await page.type("#landing-command", "Tell me about your work");
+    await page.waitForSelector(".knowledge-privacy");
+    assert.deepEqual(
+      await composer(page),
+      { placeholder: "Search or say hello…", maxLength: 240 },
+      "the input does not invite a question nobody can answer",
+    );
+    const question = "Tell me about your work";
+    await page.type("#landing-command", question);
+    await page.waitForNetworkIdle({ idleTime: 500 });
+    await page.keyboard.press("Enter");
+    await settle();
+    assert.equal(await page.$(".knowledge-inline"), null);
+    assert.equal(await page.$("[data-ai-consent]"), null);
+    assert.equal(posts, 0);
+    assert.equal(
+      await page.$eval("#landing-command", (e) => e.value),
+      question,
+    );
+
+    available = true;
+    await page.evaluate(() => window.dispatchEvent(new Event("online")));
+    await page.waitForFunction(
+      () => document.querySelector("#landing-command").maxLength === 1000,
+    );
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,
     );
+    await page.focus("#landing-command");
     await page.keyboard.press("Enter");
-    await page.waitForSelector(".knowledge-answer", { timeout: 5000 });
-    assert.equal(await page.$("[data-ai-consent]"), null);
+    await page.waitForSelector("[data-ai-consent]");
+    available = false;
+    await page.evaluate(() => window.dispatchEvent(new Event("online")));
+    await page.waitForFunction(
+      () => !document.querySelector("[data-ai-consent]"),
+    );
+    await settle();
+    assert.equal(
+      await page.$(".knowledge-inline"),
+      null,
+      "an outage during the consent prompt opens no chat",
+    );
+    assert.equal(
+      await page.$eval("#landing-command", (e) => e.value),
+      question,
+    );
     assert.equal(posts, 0);
-    assert.ok((await page.$$(".knowledge-actions button")).length > 0);
   } finally {
     await browser.close();
   }
@@ -164,25 +209,37 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
           key.startsWith("fuerst-one:knowledge-"),
         ),
       ),
-      [],
+      ["fuerst-one:knowledge-consent-asked:v1"],
+      "withdrawal keeps only the marker that stops this session asking again",
     );
     const declined = await page.evaluate(() =>
       JSON.parse(localStorage.getItem("fuerst-one:knowledge-consent:v1")),
     );
     assert.equal(declined.allowed, false);
-    await page.type("#landing-command", "Tell me about design work");
-    await page.keyboard.press("Enter");
-    await page.waitForSelector(".knowledge-answer");
-    assert.equal(
-      await page.$("[data-ai-consent]"),
-      null,
-      "withdrawal remembers a refusal instead of asking again",
+    const askAfterRefusal = async () => {
+      await page.type("#landing-command", "Tell me about design work");
+      await page.waitForNetworkIdle({ idleTime: 500 });
+      await page.keyboard.press("Enter");
+    };
+    const assertPlainSearch = async (message) => {
+      await settle();
+      assert.equal(await page.$("[data-ai-consent]"), null, message);
+      assert.equal(await page.$(".knowledge-inline"), null, message);
+      assert.equal((await composer(page)).maxLength, 240, message);
+      assert.equal(posts, 1);
+    };
+    const reload = async () => {
+      await page.reload({ waitUntil: "networkidle2" });
+      await page.waitForSelector(
+        ".landing-console:not([inert]) #landing-command",
+      );
+      await page.waitForSelector("[data-ai-preferences]");
+    };
+    await askAfterRefusal();
+    await assertPlainSearch(
+      "a refusal made in this session is not questioned again",
     );
-    assert.equal(posts, 1);
-    await page.reload({ waitUntil: "networkidle2" });
-    await page.waitForSelector(
-      ".landing-console:not([inert]) #landing-command",
-    );
+    await reload();
     assert.deepEqual(
       await page.evaluate(() =>
         JSON.parse(localStorage.getItem("fuerst-one:knowledge-consent:v1")),
@@ -190,6 +247,30 @@ test("AI is opt-in; cancel, grant, optional history and withdrawal control all a
       declined,
       "visits never renew a remembered refusal",
     );
+    await askAfterRefusal();
+    await assertPlainSearch("a reload stays within the same session");
+
+    // A new browser session starts with empty session storage.
+    await page.evaluate(() => sessionStorage.clear());
+    await reload();
+    assert.equal((await composer(page)).maxLength, 1000);
+    await askAfterRefusal();
+    await page.waitForSelector("[data-ai-consent]");
+    assert.equal(await page.$(".knowledge-inline"), null);
+    await page.click("[data-ai-cancel]");
+    await page.waitForFunction(
+      () => document.activeElement?.id === "landing-command",
+    );
+    await page.keyboard.press("Enter");
+    await assertPlainSearch("a new session asks a remembered refusal once");
+    assert.deepEqual(
+      await page.evaluate(() =>
+        JSON.parse(localStorage.getItem("fuerst-one:knowledge-consent:v1")),
+      ),
+      declined,
+      "asking again does not renew or discard the refusal",
+    );
+    await reload();
     await page.click("[data-ai-preferences]");
     await page.waitForSelector("[data-ai-consent]");
     await page.click("#remember-ai-chat");

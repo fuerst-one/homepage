@@ -1,6 +1,9 @@
 import { after, NextResponse } from "next/server";
 import { getSiteFeatures } from "@/server/siteFeatures";
-import { getKnowledgeAdmission } from "@/server/knowledge/admission";
+import {
+  getKnowledgeAdmission,
+  hasKnowledgeAllowance,
+} from "@/server/knowledge/admission";
 import {
   knowledgeAvailability,
   probeKnowledgeServices,
@@ -30,6 +33,19 @@ export async function GET(request: Request) {
         available: false,
         verified: false,
         retryAt: admission.retryAt,
+      },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  // Used-up budgets or request caps would turn every answer into the local fallback,
+  // and a recovery probe could not pass them either.
+  if (!(await hasKnowledgeAllowance(request)))
+    return NextResponse.json(
+      {
+        eligible: true,
+        eligibleUntil: admission.retryAt,
+        available: false,
+        verified: false,
+        retryAt: Date.now() + 60_000,
       },
       { headers: { "Cache-Control": "no-store" } },
     );

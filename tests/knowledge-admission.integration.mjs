@@ -68,7 +68,22 @@ test("database policy enforces global/probe caps, pause, live updates and indepe
       usage.reserveKnowledgeUsage("different-visitor"),
       /allowance/i,
     );
+    assert.equal(
+      await usage.knowledgeChatAllowance("different-visitor"),
+      false,
+      "a used-up cap is visible without reserving paid work",
+    );
     await setting("ai.global_per_minute", 3);
+    assert.equal(await usage.knowledgeChatAllowance("different-visitor"), true);
+    await setting("ai.daily_budget_usd", 0);
+    assert.equal(
+      await usage.knowledgeChatAllowance("different-visitor"),
+      false,
+      "an exhausted budget is visible without reserving paid work",
+    );
+    await setting("ai.daily_budget_usd", 1);
+    const [before] = await sql`SELECT count(*) AS total FROM knowledge_usage`;
+    assert.equal(Number(before.total), 2, "allowance checks record no usage");
     await usage.finishKnowledgeUsage(
       await usage.reserveKnowledgeUsage("different-visitor"),
       0,

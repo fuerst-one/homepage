@@ -1,31 +1,29 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { CvProject } from "@homepage/content/models";
 import { parseKnowledgeConsent } from "@homepage/content/knowledgeConsent";
 import { useLocale } from "../../i18n/LocaleProvider";
-import {
-  buildProjectSearchIndex,
-  searchProjectIndex,
-} from "../../PlasmaLanding/projectSearch";
+import { buildProjectSearchIndex } from "../../PlasmaLanding/projectSearch";
 import { useKnowledgeConsent } from "../../PlasmaLanding/useKnowledgeConsent";
-import { filterProjects, type FilterParams } from "./Filter/utils";
+import { selectProjectResults, useProjectListStore } from "./projectListStore";
 
 export function useProjectListSearch(
   projects: CvProject[],
-  filters: FilterParams,
   semanticEnabled: boolean,
 ) {
   const locale = useLocale();
   const consent = useKnowledgeConsent(semanticEnabled, "search");
-  const [query, setInput] = useState("");
-  const [semantic, setSemantic] = useState<{
-    query: string;
-    ids: string[];
-  } | null>(null);
-  const [status, setStatus] = useState<"idle" | "busy" | "complete" | "error">(
-    "idle",
-  );
+  const filters = useProjectListStore((s) => s.filters);
+  const cluster = useProjectListStore((s) => s.cluster);
+  const query = useProjectListStore((s) => s.query);
+  const semantic = useProjectListStore((s) => s.semantic);
+  const status = useProjectListStore((s) => s.searchStatus);
+  const setInput = useProjectListStore((s) => s.setQuery);
+  const setSemantic = useProjectListStore((s) => s.setSemantic);
+  const setStatus = useProjectListStore((s) => s.setSearchStatus);
+  const setResultIds = useProjectListStore((s) => s.setResultIds);
+  const resetListView = useProjectListStore((s) => s.resetListView);
   const pending = useRef<AbortController | null>(null);
   const index = useMemo(
     () =>
@@ -48,31 +46,35 @@ export function useProjectListSearch(
       pending.current?.abort();
       pending.current = null;
       setSemantic(null);
-      setStatus("idle");
     }
-  }, [allowed]);
+  }, [allowed, setSemantic]);
   useEffect(
     () => () => {
       pending.current?.abort();
+      // The aborted request must not report an error into the store after the reset.
+      pending.current = null;
+      // Search text and cluster selection stay in page memory only.
+      resetListView();
     },
-    [],
+    [resetListView],
   );
 
-  const results = useMemo(() => {
-    const filtered = filterProjects(projects, filters);
-    if (!query.trim()) return filtered;
-    const matching = searchProjectIndex(
-      index,
-      query,
-      undefined,
-      allowed && semantic?.query === query.trim() ? semantic.ids : [],
-    );
-    const visible = new Map(filtered.map((project) => [project.id, project]));
-    return matching.projects.flatMap((match) => {
-      const project = visible.get(match.id);
-      return project ? [project] : [];
-    });
-  }, [projects, filters, query, index, allowed, semantic]);
+  const results = useMemo(
+    () =>
+      selectProjectResults({
+        projects,
+        index,
+        filters,
+        clusterIds: cluster?.ids,
+        query,
+        semanticIds:
+          allowed && semantic?.query === query.trim() ? semantic.ids : [],
+      }),
+    [projects, filters, cluster, query, index, allowed, semantic],
+  );
+  useEffect(() => {
+    setResultIds(results.map((project) => project.id));
+  }, [results, setResultIds]);
 
   function stop() {
     pending.current?.abort();
@@ -80,8 +82,8 @@ export function useProjectListSearch(
     setStatus("idle");
   }
   function setQuery(value: string) {
-    stop();
-    setSemantic(null);
+    pending.current?.abort();
+    pending.current = null;
     setInput(value);
   }
   async function search() {
@@ -120,7 +122,6 @@ export function useProjectListSearch(
         throw new Error("Invalid project search results");
       if (pending.current !== controller || controller.signal.aborted) return;
       setSemantic({ query: message, ids: data.projectIds });
-      setStatus("complete");
     } catch {
       if (pending.current === controller) setStatus("error");
     } finally {

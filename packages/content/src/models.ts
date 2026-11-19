@@ -43,6 +43,8 @@ export type CvProject = ProjectTaxonomy & {
   endDate: string | null;
   websiteUrl: string | null;
   githubUrl: string | null;
+  /** Absent while the worker has no GitHub inventory to check against. */
+  hasConnectedRepo?: boolean;
   industries: string[];
   capabilities: string[];
   methods: string[];

@@ -1,9 +1,70 @@
 import { randomUUID } from "node:crypto";
+import type postgres from "postgres";
 import { knowledgeDatabase } from "@homepage/database/database";
 import type { KnowledgeConsent } from "@homepage/content/knowledgeConsent";
-import { readKnowledgeSettings } from "./policy";
+import { readKnowledgeSettings, type KnowledgeSettings } from "./policy";
 
 export class KnowledgeQuotaError extends Error {}
+
+const CHAT_RESERVATION_MICRO_USD = 100_000;
+const INDEXER_RESERVATION_MICRO_USD = 10_000;
+
+async function readKnowledgeUsage(
+  sql: postgres.Sql | postgres.TransactionSql,
+  visitor: string,
+  signal?: AbortSignal,
+) {
+  const [usage] = await sql`
+    SELECT coalesce(sum(amount_micro_usd) FILTER (WHERE created_at >= date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),0) AS daily,
+      coalesce(sum(amount_micro_usd) FILTER (WHERE created_at >= date_trunc('month', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),0) AS monthly,
+      count(*) FILTER (WHERE visitor = ${visitor} AND created_at > now() - interval '1 minute') AS recent,
+      count(*) FILTER (WHERE visitor = ${visitor} AND created_at > now() - interval '1 day') AS visitor_daily,
+      count(*) FILTER (WHERE kind='chat' AND created_at > now()-interval '1 minute') AS global_recent,
+      count(*) FILTER (WHERE kind='chat' AND created_at >= date_trunc('day',now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC') AS global_daily,
+      count(*) FILTER (WHERE kind='probe' AND created_at > now()-interval '1 minute') AS probe_recent,
+      count(*) FILTER (WHERE kind='probe' AND created_at >= date_trunc('day',now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC') AS probe_daily,
+      count(*) FILTER (WHERE status = 'reserved' AND created_at > now() - interval '2 minutes') AS running
+    FROM knowledge_usage
+    WHERE created_at >= least(date_trunc('month', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC', now() - interval '1 day')
+  `.signal(signal);
+  return usage;
+}
+type KnowledgeUsage = Awaited<ReturnType<typeof readKnowledgeUsage>>;
+
+const exceedsBudget = (
+  usage: KnowledgeUsage,
+  settings: KnowledgeSettings,
+  amount: number,
+) =>
+  Number(usage.daily) + amount >
+    Math.floor(settings.dailyBudgetUsd * 1_000_000) ||
+  Number(usage.monthly) + amount >
+    Math.floor(settings.monthlyBudgetUsd * 1_000_000);
+
+const exceedsChatCaps = (usage: KnowledgeUsage, settings: KnowledgeSettings) =>
+  Number(usage.recent) >= settings.visitorPerMinute ||
+  Number(usage.visitor_daily) >= settings.visitorPerDay ||
+  Number(usage.global_recent) >= settings.globalPerMinute ||
+  Number(usage.global_daily) >= settings.globalPerDay;
+
+/**
+ * Whether a question from this visitor would be admitted now, without reserving
+ * anything. Momentary concurrency is ignored: it clears within a request.
+ */
+export async function knowledgeChatAllowance(
+  visitor: string,
+  signal?: AbortSignal,
+) {
+  signal?.throwIfAborted();
+  const sql = knowledgeDatabase();
+  const settings = await readKnowledgeSettings(sql, signal);
+  const usage = await readKnowledgeUsage(sql, visitor, signal);
+  return (
+    settings.enabled &&
+    !exceedsBudget(usage, settings, CHAT_RESERVATION_MICRO_USD) &&
+    !exceedsChatCaps(usage, settings)
+  );
+}
 
 /** Serialize admission checks across all server instances before starting paid work. */
 export async function reserveKnowledgeUsage(
@@ -14,7 +75,9 @@ export async function reserveKnowledgeUsage(
 ) {
   signal?.throwIfAborted();
   const sql = knowledgeDatabase(),
-    amount = indexer ? 10_000 : 100_000;
+    amount = indexer
+      ? INDEXER_RESERVATION_MICRO_USD
+      : CHAT_RESERVATION_MICRO_USD;
   return sql.begin(async (tx) => {
     signal?.throwIfAborted();
     await tx`SELECT pg_advisory_xact_lock(816161)`.signal(signal);
@@ -24,30 +87,11 @@ export async function reserveKnowledgeUsage(
         ? "probe"
         : "indexer"
       : "chat";
-    const [usage] = await tx`
-      SELECT coalesce(sum(amount_micro_usd) FILTER (WHERE created_at >= date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),0) AS daily,
-        coalesce(sum(amount_micro_usd) FILTER (WHERE created_at >= date_trunc('month', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),0) AS monthly,
-        count(*) FILTER (WHERE visitor = ${visitor} AND created_at > now() - interval '1 minute') AS recent,
-        count(*) FILTER (WHERE visitor = ${visitor} AND created_at > now() - interval '1 day') AS visitor_daily,
-        count(*) FILTER (WHERE kind='chat' AND created_at > now()-interval '1 minute') AS global_recent,
-        count(*) FILTER (WHERE kind='chat' AND created_at >= date_trunc('day',now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC') AS global_daily,
-        count(*) FILTER (WHERE kind='probe' AND created_at > now()-interval '1 minute') AS probe_recent,
-        count(*) FILTER (WHERE kind='probe' AND created_at >= date_trunc('day',now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC') AS probe_daily,
-        count(*) FILTER (WHERE status = 'reserved' AND created_at > now() - interval '2 minutes') AS running
-      FROM knowledge_usage
-      WHERE created_at >= least(date_trunc('month', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC', now() - interval '1 day')
-    `.signal(signal);
+    const usage = await readKnowledgeUsage(tx, visitor, signal);
     if (
-      Number(usage.daily) + amount >
-        Math.floor(settings.dailyBudgetUsd * 1_000_000) ||
-      Number(usage.monthly) + amount >
-        Math.floor(settings.monthlyBudgetUsd * 1_000_000) ||
+      exceedsBudget(usage, settings, amount) ||
       (kind !== "indexer" && !settings.enabled) ||
-      (!indexer &&
-        (Number(usage.recent) >= settings.visitorPerMinute ||
-          Number(usage.visitor_daily) >= settings.visitorPerDay ||
-          Number(usage.global_recent) >= settings.globalPerMinute ||
-          Number(usage.global_daily) >= settings.globalPerDay)) ||
+      (!indexer && exceedsChatCaps(usage, settings)) ||
       (kind === "probe" &&
         (Number(usage.probe_recent) >= settings.probePerMinute ||
           Number(usage.probe_daily) >= settings.probePerDay)) ||

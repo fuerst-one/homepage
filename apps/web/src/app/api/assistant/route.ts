@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
   if (!ip) return reply({ error: "unavailable" }, 503);
   const circuit = knowledgeAvailability();
   let mode: "answer" | "fallback" = "answer";
+  let allowanceReached = false;
   const answer = await circuit.run(
     (signal) =>
       answerKnowledge(
@@ -88,12 +89,21 @@ export async function POST(request: NextRequest) {
       return knowledgeFallback(parsed.locale);
     },
     (error) => {
-      if (error instanceof KnowledgeQuotaError)
+      allowanceReached = error instanceof KnowledgeQuotaError;
+      if (allowanceReached)
         after(() => recordKnowledgeAdmission("quota").catch(() => {}));
-      return !request.signal.aborted && !(error instanceof KnowledgeQuotaError);
+      return !request.signal.aborted && !allowanceReached;
     },
   );
   if (!circuit.status().available)
     after(() => circuit.probe(probeKnowledgeServices));
-  return reply({ ...answer, mode, availability: circuit.status() });
+  return reply({
+    ...answer,
+    mode,
+    // The service is healthy, but this browser should stop offering questions until
+    // the status endpoint confirms that the allowance is back.
+    availability: allowanceReached
+      ? { available: false, verified: false, retryAt: Date.now() + 60_000 }
+      : circuit.status(),
+  });
 }

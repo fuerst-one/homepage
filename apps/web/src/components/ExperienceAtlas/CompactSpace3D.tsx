@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef } from "react";
+import { useRef, type ComponentProps } from "react";
 import { DeferredWorkView } from "../HomeWork/DeferredWorkView";
 import type { SpaceNode } from "./SemanticSpaceCharts";
 import type { SpaceConnections } from "./spaceConnections";
@@ -30,10 +30,23 @@ const Space3D = dynamic(() => import("./SemanticSpace3D"), {
 export function CompactSpace3D({
   nodes,
   groups,
+  selectedId = "",
+  activeGroup = -1,
+  ...interaction
 }: {
   nodes: SpaceNode[];
   groups: SpaceConnections["groups"];
-}) {
+} & Partial<
+  Pick<
+    ComponentProps<typeof Space3D>,
+    | "selectedId"
+    | "activeGroup"
+    | "mutedIds"
+    | "ringedIds"
+    | "onSelect"
+    | "onClusterSelect"
+  >
+>) {
   const { t } = useAtlasCopy();
   const viewport = useRef(createSpaceViewport());
   const unavailable = (
@@ -56,12 +69,13 @@ export function CompactSpace3D({
           groups={groups}
           axes={[]}
           hulls={groups.length > 1}
-          selectedId=""
+          selectedId={selectedId}
           neighbours={[]}
           highlightedIds={[]}
-          activeGroup={-1}
-          clusterSelected={false}
+          activeGroup={activeGroup}
+          clusterSelected={activeGroup >= 0}
           labels={false}
+          {...interaction}
         />
       </SpaceBoundary>
     </DeferredWorkView>

@@ -1,12 +1,12 @@
-import { useFiltersStore } from "./filtersStore";
+import { useProjectListStore } from "./projectListStore";
 import { recordVisitorInteraction } from "../../VisitorProfile/profileStore";
 
 export const useToggleSearchParam = () => {
-  const toggle = useFiltersStore((s) => s.toggle);
+  const toggle = useProjectListStore((s) => s.toggle);
   return (key?: string, value?: string) => {
     if (!key || !value) return;
     if (
-      !Object.entries(useFiltersStore.getState().filters)
+      !Object.entries(useProjectListStore.getState().filters)
         .find(([field]) => field === key)?.[1]
         ?.includes(value)
     )

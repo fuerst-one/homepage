@@ -5,6 +5,7 @@ import { Layout } from "../../../../components/Layout";
 import { PageEyebrow } from "../../../../components/PageEyebrow";
 import { ProjectsClientView } from "../../../../components/Cv/Projects/ProjectsClientView";
 import { ProjectExplorerPreview } from "../../../../components/ExperienceAtlas/ProjectExplorerPreview";
+import { ProjectAnalysisTabs } from "../../../../components/Cv/Projects/ProjectAnalysisTabs";
 import { LogoMarquee } from "../../../../components/Cv/Projects/LogoMarquee";
 import { getCachedCvProjects } from "../../../../server/content/getCachedCvProjects";
 import { getPublicProjectCases } from "../../../../server/content/getEnquiryEvidence";
@@ -59,7 +60,10 @@ export default async function ProjectsPage({ params }: LocaleParams) {
         </>
       }
       sidebarAfter={
-        <ProjectExplorerPreview projects={projects} locale={locale} />
+        <div className="space-y-6">
+          <ProjectExplorerPreview projects={projects} locale={locale} />
+          <ProjectAnalysisTabs projects={projects} />
+        </div>
       }
     >
       <header className="content-page-heading">

@@ -37,10 +37,44 @@ renewed database lease.
 
 The homepage renders monthly counts as a Jan–Dec matrix, with one row per year.
 Colour intensity saturates at 25 commits (bands 0, 1–2, 3–7, 8–24, 25+), while
-hover, focus and tap expose exact values. Hatched cells fall outside recorded
-coverage; neutral cells are recorded zero months. Arrow keys move between months.
-Seabo's separately hosted GitLab work has a linked note with dates from the public
-project model, not an overlay marking presumed gaps in GitHub activity.
+hover, focus and tap open a card with the exact value and the projects whose
+recorded period overlaps that month. Hatched cells fall outside recorded coverage;
+neutral cells are recorded zero months. Arrow keys move between months that have a
+commit figure or active projects. The project-history chart lists the same projects
+in its tooltip. Project lists come from the public project model's dates, not from
+commit attribution.
+
+In the card, a star marks projects with `hasConnectedRepo: false`, with a one-line
+note that they are not in the connected repositories. A square carries the star
+only when it is a recorded zero-commit month with such a project, so an apparently
+idle month shows that work happened elsewhere; the legend explains it. Months with
+commits are not starred, because long-running off-GitHub work would mark nearly
+all of them. While the flag is unknown nothing is marked.
+
+## Project repositories
+
+Notion projects name their code in two properties. `Github-URL` is the single link
+shown on the site. `GitHub Repos` is a worker-only text property listing every
+repository behind the project, one `owner/name` or GitHub URL per line; it may
+contain private repositories and is never published.
+
+When the website publication is prepared, the worker checks both against its own
+GitHub inventory (`github_worker_snapshots`):
+
+- A `github.com` link in `Github-URL` is published only when the inventory lists
+  that repository as public. Private, renamed, deleted and unconnected repositories
+  are withheld. The check uses the repository the URL resolves to, so path tricks
+  such as `/public/repo/../private` do not pass, and `github.com` subdomains (for
+  example gists) are withheld. The published link is rebuilt as
+  `https://github.com/<inventory name>`, so deeper paths, queries and fragments
+  from Notion are dropped. Links to other code hosts are published unchanged.
+- Each project gets the public boolean `hasConnectedRepo`: true when any repository
+  from either property is in the inventory. Without an inventory (no token, first
+  run) the flag is omitted and GitHub links are withheld, so "unknown" is never
+  published as "no repository".
+
+The website publication refreshes at most every five minutes, so a visibility change
+reaches the site after the next hourly GitHub collection.
 
 ## Release order
 

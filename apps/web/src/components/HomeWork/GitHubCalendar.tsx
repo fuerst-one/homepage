@@ -1,15 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import {
   adjacentGitHubMonth,
   githubCommitBand,
+  hasCalendarDetail,
+  hasWorkOutsideGitHub,
+  marksWorkOutsideGitHub,
   type GitHubCalendarMonth,
   type GitHubCalendarYear,
 } from "@homepage/content/githubCalendar";
 import type { Locale } from "@homepage/content/i18n";
 
-export function GitHubCommitLegend({ locale }: { locale: Locale }) {
+const OUTSIDE_MARK = "★";
+
+export function GitHubCommitLegend({
+  locale,
+  showOutsideGitHub,
+}: {
+  locale: Locale;
+  showOutsideGitHub: boolean;
+}) {
   return (
     <div
       className="home-commit-legend"
@@ -29,6 +40,16 @@ export function GitHubCommitLegend({ locale }: { locale: Locale }) {
           {label}
         </span>
       ))}
+      {showOutsideGitHub && (
+        <span>
+          <i className="home-commit-square" data-band={0} aria-hidden="true">
+            {OUTSIDE_MARK}
+          </i>
+          {locale === "de"
+            ? "keine Commits, Projektarbeit außerhalb dieser Repositories"
+            : "no commits, project work outside these repositories"}
+        </span>
+      )}
     </div>
   );
 }
@@ -41,14 +62,21 @@ export function GitHubCalendar({
   locale: Locale;
 }) {
   const de = locale === "de";
-  const [active, setActive] = useState<GitHubCalendarMonth | null>(null);
-  const recorded = years
+  const [active, setActive] = useState<{
+    cell: GitHubCalendarMonth;
+    anchor: TooltipAnchor;
+  } | null>(null);
+  const detailed = years
     .flatMap((year) => year.months)
-    .filter((month) => month.commits !== null);
-  const [focusedMonth, setFocusedMonth] = useState(recorded[0]?.month ?? "");
-  const entryMonth = recorded.some((month) => month.month === focusedMonth)
+    .filter(hasCalendarDetail);
+  const [focusedMonth, setFocusedMonth] = useState(detailed[0]?.month ?? "");
+  const entryMonth = detailed.some((month) => month.month === focusedMonth)
     ? focusedMonth
-    : recorded[0]?.month;
+    : detailed[0]?.month;
+  const show = (
+    cell: GitHubCalendarMonth,
+    event: SyntheticEvent<HTMLElement>,
+  ) => setActive({ cell, anchor: tooltipAnchor(event.currentTarget) });
   const numbers = new Intl.NumberFormat(locale);
   const monthName = new Intl.DateTimeFormat(de ? "de-DE" : "en-GB", {
     month: "long",
@@ -61,6 +89,28 @@ export function GitHubCalendar({
   });
   const dateLabel = (month: string) =>
     dates.format(new Date(`${month}-01T00:00:00Z`));
+  const commitLabel = (commits: number | null) =>
+    commits === null
+      ? de
+        ? "außerhalb des erfassten Zeitraums"
+        : "outside the recorded period"
+      : `${numbers.format(commits)} ${de ? "Commits" : commits === 1 ? "commit" : "commits"}`;
+  const projectsHeading = de ? "Aktive Projekte" : "Active projects";
+  const outsideHeading = de
+    ? "Außerhalb dieser Repositories"
+    : "Outside these repositories";
+  const cellLabel = (cell: GitHubCalendarMonth) => {
+    const names = (projects: typeof cell.projects) =>
+      projects.map((project) => project.label).join(", ");
+    const outside = cell.projects.filter((project) => project.outsideGitHub);
+    return [
+      `${dateLabel(cell.month)}: ${commitLabel(cell.commits)}`,
+      ...(cell.projects.length
+        ? [`${projectsHeading}: ${names(cell.projects)}`]
+        : []),
+      ...(outside.length ? [`${outsideHeading}: ${names(outside)}`] : []),
+    ].join(". ");
+  };
   const row = (year: GitHubCalendarYear) => (
     <div className="home-commit-row" role="row" key={year.year}>
       <span className="home-commit-year" role="rowheader">
@@ -68,25 +118,28 @@ export function GitHubCalendar({
       </span>
       {year.months.map((cell) => (
         <div key={cell.month} role="gridcell" className="home-commit-cell">
-          {cell.commits === null ? (
-            <span
-              className="home-commit-square is-unrecorded"
-              aria-label={`${dateLabel(cell.month)}: ${de ? "außerhalb des erfassten Zeitraums" : "outside the recorded period"}`}
-            />
-          ) : (
+          {hasCalendarDetail(cell) ? (
             <button
               type="button"
-              className="home-commit-square"
-              data-band={githubCommitBand(cell.commits)}
+              className={
+                cell.commits === null
+                  ? "home-commit-square is-unrecorded"
+                  : "home-commit-square"
+              }
+              data-band={
+                cell.commits === null
+                  ? undefined
+                  : githubCommitBand(cell.commits)
+              }
               data-month={cell.month}
               tabIndex={cell.month === entryMonth ? 0 : -1}
-              aria-label={`${dateLabel(cell.month)}: ${numbers.format(cell.commits)} ${de ? "Commits" : cell.commits === 1 ? "commit" : "commits"}`}
-              onPointerEnter={() => setActive(cell)}
-              onFocus={() => {
-                setActive(cell);
+              aria-label={cellLabel(cell)}
+              onPointerEnter={(event) => show(cell, event)}
+              onFocus={(event) => {
+                show(cell, event);
                 setFocusedMonth(cell.month);
               }}
-              onClick={() => setActive(cell)}
+              onClick={(event) => show(cell, event)}
               onBlur={() => setActive(null)}
               onKeyDown={(event) => {
                 if (event.key === "Escape") setActive(null);
@@ -108,6 +161,13 @@ export function GitHubCalendar({
                     ?.focus();
                 }
               }}
+            >
+              {marksWorkOutsideGitHub(cell) && OUTSIDE_MARK}
+            </button>
+          ) : (
+            <span
+              className="home-commit-square is-unrecorded"
+              aria-label={cellLabel(cell)}
             />
           )}
         </div>
@@ -145,10 +205,64 @@ export function GitHubCalendar({
           <div role="rowgroup">{years.map(row)}</div>
         </div>
       </div>
-      <p className="home-commit-tooltip" aria-live="polite" aria-atomic="true">
-        {active &&
-          `${dateLabel(active.month)} · ${numbers.format(active.commits!)} ${de ? "Commits" : active.commits === 1 ? "commit" : "commits"}`}
-      </p>
+      {active && (
+        // The focused square's aria-label already carries this content.
+        <div
+          className="home-commit-tooltip"
+          aria-hidden="true"
+          data-side={active.anchor.side}
+          data-align={active.anchor.align}
+          style={{ left: active.anchor.x, top: active.anchor.y }}
+        >
+          <strong>{dateLabel(active.cell.month)}</strong>
+          <span>{commitLabel(active.cell.commits)}</span>
+          {active.cell.projects.length > 0 && (
+            <>
+              <em>{projectsHeading}</em>
+              <ul>
+                {active.cell.projects.map((project, index) => (
+                  // Two projects may share a short name.
+                  <li key={`${index}-${project.label}`}>
+                    {project.outsideGitHub && `${OUTSIDE_MARK} `}
+                    {project.label}
+                  </li>
+                ))}
+              </ul>
+              {hasWorkOutsideGitHub(active.cell) && (
+                <small>
+                  {OUTSIDE_MARK}{" "}
+                  {de
+                    ? "nicht in den verbundenen Repositories"
+                    : "not in the connected repositories"}
+                </small>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
+}
+
+type TooltipAnchor = {
+  x: number;
+  y: number;
+  side: "above" | "below";
+  align: "start" | "center" | "end";
+};
+
+/** Opens towards the calendar's centre so the card stays inside its panel. */
+function tooltipAnchor(square: HTMLElement): TooltipAnchor {
+  const calendar = square.closest<HTMLElement>(".home-commit-calendar");
+  const cell = square.getBoundingClientRect();
+  const frame = calendar?.getBoundingClientRect() ?? cell;
+  const centre = cell.left + cell.width / 2 - frame.left;
+  const above = cell.top + cell.height / 2 > frame.top + frame.height / 2;
+  const third = frame.width / 3;
+  return {
+    x: centre,
+    y: (above ? cell.top : cell.bottom) - frame.top,
+    side: above ? "above" : "below",
+    align: centre < third ? "start" : centre > 2 * third ? "end" : "center",
+  };
 }

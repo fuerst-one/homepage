@@ -212,8 +212,11 @@ export default function PrivacyPage() {
             You can withdraw using “Withdraw AI permission” below the landing or
             project-search input, or through Privacy settings in the footer.
             Withdrawal stops pending client requests and further AI questions,
-            and removes local chat and status data. A declined choice is saved
-            so we do not ask again. Data already transmitted cannot be recalled;
+            and removes local chat and status data. A declined choice is saved.
+            We ask again at most once per browser session, and only when you
+            submit a question to the assistant; a marker in this tab’s session
+            storage records that we asked, or that you declined or withdrew in
+            this session. Data already transmitted cannot be recalled;
             withdrawal does not affect the lawfulness of earlier processing.
             Search and contact remain usable without AI permission. The basis
             for optional AI processing is Art. 6(1)(a) GDPR; optional chat

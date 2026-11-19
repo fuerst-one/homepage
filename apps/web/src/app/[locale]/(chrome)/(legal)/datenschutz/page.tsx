@@ -231,12 +231,15 @@ export default function DatenschutzPage() {
             Datenschutzeinstellungen in der Fußzeile ermöglichen den Widerruf.
             Dieser stoppt ausstehende Client-Anfragen und weitere Fragen an die
             KI und entfernt lokale Chat- und Statusdaten. Die Ablehnung wird
-            gespeichert, damit wir nicht erneut fragen. Bereits übermittelte
-            Daten lassen sich nicht zurückholen. Die Rechtmäßigkeit früherer
-            Verarbeitung bleibt unberührt. Rechtsgrundlage der freiwilligen
-            KI-Verarbeitung ist Art. 6 Abs. 1 lit. a DSGVO; für den optional
-            gespeicherten Verlauf gilt §25 Abs. 1 TDDDG. Suche und Kontakt
-            bleiben ohne Einwilligung möglich.
+            gespeichert. Wir fragen höchstens einmal pro Browser-Sitzung erneut
+            und nur, wenn Sie eine Frage an den Assistenten absenden; ein
+            Vermerk im Sitzungsspeicher dieses Tabs hält fest, dass wir gefragt
+            haben oder dass Sie in dieser Sitzung abgelehnt oder widerrufen
+            haben. Bereits übermittelte Daten lassen sich nicht zurückholen. Die
+            Rechtmäßigkeit früherer Verarbeitung bleibt unberührt.
+            Rechtsgrundlage der freiwilligen KI-Verarbeitung ist Art. 6 Abs. 1
+            lit. a DSGVO; für den optional gespeicherten Verlauf gilt §25 Abs. 1
+            TDDDG. Suche und Kontakt bleiben ohne Einwilligung möglich.
           </p>
           <p>
             Sind die KI-Dienste nicht verfügbar, entstehen Projektvorschläge

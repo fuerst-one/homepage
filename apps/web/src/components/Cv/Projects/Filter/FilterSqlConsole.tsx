@@ -2,7 +2,7 @@
 
 import { useId, useMemo, useState } from "react";
 import { useLocale } from "../../../i18n/LocaleProvider";
-import { useFiltersStore } from "../filtersStore";
+import { useProjectListStore } from "../projectListStore";
 import { recordVisitorInteraction } from "../../../VisitorProfile/profileStore";
 import clsx from "clsx";
 import { caseLabel } from "@homepage/content/projectCase";
@@ -11,7 +11,7 @@ import {
   projectDeliveryModels,
 } from "@homepage/content/projectTaxonomy";
 import { CvProject } from "@homepage/content/models";
-import { FilterParams, filterProjects } from "./utils";
+import { FilterParams } from "./utils";
 import {
   CV_PRESETS,
   localizePreset,
@@ -133,14 +133,16 @@ const CLI_FILTER_LABEL_LOOKUP = Object.fromEntries(
 export const FilterSqlConsole = ({
   filterParams,
   projects,
+  resultsCount,
 }: {
   filterParams: FilterParams;
   projects: CvProject[];
+  resultsCount: number;
 }) => {
   const locale = useLocale();
   const de = locale === "de";
-  const setFilters = useFiltersStore((s) => s.setFilters);
-  const resetFilters = useFiltersStore((s) => s.reset);
+  const setFilters = useProjectListStore((s) => s.setFilters);
+  const resetFilters = useProjectListStore((s) => s.reset);
   const [searchQuery, setSearchQuery] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
   const panelId = useId();
@@ -162,11 +164,6 @@ export const FilterSqlConsole = ({
         label: de ? GROUP_LABELS_DE[group.key] : group.label,
       })),
     [projects, de],
-  );
-
-  const resultsCount = useMemo(
-    () => filterProjects(projects, filterParams).length,
-    [projects, filterParams],
   );
 
   const handleToggleValue = (key: CliFilterKey, optionValue: string) => {

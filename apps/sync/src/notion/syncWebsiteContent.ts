@@ -19,6 +19,8 @@ import { mirrorAsset } from "./mirrorAsset";
 import { refreshSnapshot } from "./snapshot";
 import { publicationStore, type WorkerPublication } from "./publicationStore";
 import { preparePublication } from "./preparePublication";
+import { githubStore, GITHUB_KEY } from "../github/githubStore";
+import type { GitHubSnapshot } from "../github/collectGitHubHistory";
 
 import {
   WEBSITE_CONTENT_KEY,
@@ -204,8 +206,14 @@ export async function syncWebsiteContent(force = false) {
         assets: Object.keys(assets).length,
         deferredAssets,
       });
+      const github = (await githubStore(sql).read(GITHUB_KEY))?.value as
+        GitHubSnapshot | null | undefined;
       const publication = preparePublication({
         projects,
+        repositories: github?.repositories.map((repository) => ({
+          full_name: repository.full_name,
+          private: repository.private,
+        })),
         owner,
         icons: readProjectIcons(pages),
         cases,

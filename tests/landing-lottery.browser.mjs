@@ -36,6 +36,9 @@ for (const locale of ["en", "de"]) {
         timeout: 90000,
       });
       await page.waitForSelector(".landing-backdrop canvas");
+      await page.waitForSelector(
+        ".landing-console:not([inert]) #landing-command",
+      );
       await page.waitForFunction(() =>
         document.querySelector("#landing-command"),
       );
@@ -159,6 +162,9 @@ test("a paid-request admission rejection closes existing AI UI", async () => {
       timeout: 90000,
     });
     await page.waitForSelector(".knowledge-privacy");
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.type("#landing-command", "Tell me about your recent work");
     await page.waitForFunction(
       () => !document.querySelector(".landing-submit").disabled,

@@ -70,3 +70,70 @@ test("full Explorer tooltips retain their facts and selection instructions", () 
   assert.match(cluster, /2\/2/);
   assert.match(cluster, /Click to explore this cluster/);
 });
+
+const snapshot = require("./src/content/lab-preview.json");
+const { previewLenses } = loadTs(
+  new URL(
+    "../apps/web/src/components/ExperienceAtlas/spaceNodes.ts",
+    import.meta.url,
+  ),
+);
+const lensIds = (lens) => lens.nodes.map((node) => node.id).sort();
+
+test("the sidebar Explorer offers the Explorer page's four lenses in the same order", () => {
+  assert.deepEqual(
+    previewLenses(snapshot.semantic, snapshot.atlas, "en").map((lens) => [
+      lens.id,
+      lens.label,
+      lens.question,
+    ]),
+    [
+      ["product", "Product purpose", "What does it help people do?"],
+      ["engineering", "Engineering", "How is it built?"],
+      ["practice", "Contribution model", "How did I contribute?"],
+      ["scale", "Scale & delivery", "What scale have I worked at?"],
+    ],
+  );
+});
+
+test("a fitted lens places exactly the projects it has positions for, with its own clusters", () => {
+  const lenses = previewLenses(snapshot.semantic, snapshot.atlas, "en");
+  for (const lens of lenses.slice(0, 3)) {
+    const space = snapshot.semantic.spaces[lens.id];
+    assert.deepEqual(lensIds(lens), [...space.ids].sort());
+    assert.deepEqual(
+      lens.groups.map((group) => group.ids),
+      space.groups.map((group) => group.ids),
+    );
+  }
+});
+
+test("the scale lens is fitted once per set of measurements, not on every render", () => {
+  const scaleClusters = (projects) =>
+    previewLenses(snapshot.semantic, projects, "en").find(
+      (lens) => lens.id === "scale",
+    ).groups[0].ids;
+  const first = scaleClusters(snapshot.atlas);
+  assert.equal(scaleClusters([...snapshot.atlas]), first);
+  const [changed, ...others] = snapshot.atlas;
+  assert.notEqual(
+    scaleClusters([{ ...changed, scale: undefined }, ...others]),
+    first,
+  );
+});
+
+test("the scale lens is fitted from recorded measurements and leaves out projects without them", () => {
+  const [unmeasured, ...measured] = snapshot.atlas;
+  const lenses = previewLenses(
+    snapshot.semantic,
+    [{ ...unmeasured, scale: undefined }, ...measured],
+    "en",
+  );
+  const scale = lenses.find((lens) => lens.id === "scale");
+  assert.ok(scale.nodes.length >= 2);
+  assert.ok(!lensIds(scale).includes(unmeasured.id));
+  assert.ok(lensIds(lenses[0]).includes(unmeasured.id));
+  assert.ok(scale.groups.length >= 1);
+  for (const group of scale.groups)
+    for (const id of group.ids) assert.ok(lensIds(scale).includes(id));
+});

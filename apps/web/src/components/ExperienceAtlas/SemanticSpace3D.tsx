@@ -35,10 +35,12 @@ import { SpaceClusterTooltip } from "./SpaceClusterTooltip";
 import { SpaceProjectTooltip } from "./SpaceProjectTooltip";
 import { prioritizeSpaceHits } from "./spacePicking";
 import { tooltipCorner } from "./spaceTooltip";
+import { pointAppearance } from "./spacePointStyle";
 
 type Point = [number, number, number];
 type MovingNode = SpaceNode & { point: Point; opacity: number };
 type Positions = RefObject<Map<string, MovingNode>>;
+const NO_IDS: string[] = [];
 
 /** Canvas labels avoid nested React DOM roots during WebGL view teardown. */
 function SpaceLabel({
@@ -300,6 +302,8 @@ function SpaceScene({
   onClusterSelect,
   onInteraction,
   compact = false,
+  mutedIds = NO_IDS,
+  ringedIds = NO_IDS,
 }: {
   nodes: SpaceNode[];
   viewport: RefObject<SpaceViewport>;
@@ -317,6 +321,8 @@ function SpaceScene({
   onClusterSelect?: (index: number) => void;
   onInteraction: (active: boolean) => void;
   compact?: boolean;
+  mutedIds?: string[];
+  ringedIds?: string[];
 }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const hoverProject = (id: string | null) => {
@@ -327,6 +333,10 @@ function SpaceScene({
   const reducedMotion = useReducedMotion();
   const invalidate = useThree((state) => state.invalidate);
   const camera = useThree((state) => state.camera);
+  const muted = useMemo(() => new Set(mutedIds), [mutedIds]);
+  const ringed = useMemo(() => new Set(ringedIds), [ringedIds]);
+  // Demand rendering only redraws on request; muting is applied per frame.
+  useEffect(() => invalidate(), [muted, invalidate]);
   const controls = useRef<ComponentRef<typeof OrbitControls>>(null);
   const [initialTarget] = useState(() => viewport.current.orbit.target);
   const targets = useMemo<MovingNode[]>(() => {
@@ -380,23 +390,26 @@ function SpaceScene({
       }
       group.visible = node.opacity > 0.01;
       group.position.set(...node.point);
+      const appearance = (isPoint: boolean) =>
+        pointAppearance({
+          color: node.color,
+          muted: muted.has(id),
+          emphasized:
+            !highlightedIds.length ||
+            highlightedIds.includes(id) ||
+            hovered === id,
+          clusterSelected,
+          isPoint,
+        });
+      group.scale.setScalar(appearance(true).scale);
       group.traverse((object) => {
         const material = (object as Mesh).material as
           MeshBasicMaterial | undefined;
         if (!material || Array.isArray(material)) return;
-        const isPoint = object.userData.projectPoint;
-        material.opacity =
-          node.opacity *
-          (!highlightedIds.length ||
-          highlightedIds.includes(id) ||
-          hovered === id
-            ? 1
-            : clusterSelected
-              ? 0.16
-              : isPoint
-                ? 0.38
-                : 0.6);
-        if (isPoint) material.color.set(node.color);
+        const isPoint = Boolean(object.userData.projectPoint);
+        const look = appearance(isPoint);
+        material.opacity = node.opacity * look.opacity;
+        if (isPoint) material.color.set(look.color);
       });
     }
   }, -1);
@@ -425,7 +438,10 @@ function SpaceScene({
             nodes={cluster.nodes}
             positions={positions}
             active={cluster.group === activeGroup}
-            dimmed={clusterSelected && cluster.group !== activeGroup}
+            dimmed={
+              (clusterSelected && cluster.group !== activeGroup) ||
+              cluster.nodes.every((node) => muted.has(node.id))
+            }
             onHover={(hovered) =>
               onClusterHover(hovered ? cluster.group : null)
             }
@@ -495,15 +511,22 @@ function SpaceScene({
           ))}
       {points.map((node) => {
         const selected = node.id === selectedId;
-        const active =
-          !highlightedIds.length ||
-          highlightedIds.includes(node.id) ||
-          hovered === node.id;
+        const look = pointAppearance({
+          color: node.color,
+          muted: muted.has(node.id),
+          emphasized:
+            !highlightedIds.length ||
+            highlightedIds.includes(node.id) ||
+            hovered === node.id,
+          clusterSelected,
+          isPoint: true,
+        });
         const radius = node.diameter / 200;
         return (
           <group
             key={node.id}
             position={node.point}
+            scale={look.scale}
             ref={(group) => {
               if (group) objects.current.set(node.id, group);
               else objects.current.delete(node.id);
@@ -529,17 +552,19 @@ function SpaceScene({
             >
               <sphereGeometry args={[radius, 16, 12]} />
               <meshBasicMaterial
-                color={node.color}
+                color={look.color}
                 transparent
-                opacity={active ? 1 : clusterSelected ? 0.16 : 0.38}
+                opacity={look.opacity}
               />
             </mesh>
-            {selected && (
+            {(selected || ringed.has(node.id)) && (
               <Billboard>
-                <mesh position={[0, 0, radius + 0.005]}>
-                  <circleGeometry args={[radius * 0.3, 24]} />
-                  <meshBasicMaterial color="#ffffff" transparent />
-                </mesh>
+                {selected && (
+                  <mesh position={[0, 0, radius + 0.005]}>
+                    <circleGeometry args={[radius * 0.3, 24]} />
+                    <meshBasicMaterial color="#ffffff" transparent />
+                  </mesh>
+                )}
                 <mesh>
                   <ringGeometry args={[radius + 0.04, radius + 0.055, 48]} />
                   <meshBasicMaterial

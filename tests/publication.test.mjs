@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { test } from "node:test";
 import { loadTs } from "./helpers/load-ts.mjs";
 
@@ -193,4 +194,159 @@ test("legacy publications do not fabricate dates from refresh time or project li
   const project = preparePublication(source).locales.en.projects[0];
   assert.equal(project.updatedAt, undefined);
   assert.deepEqual(project.caseStudyUpdatedAt, {});
+});
+
+const connectedRepositories = [
+  { full_name: "Fuerst-One/open-tool", private: false },
+  { full_name: "fuerst-one/client-app", private: true },
+];
+const publishWithRepositories = (project, repositories) => {
+  const source = fixture();
+  Object.assign(source.projects[0], project);
+  if (repositories) source.repositories = repositories;
+  return preparePublication(source);
+};
+const publishedProject = (project, repositories) =>
+  publishWithRepositories(project, repositories).locales.en.projects[0];
+
+test("a GitHub link is published only when the connected inventory verifies the repository as public", () => {
+  const link = (githubUrl, repositories = connectedRepositories) =>
+    publishedProject({ githubUrl }, repositories).githubUrl;
+  assert.equal(
+    link("https://github.com/fuerst-one/open-tool/"),
+    "https://github.com/Fuerst-One/open-tool",
+  );
+  assert.equal(link("https://github.com/fuerst-one/client-app"), null);
+  assert.equal(link("https://github.com/fuerst-one/renamed-or-deleted"), null);
+  assert.equal(link("https://github.com/fuerst-one/open-tool", null), null);
+});
+
+test("a GitHub link without a repository name never matches an inventory entry", () => {
+  const repositories = [{ full_name: "fuerst-one/undefined", private: false }];
+  const project = publishedProject(
+    { githubUrl: "https://github.com/fuerst-one", githubRepos: "fuerst-one" },
+    repositories,
+  );
+  assert.equal(project.githubUrl, null);
+  assert.equal(project.hasConnectedRepo, false);
+});
+
+test("a GitHub link is verified against the repository its URL resolves to", () => {
+  const link = (githubUrl) =>
+    publishedProject({ githubUrl }, connectedRepositories).githubUrl;
+  assert.equal(
+    link("https://github.com/fuerst-one/open-tool/../client-app"),
+    null,
+  );
+  assert.equal(
+    link("https://github.com/fuerst-one/open-tool/%2e%2e/client-app"),
+    null,
+  );
+  assert.equal(link("https://gist.github.com/fuerst-one/open-tool"), null);
+});
+
+test("a published GitHub link is rebuilt from the verified repository, not copied from Notion", () => {
+  const link = (githubUrl) =>
+    publishedProject({ githubUrl }, connectedRepositories).githubUrl;
+  const canonical = "https://github.com/Fuerst-One/open-tool";
+  for (const source of [
+    "https://github.com/fuerst-one/open-tool/tree/main/docs",
+    "https://www.github.com/Fuerst-One/Open-Tool.git",
+    "https://github.com/fuerst-one/open-tool/..%2F..%2Ffuerst-one/client-app",
+    "https://github.com/fuerst-one/open-tool?next=fuerst-one/client-app#client-app",
+  ])
+    assert.equal(link(source), canonical, source);
+});
+
+test("links to other code hosts are published without a GitHub inventory check", () => {
+  assert.equal(
+    publishedProject(
+      { githubUrl: "https://gitlab.com/client/product" },
+      connectedRepositories,
+    ).githubUrl,
+    "https://gitlab.com/client/product",
+  );
+});
+
+test("a project reports whether its link or repository list reaches a connected repository", () => {
+  const connected = (project, repositories = connectedRepositories) =>
+    publishedProject(project, repositories).hasConnectedRepo;
+  assert.equal(
+    connected({ githubUrl: "https://github.com/fuerst-one/open-tool" }),
+    true,
+  );
+  assert.equal(
+    connected({
+      githubRepos:
+        "someone-else/unconnected\nhttps://github.com/Fuerst-One/Client-App.git",
+    }),
+    true,
+  );
+  assert.equal(connected({ githubRepos: "fuerst-one/client-app, x/y" }), true);
+  assert.equal(connected({ githubRepos: "someone-else/unconnected" }), false);
+  assert.equal(connected({}), false);
+  assert.equal(
+    connected({ githubUrl: "https://gitlab.com/client/product" }),
+    false,
+  );
+});
+
+test("without a GitHub inventory the connected-repository flag is unknown rather than false", () => {
+  const project = publishedProject({ githubRepos: "fuerst-one/client-app" });
+  assert.equal("hasConnectedRepo" in project, false);
+});
+
+test("repository names from the private list and inventory never enter the publication", () => {
+  const serialized = JSON.stringify(
+    publishWithRepositories(
+      {
+        githubUrl: "https://github.com/fuerst-one/client-app",
+        githubRepos: "fuerst-one/client-app\nfuerst-one/secret-prototype",
+      },
+      connectedRepositories,
+    ),
+  );
+  for (const secret of [
+    "client-app",
+    "secret-prototype",
+    "open-tool",
+    "githubRepos",
+    '"repositories"',
+  ])
+    assert.ok(!serialized.includes(secret), secret);
+});
+
+test("the Notion GitHub Repos property feeds the connected-repository flag", () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      "--import",
+      "tsx",
+      "--input-type=module",
+      "-e",
+      `
+import assert from 'node:assert/strict';
+import { fetchNotionProjectsDatabase } from './apps/sync/src/notion/fetchNotionProjectsDatabase.tsx';
+import { preparePublication } from './apps/sync/src/notion/preparePublication.ts';
+process.env.NEXT_NOTION_PROJECT_DB_ID = 'fixture';
+const field = (type, parts) => ({type, [type]: parts.map(plain_text => ({plain_text}))});
+const page = {id:'project', properties:{
+  Name: field('title', ['Client product']),
+  Hidden: {type:'checkbox', checkbox:false},
+  'Project Description': field('rich_text', ['Public description']),
+  KPIs: field('rich_text', []),
+  'GitHub Repos': field('rich_text', ['fuerst-one/client-app', '\\nfuerst-one/client-api']),
+}};
+const projects = await fetchNotionProjectsDatabase([page]);
+const publication = preparePublication({
+  projects,
+  repositories: [{full_name: 'fuerst-one/client-api', private: true}],
+});
+assert.equal(publication.locales.en.projects[0].hasConnectedRepo, true);
+assert.ok(!JSON.stringify(publication).includes('client-ap'));
+`,
+    ],
+    { encoding: "utf8", cwd: new URL("..", import.meta.url) },
+  );
+  assert.equal(result.status, 0, result.stderr || result.stdout);
 });

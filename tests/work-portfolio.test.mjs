@@ -117,3 +117,45 @@ test("German projects use their translated description rather than English sourc
   assert.equal(p.summary, "Ein komplexer Arbeitsablauf.");
   assert.equal(p.contentLocale, "de");
 });
+
+test("each timeline month names its active projects, longest-running first", () => {
+  const { portfolioTimeline, timelineProjects } = subject();
+  const projects = [
+    project("b", { startDate: "2026-02-10", endDate: "2026-03-05" }),
+    project("a", { startDate: "2026-01-15", endDate: "2026-02-20" }),
+  ];
+  const labelled = projects.map((p) => ({
+    id: p.id,
+    label: `Project ${p.id.toUpperCase()}`,
+    startDate: p.startDate,
+  }));
+  assert.deepEqual(
+    timelineProjects(portfolioTimeline(projects, "2026-04-20"), labelled).map(
+      (row) => [row.month, row.projects.map((p) => p.label)],
+    ),
+    [
+      ["2026-01", ["Project A"]],
+      ["2026-02", ["Project A", "Project B"]],
+      ["2026-03", ["Project B"]],
+      ["2026-04", []],
+    ],
+  );
+});
+
+test("only projects confirmed to have no connected repository count as work outside GitHub", () => {
+  const { portfolioTimeline, timelineProjects, workProject } = subject();
+  const projects = [
+    project("gitlab-client", { hasConnectedRepo: false }),
+    project("github-product", { hasConnectedRepo: true }),
+    project("unchecked"),
+  ];
+  const [month] = timelineProjects(
+    portfolioTimeline(projects, "2026-01-20"),
+    projects.map((p) => workProject(p, `/en/projects/${p.id}`, "en")),
+  );
+  assert.deepEqual(month.projects, [
+    { label: "github-product", outsideGitHub: false },
+    { label: "gitlab-client", outsideGitHub: true },
+    { label: "unchecked", outsideGitHub: false },
+  ]);
+});

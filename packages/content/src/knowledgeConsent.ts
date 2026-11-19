@@ -2,6 +2,8 @@ export const KNOWLEDGE_CONSENT_VERSION = "2026-11-18.3";
 export const KNOWLEDGE_CONSENT_KEY = "fuerst-one:knowledge-consent:v1";
 export const KNOWLEDGE_AVAILABILITY_KEY =
   "fuerst-one:knowledge-availability:v1";
+export const KNOWLEDGE_CONSENT_ASKED_KEY =
+  "fuerst-one:knowledge-consent-asked:v1";
 export const KNOWLEDGE_CONSENT_TTL = 180 * 24 * 60 * 60 * 1000;
 export type KnowledgeDecision = {
   version: string;

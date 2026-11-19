@@ -52,6 +52,9 @@ test("chat resumes after closing, navigation and reload, and can be cleared", as
         timeout: 90000,
       });
       await page.waitForSelector(".landing-backdrop canvas");
+      await page.waitForSelector(
+        ".landing-console:not([inert]) #landing-command",
+      );
     };
     await home();
     await page.type("#landing-command", "What kind of work do you enjoy?");
@@ -82,6 +85,9 @@ test("chat resumes after closing, navigation and reload, and can be cleared", as
     );
     await page.reload({ waitUntil: "networkidle2" });
     await page.waitForSelector(".landing-backdrop canvas");
+    await page.waitForSelector(
+      ".landing-console:not([inert]) #landing-command",
+    );
     await page.click("#landing-command");
     await page.waitForSelector(".knowledge-answer");
     await page.click(".knowledge-clear");
