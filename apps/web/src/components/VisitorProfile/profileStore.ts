@@ -24,6 +24,7 @@ import {
   EMPTY_PROJECT_CHOICE,
 } from "@homepage/content/visitorProfileSignals";
 
+import { isForYouReady } from "@homepage/content/forYouReadiness";
 import {
   clampProfileInteractions,
   isProfileOrientation,
@@ -43,6 +44,8 @@ type ProfileState = {
   /** The "For you" hint was dismissed or followed, so it stays away. */
   forYouHintSeen: boolean;
   markForYouHintSeen: () => void;
+  /** The profile passed the "For you" gate once; decay must not take it back. */
+  forYouUnlocked: boolean;
   enabled: boolean;
   remember: boolean;
   sharing: boolean;
@@ -75,6 +78,7 @@ const INITIAL_LOCAL_METADATA = {
   orientation: null,
   interactions: 0,
   forYouHintSeen: false,
+  forYouUnlocked: false,
 } as const;
 const secret = () =>
   Array.from(crypto.getRandomValues(new Uint8Array(32)), (n) =>
@@ -152,6 +156,7 @@ export function createVisitorProfileStore(
               orientation: s.orientation,
               interactions: s.interactions,
               forYouHintSeen: s.forYouHintSeen,
+              forYouUnlocked: s.forYouUnlocked,
               token: s.token,
               sharing: s.sharing,
               consentAt: s.consentAt,
@@ -183,6 +188,18 @@ export function createVisitorProfileStore(
       return (
         typeof startedAt === "number" &&
         Date.now() - startedAt >= PROFILE_LIFETIME_MS
+      );
+    };
+    const latchForYou = (unlocked: boolean, profile: VisitorProfile) => {
+      const catalog = get().catalog;
+      return (
+        unlocked ||
+        (!!catalog &&
+          isForYouReady(
+            profile,
+            catalog,
+            Math.max(Date.now(), profile.updatedAt),
+          ))
       );
     };
     const readSaved = () => {
@@ -231,6 +248,7 @@ export function createVisitorProfileStore(
           : null,
         interactions: clampProfileInteractions(saved.interactions),
         forYouHintSeen: saved.forYouHintSeen === true,
+        forYouUnlocked: latchForYou(saved.forYouUnlocked === true, profile),
         sharing: saved.sharing && !!catalog.sharingAvailable,
         token: validProfileToken(saved.token) ? saved.token : "",
         consentAt: saved.consentAt as number,
@@ -269,6 +287,7 @@ export function createVisitorProfileStore(
       set({
         profile: next,
         interactions: clampProfileInteractions(s.interactions + 1),
+        forYouUnlocked: latchForYou(s.forYouUnlocked, next),
         ...(s.sharing && shared
           ? { pending: [...s.pending, shared].slice(-100) }
           : {}),
@@ -402,6 +421,10 @@ export function createVisitorProfileStore(
               saved.profile.startedAt === s.profile.startedAt
                 ? s.forYouHintSeen || saved.forYouHintSeen
                 : saved.forYouHintSeen,
+            forYouUnlocked:
+              saved.profile.startedAt === s.profile.startedAt
+                ? s.forYouUnlocked || saved.forYouUnlocked
+                : saved.forYouUnlocked,
             pending:
               saved.sharing && sameToken
                 ? uniqueEvents([...s.pending, ...saved.pending]).slice(-100)

@@ -7,9 +7,11 @@ const HINT = ".profile-for-you-hint";
 const NAV_LINK = ".content-header-for-you";
 const LAUNCHER = ".profile-pixel-launcher";
 const OPEN_DIALOG = '[role="dialog"][data-state="open"]';
+const READY_TOPIC = "buyerNeeds:Automate repetitive work";
 const copy = {
   en: {
     start: "Start my live profile",
+    topics: "Choose a search topic",
     hint: "Your profile is ready.",
     link: "See your matches",
     dismiss: "Dismiss hint",
@@ -18,6 +20,7 @@ const copy = {
   },
   de: {
     start: "Mein Live-Profil starten",
+    topics: "Thema für die Suche wählen",
     hint: "Dein Profil ist bereit.",
     link: "Vorschläge ansehen",
     dismiss: "Hinweis schließen",
@@ -81,7 +84,7 @@ for (const { locale, width, height, finish } of [
         const catalog = await fetch(`${base}/api/profile/catalog`).then((r) =>
           r.json(),
         );
-        const projects = catalog.projects.slice(0, 3);
+        const [project] = catalog.projects;
         const listing = "/projects?all=1";
 
         await go("/profile");
@@ -100,39 +103,30 @@ for (const { locale, width, height, finish } of [
         assert.equal(await exists(page, NAV_LINK), false);
         assert.equal(await exists(page, HINT), false);
 
-        const openProject = async (project, opened) => {
-          await go(`${listing}&focus=${encodeURIComponent(project.id)}`);
-          await page.waitForSelector(OPEN_DIALOG);
-          await page.waitForFunction(
-            (k, count) =>
-              new Set(
-                JSON.parse(localStorage.getItem(k) || "null")
-                  ?.profile.signals.filter((s) => s.kind === "project_opened")
-                  .map((s) => s.subject),
-              ).size === count,
-            {},
-            key,
-            opened,
-          );
-        };
         const closeDialog = async () => {
           await page.keyboard.press("Escape");
           await page.waitForSelector('[role="dialog"]', { hidden: true });
         };
-        await openProject(projects[0], 1);
-        await openProject(projects[1], 2);
-        await closeDialog();
-        assert.equal(await exists(page, HINT), false, "two projects: not yet");
-        assert.equal(await exists(page, NAV_LINK), false);
-
-        await openProject(projects[2], 3);
-        await page.waitForSelector(NAV_LINK);
-        assert.equal(
-          await exists(page, HINT),
-          false,
-          "no hint while the project dialog is open",
+        // One explicit choice of a buyer need passes the readiness gate.
+        const topic = await page.waitForFunction(
+          (label) =>
+            document.querySelector(`[role="group"][aria-label="${label}"]`)
+              ?.firstElementChild,
+          {},
+          text.topics,
         );
-        await closeDialog();
+        await topic.scrollIntoView();
+        await topic.click();
+        await page.waitForFunction(
+          (k, subject) =>
+            JSON.parse(localStorage.getItem(k) || "null")?.profile.signals.some(
+              (s) => s.kind === "topic_selected" && s.subject === subject,
+            ),
+          {},
+          key,
+          READY_TOPIC,
+        );
+        await page.waitForSelector(NAV_LINK);
         await page.waitForSelector(HINT);
         assert.equal(
           await page.evaluate(
@@ -182,6 +176,17 @@ for (const { locale, width, height, finish } of [
           { text: text.nav, href: `/${locale}/profile#suggestions` },
         );
 
+        await go(`${listing}&focus=${encodeURIComponent(project.id)}`);
+        await page.waitForSelector(OPEN_DIALOG);
+        await page.waitForSelector(NAV_LINK);
+        assert.equal(
+          await exists(page, HINT),
+          false,
+          "no hint while the project dialog is open",
+        );
+        await closeDialog();
+        await page.waitForSelector(HINT);
+
         // Still due after a reload, and the link has not moved the header.
         await go(listing);
         await page.waitForSelector(HINT);
@@ -195,7 +200,7 @@ for (const { locale, width, height, finish } of [
           "none",
         );
 
-        await go(new URL(projects[0].href, base).pathname.replace(/^\/en/, ""));
+        await go(new URL(project.href, base).pathname.replace(/^\/en/, ""));
         await page.waitForSelector(HINT);
         await clickButton(page, text.enlarge);
         await page.waitForSelector(OPEN_DIALOG);

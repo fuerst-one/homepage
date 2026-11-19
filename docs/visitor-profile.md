@@ -269,20 +269,44 @@ browser data first loses its erasure key, so the normal server retention applies
 
 `isForYouReady(profile, catalog, now)` in
 `packages/content/src/forYouReadiness.ts` is the only decision about whether a
-profile is ready for personalised suggestions. `useForYouReady` applies it to
-the opted-in profile in the browser. The hint and the header link both read that
-hook and add no profile conditions of their own, so replacing the function's
-body changes both.
+profile is ready for personalised suggestions. It is a confidence gate on the
+visitor's buyer needs as scored by `profileInterests`: the leading need scores
+at least `FOR_YOU_MIN_LEADING_SCORE` (4) and leads the third-ranked need by at
+least `FOR_YOU_MIN_LEAD_OVER_THIRD` (1). The aim is that the visitor's real need
+is among the top two when the gate fires. Because manual choices count, one
+explicit choice of a buyer need passes at once: a filter or topic choice (+6),
+or a manual preference of interested (6) or priority (12). Choices of a tool,
+an industry or any other facet do not. Viewing projects passes once their
+shared needs pull ahead; three projects with spread needs are not enough. An
+expired profile, signals later than `now`, and projects and terms that have
+left the public catalog do not count, as everywhere in `profileInterests`.
 
-The conditions are provisional until tracking can name a visitor's leading
-interest. A profile is ready with depth signals (`project_opened`,
-`project_details_viewed` or `case_study_viewed`) on at least three distinct
-public projects, or with one explicit choice: `filter_selected`,
-`topic_selected`, `explorer_term_selected`, or a manual term preference of
-interested or priority. Going deeper into one project, reading, saving,
-services, Explorer lenses, exclusions and a return to automatic do not count.
-Neither do signals later than `now`, an expired profile, or projects and terms
-that have left the public catalog.
+The gate can turn false again as scores decay or a new view narrows the lead.
+The store latches it: `forYouUnlocked` in the profile store is set the first
+time the gate passes, after any profile change or a restore, and is never set
+back. A saved profile that already passes restores unlocked, also when it was
+saved before the field existed. Like `forYouHintSeen` it follows the Remember
+setting, merges across tabs (an unlock in any tab wins for the same profile),
+and is cleared by reset, stop and expiry. `useForYouReady` reads
+`enabled && forYouUnlocked`; the hint and the header link both read that hook
+and add no profile conditions of their own.
+
+The gate is held to a simulation benchmark, `tests/profile-benchmark.test.mjs`.
+Seeded simulated visitors, each with one real buyer need, browse
+`tests/fixtures/profile-catalog.json` (a snapshot of `/api/profile/catalog`
+with project ids, names and links replaced) through the real scoring code. For
+focused visitors (65% of picks go to a project with their need, six or twelve
+cards seen per pick) the test fails if the real need is among the top two less
+than 75% of the time when the gate fires, or if the gate fires for fewer than
+60% of them. Loose visitors (40%) and aimless visitors (no real need) are
+reported only. At the time of writing: focused visitors 81% and 91% right, the
+gate firing for 89% and 95% after a median of four projects; loose visitors 77%
+right; and the gate fires for about 70% of aimless visitors, a known limit.
+The visitor behaviour is an assumption, not traffic data: the benchmark holds
+signal and gate changes to one bar, it does not measure real accuracy. Refresh
+the fixture when the public catalog changes materially. Run it with
+`node --test tests/profile-benchmark.test.mjs`; the numbers are printed as test
+diagnostics.
 
 The hint is a small popover above the pixel signature: "Your profile is ready."
 / „Dein Profil ist bereit." with a link "See your matches" / „Vorschläge
@@ -312,10 +336,11 @@ without a ready profile or without JavaScript get the header unchanged.
 Until the For you page exists, the hint and the header link both lead to the
 localized `/profile#suggestions`.
 
-Unit behaviour: `node --test tests/for-you-readiness.test.mjs tests/for-you-hint.test.mjs`.
+Unit behaviour: `node --test tests/for-you-readiness.test.mjs tests/for-you-hint.test.mjs tests/profile-benchmark.test.mjs`.
 Browser behaviour: `SEO_TEST_BASE_URL=http://localhost:6895 node --test tests/for-you-hint.browser.mjs`
-runs the journey in English and German at 1360 and 375 pixels: three opened
-projects, the dialog and image-view exclusions, the unchanged header layout,
+runs the journey in English and German at 1360 and 375 pixels: a buyer-need
+topic chip on the project list makes the profile ready, then the dialog and
+image-view exclusions, the unchanged header layout,
 and the three endings: keyboard dismissal, following the link and clicking the
 signature.
 

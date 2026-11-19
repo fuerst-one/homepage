@@ -1,0 +1,2264 @@
+{
+  "terms": [
+    {
+      "id": "buyerNeeds:Launch a new product",
+      "facet": "buyerNeeds",
+      "value": "Launch a new product"
+    },
+    {
+      "id": "buyerNeeds:Improve a complex interface",
+      "facet": "buyerNeeds",
+      "value": "Improve a complex interface"
+    },
+    {
+      "id": "buyerNeeds:Create an interactive experience",
+      "facet": "buyerNeeds",
+      "value": "Create an interactive experience"
+    },
+    {
+      "id": "buyerNeeds:Maintain and evolve a product",
+      "facet": "buyerNeeds",
+      "value": "Maintain and evolve a product"
+    },
+    {
+      "id": "buyerNeeds:Add AI capabilities",
+      "facet": "buyerNeeds",
+      "value": "Add AI capabilities"
+    },
+    {
+      "id": "buyerNeeds:Automate repetitive work",
+      "facet": "buyerNeeds",
+      "value": "Automate repetitive work"
+    },
+    {
+      "id": "capabilities:3D",
+      "facet": "capabilities",
+      "value": "3D"
+    },
+    {
+      "id": "capabilities:AI Engineering",
+      "facet": "capabilities",
+      "value": "AI Engineering"
+    },
+    {
+      "id": "capabilities:Agent Harnesses",
+      "facet": "capabilities",
+      "value": "Agent Harnesses"
+    },
+    {
+      "id": "capabilities:Animation",
+      "facet": "capabilities",
+      "value": "Animation"
+    },
+    {
+      "id": "capabilities:Artificial Intelligence",
+      "facet": "capabilities",
+      "value": "Artificial Intelligence"
+    },
+    {
+      "id": "capabilities:Backend-Development",
+      "facet": "capabilities",
+      "value": "Backend-Development"
+    },
+    {
+      "id": "capabilities:Behaviour Psychology",
+      "facet": "capabilities",
+      "value": "Behaviour Psychology"
+    },
+    {
+      "id": "capabilities:Conception",
+      "facet": "capabilities",
+      "value": "Conception"
+    },
+    {
+      "id": "capabilities:Consulting",
+      "facet": "capabilities",
+      "value": "Consulting"
+    },
+    {
+      "id": "capabilities:Conversion Rate Optimization",
+      "facet": "capabilities",
+      "value": "Conversion Rate Optimization"
+    },
+    {
+      "id": "capabilities:Data Aggregation",
+      "facet": "capabilities",
+      "value": "Data Aggregation"
+    },
+    {
+      "id": "capabilities:Data Analysis",
+      "facet": "capabilities",
+      "value": "Data Analysis"
+    },
+    {
+      "id": "capabilities:Data Visualization",
+      "facet": "capabilities",
+      "value": "Data Visualization"
+    },
+    {
+      "id": "capabilities:Frontend-Development",
+      "facet": "capabilities",
+      "value": "Frontend-Development"
+    },
+    {
+      "id": "capabilities:Fullstack-Development",
+      "facet": "capabilities",
+      "value": "Fullstack-Development"
+    },
+    {
+      "id": "capabilities:GPU Shaders",
+      "facet": "capabilities",
+      "value": "GPU Shaders"
+    },
+    {
+      "id": "capabilities:UI-Design",
+      "facet": "capabilities",
+      "value": "UI-Design"
+    },
+    {
+      "id": "capabilities:UX-Design",
+      "facet": "capabilities",
+      "value": "UX-Design"
+    },
+    {
+      "id": "capabilities:Usability",
+      "facet": "capabilities",
+      "value": "Usability"
+    },
+    {
+      "id": "capabilities:User Research",
+      "facet": "capabilities",
+      "value": "User Research"
+    },
+    {
+      "id": "methods:7-Level-Model",
+      "facet": "methods",
+      "value": "7-Level-Model"
+    },
+    {
+      "id": "methods:A/B-Testing",
+      "facet": "methods",
+      "value": "A/B-Testing"
+    },
+    {
+      "id": "methods:CI/CD",
+      "facet": "methods",
+      "value": "CI/CD"
+    },
+    {
+      "id": "methods:Expert Research",
+      "facet": "methods",
+      "value": "Expert Research"
+    },
+    {
+      "id": "methods:Jobs To Be Done",
+      "facet": "methods",
+      "value": "Jobs To Be Done"
+    },
+    {
+      "id": "methods:Limbic Types",
+      "facet": "methods",
+      "value": "Limbic Types"
+    },
+    {
+      "id": "methods:Prompt Engineering",
+      "facet": "methods",
+      "value": "Prompt Engineering"
+    },
+    {
+      "id": "methods:Prototyping",
+      "facet": "methods",
+      "value": "Prototyping"
+    },
+    {
+      "id": "methods:User Testing",
+      "facet": "methods",
+      "value": "User Testing"
+    },
+    {
+      "id": "industries:Automotive & mobility",
+      "facet": "industries",
+      "value": "Automotive & mobility"
+    },
+    {
+      "id": "productTypes:Web app",
+      "facet": "productTypes",
+      "value": "Web app"
+    },
+    {
+      "id": "tools:Docker",
+      "facet": "tools",
+      "value": "Docker"
+    },
+    {
+      "id": "tools:Fabric.JS",
+      "facet": "tools",
+      "value": "Fabric.JS"
+    },
+    {
+      "id": "tools:Figma",
+      "facet": "tools",
+      "value": "Figma"
+    },
+    {
+      "id": "tools:Headless Chrome",
+      "facet": "tools",
+      "value": "Headless Chrome"
+    },
+    {
+      "id": "tools:Inkscape CLI",
+      "facet": "tools",
+      "value": "Inkscape CLI"
+    },
+    {
+      "id": "tools:Konva",
+      "facet": "tools",
+      "value": "Konva"
+    },
+    {
+      "id": "tools:Laravel",
+      "facet": "tools",
+      "value": "Laravel"
+    },
+    {
+      "id": "tools:MySQL",
+      "facet": "tools",
+      "value": "MySQL"
+    },
+    {
+      "id": "tools:React.js",
+      "facet": "tools",
+      "value": "React.js"
+    },
+    {
+      "id": "tools:Redis",
+      "facet": "tools",
+      "value": "Redis"
+    },
+    {
+      "id": "tools:Shaders",
+      "facet": "tools",
+      "value": "Shaders"
+    },
+    {
+      "id": "tools:Tailwind",
+      "facet": "tools",
+      "value": "Tailwind"
+    },
+    {
+      "id": "tools:Three.js",
+      "facet": "tools",
+      "value": "Three.js"
+    },
+    {
+      "id": "tools:WebGL",
+      "facet": "tools",
+      "value": "WebGL"
+    },
+    {
+      "id": "tools:Zustand",
+      "facet": "tools",
+      "value": "Zustand"
+    },
+    {
+      "id": "tools:n8n",
+      "facet": "tools",
+      "value": "n8n"
+    },
+    {
+      "id": "stages:Production",
+      "facet": "stages",
+      "value": "Production"
+    },
+    {
+      "id": "stages:Ongoing maintenance",
+      "facet": "stages",
+      "value": "Ongoing maintenance"
+    },
+    {
+      "id": "buyerNeeds:Build internal tooling",
+      "facet": "buyerNeeds",
+      "value": "Build internal tooling"
+    },
+    {
+      "id": "capabilities:Chat Bot Design",
+      "facet": "capabilities",
+      "value": "Chat Bot Design"
+    },
+    {
+      "id": "capabilities:Reporting",
+      "facet": "capabilities",
+      "value": "Reporting"
+    },
+    {
+      "id": "capabilities:Web-Scraping",
+      "facet": "capabilities",
+      "value": "Web-Scraping"
+    },
+    {
+      "id": "industries:Software & business services",
+      "facet": "industries",
+      "value": "Software & business services"
+    },
+    {
+      "id": "tools:Node",
+      "facet": "tools",
+      "value": "Node"
+    },
+    {
+      "id": "tools:SQLite",
+      "facet": "tools",
+      "value": "SQLite"
+    },
+    {
+      "id": "stages:Internal use",
+      "facet": "stages",
+      "value": "Internal use"
+    },
+    {
+      "id": "buyerNeeds:Enable collaboration",
+      "facet": "buyerNeeds",
+      "value": "Enable collaboration"
+    },
+    {
+      "id": "buyerNeeds:Make data actionable",
+      "facet": "buyerNeeds",
+      "value": "Make data actionable"
+    },
+    {
+      "id": "capabilities:Geospatial Visualization",
+      "facet": "capabilities",
+      "value": "Geospatial Visualization"
+    },
+    {
+      "id": "industries:Travel & tourism",
+      "facet": "industries",
+      "value": "Travel & tourism"
+    },
+    {
+      "id": "productTypes:Mobile app",
+      "facet": "productTypes",
+      "value": "Mobile app"
+    },
+    {
+      "id": "tools:DeckGL",
+      "facet": "tools",
+      "value": "DeckGL"
+    },
+    {
+      "id": "tools:Embeddings",
+      "facet": "tools",
+      "value": "Embeddings"
+    },
+    {
+      "id": "tools:Mapbox",
+      "facet": "tools",
+      "value": "Mapbox"
+    },
+    {
+      "id": "tools:Next.js",
+      "facet": "tools",
+      "value": "Next.js"
+    },
+    {
+      "id": "tools:PostgreSQL",
+      "facet": "tools",
+      "value": "PostgreSQL"
+    },
+    {
+      "id": "tools:Yjs",
+      "facet": "tools",
+      "value": "Yjs"
+    },
+    {
+      "id": "stages:Production (restricted access)",
+      "facet": "stages",
+      "value": "Production (restricted access)"
+    },
+    {
+      "id": "capabilities:Native Development",
+      "facet": "capabilities",
+      "value": "Native Development"
+    },
+    {
+      "id": "tools:Hono",
+      "facet": "tools",
+      "value": "Hono"
+    },
+    {
+      "id": "buyerNeeds:Deliver an industry-specific workflow",
+      "facet": "buyerNeeds",
+      "value": "Deliver an industry-specific workflow"
+    },
+    {
+      "id": "buyerNeeds:Join an existing team",
+      "facet": "buyerNeeds",
+      "value": "Join an existing team"
+    },
+    {
+      "id": "capabilities:Leadership",
+      "facet": "capabilities",
+      "value": "Leadership"
+    },
+    {
+      "id": "methods:Site Audit",
+      "facet": "methods",
+      "value": "Site Audit"
+    },
+    {
+      "id": "methods:Workshop",
+      "facet": "methods",
+      "value": "Workshop"
+    },
+    {
+      "id": "industries:Maritime & logistics",
+      "facet": "industries",
+      "value": "Maritime & logistics"
+    },
+    {
+      "id": "tools:Ant Design",
+      "facet": "tools",
+      "value": "Ant Design"
+    },
+    {
+      "id": "tools:ECharts",
+      "facet": "tools",
+      "value": "ECharts"
+    },
+    {
+      "id": "tools:Excel / Google Sheets",
+      "facet": "tools",
+      "value": "Excel / Google Sheets"
+    },
+    {
+      "id": "tools:Kubernetes",
+      "facet": "tools",
+      "value": "Kubernetes"
+    },
+    {
+      "id": "tools:NestJS",
+      "facet": "tools",
+      "value": "NestJS"
+    },
+    {
+      "id": "tools:Redux",
+      "facet": "tools",
+      "value": "Redux"
+    },
+    {
+      "id": "tools:Sketch",
+      "facet": "tools",
+      "value": "Sketch"
+    },
+    {
+      "id": "tools:Styled Components",
+      "facet": "tools",
+      "value": "Styled Components"
+    },
+    {
+      "id": "tools:Symfony",
+      "facet": "tools",
+      "value": "Symfony"
+    },
+    {
+      "id": "stages:Improvement",
+      "facet": "stages",
+      "value": "Improvement"
+    },
+    {
+      "id": "capabilities:Business Administration",
+      "facet": "capabilities",
+      "value": "Business Administration"
+    },
+    {
+      "id": "stages:MVP",
+      "facet": "stages",
+      "value": "MVP"
+    },
+    {
+      "id": "productTypes:API",
+      "facet": "productTypes",
+      "value": "API"
+    },
+    {
+      "id": "tools:Cosmograph",
+      "facet": "tools",
+      "value": "Cosmograph"
+    },
+    {
+      "id": "tools:Graph Databases",
+      "facet": "tools",
+      "value": "Graph Databases"
+    },
+    {
+      "id": "tools:Neo4j",
+      "facet": "tools",
+      "value": "Neo4j"
+    },
+    {
+      "id": "tools:Vector Databases",
+      "facet": "tools",
+      "value": "Vector Databases"
+    },
+    {
+      "id": "buyerNeeds:Create a public website",
+      "facet": "buyerNeeds",
+      "value": "Create a public website"
+    },
+    {
+      "id": "capabilities:Online-Marketing",
+      "facet": "capabilities",
+      "value": "Online-Marketing"
+    },
+    {
+      "id": "capabilities:SEO",
+      "facet": "capabilities",
+      "value": "SEO"
+    },
+    {
+      "id": "productTypes:Website",
+      "facet": "productTypes",
+      "value": "Website"
+    },
+    {
+      "id": "tools:Vue.js",
+      "facet": "tools",
+      "value": "Vue.js"
+    },
+    {
+      "id": "tools:Nuxt.js",
+      "facet": "tools",
+      "value": "Nuxt.js"
+    },
+    {
+      "id": "stages:Retired",
+      "facet": "stages",
+      "value": "Retired"
+    },
+    {
+      "id": "buyerNeeds:Improve conversion",
+      "facet": "buyerNeeds",
+      "value": "Improve conversion"
+    },
+    {
+      "id": "methods:Personas",
+      "facet": "methods",
+      "value": "Personas"
+    },
+    {
+      "id": "industries:Public & nonprofit",
+      "facet": "industries",
+      "value": "Public & nonprofit"
+    },
+    {
+      "id": "tools:Optimizely",
+      "facet": "tools",
+      "value": "Optimizely"
+    },
+    {
+      "id": "capabilities:Finance",
+      "facet": "capabilities",
+      "value": "Finance"
+    },
+    {
+      "id": "tools:Adobe XD",
+      "facet": "tools",
+      "value": "Adobe XD"
+    },
+    {
+      "id": "tools:PowerPoint / Google Slides",
+      "facet": "tools",
+      "value": "PowerPoint / Google Slides"
+    },
+    {
+      "id": "buyerNeeds:Validate a product idea",
+      "facet": "buyerNeeds",
+      "value": "Validate a product idea"
+    },
+    {
+      "id": "stages:Discovery",
+      "facet": "stages",
+      "value": "Discovery"
+    },
+    {
+      "id": "stages:Prototype",
+      "facet": "stages",
+      "value": "Prototype"
+    },
+    {
+      "id": "buyerNeeds:Connect software and hardware",
+      "facet": "buyerNeeds",
+      "value": "Connect software and hardware"
+    },
+    {
+      "id": "industries:Home & garden",
+      "facet": "industries",
+      "value": "Home & garden"
+    },
+    {
+      "id": "productTypes:Hardware / embedded",
+      "facet": "productTypes",
+      "value": "Hardware / embedded"
+    },
+    {
+      "id": "productTypes:Physical product",
+      "facet": "productTypes",
+      "value": "Physical product"
+    },
+    {
+      "id": "tools:FastAPI",
+      "facet": "tools",
+      "value": "FastAPI"
+    },
+    {
+      "id": "tools:ESP32-S3",
+      "facet": "tools",
+      "value": "ESP32-S3"
+    },
+    {
+      "id": "tools:Arduino",
+      "facet": "tools",
+      "value": "Arduino"
+    },
+    {
+      "id": "tools:YOLO",
+      "facet": "tools",
+      "value": "YOLO"
+    },
+    {
+      "id": "tools:build123d",
+      "facet": "tools",
+      "value": "build123d"
+    },
+    {
+      "id": "tools:MQTT",
+      "facet": "tools",
+      "value": "MQTT"
+    },
+    {
+      "id": "tools:Home Assistant",
+      "facet": "tools",
+      "value": "Home Assistant"
+    },
+    {
+      "id": "productTypes:Chatbot",
+      "facet": "productTypes",
+      "value": "Chatbot"
+    },
+    {
+      "id": "tools:Notion Database",
+      "facet": "tools",
+      "value": "Notion Database"
+    },
+    {
+      "id": "industries:Education",
+      "facet": "industries",
+      "value": "Education"
+    },
+    {
+      "id": "tools:Express",
+      "facet": "tools",
+      "value": "Express"
+    },
+    {
+      "id": "tools:MongoDB",
+      "facet": "tools",
+      "value": "MongoDB"
+    },
+    {
+      "id": "tools:WebAssembly",
+      "facet": "tools",
+      "value": "WebAssembly"
+    },
+    {
+      "id": "industries:Media & entertainment",
+      "facet": "industries",
+      "value": "Media & entertainment"
+    },
+    {
+      "id": "productTypes:Game",
+      "facet": "productTypes",
+      "value": "Game"
+    },
+    {
+      "id": "capabilities:Library Development",
+      "facet": "capabilities",
+      "value": "Library Development"
+    },
+    {
+      "id": "capabilities:Open Source Software Development",
+      "facet": "capabilities",
+      "value": "Open Source Software Development"
+    },
+    {
+      "id": "methods:Automated Testing",
+      "facet": "methods",
+      "value": "Automated Testing"
+    },
+    {
+      "id": "productTypes:Developer tool",
+      "facet": "productTypes",
+      "value": "Developer tool"
+    },
+    {
+      "id": "productTypes:Plugin / integration",
+      "facet": "productTypes",
+      "value": "Plugin / integration"
+    },
+    {
+      "id": "tools:ts-morph",
+      "facet": "tools",
+      "value": "ts-morph"
+    },
+    {
+      "id": "tools:Vitest",
+      "facet": "tools",
+      "value": "Vitest"
+    },
+    {
+      "id": "tools:tsup",
+      "facet": "tools",
+      "value": "tsup"
+    },
+    {
+      "id": "productTypes:Interactive experience",
+      "facet": "productTypes",
+      "value": "Interactive experience"
+    },
+    {
+      "id": "buyerNeeds:Integrate business systems",
+      "facet": "buyerNeeds",
+      "value": "Integrate business systems"
+    },
+    {
+      "id": "tools:Inertia.js",
+      "facet": "tools",
+      "value": "Inertia.js"
+    },
+    {
+      "id": "tools:Vite",
+      "facet": "tools",
+      "value": "Vite"
+    },
+    {
+      "id": "tools:shadcn/ui",
+      "facet": "tools",
+      "value": "shadcn/ui"
+    },
+    {
+      "id": "tools:Laravel Horizon",
+      "facet": "tools",
+      "value": "Laravel Horizon"
+    },
+    {
+      "id": "industries:Retail & consumer goods",
+      "facet": "industries",
+      "value": "Retail & consumer goods"
+    },
+    {
+      "id": "tools:Axure",
+      "facet": "tools",
+      "value": "Axure"
+    },
+    {
+      "id": "industries:Manufacturing & packaging",
+      "facet": "industries",
+      "value": "Manufacturing & packaging"
+    },
+    {
+      "id": "tools:Angular",
+      "facet": "tools",
+      "value": "Angular"
+    },
+    {
+      "id": "tools:PrestaShop",
+      "facet": "tools",
+      "value": "PrestaShop"
+    },
+    {
+      "id": "tools:TypeForm",
+      "facet": "tools",
+      "value": "TypeForm"
+    },
+    {
+      "id": "tools:WordPress",
+      "facet": "tools",
+      "value": "WordPress"
+    },
+    {
+      "id": "tools:Puppeteer",
+      "facet": "tools",
+      "value": "Puppeteer"
+    },
+    {
+      "id": "tools:eurostat-searoutes",
+      "facet": "tools",
+      "value": "eurostat-searoutes"
+    },
+    {
+      "id": "tools:Telegram Bot",
+      "facet": "tools",
+      "value": "Telegram Bot"
+    },
+    {
+      "id": "industries:Food & lifestyle",
+      "facet": "industries",
+      "value": "Food & lifestyle"
+    },
+    {
+      "id": "industries:Healthcare",
+      "facet": "industries",
+      "value": "Healthcare"
+    },
+    {
+      "id": "tools:React Native",
+      "facet": "tools",
+      "value": "React Native"
+    },
+    {
+      "id": "tools:Expo",
+      "facet": "tools",
+      "value": "Expo"
+    },
+    {
+      "id": "buyerNeeds:Sell products",
+      "facet": "buyerNeeds",
+      "value": "Sell products"
+    },
+    {
+      "id": "capabilities:Fashion Design",
+      "facet": "capabilities",
+      "value": "Fashion Design"
+    },
+    {
+      "id": "tools:Shopware 5",
+      "facet": "tools",
+      "value": "Shopware 5"
+    },
+    {
+      "id": "tools:Gatsby",
+      "facet": "tools",
+      "value": "Gatsby"
+    }
+  ],
+  "projects": [
+    {
+      "id": "p01",
+      "name": "Project 01",
+      "href": "/en/projects/p01",
+      "terms": [
+        "buyerNeeds:Launch a new product",
+        "buyerNeeds:Improve a complex interface",
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Maintain and evolve a product",
+        "buyerNeeds:Add AI capabilities",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:3D",
+        "capabilities:AI Engineering",
+        "capabilities:Agent Harnesses",
+        "capabilities:Animation",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Conception",
+        "capabilities:Consulting",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:GPU Shaders",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "capabilities:User Research",
+        "methods:7-Level-Model",
+        "methods:A/B-Testing",
+        "methods:CI/CD",
+        "methods:Expert Research",
+        "methods:Jobs To Be Done",
+        "methods:Limbic Types",
+        "methods:Prompt Engineering",
+        "methods:Prototyping",
+        "methods:User Testing",
+        "industries:Automotive & mobility",
+        "productTypes:Web app",
+        "tools:Docker",
+        "tools:Fabric.JS",
+        "tools:Figma",
+        "tools:Headless Chrome",
+        "tools:Inkscape CLI",
+        "tools:Konva",
+        "tools:Laravel",
+        "tools:MySQL",
+        "tools:React.js",
+        "tools:Redis",
+        "tools:Shaders",
+        "tools:Tailwind",
+        "tools:Three.js",
+        "tools:WebGL",
+        "tools:Zustand",
+        "tools:n8n",
+        "stages:Production",
+        "stages:Ongoing maintenance"
+      ]
+    },
+    {
+      "id": "p02",
+      "name": "Project 02",
+      "href": "/en/projects/p02",
+      "terms": [
+        "buyerNeeds:Build internal tooling",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:AI Engineering",
+        "capabilities:Agent Harnesses",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Chat Bot Design",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:Reporting",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "capabilities:Web-Scraping",
+        "methods:CI/CD",
+        "methods:Prompt Engineering",
+        "methods:User Testing",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "tools:React.js",
+        "tools:Node",
+        "tools:Tailwind",
+        "tools:Laravel",
+        "tools:Zustand",
+        "tools:Docker",
+        "tools:SQLite",
+        "tools:Headless Chrome",
+        "tools:Redis",
+        "stages:Internal use"
+      ]
+    },
+    {
+      "id": "p03",
+      "name": "Project 03",
+      "href": "/en/projects/p03",
+      "terms": [
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Enable collaboration",
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Make data actionable",
+        "capabilities:AI Engineering",
+        "capabilities:Agent Harnesses",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Conception",
+        "capabilities:Data Aggregation",
+        "capabilities:Fullstack-Development",
+        "capabilities:Geospatial Visualization",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "capabilities:Web-Scraping",
+        "methods:CI/CD",
+        "methods:Prompt Engineering",
+        "methods:Prototyping",
+        "industries:Travel & tourism",
+        "productTypes:Web app",
+        "productTypes:Mobile app",
+        "tools:DeckGL",
+        "tools:Docker",
+        "tools:Embeddings",
+        "tools:Laravel",
+        "tools:Mapbox",
+        "tools:Next.js",
+        "tools:PostgreSQL",
+        "tools:React.js",
+        "tools:Tailwind",
+        "tools:Yjs",
+        "tools:Zustand",
+        "stages:Production (restricted access)"
+      ]
+    },
+    {
+      "id": "p04",
+      "name": "Project 04",
+      "href": "/en/projects/p04",
+      "terms": [
+        "buyerNeeds:Build internal tooling",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:AI Engineering",
+        "capabilities:Agent Harnesses",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Chat Bot Design",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:Native Development",
+        "capabilities:Reporting",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "methods:CI/CD",
+        "methods:Prompt Engineering",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "tools:Docker",
+        "tools:Embeddings",
+        "tools:Headless Chrome",
+        "tools:Hono",
+        "tools:Node",
+        "tools:React.js",
+        "tools:Redis",
+        "tools:SQLite",
+        "tools:Tailwind",
+        "stages:Internal use"
+      ]
+    },
+    {
+      "id": "p05",
+      "name": "Project 05",
+      "href": "/en/projects/p05",
+      "terms": [
+        "buyerNeeds:Improve a complex interface",
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Deliver an industry-specific workflow",
+        "buyerNeeds:Join an existing team",
+        "capabilities:AI Engineering",
+        "capabilities:Animation",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Conception",
+        "capabilities:Consulting",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Frontend-Development",
+        "capabilities:Geospatial Visualization",
+        "capabilities:Leadership",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "methods:7-Level-Model",
+        "methods:CI/CD",
+        "methods:Jobs To Be Done",
+        "methods:Prototyping",
+        "methods:Site Audit",
+        "methods:User Testing",
+        "methods:Workshop",
+        "industries:Maritime & logistics",
+        "productTypes:Web app",
+        "tools:Ant Design",
+        "tools:DeckGL",
+        "tools:Docker",
+        "tools:ECharts",
+        "tools:Excel / Google Sheets",
+        "tools:Figma",
+        "tools:Kubernetes",
+        "tools:Mapbox",
+        "tools:NestJS",
+        "tools:React.js",
+        "tools:Redux",
+        "tools:Sketch",
+        "tools:Styled Components",
+        "tools:Symfony",
+        "stages:Production",
+        "stages:Improvement"
+      ]
+    },
+    {
+      "id": "p06",
+      "name": "Project 06",
+      "href": "/en/projects/p06",
+      "terms": [
+        "buyerNeeds:Launch a new product",
+        "buyerNeeds:Add AI capabilities",
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Maintain and evolve a product",
+        "capabilities:AI Engineering",
+        "capabilities:Agent Harnesses",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Business Administration",
+        "capabilities:Conception",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "capabilities:User Research",
+        "methods:CI/CD",
+        "methods:Prompt Engineering",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "tools:React.js",
+        "tools:Next.js",
+        "tools:Node",
+        "tools:Tailwind",
+        "tools:PostgreSQL",
+        "tools:Zustand",
+        "stages:MVP",
+        "stages:Ongoing maintenance"
+      ]
+    },
+    {
+      "id": "p07",
+      "name": "Project 07",
+      "href": "/en/projects/p07",
+      "terms": [
+        "buyerNeeds:Add AI capabilities",
+        "buyerNeeds:Build internal tooling",
+        "capabilities:AI Engineering",
+        "capabilities:Agent Harnesses",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Conception",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Frontend-Development",
+        "capabilities:UX-Design",
+        "methods:A/B-Testing",
+        "methods:Prompt Engineering",
+        "industries:Software & business services",
+        "productTypes:API",
+        "productTypes:Web app",
+        "tools:Cosmograph",
+        "tools:Docker",
+        "tools:Embeddings",
+        "tools:Graph Databases",
+        "tools:Neo4j",
+        "tools:Next.js",
+        "tools:Node",
+        "tools:PostgreSQL",
+        "tools:React.js",
+        "tools:Shaders",
+        "tools:Tailwind",
+        "tools:Vector Databases",
+        "tools:WebGL",
+        "stages:Internal use",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p08",
+      "name": "Project 08",
+      "href": "/en/projects/p08",
+      "terms": [
+        "buyerNeeds:Create a public website",
+        "buyerNeeds:Create an interactive experience",
+        "capabilities:Backend-Development",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Conception",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Data Analysis",
+        "capabilities:Frontend-Development",
+        "capabilities:Online-Marketing",
+        "capabilities:SEO",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "capabilities:User Research",
+        "methods:A/B-Testing",
+        "methods:Expert Research",
+        "industries:Software & business services",
+        "productTypes:Website",
+        "tools:Vue.js",
+        "tools:Nuxt.js",
+        "stages:Retired"
+      ]
+    },
+    {
+      "id": "p09",
+      "name": "Project 09",
+      "href": "/en/projects/p09",
+      "terms": [
+        "buyerNeeds:Improve conversion",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Consulting",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Data Visualization",
+        "capabilities:Reporting",
+        "capabilities:Usability",
+        "capabilities:User Research",
+        "methods:7-Level-Model",
+        "methods:A/B-Testing",
+        "methods:Expert Research",
+        "methods:Jobs To Be Done",
+        "methods:Personas",
+        "methods:Prototyping",
+        "methods:Site Audit",
+        "methods:Workshop",
+        "industries:Public & nonprofit",
+        "productTypes:Website",
+        "tools:Excel / Google Sheets",
+        "tools:Optimizely",
+        "tools:Sketch",
+        "stages:Improvement"
+      ]
+    },
+    {
+      "id": "p10",
+      "name": "Project 10",
+      "href": "/en/projects/p10",
+      "terms": [
+        "buyerNeeds:Improve conversion",
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Join an existing team",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Business Administration",
+        "capabilities:Conception",
+        "capabilities:Consulting",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Finance",
+        "capabilities:Leadership",
+        "capabilities:Online-Marketing",
+        "capabilities:Reporting",
+        "capabilities:UI-Design",
+        "capabilities:Usability",
+        "methods:7-Level-Model",
+        "methods:A/B-Testing",
+        "methods:Expert Research",
+        "methods:Jobs To Be Done",
+        "methods:Limbic Types",
+        "methods:Personas",
+        "methods:Prototyping",
+        "methods:Site Audit",
+        "methods:User Testing",
+        "methods:Workshop",
+        "industries:Automotive & mobility",
+        "productTypes:Website",
+        "tools:Adobe XD",
+        "tools:Excel / Google Sheets",
+        "tools:Optimizely",
+        "tools:PowerPoint / Google Slides",
+        "tools:Sketch",
+        "stages:Improvement"
+      ]
+    },
+    {
+      "id": "p11",
+      "name": "Project 11",
+      "href": "/en/projects/p11",
+      "terms": [
+        "buyerNeeds:Validate a product idea",
+        "buyerNeeds:Deliver an industry-specific workflow",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "capabilities:Geospatial Visualization",
+        "capabilities:Leadership",
+        "capabilities:UI-Design",
+        "capabilities:User Research",
+        "methods:7-Level-Model",
+        "methods:Jobs To Be Done",
+        "methods:Prototyping",
+        "methods:Workshop",
+        "industries:Public & nonprofit",
+        "productTypes:Web app",
+        "tools:Figma",
+        "tools:PowerPoint / Google Slides",
+        "tools:React.js",
+        "stages:Discovery",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p12",
+      "name": "Project 12",
+      "href": "/en/projects/p12",
+      "terms": [
+        "buyerNeeds:Connect software and hardware",
+        "capabilities:3D",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Fullstack-Development",
+        "methods:Prototyping",
+        "industries:Home & garden",
+        "productTypes:Hardware / embedded",
+        "productTypes:Physical product",
+        "productTypes:Web app",
+        "tools:React.js",
+        "tools:FastAPI",
+        "tools:ESP32-S3",
+        "tools:Arduino",
+        "tools:YOLO",
+        "tools:build123d",
+        "tools:MQTT",
+        "tools:Home Assistant",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p13",
+      "name": "Project 13",
+      "href": "/en/projects/p13",
+      "terms": [
+        "buyerNeeds:Add AI capabilities",
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Make data actionable",
+        "capabilities:AI Engineering",
+        "capabilities:Agent Harnesses",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Chat Bot Design",
+        "capabilities:Data Aggregation",
+        "capabilities:Fullstack-Development",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Web-Scraping",
+        "methods:Prompt Engineering",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "productTypes:Chatbot",
+        "tools:Docker",
+        "tools:Embeddings",
+        "tools:Headless Chrome",
+        "tools:Laravel",
+        "tools:Node",
+        "tools:Notion Database",
+        "tools:PostgreSQL",
+        "tools:React.js",
+        "tools:Vector Databases",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p14",
+      "name": "Project 14",
+      "href": "/en/projects/p14",
+      "terms": [
+        "buyerNeeds:Launch a new product",
+        "buyerNeeds:Improve a complex interface",
+        "capabilities:Conception",
+        "capabilities:Consulting",
+        "capabilities:Frontend-Development",
+        "capabilities:UI-Design",
+        "capabilities:Usability",
+        "methods:A/B-Testing",
+        "industries:Automotive & mobility",
+        "productTypes:Web app",
+        "tools:Symfony",
+        "tools:Vue.js",
+        "tools:Sketch",
+        "tools:Excel / Google Sheets",
+        "tools:PowerPoint / Google Slides",
+        "stages:Prototype",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p15",
+      "name": "Project 15",
+      "href": "/en/projects/p15",
+      "terms": [
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Make data actionable",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Conception",
+        "capabilities:Consulting",
+        "capabilities:Frontend-Development",
+        "capabilities:Leadership",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "methods:Expert Research",
+        "industries:Education",
+        "productTypes:Web app",
+        "tools:Vue.js",
+        "tools:Adobe XD",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p16",
+      "name": "Project 16",
+      "href": "/en/projects/p16",
+      "terms": [
+        "buyerNeeds:Build internal tooling",
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Improve conversion",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:Backend-Development",
+        "capabilities:Business Administration",
+        "capabilities:Conception",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:Leadership",
+        "capabilities:Online-Marketing",
+        "capabilities:SEO",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "capabilities:Web-Scraping",
+        "methods:A/B-Testing",
+        "methods:Expert Research",
+        "methods:Prototyping",
+        "methods:Site Audit",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "tools:Nuxt.js",
+        "tools:Express",
+        "tools:MongoDB",
+        "tools:Vue.js",
+        "tools:Headless Chrome",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p17",
+      "name": "Project 17",
+      "href": "/en/projects/p17",
+      "terms": [
+        "buyerNeeds:Validate a product idea",
+        "buyerNeeds:Add AI capabilities",
+        "buyerNeeds:Make data actionable",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:Geospatial Visualization",
+        "industries:Maritime & logistics",
+        "productTypes:Web app",
+        "tools:Next.js",
+        "tools:Tailwind",
+        "tools:Mapbox",
+        "tools:DeckGL",
+        "tools:Docker",
+        "tools:WebAssembly",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p18",
+      "name": "Project 18",
+      "href": "/en/projects/p18",
+      "terms": [
+        "buyerNeeds:Create a public website",
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Make data actionable",
+        "capabilities:Backend-Development",
+        "capabilities:Conception",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Frontend-Development",
+        "capabilities:GPU Shaders",
+        "capabilities:Reporting",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "methods:CI/CD",
+        "methods:Prompt Engineering",
+        "industries:Software & business services",
+        "productTypes:Website",
+        "productTypes:Web app",
+        "tools:Next.js",
+        "tools:React.js",
+        "tools:Tailwind",
+        "tools:Notion Database",
+        "tools:ECharts",
+        "tools:Zustand",
+        "tools:Shaders",
+        "tools:WebGL",
+        "tools:Three.js",
+        "tools:Node",
+        "tools:PostgreSQL",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p19",
+      "name": "Project 19",
+      "href": "/en/projects/p19",
+      "terms": [
+        "buyerNeeds:Create an interactive experience",
+        "capabilities:Backend-Development",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:Usability",
+        "capabilities:Web-Scraping",
+        "industries:Media & entertainment",
+        "productTypes:Web app",
+        "productTypes:Game",
+        "tools:React.js",
+        "tools:Next.js",
+        "tools:Tailwind",
+        "tools:PostgreSQL",
+        "tools:Zustand",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p20",
+      "name": "Project 20",
+      "href": "/en/projects/p20",
+      "terms": [
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Build internal tooling",
+        "buyerNeeds:Maintain and evolve a product",
+        "capabilities:Frontend-Development",
+        "capabilities:Library Development",
+        "capabilities:Open Source Software Development",
+        "methods:Automated Testing",
+        "methods:CI/CD",
+        "industries:Software & business services",
+        "productTypes:Developer tool",
+        "productTypes:Plugin / integration",
+        "tools:Node",
+        "tools:ts-morph",
+        "tools:Vitest",
+        "tools:tsup",
+        "stages:Production",
+        "stages:Ongoing maintenance",
+        "stages:Internal use"
+      ]
+    },
+    {
+      "id": "p21",
+      "name": "Project 21",
+      "href": "/en/projects/p21",
+      "terms": [
+        "buyerNeeds:Connect software and hardware",
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Validate a product idea",
+        "capabilities:3D",
+        "capabilities:Animation",
+        "capabilities:Conception",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "methods:Prototyping",
+        "industries:Media & entertainment",
+        "productTypes:Hardware / embedded",
+        "productTypes:Interactive experience",
+        "productTypes:Physical product",
+        "tools:Arduino",
+        "tools:build123d",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p22",
+      "name": "Project 22",
+      "href": "/en/projects/p22",
+      "terms": [
+        "buyerNeeds:Connect software and hardware",
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Integrate business systems",
+        "capabilities:Data Visualization",
+        "capabilities:Fullstack-Development",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "methods:Automated Testing",
+        "industries:Home & garden",
+        "productTypes:Web app",
+        "productTypes:Plugin / integration",
+        "tools:React.js",
+        "tools:Next.js",
+        "tools:Node",
+        "tools:MQTT",
+        "tools:Home Assistant",
+        "tools:Docker",
+        "tools:Tailwind",
+        "stages:Production",
+        "stages:Internal use"
+      ]
+    },
+    {
+      "id": "p23",
+      "name": "Project 23",
+      "href": "/en/projects/p23",
+      "terms": [
+        "buyerNeeds:Build internal tooling",
+        "buyerNeeds:Integrate business systems",
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Visualization",
+        "capabilities:Fullstack-Development",
+        "capabilities:Reporting",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "tools:Laravel",
+        "tools:React.js",
+        "tools:Tailwind",
+        "tools:PostgreSQL",
+        "tools:Redis",
+        "tools:Docker",
+        "tools:Inertia.js",
+        "tools:Vite",
+        "tools:shadcn/ui",
+        "tools:Laravel Horizon",
+        "stages:Internal use"
+      ]
+    },
+    {
+      "id": "p24",
+      "name": "Project 24",
+      "href": "/en/projects/p24",
+      "terms": [
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Build internal tooling",
+        "buyerNeeds:Validate a product idea",
+        "capabilities:Agent Harnesses",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Data Visualization",
+        "capabilities:Fullstack-Development",
+        "capabilities:Reporting",
+        "methods:Automated Testing",
+        "industries:Media & entertainment",
+        "productTypes:Web app",
+        "productTypes:API",
+        "productTypes:Game",
+        "tools:Node",
+        "tools:React.js",
+        "tools:PostgreSQL",
+        "tools:Docker",
+        "tools:Vite",
+        "stages:Internal use",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p25",
+      "name": "Project 25",
+      "href": "/en/projects/p25",
+      "terms": [
+        "buyerNeeds:Validate a product idea",
+        "buyerNeeds:Improve a complex interface",
+        "capabilities:Consulting",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Leadership",
+        "capabilities:UI-Design",
+        "capabilities:User Research",
+        "methods:Expert Research",
+        "methods:User Testing",
+        "industries:Retail & consumer goods",
+        "productTypes:Mobile app",
+        "tools:Axure",
+        "tools:Adobe XD",
+        "stages:Discovery",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p26",
+      "name": "Project 26",
+      "href": "/en/projects/p26",
+      "terms": [
+        "buyerNeeds:Improve a complex interface",
+        "buyerNeeds:Improve conversion",
+        "buyerNeeds:Integrate business systems",
+        "buyerNeeds:Join an existing team",
+        "capabilities:Backend-Development",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:UI-Design",
+        "capabilities:Usability",
+        "methods:7-Level-Model",
+        "methods:Expert Research",
+        "methods:Jobs To Be Done",
+        "industries:Manufacturing & packaging",
+        "productTypes:Web app",
+        "tools:Angular",
+        "tools:Excel / Google Sheets",
+        "tools:MySQL",
+        "tools:PowerPoint / Google Slides",
+        "tools:PrestaShop",
+        "tools:React.js",
+        "tools:TypeForm",
+        "stages:Improvement"
+      ]
+    },
+    {
+      "id": "p27",
+      "name": "Project 27",
+      "href": "/en/projects/p27",
+      "terms": [
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Create a public website",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:AI Engineering",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Business Administration",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:Leadership",
+        "capabilities:Online-Marketing",
+        "capabilities:SEO",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "capabilities:Web-Scraping",
+        "methods:A/B-Testing",
+        "methods:Prompt Engineering",
+        "methods:Prototyping",
+        "industries:Automotive & mobility",
+        "productTypes:Website",
+        "productTypes:Web app",
+        "tools:Next.js",
+        "tools:Tailwind",
+        "tools:WordPress",
+        "tools:Express",
+        "tools:Puppeteer",
+        "tools:PostgreSQL",
+        "tools:Node",
+        "tools:Redis",
+        "tools:React.js",
+        "tools:Figma",
+        "tools:Excel / Google Sheets",
+        "tools:PowerPoint / Google Slides",
+        "tools:Docker",
+        "tools:Zustand",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p28",
+      "name": "Project 28",
+      "href": "/en/projects/p28",
+      "terms": [
+        "buyerNeeds:Deliver an industry-specific workflow",
+        "buyerNeeds:Make data actionable",
+        "capabilities:Backend-Development",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:Geospatial Visualization",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "industries:Maritime & logistics",
+        "productTypes:Web app",
+        "tools:Next.js",
+        "tools:Tailwind",
+        "tools:DeckGL",
+        "tools:React.js",
+        "tools:Mapbox",
+        "tools:eurostat-searoutes",
+        "tools:Notion Database",
+        "tools:Docker",
+        "tools:Zustand",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p29",
+      "name": "Project 29",
+      "href": "/en/projects/p29",
+      "terms": [
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Integrate business systems",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "capabilities:UI-Design",
+        "capabilities:Usability",
+        "methods:User Testing",
+        "industries:Media & entertainment",
+        "productTypes:Web app",
+        "tools:Next.js",
+        "tools:Tailwind",
+        "tools:React.js",
+        "tools:Konva",
+        "tools:Docker",
+        "tools:Zustand",
+        "stages:Production (restricted access)"
+      ]
+    },
+    {
+      "id": "p30",
+      "name": "Project 30",
+      "href": "/en/projects/p30",
+      "terms": [
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Create a public website",
+        "capabilities:Animation",
+        "capabilities:Frontend-Development",
+        "capabilities:GPU Shaders",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "industries:Media & entertainment",
+        "productTypes:Website",
+        "productTypes:Interactive experience",
+        "tools:Next.js",
+        "tools:React.js",
+        "tools:Node",
+        "tools:WebAssembly",
+        "tools:Tailwind",
+        "tools:Docker",
+        "tools:Shaders",
+        "tools:WebGL",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p31",
+      "name": "Project 31",
+      "href": "/en/projects/p31",
+      "terms": [
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Add AI capabilities",
+        "capabilities:AI Engineering",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Backend-Development",
+        "capabilities:Data Aggregation",
+        "capabilities:Web-Scraping",
+        "methods:Prompt Engineering",
+        "industries:Software & business services",
+        "productTypes:API",
+        "productTypes:Plugin / integration",
+        "tools:Node",
+        "tools:Express",
+        "tools:Headless Chrome",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p32",
+      "name": "Project 32",
+      "href": "/en/projects/p32",
+      "terms": [
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Integrate business systems",
+        "capabilities:AI Engineering",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Data Aggregation",
+        "capabilities:Fullstack-Development",
+        "capabilities:Web-Scraping",
+        "methods:Prompt Engineering",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "productTypes:API",
+        "tools:Node",
+        "tools:Express",
+        "tools:Headless Chrome",
+        "tools:React.js",
+        "tools:PostgreSQL",
+        "tools:SQLite",
+        "tools:Docker",
+        "tools:Telegram Bot",
+        "stages:Prototype",
+        "stages:Internal use"
+      ]
+    },
+    {
+      "id": "p33",
+      "name": "Project 33",
+      "href": "/en/projects/p33",
+      "terms": [
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Build internal tooling",
+        "buyerNeeds:Validate a product idea",
+        "capabilities:Backend-Development",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Finance",
+        "capabilities:Frontend-Development",
+        "methods:Automated Testing",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "productTypes:API",
+        "tools:FastAPI",
+        "tools:React.js",
+        "tools:PostgreSQL",
+        "tools:SQLite",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p34",
+      "name": "Project 34",
+      "href": "/en/projects/p34",
+      "terms": [
+        "buyerNeeds:Build internal tooling",
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Visualization",
+        "capabilities:Fullstack-Development",
+        "capabilities:Reporting",
+        "capabilities:Web-Scraping",
+        "methods:Automated Testing",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "tools:React.js",
+        "tools:Next.js",
+        "tools:Node",
+        "tools:Tailwind",
+        "tools:SQLite",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p35",
+      "name": "Project 35",
+      "href": "/en/projects/p35",
+      "terms": [
+        "buyerNeeds:Create an interactive experience",
+        "capabilities:Backend-Development",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:UI-Design",
+        "capabilities:Usability",
+        "industries:Food & lifestyle",
+        "productTypes:Web app",
+        "tools:Vue.js",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p36",
+      "name": "Project 36",
+      "href": "/en/projects/p36",
+      "terms": [
+        "buyerNeeds:Improve a complex interface",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:Backend-Development",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Chat Bot Design",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "industries:Manufacturing & packaging",
+        "productTypes:Chatbot",
+        "tools:Angular",
+        "tools:TypeForm",
+        "stages:Retired"
+      ]
+    },
+    {
+      "id": "p37",
+      "name": "Project 37",
+      "href": "/en/projects/p37",
+      "terms": [
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Integrate business systems",
+        "capabilities:Backend-Development",
+        "capabilities:Chat Bot Design",
+        "capabilities:Data Aggregation",
+        "capabilities:UX-Design",
+        "capabilities:Web-Scraping",
+        "industries:Healthcare",
+        "productTypes:Chatbot",
+        "tools:Telegram Bot",
+        "stages:Retired"
+      ]
+    },
+    {
+      "id": "p38",
+      "name": "Project 38",
+      "href": "/en/projects/p38",
+      "terms": [
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Deliver an industry-specific workflow",
+        "buyerNeeds:Validate a product idea",
+        "capabilities:3D",
+        "capabilities:Backend-Development",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:Geospatial Visualization",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "methods:Prototyping",
+        "industries:Maritime & logistics",
+        "productTypes:Web app",
+        "tools:React.js",
+        "tools:Styled Components",
+        "tools:Node",
+        "tools:NestJS",
+        "tools:ECharts",
+        "tools:Mapbox",
+        "tools:DeckGL",
+        "tools:Ant Design",
+        "tools:Three.js",
+        "tools:Next.js",
+        "tools:Zustand",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p39",
+      "name": "Project 39",
+      "href": "/en/projects/p39",
+      "terms": [
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Integrate business systems",
+        "capabilities:Conception",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Frontend-Development",
+        "capabilities:UI-Design",
+        "capabilities:Usability",
+        "methods:User Testing",
+        "industries:Media & entertainment",
+        "productTypes:Web app",
+        "tools:Next.js",
+        "tools:Tailwind",
+        "tools:React.js",
+        "tools:ECharts",
+        "tools:Docker",
+        "tools:Zustand",
+        "stages:Production (restricted access)"
+      ]
+    },
+    {
+      "id": "p40",
+      "name": "Project 40",
+      "href": "/en/projects/p40",
+      "terms": [
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Automate repetitive work",
+        "capabilities:Backend-Development",
+        "capabilities:Data Aggregation",
+        "capabilities:SEO",
+        "capabilities:Web-Scraping",
+        "methods:Automated Testing",
+        "industries:Software & business services",
+        "productTypes:API",
+        "tools:Node",
+        "tools:Express",
+        "tools:Puppeteer",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p41",
+      "name": "Project 41",
+      "href": "/en/projects/p41",
+      "terms": [
+        "buyerNeeds:Deliver an industry-specific workflow",
+        "buyerNeeds:Create an interactive experience",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Business Administration",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Data Aggregation",
+        "capabilities:Finance",
+        "capabilities:Frontend-Development",
+        "capabilities:Geospatial Visualization",
+        "capabilities:Native Development",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "capabilities:Usability",
+        "methods:Expert Research",
+        "methods:Prototyping",
+        "methods:Workshop",
+        "industries:Public & nonprofit",
+        "productTypes:Mobile app",
+        "tools:React Native",
+        "tools:Expo",
+        "tools:React.js",
+        "tools:Styled Components",
+        "tools:Next.js",
+        "tools:NestJS",
+        "tools:Ant Design",
+        "tools:Mapbox",
+        "tools:ECharts",
+        "tools:DeckGL",
+        "tools:Excel / Google Sheets",
+        "tools:PowerPoint / Google Slides",
+        "tools:Docker",
+        "tools:Zustand",
+        "tools:PostgreSQL",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p42",
+      "name": "Project 42",
+      "href": "/en/projects/p42",
+      "terms": [
+        "buyerNeeds:Make data actionable",
+        "buyerNeeds:Deliver an industry-specific workflow",
+        "buyerNeeds:Connect software and hardware",
+        "capabilities:Artificial Intelligence",
+        "capabilities:Conception",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Data Visualization",
+        "capabilities:Frontend-Development",
+        "capabilities:Geospatial Visualization",
+        "capabilities:UI-Design",
+        "methods:Prototyping",
+        "industries:Maritime & logistics",
+        "productTypes:Hardware / embedded",
+        "productTypes:Web app",
+        "tools:React.js",
+        "tools:Styled Components",
+        "tools:Ant Design",
+        "tools:Mapbox",
+        "tools:ECharts",
+        "tools:Zustand",
+        "tools:PostgreSQL",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p43",
+      "name": "Project 43",
+      "href": "/en/projects/p43",
+      "terms": [
+        "buyerNeeds:Sell products",
+        "capabilities:Behaviour Psychology",
+        "capabilities:Business Administration",
+        "capabilities:Conversion Rate Optimization",
+        "capabilities:Data Analysis",
+        "capabilities:Fashion Design",
+        "capabilities:Finance",
+        "capabilities:Frontend-Development",
+        "capabilities:Leadership",
+        "capabilities:Online-Marketing",
+        "capabilities:UI-Design",
+        "capabilities:UX-Design",
+        "methods:A/B-Testing",
+        "methods:Personas",
+        "industries:Retail & consumer goods",
+        "productTypes:Physical product",
+        "tools:Shopware 5",
+        "stages:Retired"
+      ]
+    },
+    {
+      "id": "p44",
+      "name": "Project 44",
+      "href": "/en/projects/p44",
+      "terms": [
+        "buyerNeeds:Create a public website",
+        "capabilities:Backend-Development",
+        "capabilities:Consulting",
+        "capabilities:Frontend-Development",
+        "capabilities:Fullstack-Development",
+        "capabilities:SEO",
+        "capabilities:UI-Design",
+        "capabilities:Usability",
+        "industries:Software & business services",
+        "productTypes:Website",
+        "tools:React.js",
+        "tools:Gatsby",
+        "tools:Adobe XD",
+        "stages:Production"
+      ]
+    },
+    {
+      "id": "p45",
+      "name": "Project 45",
+      "href": "/en/projects/p45",
+      "terms": [
+        "buyerNeeds:Integrate business systems",
+        "buyerNeeds:Automate repetitive work",
+        "buyerNeeds:Deliver an industry-specific workflow",
+        "capabilities:Data Aggregation",
+        "capabilities:Data Analysis",
+        "capabilities:Frontend-Development",
+        "capabilities:UI-Design",
+        "capabilities:Usability",
+        "industries:Maritime & logistics",
+        "productTypes:Plugin / integration",
+        "tools:React.js",
+        "tools:DeckGL",
+        "tools:Mapbox",
+        "tools:Next.js",
+        "stages:Retired"
+      ]
+    },
+    {
+      "id": "p46",
+      "name": "Project 46",
+      "href": "/en/projects/p46",
+      "terms": [
+        "buyerNeeds:Validate a product idea",
+        "buyerNeeds:Create an interactive experience",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "capabilities:User Research",
+        "methods:Expert Research",
+        "methods:User Testing",
+        "industries:Automotive & mobility",
+        "productTypes:Mobile app",
+        "tools:Vue.js",
+        "stages:Discovery",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p47",
+      "name": "Project 47",
+      "href": "/en/projects/p47",
+      "terms": [
+        "buyerNeeds:Integrate business systems",
+        "buyerNeeds:Validate a product idea",
+        "capabilities:Backend-Development",
+        "capabilities:Conception",
+        "capabilities:Frontend-Development",
+        "methods:Expert Research",
+        "industries:Retail & consumer goods",
+        "productTypes:Plugin / integration",
+        "tools:Shopware 5",
+        "tools:PowerPoint / Google Slides",
+        "stages:Prototype"
+      ]
+    },
+    {
+      "id": "p48",
+      "name": "Project 48",
+      "href": "/en/projects/p48",
+      "terms": [
+        "buyerNeeds:Create a public website",
+        "capabilities:Business Administration",
+        "capabilities:Frontend-Development",
+        "capabilities:UI-Design",
+        "methods:Prototyping",
+        "industries:Maritime & logistics",
+        "productTypes:Website",
+        "tools:Next.js",
+        "tools:Tailwind",
+        "tools:React.js",
+        "tools:Notion Database",
+        "tools:Zustand",
+        "stages:Retired"
+      ]
+    },
+    {
+      "id": "p49",
+      "name": "Project 49",
+      "href": "/en/projects/p49",
+      "terms": [
+        "buyerNeeds:Create an interactive experience",
+        "buyerNeeds:Validate a product idea",
+        "capabilities:Frontend-Development",
+        "capabilities:UI-Design",
+        "industries:Software & business services",
+        "productTypes:Web app",
+        "productTypes:Interactive experience",
+        "tools:React.js",
+        "stages:Prototype"
+      ]
+    }
+  ]
+}
