@@ -48,6 +48,7 @@ import { ProjectSearchResults } from "./ProjectSearchResults";
 import { knowledgeFallback } from "../../lib/knowledgeFallback";
 import type { KnowledgeAction } from "@homepage/content/knowledge";
 import { useKnowledgeAssistant } from "./useKnowledgeAssistant";
+import { getAssistantSubmitAction } from "./getAssistantSubmitAction";
 import { parseKnowledgeConsent } from "../../lib/knowledgeConsent";
 import "./landing.css";
 import "./knowledge.css";
@@ -126,12 +127,18 @@ export const PlasmaLanding = ({
   const assistantEnabled = assistant.enabled;
   const chatMode = assistantEnabled && chatOpen;
   const consent = assistant.consent;
-  // A question is only invited while AI can answer it, so nobody lands in a chat of
-  // canned replies; a conversation that is already open carries on through an outage.
+  const assistantState = {
+    enabled: assistantEnabled,
+    available: assistant.available,
+    chatOpen: chatMode,
+    declined: consent.declined,
+    reaskable: consent.reaskable,
+  };
   const canAsk =
-    assistantEnabled &&
-    (chatMode ||
-      (assistant.available && (!consent.declined || consent.reaskable)));
+    getAssistantSubmitAction({
+      ...assistantState,
+      consented: !!consent.receipt,
+    }) !== "search";
   const askAssistant = assistant.ask;
   const suggestAssistantProjects = assistant.suggest;
   const [consentQuestion, setConsentQuestion] = useState<string | null>(null);
@@ -558,19 +565,20 @@ export const PlasmaLanding = ({
       navigate(destination);
       return;
     }
-    if (canAsk) {
+    // Permission can expire between render and submit.
+    const action = getAssistantSubmitAction({
+      ...assistantState,
+      consented: !!parseKnowledgeConsent(consent.receipt),
+    });
+    if (action !== "search") {
       if (!hasQuery || assistant.busy) return;
-      if (!assistant.available) {
-        suggestProjects(input);
-        return;
-      }
-      if (!parseKnowledgeConsent(consent.receipt)) {
+      if (action === "fallback") suggestProjects(input);
+      else if (action === "ask") beginQuestion(input);
+      else {
         if (consent.declined) consent.markAsked();
         else consent.forget();
         setConsentQuestion(input);
-        return;
       }
-      beginQuestion(input);
       return;
     }
     if (hasQuery && suggestions[currentIndex]) {
