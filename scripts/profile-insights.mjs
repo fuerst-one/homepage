@@ -12,6 +12,7 @@ try {
     for (const migration of [
       "012-visitor-profile.sql",
       "013-visitor-profile-signals.sql",
+      "014-visitor-profile-strength.sql",
     ])
       await sql.unsafe(
         await readFile(
