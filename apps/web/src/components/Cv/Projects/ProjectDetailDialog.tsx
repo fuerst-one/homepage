@@ -9,6 +9,7 @@ import { CvProject } from "@homepage/content/models";
 import { useProjectFocusStore } from "./projectFocusStore";
 import { Button } from "../../Button";
 import { ProjectScreenshots } from "./ProjectScreenshots";
+import { ProjectNeedLinks } from "./ProjectNeedLinks";
 import { projectHeading } from "./projectHeading";
 import { projectPath } from "../../../lib/seo";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
@@ -106,6 +107,12 @@ export const ProjectDetailDialog = ({
                   </p>
                 )}
               </div>
+              <ProjectNeedLinks
+                needs={project.matching?.buyerNeeds ?? []}
+                locale={locale}
+                region={`project:${project.id}|needs`}
+                className="shrink-0 border-t border-white/15 px-5 py-3"
+              />
               {hasContext && (
                 <section
                   aria-label={

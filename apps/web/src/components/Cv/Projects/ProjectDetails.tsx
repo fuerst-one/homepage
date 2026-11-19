@@ -8,6 +8,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/de";
 import { CvProject } from "@homepage/content/models";
 import { ProjectScreenshots } from "./ProjectScreenshots";
+import { ProjectNeedLinks } from "./ProjectNeedLinks";
 import { ProjectMetaTable } from "./ProjectMetaTable";
 import { getJsxFormattedTextFromTextBlock } from "./getJsxFormattedTextFromTextBlock";
 import { getProjectLogoSources } from "./getProjectLogoSources";
@@ -80,6 +81,11 @@ export const ProjectDetails = ({
             initialDescriptions={initialDescriptions}
           />
         )}
+        <ProjectNeedLinks
+          needs={project.matching?.buyerNeeds ?? []}
+          locale={locale}
+          region={`project:${project.id}|needs`}
+        />
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs text-neutral-400">
             {projectType} ·{" "}
@@ -180,6 +186,7 @@ export const ProjectDetails = ({
           className="border-t border-white/15 pt-5"
           aria-labelledby="project-facts-title"
           data-profile-section={`${project.id}|architecture`}
+          data-profile-region={`project:${project.id}|details`}
         >
           <h2
             id="project-facts-title"
