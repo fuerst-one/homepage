@@ -624,6 +624,56 @@ test(
     }
   },
 );
+async function recordOverlayFrames(page) {
+  await page.evaluateOnNewDocument(() => {
+    const frames = (window.overlayFrames = []);
+    const visible = (selector) =>
+      (document.querySelector(selector)?.getClientRects().length ?? 0) > 0;
+    const sample = () => {
+      const frame = {
+        entry: visible(".profile-entry-link"),
+        launcher: visible(".profile-pixel-launcher"),
+      };
+      const last = frames.at(-1);
+      if (last?.entry !== frame.entry || last?.launcher !== frame.launcher)
+        frames.push(frame);
+      requestAnimationFrame(sample);
+    };
+    requestAnimationFrame(sample);
+  });
+}
+test(
+  "the overlay shows nothing until it knows whether a profile is saved",
+  { timeout: 120000 },
+  async () => {
+    const { preferences } = await priorityProfile();
+    const browser = await puppeteer.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1360, height: 900 });
+      await seedProfile(page, preferences, 3);
+      await recordOverlayFrames(page);
+      await page.goto(base + "/en", { waitUntil: "networkidle2" });
+      await page.waitForSelector(".profile-pixel-launcher");
+      assert.deepEqual(await page.evaluate(() => window.overlayFrames), [
+        { entry: false, launcher: false },
+        { entry: false, launcher: true },
+      ]);
+      await page.evaluate(
+        (key) => localStorage.setItem(key, '{"version":"unreadable"}'),
+        key,
+      );
+      await page.reload({ waitUntil: "networkidle2" });
+      await page.waitForSelector(".profile-entry-link");
+      assert.deepEqual(await page.evaluate(() => window.overlayFrames), [
+        { entry: false, launcher: false },
+        { entry: true, launcher: false },
+      ]);
+    } finally {
+      await browser.close();
+    }
+  },
+);
 
 test(
   "beside an open project dialog the launcher stays in view; where it does not fit it stays behind",

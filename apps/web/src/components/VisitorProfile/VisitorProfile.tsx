@@ -23,6 +23,14 @@ import "./visitor-profile.css";
 import { profileOrientationAt } from "@homepage/content/profilePixels";
 import { useRichProfileSignals } from "./useRichProfileSignals";
 
+function hasSavedProfile() {
+  try {
+    return !!localStorage.getItem(PROFILE_STORAGE_KEY);
+  } catch {
+    return false;
+  }
+}
+
 function useProfileRuntime() {
   const pathname = usePathname();
   const enabled = useProfile((s) => s.enabled);
@@ -58,12 +66,7 @@ function useProfileRuntime() {
   const focusedId = useProjectFocusStore((s) => s.focusedProjectId);
   useEffect(() => {
     useProfile.getState().restoreErasure();
-    try {
-      if (localStorage.getItem(PROFILE_STORAGE_KEY))
-        void useProfile.getState().loadCatalog();
-    } catch {
-      /* Memory-only mode remains available. */
-    }
+    if (hasSavedProfile()) void useProfile.getState().loadCatalog();
     const changed = (event: StorageEvent) => {
       if (
         event.key === PROFILE_STORAGE_KEY ||
@@ -236,11 +239,19 @@ export default function VisitorProfile() {
   const de = useLocale() === "de";
   const pathname = usePathname();
   const enabled = useProfile((s) => s.enabled);
+  // This component only renders in the browser, so storage is readable on its
+  // first render. A saved profile needs the catalog before it can be restored;
+  // until then neither the launcher nor the entry link would be the right one.
+  const [savedOnLoad] = useState(hasSavedProfile);
+  const profileSettled = useProfile(
+    (s) => s.enabled || s.catalog !== null || s.catalogFailed,
+  );
   useProfileRuntime();
   const bottom = useFooterClearance(pathname);
   const launcher = useRef<HTMLAnchorElement>(null);
   const hintVisible = useForYouHintVisible();
   if (pathname === "/en/profile" || pathname === "/de/profile") return null;
+  if (savedOnLoad && !profileSettled) return null;
   return enabled ? (
     <>
       <ForYouHint visible={hintVisible} bottom={bottom} launcher={launcher} />
