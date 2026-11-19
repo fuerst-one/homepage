@@ -831,6 +831,7 @@ export const PlasmaLanding = ({
                 <Link
                   key={suggestion.id}
                   className="landing-chip"
+                  data-primary={suggestion.primary || undefined}
                   href={suggestion.href!}
                   prefetch={false}
                   onPointerMove={() => preview(index)}
