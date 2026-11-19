@@ -10,6 +10,7 @@ import {
   type ProfileCatalog,
   type ProfileClickLevel,
   type ProfileSignalKind,
+  type ProfileStrength,
 } from "@homepage/content/visitorProfile";
 import {
   PROFILE_PROJECT_REGIONS,
@@ -17,6 +18,7 @@ import {
   PROFILE_STAY_MS,
 } from "@homepage/content/visitorProfileSignals";
 import { useProjectFocusStore } from "../Cv/Projects/projectFocusStore";
+import { readAtlasNavigation } from "../ExperienceAtlas/atlasNavigation";
 import {
   recordVisitorInteraction,
   useVisitorProfileStore,
@@ -113,119 +115,170 @@ export function useProfileArrivals(
   const subject = page?.subject;
   useEffect(() => {
     if (!enabled || !catalog || !kind || !subject) return;
-    const arrival = carried;
-    carried = null;
-    const strength = profileArrivalStrength(
-      arrival?.kind === kind && arrival.subject === subject
-        ? arrival.level
-        : null,
-    );
-    const regions =
-      kind === "project_details_viewed"
-        ? PROFILE_PROJECT_REGIONS
-        : kind === "project_opened"
-          ? (["needs"] as const)
-          : [];
-    // Region time counts from this arrival, not from an earlier visit.
-    for (const region of regions)
-      currentProfileView()?.restart(
-        `region:project:${subject}|${region}`,
-        Date.now(),
-      );
-    let stayed = false;
-    let regionTimer: ReturnType<typeof setInterval> | undefined;
-    const viewedRegions = new Set<string>();
-    const creditRegions = () => {
-      for (const region of regions) {
-        if (viewedRegions.has(region)) continue;
-        const seconds =
-          currentProfileView()?.seconds(
-            `region:project:${subject}|${region}`,
-          ) ?? 0;
-        if (seconds < PROFILE_REGION_VIEW_SECONDS) continue;
-        viewedRegions.add(region);
-        recordVisitorInteraction(
-          "project_region_viewed",
-          `${subject}|${region}`,
-          strength,
-        );
-      }
-    };
-    const stopStay = () => {
-      clearTimeout(stayTimer);
-      document.removeEventListener("visibilitychange", visibility);
-      document.removeEventListener("click", interact, true);
-      document.removeEventListener("input", interact, true);
-    };
-    const credit = () => {
-      if (stayed) return;
-      stayed = true;
-      stopStay();
-      if (
-        PROJECT_PAGE_KINDS.includes(kind) &&
-        isReturningProfileProject(
-          useVisitorProfileStore.getState().profile,
-          subject,
-          Date.now(),
-        )
-      )
-        recordVisitorInteraction("project_returned", subject);
-      recordVisitorInteraction(kind, subject, strength);
-      if (regions.length) {
-        creditRegions();
-        regionTimer = setInterval(creditRegions, 1000);
-      }
-    };
-
-    let visibleMs = 0;
-    let visibleSince: number | null = null;
-    let stayTimer: ReturnType<typeof setTimeout> | undefined;
-    const startClock = () => {
-      visibleSince = Date.now();
-      stayTimer = setTimeout(credit, Math.max(0, PROFILE_STAY_MS - visibleMs));
-    };
-    const visibility = () => {
-      if (document.visibilityState === "visible") {
-        if (visibleSince === null) startClock();
-        return;
-      }
-      if (visibleSince !== null) visibleMs += Date.now() - visibleSince;
-      visibleSince = null;
-      clearTimeout(stayTimer);
-    };
-    const stillHere = () => {
-      const now = profilePageSignal(
-        location.pathname,
-        useProjectFocusStore.getState().focusedProjectId,
-        catalog,
-      );
-      return now?.kind === kind && now.subject === subject;
-    };
-    // Scrolling, the site header and footer, the profile's own controls and
-    // closing the dialog are how a visitor moves on, not interactions.
-    const interact = (event: Event) => {
-      const target = event.target instanceof Element ? event.target : null;
-      const control = target?.closest(INTERACTIVE);
-      if (!control || control.closest("[data-profile-ui]")) return;
-      const content =
+    return watchStay({
+      kind,
+      subject,
+      strength: takeArrivalStrength(kind, subject),
+      regions:
+        kind === "project_details_viewed"
+          ? PROFILE_PROJECT_REGIONS
+          : kind === "project_opened"
+            ? ["needs"]
+            : [],
+      content: () =>
         kind === "project_opened"
           ? document.querySelector('[role="dialog"][data-state="open"]')
-          : document.querySelector("main");
-      if (!content?.contains(control)) return;
-      if (control instanceof HTMLAnchorElement) credit();
-      // A button's own handler may close the dialog; judge it afterwards.
-      else
-        setTimeout(() => {
-          if (stillHere()) credit();
-        }, 0);
-    };
-    if (document.visibilityState === "visible") startClock();
-    document.addEventListener("visibilitychange", visibility);
-    document.addEventListener("click", interact, true);
-    document.addEventListener("input", interact, true);
-    return () => {
-      stopStay();
-      clearInterval(regionTimer);
-    };
+          : document.querySelector("main"),
+      stillHere: () => {
+        const now = profilePageSignal(
+          location.pathname,
+          useProjectFocusStore.getState().focusedProjectId,
+          catalog,
+        );
+        return now?.kind === kind && now.subject === subject;
+      },
+    });
   }, [enabled, catalog, kind, subject]);
+}
+
+/** A choice made inside the explorer counts as a click the profile saw. */
+export function carryExplorerSelection(projectId: string) {
+  carried = { kind: "project_opened", subject: projectId, level: "link" };
+}
+
+/** A project selected in the explorer is a preview without a dialog: same stay rule. */
+export function useExplorerProfileStay(projectId: string) {
+  const enabled = useVisitorProfileStore((state) => state.enabled);
+  const published = useVisitorProfileStore(
+    (state) => !!state.catalog?.projects.some((p) => p.id === projectId),
+  );
+  useEffect(() => {
+    if (!enabled || !published) return;
+    return watchStay({
+      kind: "project_opened",
+      subject: projectId,
+      strength: takeArrivalStrength("project_opened", projectId),
+      regions: [],
+      content: () => document.querySelector("#vs-inspector"),
+      stillHere: () =>
+        readAtlasNavigation(new URLSearchParams(location.search), [
+          { id: projectId },
+        ]).project === projectId,
+    });
+  }, [enabled, published, projectId]);
+}
+
+function takeArrivalStrength(kind: ProfileSignalKind, subject: string) {
+  const arrival = carried;
+  carried = null;
+  return profileArrivalStrength(
+    arrival?.kind === kind && arrival.subject === subject
+      ? arrival.level
+      : null,
+  );
+}
+
+/** Record a page signal once the visitor stayed or interacted; returns its cleanup. */
+function watchStay({
+  kind,
+  subject,
+  strength,
+  regions,
+  content,
+  stillHere,
+}: PageSignal & {
+  strength: ProfileStrength;
+  regions: readonly (typeof PROFILE_PROJECT_REGIONS)[number][];
+  /** The page's, dialog's or panel's own content: clicks there are interactions. */
+  content: () => Element | null;
+  stillHere: () => boolean;
+}) {
+  // Region time counts from this arrival, not from an earlier visit.
+  for (const region of regions)
+    currentProfileView()?.restart(
+      `region:project:${subject}|${region}`,
+      Date.now(),
+    );
+  let stayed = false;
+  let regionTimer: ReturnType<typeof setInterval> | undefined;
+  const viewedRegions = new Set<string>();
+  const creditRegions = () => {
+    for (const region of regions) {
+      if (viewedRegions.has(region)) continue;
+      const seconds =
+        currentProfileView()?.seconds(`region:project:${subject}|${region}`) ??
+        0;
+      if (seconds < PROFILE_REGION_VIEW_SECONDS) continue;
+      viewedRegions.add(region);
+      recordVisitorInteraction(
+        "project_region_viewed",
+        `${subject}|${region}`,
+        strength,
+      );
+    }
+  };
+  const stopStay = () => {
+    clearTimeout(stayTimer);
+    document.removeEventListener("visibilitychange", visibility);
+    document.removeEventListener("click", interact, true);
+    document.removeEventListener("input", interact, true);
+  };
+  const credit = () => {
+    if (stayed) return;
+    stayed = true;
+    stopStay();
+    if (
+      PROJECT_PAGE_KINDS.includes(kind) &&
+      isReturningProfileProject(
+        useVisitorProfileStore.getState().profile,
+        subject,
+        Date.now(),
+      )
+    )
+      recordVisitorInteraction("project_returned", subject);
+    recordVisitorInteraction(kind, subject, strength);
+    if (regions.length) {
+      creditRegions();
+      regionTimer = setInterval(creditRegions, 1000);
+    }
+  };
+
+  let visibleMs = 0;
+  let visibleSince: number | null = null;
+  let stayTimer: ReturnType<typeof setTimeout> | undefined;
+  const startClock = () => {
+    visibleSince = Date.now();
+    stayTimer = setTimeout(credit, Math.max(0, PROFILE_STAY_MS - visibleMs));
+  };
+  const visibility = () => {
+    if (document.visibilityState === "visible") {
+      if (visibleSince === null) startClock();
+      return;
+    }
+    if (visibleSince !== null) visibleMs += Date.now() - visibleSince;
+    visibleSince = null;
+    clearTimeout(stayTimer);
+  };
+  // Scrolling, the site header and footer, the profile's own controls and
+  // closing the dialog are how a visitor moves on, not interactions.
+  const interact = (event: Event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const control = target?.closest(INTERACTIVE);
+    if (!control || control.closest("[data-profile-ui]")) return;
+    if (!content()?.contains(control)) return;
+    if (control instanceof HTMLAnchorElement) credit();
+    // A button's own handler may close or replace the content; judge it afterwards.
+    else
+      setTimeout(() => {
+        if (stillHere()) credit();
+      }, 0);
+  };
+  if (document.visibilityState === "visible") startClock();
+  document.addEventListener("visibilitychange", visibility);
+  document.addEventListener("click", interact, true);
+  document.addEventListener("input", interact, true);
+  return () => {
+    stopStay();
+    clearInterval(regionTimer);
+  };
 }

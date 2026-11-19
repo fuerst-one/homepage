@@ -246,3 +246,57 @@ test(
     }
   },
 );
+
+test(
+  "a project selected in the explorer follows the stay rule",
+  {
+    timeout: 120_000,
+  },
+  async () => {
+    const browser = await puppeteer.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1360, height: 900 });
+      await startProfile(page);
+      await page.goto(`${base}/en/explorer`, { waitUntil: "domcontentloaded" });
+      await page.waitForSelector(".profile-pixel-launcher");
+      await page.waitForSelector(".vs-cluster-trigger");
+      await page.click(".vs-cluster-trigger");
+      const selectMember = async (index) => {
+        await page.waitForSelector(".vs-members button");
+        await (await page.$$(".vs-members button"))[index].click();
+        await page.waitForSelector(".vs-selected");
+        return page.evaluate(() =>
+          new URL(location.href).searchParams.get("project"),
+        );
+      };
+
+      // Clicking through: a selection left before the stay records nothing.
+      const passed = await selectMember(0);
+      await pause(1000);
+      await page.click(".vs-back-cluster");
+      const stayed = await selectMember(1);
+      assert.notEqual(stayed, passed);
+      assert.equal(
+        await signal(page, "project_opened", stayed),
+        undefined,
+        "selecting a project is not yet a stay",
+      );
+      await waitForSignal(page, "project_opened", stayed);
+      assert.equal((await signal(page, "project_opened", stayed)).strength, 1);
+      assert.equal(await signal(page, "project_opened", passed), undefined);
+
+      // A selection the profile saw no click for arrives like a pasted URL.
+      await page.goto(`${base}/en/explorer?project=${passed}`, {
+        waitUntil: "domcontentloaded",
+      });
+      await waitForSignal(page, "project_opened", passed);
+      assert.equal(
+        (await signal(page, "project_opened", passed)).strength,
+        0.5,
+      );
+    } finally {
+      await browser.close();
+    }
+  },
+);

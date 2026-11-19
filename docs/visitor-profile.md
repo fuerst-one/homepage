@@ -147,6 +147,10 @@ only with those values and only on the kinds that can carry it.
   expandable item or form field). Scrolling, the header and footer, the
   profile's own controls, closing the dialog and going back do not count;
   leaving earlier records nothing. `project_returned` waits for the same moment.
+  A project selected in the Explorer is a preview without a dialog: it follows
+  the same rule, with the Explorer's side panel as its own content, at full
+  strength when chosen inside the Explorer and at half when the selection came
+  with the URL.
 - **What a page credits:** a stayed project page credits only its header, the
   industry; a stayed preview credits none of the seven dimensions but still
   counts for returns. Once a project page has been stayed on, each region that

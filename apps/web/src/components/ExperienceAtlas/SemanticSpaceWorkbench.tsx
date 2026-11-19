@@ -4,6 +4,10 @@ import {
   recordVisitorInteraction,
   useVisitorProfileStore,
 } from "../VisitorProfile/profileStore";
+import {
+  carryExplorerSelection,
+  useExplorerProfileStay,
+} from "../VisitorProfile/useProfileArrivals";
 import { projectLensFacts } from "./projectLensFacts";
 import { useAtlasCopy } from "./useAtlasCopy";
 import Link from "../i18n/LocalizedLink";
@@ -180,6 +184,7 @@ export function SemanticSpaceWorkbench({
     [projects],
   );
   const selected = projectById.get(selectedId);
+  useExplorerProfileStay(selectedId);
   const nodes = useMemo<SpaceNode[]>(
     () => (space ? spaceNodes(space, projects, locale) : []),
     [space, projects, locale],
@@ -312,7 +317,7 @@ export function SemanticSpaceWorkbench({
     onClusterFocus(null);
   };
   const selectProject = (id: string, moveFocus = true) => {
-    if (id) recordVisitorInteraction("project_opened", id);
+    if (id) carryExplorerSelection(id);
     focusInspector.current = moveFocus;
     setSelectedCluster(null);
     onClusterHover(null);
