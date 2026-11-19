@@ -253,7 +253,11 @@ test("sharing needs a current, separate consent receipt", () => {
     null,
   );
   assert.equal(
-    m.parseProfileEventBatch({ ...body, consentAt: now + 1000 }, catalog, now),
+    m.parseProfileEventBatch(
+      { ...body, consentAt: now + 86400_000 },
+      catalog,
+      now,
+    ),
     null,
   );
 });
@@ -357,4 +361,25 @@ test("restoration tolerates a clock that moved back by a few minutes", () => {
     m.restoreVisitorProfile(recordedAt(86400_000), catalog, now),
     null,
   );
+});
+test("sharing accepts consent from a visitor clock a few minutes ahead of the server", () => {
+  const body = {
+    version: 1,
+    token: "a".repeat(64),
+    events: [
+      {
+        id: "12345678-1234-4234-8234-123456789012",
+        kind: "project_opened",
+        subject: "a",
+      },
+    ],
+  };
+  const consentedAt = (offset) =>
+    m.parseProfileEventBatch(
+      { ...body, consentAt: now + offset },
+      catalog,
+      now,
+    );
+  assert.notEqual(consentedAt(60_000), null);
+  assert.equal(consentedAt(86400_000), null);
 });

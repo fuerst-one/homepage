@@ -657,7 +657,8 @@ export function parseProfileEventBatch(
     !validProfileToken(value.token) ||
     typeof value.consentAt !== "number" ||
     !Number.isFinite(value.consentAt) ||
-    value.consentAt > now ||
+    // consentAt comes from the visitor's clock; the server compares it with its own.
+    value.consentAt > now + PROFILE_CLOCK_TOLERANCE_MS ||
     now - value.consentAt >= PROFILE_LIFETIME_MS ||
     Object.keys(value).some(
       (k) => !["version", "consentAt", "token", "events"].includes(k),
