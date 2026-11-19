@@ -214,12 +214,21 @@ test("a GitHub link is published only when the connected inventory verifies the 
     publishedProject({ githubUrl }, repositories).githubUrl;
   assert.equal(
     link("https://github.com/fuerst-one/open-tool/"),
-    "https://github.com/fuerst-one/open-tool/",
+    "https://github.com/Fuerst-One/open-tool",
   );
   assert.equal(link("https://github.com/fuerst-one/client-app"), null);
   assert.equal(link("https://github.com/fuerst-one/renamed-or-deleted"), null);
-  assert.equal(link("https://github.com/fuerst-one"), null);
   assert.equal(link("https://github.com/fuerst-one/open-tool", null), null);
+});
+
+test("a GitHub link without a repository name never matches an inventory entry", () => {
+  const repositories = [{ full_name: "fuerst-one/undefined", private: false }];
+  const project = publishedProject(
+    { githubUrl: "https://github.com/fuerst-one", githubRepos: "fuerst-one" },
+    repositories,
+  );
+  assert.equal(project.githubUrl, null);
+  assert.equal(project.hasConnectedRepo, false);
 });
 
 test("a GitHub link is verified against the repository its URL resolves to", () => {
@@ -234,14 +243,19 @@ test("a GitHub link is verified against the repository its URL resolves to", () 
     null,
   );
   assert.equal(link("https://gist.github.com/fuerst-one/open-tool"), null);
-  assert.equal(
-    link("https://github.com/fuerst-one/open-tool/tree/main/docs"),
+});
+
+test("a published GitHub link is rebuilt from the verified repository, not copied from Notion", () => {
+  const link = (githubUrl) =>
+    publishedProject({ githubUrl }, connectedRepositories).githubUrl;
+  const canonical = "https://github.com/Fuerst-One/open-tool";
+  for (const source of [
     "https://github.com/fuerst-one/open-tool/tree/main/docs",
-  );
-  assert.equal(
-    link("https://www.github.com/Fuerst-One/Open-Tool.git"),
     "https://www.github.com/Fuerst-One/Open-Tool.git",
-  );
+    "https://github.com/fuerst-one/open-tool/..%2F..%2Ffuerst-one/client-app",
+    "https://github.com/fuerst-one/open-tool?next=fuerst-one/client-app#client-app",
+  ])
+    assert.equal(link(source), canonical, source);
 });
 
 test("links to other code hosts are published without a GitHub inventory check", () => {

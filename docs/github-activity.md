@@ -63,7 +63,9 @@ GitHub inventory (`github_worker_snapshots`):
   that repository as public. Private, renamed, deleted and unconnected repositories
   are withheld. The check uses the repository the URL resolves to, so path tricks
   such as `/public/repo/../private` do not pass, and `github.com` subdomains (for
-  example gists) are withheld. Links to other code hosts are published unchanged.
+  example gists) are withheld. The published link is rebuilt as
+  `https://github.com/<inventory name>`, so deeper paths, queries and fragments
+  from Notion are dropped. Links to other code hosts are published unchanged.
 - Each project gets the public boolean `hasConnectedRepo`: true when any repository
   from either property is in the inventory. Without an inventory (no token, first
   run) the flag is omitted and GitHub links are withheld, so "unknown" is never

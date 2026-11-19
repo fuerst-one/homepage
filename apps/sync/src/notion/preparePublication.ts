@@ -39,6 +39,7 @@ const localImage = (value: unknown): string | null =>
   )
     ? value
     : null;
+const REPOSITORY_NAME = /^[a-z\d-]+\/[\w.-]+$/i;
 const isGitHubLink = (link: string) =>
   /(?:^|\.)github\.com$/i.test(new URL(link).hostname);
 /** Inventory key for a GitHub repository URL or `owner/name` shorthand. */
@@ -55,10 +56,9 @@ function githubRepository(reference: string) {
     }
   }
   const [owner, name] = path.split("/").filter(Boolean);
-  const repository = `${owner}/${name?.replace(/\.git$/i, "")}`;
-  return /^[a-z\d-]+\/[\w.-]+$/i.test(repository)
-    ? repository.toLowerCase()
-    : null;
+  if (!owner || !name) return null;
+  const repository = `${owner}/${name.replace(/\.git$/i, "")}`;
+  return REPOSITORY_NAME.test(repository) ? repository.toLowerCase() : null;
 }
 const supported = new Set([
   "paragraph",
@@ -86,25 +86,34 @@ export function preparePublication(value: unknown): PublicPublication {
       (p) => p.hidden === false && !p.archived && !p.in_trash && text(p.id),
     );
   // Null means the worker has no GitHub inventory yet, which is not "no repository".
-  const repositoryPrivacy = Array.isArray(source.repositories)
+  const connectedRepositories = Array.isArray(source.repositories)
     ? new Map(
         source.repositories
           .map(record)
-          .filter((r) => text(r.full_name) && typeof r.private === "boolean")
-          .map((r) => [text(r.full_name).toLowerCase(), r.private === true]),
+          .filter(
+            (r) =>
+              REPOSITORY_NAME.test(text(r.full_name)) &&
+              typeof r.private === "boolean",
+          )
+          .map((r) => [
+            text(r.full_name).toLowerCase(),
+            { fullName: text(r.full_name), isPublic: r.private === false },
+          ]),
       )
     : null;
-  // Notion also holds links to private repositories; only verified public ones leave.
+  // Notion also holds links to private repositories. A verified public one is
+  // rebuilt from its inventory name, so no other part of the source link leaves.
   const publicCodeLink = (value: string) => {
     const link = safeCaseStudyLink(value);
     if (!link || !isGitHubLink(link)) return link;
     const repository = githubRepository(link);
-    return repository && repositoryPrivacy?.get(repository) === false
-      ? link
+    const connected = repository && connectedRepositories?.get(repository);
+    return connected && connected.isPublic
+      ? `https://github.com/${connected.fullName}`
       : null;
   };
   const connectedRepoFlag = (p: Record<string, unknown>) =>
-    repositoryPrivacy && {
+    connectedRepositories && {
       hasConnectedRepo: [
         text(p.githubUrl),
         ...text(p.githubRepos).split(/[\s,]+/),
@@ -112,7 +121,7 @@ export function preparePublication(value: unknown): PublicPublication {
         .map(githubRepository)
         .some(
           (repository) =>
-            repository !== null && repositoryPrivacy.has(repository),
+            repository !== null && connectedRepositories.has(repository),
         ),
     };
   const sourceOwner = record(source.owner);
