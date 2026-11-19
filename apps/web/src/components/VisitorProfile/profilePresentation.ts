@@ -45,6 +45,8 @@ export function subjectName(
     engineering: ["Engineering", "Entwicklung"],
     contribution: ["Contribution model", "Beitragsmodell"],
     scale: ["Scale & delivery", "Größe & Umsetzung"],
+    needs: ["Buyer needs", "Bedarf"],
+    details: ["Project facts", "Projektdaten"],
   };
   if (signal.subject.includes("|"))
     return signal.subject

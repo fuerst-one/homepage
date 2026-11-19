@@ -27,7 +27,51 @@ export const EXTRA_SIGNAL_WEIGHTS = {
   project_unsaved: 0,
   project_more: 0,
   project_neutral: 0,
+  project_card_clicked: 2,
+  // A region of the project page earns what the page itself would.
+  project_region_viewed: 3,
 } as const;
+export const PROFILE_STRENGTHS = [0.5, 0.75, 1] as const;
+export type ProfileStrength = (typeof PROFILE_STRENGTHS)[number];
+/** Signals whose credit depends on how the visitor arrived or how long they looked. */
+export const PROFILE_STRENGTH_KINDS = [
+  "project_card_clicked",
+  "project_opened",
+  "project_details_viewed",
+  "case_study_viewed",
+  "project_region_viewed",
+  "service_viewed",
+  "service_offer_viewed",
+  "service_collaboration_viewed",
+] as const;
+export function validProfileStrength(kind: string, strength: unknown) {
+  return (
+    (PROFILE_STRENGTH_KINDS as readonly string[]).includes(kind) &&
+    (PROFILE_STRENGTHS as readonly unknown[]).includes(strength)
+  );
+}
+/** Owner's marks, not validated on this site: a label needs little more than the way to it. */
+export const PROFILE_CLICK_HALF_MS = 500;
+export const PROFILE_CLICK_FULL_MS = 3000;
+/** From the bounce evidence in the intent model design. */
+export const PROFILE_STAY_MS = 10_000;
+export const PROFILE_REGION_VIEW_SECONDS = 3;
+export type ProfileClickLevel = "none" | "half" | "full";
+/** How considered a click was, from how long its card was in view before it. */
+export function profileClickLevel(
+  msInView: number,
+  exempt: boolean,
+): ProfileClickLevel {
+  if (exempt || msInView >= PROFILE_CLICK_FULL_MS) return "full";
+  return msInView >= PROFILE_CLICK_HALF_MS ? "half" : "none";
+}
+/** A hasty click only half-discounts the page it leads to; an unseen arrival counts as hasty. */
+export function profileArrivalStrength(
+  level: ProfileClickLevel | "link" | null,
+): ProfileStrength {
+  if (level === "full" || level === "link") return 1;
+  return level === "half" ? 0.75 : 0.5;
+}
 /** Cards show this many leading buyer needs, and a card click credits the same ones. */
 export const CARD_BUYER_NEED_COUNT = 2;
 export const PROFILE_SECTIONS = [
@@ -123,6 +167,19 @@ export function extraProfileSubjectTerms(
 ) {
   if (kind === "topic_selected" || kind === "explorer_term_selected")
     return catalog.terms.filter((t) => t.id === subject);
+  if (kind === "project_card_clicked")
+    return profileRegionTerms(`card:${subject}`, catalog) ?? [];
+  if (kind === "project_region_viewed")
+    return profileRegionTerms(`project:${subject}`, catalog) ?? [];
+  // A stayed page or preview credits only what its header shows; its other
+  // parts are credited as regions once they have been in view.
+  if (kind === "project_opened") return [];
+  if (kind === "project_details_viewed") {
+    const project = catalog.projects.find((p) => p.id === subject);
+    return catalog.terms.filter(
+      (t) => t.facet === "industries" && project?.terms.includes(t.id),
+    );
+  }
   if (kind === "project_section_read") {
     const [id, section] = subject.split("|");
     const project = catalog.projects.find((p) => p.id === id);
@@ -192,6 +249,9 @@ export function validExtraProfileSubject(
     return catalog.terms.some((t) => t.id === subject);
   if (kind === "explorer_lens_selected" || kind === "explorer_cluster_selected")
     return (PROFILE_LENSES as readonly string[]).includes(subject);
+  if (kind === "project_card_clicked") return project(subject);
+  if (kind === "project_region_viewed")
+    return profileRegionTerms(`project:${subject}`, catalog) !== null;
   if (kind === "project_section_read" || kind === "proof_opened") {
     const parts = subject.split("|");
     const [id, detail] = parts;

@@ -22,6 +22,16 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
         gehören nicht zum Profil.
       </p>
       <p>
+        Auch Klicks auf Projektkarten zählen. Wie lange eine Karte oder ein Teil
+        einer Projektseite sichtbar war, wird nur im Arbeitsspeicher dieses Tabs
+        gemessen und weder gespeichert noch geteilt. Davon hängt ab, wie stark
+        ein Klick zählt: nicht bei weniger als einer halben Sekunde, halb bis zu
+        drei Sekunden, danach voll. Eine Projekt- oder Leistungsseite zählt
+        erst, wenn Sie etwa zehn Sekunden geblieben sind oder etwas darauf
+        benutzt haben. Eine Projektseite zählt dann nur, was tatsächlich im
+        Blick war, etwa ihren Bedarf oder ihre Projektdaten.
+      </p>
+      <p>
         Mit „Mein Live-Profil starten“ werden Profil, Auswahl und gegebenenfalls
         eine zufällige Kennung zum Löschen geteilter Daten im lokalen
         Browserspeicher gespeichert und bei späteren Besuchen wiederhergestellt.
@@ -35,15 +45,16 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
       </p>
       <p>
         Mit der gesonderten Auswahl „Signale und Korrekturen mit Alexander
-        teilen“ werden neue Interaktionen, öffentliche Kategorien, Ihre
-        Interessenskorrekturen samt vorherigem abgeleitetem Wert, die
-        Regelversion und der Einwilligungszeitpunkt an unseren Server in
-        Deutschland übermittelt. Eine zufällige Browserkennung verbindet diese
-        Ereignisse; gespeichert wird nur deren Hash. Sie wird nicht mit Ihrer
-        Anfrage, E-Mail-Adresse oder einem Benutzerkonto verknüpft. Die
-        Auswertung hilft zu verstehen, welche Inhalte zu Anfragen führen und wo
-        unsere Annahmen über Interessen korrigiert werden. Vorschlagsanzeigen
-        werden als solche erfasst; Zusammenhänge belegen keine Ursache.
+        teilen“ werden neue Interaktionen samt der Stärke, mit der das Profil
+        sie gewertet hat, öffentliche Kategorien, Ihre Interessenskorrekturen
+        samt vorherigem abgeleitetem Wert, die Regelversion und der
+        Einwilligungszeitpunkt an unseren Server in Deutschland übermittelt.
+        Eine zufällige Browserkennung verbindet diese Ereignisse; gespeichert
+        wird nur deren Hash. Sie wird nicht mit Ihrer Anfrage, E-Mail-Adresse
+        oder einem Benutzerkonto verknüpft. Die Auswertung hilft zu verstehen,
+        welche Inhalte zu Anfragen führen und wo unsere Annahmen über Interessen
+        korrigiert werden. Vorschlagsanzeigen werden als solche erfasst;
+        Zusammenhänge belegen keine Ursache.
       </p>
       <p>
         Geteilte Ereignisse werden 30 Tage berücksichtigt und bei der nächsten
@@ -80,6 +91,15 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
         trails and contact details are excluded.
       </p>
       <p>
+        Clicks on project cards count too. How long a card or a part of a
+        project page was on screen is measured in this tab’s memory only and is
+        never stored or shared. It decides how much a click counts: not at all
+        under half a second, half up to three seconds, fully after that. A
+        project or service page counts only once you have stayed about ten
+        seconds or used something on it, and a project page then credits only
+        what you actually had in view, such as its needs or its project facts.
+      </p>
+      <p>
         “Start my live profile” saves the profile, your choices and, if
         applicable, a random key for erasing shared data in local browser
         storage and restores them on later visits. You can switch “Remember
@@ -91,14 +111,14 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
       </p>
       <p>
         With the separate “Share signals and corrections with Alexander” choice,
-        new interactions, public dimensions, your corrections and their
-        preceding inferred score, the rule version and consent time are sent to
-        our server in Germany. A random browser key connects these events; only
-        its hash is stored. It is not joined to your enquiry, email address or
-        an account. Analysis helps us understand which content accompanies
-        enquiries and where visitors correct our interest assumptions.
-        Recommendation impressions are identified separately; associations do
-        not establish causation.
+        new interactions with the strength the profile gave them, public
+        dimensions, your corrections and their preceding inferred score, the
+        rule version and consent time are sent to our server in Germany. A
+        random browser key connects these events; only its hash is stored. It is
+        not joined to your enquiry, email address or an account. Analysis helps
+        us understand which content accompanies enquiries and where visitors
+        correct our interest assumptions. Recommendation impressions are
+        identified separately; associations do not establish causation.
       </p>
       <p>
         Shared events are considered for 30 days and erased by the next daily

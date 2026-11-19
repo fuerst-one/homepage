@@ -1,6 +1,8 @@
 # Cards, view tracker and click credit — plan
 
-Written 19 November 2026. Not implemented. This is step 3 of the
+Written 19 November 2026. Implemented 19 November 2026, not pushed or
+deployed; the confidence gate was re-fitted to Rules v3 (leading need at least
+6, lead over the third at least 1) from a five-seed benchmark sweep. This is step 3 of the
 [visitor intent model design](2026-11-19-visitor-intent-model-design.md). It
 introduces Rules v3.
 

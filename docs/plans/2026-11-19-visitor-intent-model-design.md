@@ -3,7 +3,10 @@
 Discussed with the owner on 19 November 2026. This is a design, not an
 implementation: nothing described under "Model" exists yet unless stated.
 Section 4 (confidence gate and latch) and section 5 (the benchmark, without
-ground truth from real visitors) are implemented; see "Suggested order". It
+ground truth from real visitors) are implemented, and so are from sections 1
+and 2 the needs on cards, visible-at-click attribution, the page-in-view
+credit, considered clicks, the stay rule, signal strength and the view tracker
+(Rules v3); see "Suggested order". It
 extends the live visitor profile ([docs/visitor-profile.md](../visitor-profile.md),
 Rules v2).
 
@@ -232,9 +235,14 @@ Stages, not a number. Each has entry conditions and its own call to action.
 Replaces the provisional body of the readiness function in
 `packages/content/src/forYouReadiness.ts`; the signature stays.
 
-- **Rule:** ready when the leading buyer need scores at least 4 and leads the
+- **Rule:** ready when the leading buyer need scores at least 6 and leads the
   third-ranked need by at least 1. Manual choices count, so one explicit filter
-  or topic choice (+6) passes at once.
+  or topic choice (+6) or a manual "interested" (6) passes at once.
+- **Re-fitted to Rules v3** (owner decision, 19 November) from a five-seed
+  sweep: the Rules v2 thresholds (4, 1) left the six-card focused visitor right
+  73.5% of the time (firing for 94%); (6, 1) is right 82.7% and 92.4% for the
+  six- and twelve-card focused visitors, firing for 81% and 90%. 6 rather than
+  7 keeps one explicit choice sufficient.
 - **Thresholds** are named constants next to the signal weights.
 - **Latch:** once ready, a profile stays ready until reset, stop or expiry.
 
@@ -255,8 +263,9 @@ two when the gate fires:
 Gates on the ratio or share of scores did worse, because they fire on a single
 project that carries one need.
 
-**Known limit:** the gate also fires for about 73% of visitors who browse with
-no real need, because common needs accumulate by chance. Skipped-card
+**Known limit:** the gate also fires for about 39% of visitors who browse with
+no real need (Rules v3, thresholds (6, 1); 73% under Rules v2 with (4, 1)),
+because common needs accumulate by chance. Skipped-card
 evidence would have reduced this but is ruled out as negative evidence. The
 confirmation prompts are the remaining check.
 
@@ -375,5 +384,7 @@ text and inferred dislikes.
 3. Needs and product type on the cards, then visible-at-click attribution
    with source and target credit, considered clicks and signal strength. Plan:
    [2026-11-19-profile-click-credit.md](2026-11-19-profile-click-credit.md).
+   Implemented 19 November 2026 as Rules v3 with the gate re-fitted to (6, 1),
+   not pushed or deployed.
 4. Seriousness stages with the enquiry-form, FAQ and outbound-link signals.
 5. Typed search and the additional catalog dimensions, with the consent texts.

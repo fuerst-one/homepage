@@ -81,31 +81,36 @@ test("a manual interest or priority on a buyer need is enough, an exclusion or a
 test("three projects read in depth whose needs are spread are not enough", () => {
   let p = fresh();
   for (const id of ["ab", "cd", "ef"]) {
-    p = add(p, "project_details_viewed", id);
+    p = add(p, "project_region_viewed", `${id}|needs`);
     p = add(p, "project_read", id);
   }
   assert.equal(ready(p), false);
 });
-test("a leading need below 4 is not enough, however far ahead", () => {
-  assert.equal(ready(add(fresh(), "project_details_viewed", "onlyA")), false);
-});
-test("a leading need of 4 is enough once it leads the third by 1", () => {
+test("a leading need below 6 is not enough, however far ahead", () => {
+  assert.equal(r.FOR_YOU_MIN_LEADING_SCORE, 6);
   let p = add(fresh(), "explorer_term_selected", "buyerNeeds:A");
-  p = add(p, "project_details_viewed", "onlyB");
-  p = add(p, "project_details_viewed", "onlyC");
-  assert.equal(ready(p), true);
+  p = add(p, "project_read", "onlyA");
+  assert.equal(ready(p), false, "5 points on A");
 });
-test("a leading need of 4 or more is not enough while the third is within 1", () => {
+test("a leading need of 6 is enough once it leads the third by 1", () => {
+  let p = add(fresh(), "topic_selected", "buyerNeeds:A");
+  for (const id of ["onlyB", "onlyC"]) {
+    p = add(p, "explorer_term_selected", `buyerNeeds:${id.slice(4)}`);
+    p = add(p, "project_read", id);
+  }
+  assert.equal(ready(p), true, "6 against a third of 5");
+});
+test("a leading need of 6 or more is not enough while the third is within 1", () => {
   let p = fresh();
   for (const value of ["A", "B", "C"])
-    p = add(p, "explorer_term_selected", `buyerNeeds:${value}`);
+    p = add(p, "filter_selected", `buyerNeeds:${value}`);
   assert.equal(ready(p), false);
-  p = add(p, "filter_selected", "buyerNeeds:A");
+  p = add(p, "explorer_term_selected", "buyerNeeds:A");
   assert.equal(ready(p), true);
 });
 test("two needs tied at the top pass when the third is far behind", () => {
-  let p = add(fresh(), "explorer_term_selected", "buyerNeeds:A");
-  p = add(p, "explorer_term_selected", "buyerNeeds:B");
+  let p = add(fresh(), "topic_selected", "buyerNeeds:A");
+  p = add(p, "topic_selected", "buyerNeeds:B");
   assert.equal(ready(p), true);
 });
 test("signals after the evaluated moment do not count yet", () => {
@@ -125,7 +130,8 @@ test("an expired profile is not ready", () => {
   assert.equal(ready(p, now + m.PROFILE_LIFETIME_MS), false);
 });
 test("projects and terms that left the public catalog do not count", () => {
-  let depth = add(fresh(), "project_details_viewed", "onlyA");
+  let depth = add(fresh(), "case_study_viewed", "onlyA");
+  depth = add(depth, "project_region_viewed", "onlyA|needs");
   depth = add(depth, "project_read", "onlyA");
   assert.equal(ready(depth), true);
   assert.equal(

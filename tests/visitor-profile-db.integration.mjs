@@ -33,6 +33,15 @@ test("profile migration is additive and rerunnable", async () => {
   );
   await sql.unsafe(extended);
   await sql.unsafe(extended);
+  const strength = await readFile(
+    new URL(
+      "../packages/database/migrations/014-visitor-profile-strength.sql",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  await sql.unsafe(strength);
+  await sql.unsafe(strength);
 });
 test("duplicate delivery and revocation cannot recreate shared data", async () => {
   const { storeProfileEvents, deleteProfileEvents } =
@@ -130,7 +139,50 @@ test("extended public signals can be shared and reported without publishing brow
     const report = await profileInsights(sql);
     assert.ok(report.events.some((row) => row.kind === "gallery_explored"));
     assert.ok(!JSON.stringify(report).includes(token));
-    assert.equal(report.ruleVersion, 2);
+    assert.equal(report.ruleVersion, 3);
+  } finally {
+    await deleteProfileEvents(token, sql);
+  }
+});
+
+test("Rules v3 events keep their strength, and sharing is offered only once the table accepts them", async () => {
+  const {
+    storeProfileEvents,
+    deleteProfileEvents,
+    profileCollectionAvailable,
+  } = await import("../packages/database/src/visitorProfile.ts");
+  assert.equal(await profileCollectionAvailable(sql), true);
+  const token = randomBytes(32).toString("hex");
+  const events = [
+    {
+      id: randomUUID(),
+      kind: "project_card_clicked",
+      subject: "a",
+      strength: 0.5,
+    },
+    {
+      id: randomUUID(),
+      kind: "project_region_viewed",
+      subject: "a|needs",
+      strength: 0.75,
+    },
+    { id: randomUUID(), kind: "project_details_viewed", subject: "a" },
+  ];
+  try {
+    assert.equal(await storeProfileEvents(token, events, sql), true);
+    const rows =
+      await sql`SELECT kind, strength, rule_version FROM visitor_profile_events WHERE event_id IN ${sql(events.map((e) => e.id))} ORDER BY kind`;
+    assert.deepEqual(
+      rows.map((r) => [r.kind, r.strength, r.rule_version]),
+      [
+        ["project_card_clicked", 0.5, 3],
+        ["project_details_viewed", null, 3],
+        ["project_region_viewed", 0.75, 3],
+      ],
+    );
+    await assert.rejects(
+      sql`INSERT INTO visitor_profile_events(event_id,session_hash,rule_version,consent_at,kind,subject,strength) VALUES (${randomUUID()},${"b".repeat(64)},3,now(),'project_card_clicked','a',0.3)`,
+    );
   } finally {
     await deleteProfileEvents(token, sql);
   }

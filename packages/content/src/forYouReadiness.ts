@@ -5,7 +5,9 @@ import {
   type VisitorProfile,
 } from "./visitorProfile";
 
-export const FOR_YOU_MIN_LEADING_SCORE = 4;
+// Re-fitted to Rules v3 from a five-seed sweep; 6 keeps one explicit
+// buyer-need choice or a manual "interested" enough on its own.
+export const FOR_YOU_MIN_LEADING_SCORE = 6;
 export const FOR_YOU_MIN_LEAD_OVER_THIRD = 1;
 
 /**
