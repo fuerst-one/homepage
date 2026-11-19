@@ -82,3 +82,26 @@ test("facet links preserve punctuation in the recorded category", () => {
     ["one"],
   );
 });
+
+test("buyer-need links open the projects that name that need", () => {
+  const href = subject.projectFacetHref(
+    "buyerNeeds",
+    "Automate repetitive work",
+    "en",
+  );
+  const url = new URL(href, "https://fuerst.one");
+  assert.equal(url.pathname, "/en/projects");
+  const filters = parseProjectSearchParams(
+    Object.fromEntries(url.searchParams),
+  );
+  assert.deepEqual(
+    filterProjects(
+      [
+        { id: "one", matching: { buyerNeeds: ["Automate repetitive work"] } },
+        { id: "two", matching: { buyerNeeds: ["Improve conversion"] } },
+      ],
+      filters,
+    ).map((p) => p.id),
+    ["one"],
+  );
+});

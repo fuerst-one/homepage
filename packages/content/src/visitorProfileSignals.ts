@@ -27,6 +27,8 @@ export const EXTRA_SIGNAL_WEIGHTS = {
   project_more: 0,
   project_neutral: 0,
 } as const;
+/** Cards show this many leading buyer needs, and a card click credits the same ones. */
+export const CARD_BUYER_NEED_COUNT = 2;
 export const PROFILE_SECTIONS = [
   "outcomes",
   "architecture",

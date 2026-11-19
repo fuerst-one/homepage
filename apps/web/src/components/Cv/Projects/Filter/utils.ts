@@ -75,9 +75,9 @@ export const filterProjects = (
   });
 };
 
-/** A landing-page category opens the directory with that category selected. */
+/** A category link opens the directory with that category selected. */
 export function projectFacetHref(
-  key: "capabilities" | "industries" | "methods",
+  key: "buyerNeeds" | "capabilities" | "industries" | "methods",
   value: string,
   locale: Locale,
 ) {

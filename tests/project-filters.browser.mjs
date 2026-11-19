@@ -229,3 +229,89 @@ for (const query of ["?all=1", "?tools=React.js"]) {
     }
   });
 }
+
+for (const locale of ["en", "de"]) {
+  for (const viewport of [
+    { width: 1280, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    test(`${locale} at ${viewport.width}px: need links on cards and in the preview filter the list`, async () => {
+      const browser = await puppeteer.launch({ headless: true });
+      try {
+        const { results } = await fetch(
+          `${base}/api/projects?locale=${locale}`,
+        ).then((response) => response.json());
+        const page = await browser.newPage();
+        await page.setViewport(viewport);
+        await page.goto(`${base}/${locale}/projects`, {
+          waitUntil: "networkidle2",
+          timeout: 90000,
+        });
+        const link = await page.waitForSelector(
+          "article[data-profile-region] a[href*='buyerNeeds=']",
+        );
+        assert.equal(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          ),
+          true,
+          "need links fit the viewport",
+        );
+        const need = await link.evaluate((a) =>
+          new URL(a.href).searchParams.get("buyerNeeds"),
+        );
+        await link.scrollIntoView();
+        await link.click();
+        await page.waitForFunction(
+          (need) =>
+            location.pathname.endsWith("/projects") &&
+            new URLSearchParams(location.search).get("buyerNeeds") === need,
+          {},
+          need,
+        );
+        const matching = results.filter((p) =>
+          p.matching?.buyerNeeds.includes(need),
+        ).length;
+        await page.waitForFunction(
+          (expected) =>
+            document
+              .querySelector(
+                'main [role=status][aria-label="Project results"], main [role=status][aria-label="Projektergebnisse"]',
+              )
+              ?.textContent.trim()
+              .startsWith(`${expected} `),
+          {},
+          matching,
+        );
+
+        const project = results.find((p) => p.name.startsWith("RoadTrippin"));
+        await page.goto(
+          `${base}/${locale}/projects?all=1&focus=${project.id}`,
+          { waitUntil: "domcontentloaded", timeout: 90000 },
+        );
+        const block = await page.waitForSelector(
+          `[role=dialog] [data-profile-region="project:${project.id}|needs"]`,
+        );
+        const needs = project.matching.buyerNeeds;
+        assert.deepEqual(
+          await block.$$eval("a", (links) =>
+            links.map((a) => new URL(a.href).searchParams.get("buyerNeeds")),
+          ),
+          needs,
+          "the preview lists every buyer need",
+        );
+        const links = await block.$$("a");
+        await links[links.length - 1].click();
+        await page.waitForFunction(
+          (need) =>
+            new URLSearchParams(location.search).get("buyerNeeds") === need &&
+            !document.querySelector('[role="dialog"][data-state="open"]'),
+          {},
+          needs[needs.length - 1],
+        );
+      } finally {
+        await browser.close();
+      }
+    });
+  }
+}

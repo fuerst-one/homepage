@@ -23,6 +23,9 @@ import { projectPath } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { projectHeading } from "./projectHeading";
+import { ProjectNeedLinks } from "./ProjectNeedLinks";
+import { atlasTerm } from "../../ExperienceAtlas/atlasCopy";
+import { CARD_BUYER_NEED_COUNT } from "@homepage/content/visitorProfileSignals";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -54,9 +57,15 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
   const path = projectPath(project, locale);
   const hasCaseStudy = !!caseStudyPageId(project, localeFromPath(path));
   const { title, subtitle } = projectHeading(name);
+  const formats = (project.productTypes ?? [])
+    .map((format) => atlasTerm(locale, format))
+    .join(", ");
 
   return (
-    <article className="glass-panel group relative grid grid-cols-1 gap-5 border border-white/30 p-5 transition hover:border-white md:grid-cols-[16rem_minmax(0,1fr)] md:gap-6">
+    <article
+      data-profile-region={`card:${id}`}
+      className="glass-panel group relative grid grid-cols-1 gap-5 border border-white/30 p-5 transition hover:border-white md:grid-cols-[16rem_minmax(0,1fr)] md:gap-6"
+    >
       <Link
         href={path}
         aria-label={
@@ -135,6 +144,7 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
             </p>
           )}
           <p className="text-xs text-neutral-400">
+            {formats && `${formats} · `}
             {projectType} ·{" "}
             <DateRange
               startDate={startDate}
@@ -148,6 +158,14 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
             {description}
           </div>
         )}
+        <ProjectNeedLinks
+          needs={(project.matching?.buyerNeeds ?? []).slice(
+            0,
+            CARD_BUYER_NEED_COUNT,
+          )}
+          locale={locale}
+          className="pointer-events-auto self-start"
+        />
       </div>
     </article>
   );
