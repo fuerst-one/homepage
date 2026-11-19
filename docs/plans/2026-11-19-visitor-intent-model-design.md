@@ -113,10 +113,19 @@ quantifying how much stronger queries and filters are than clicks.
   two lead, and treat that order as meaningful from then on. The taxonomy
   parsing keeps the source order; whether every sync step does is not yet
   verified. A dedicated "leading needs" field is the explicit alternative.
-- **Hidden facets need evidence after the click.** Section reading already
-  credits a section's facets (outcomes → buyer needs, architecture →
-  capabilities and tools, process → methods, delivery → stages). That becomes
-  the main route for those facets.
+- **A page credits what was in view** (owner decision, 19 November). A stayed
+  project page credits only what its header shows, the industry. Everything
+  else is credited when the part of the page that displays it has come into
+  view: the needs block for buyer needs, the details table for industries,
+  product types, capabilities, methods and tools. Section reading keeps
+  crediting a section's facets on top (outcomes → buyer needs, architecture →
+  capabilities and tools, process → methods, delivery → stages). The preview
+  dialog follows the same rules.
+- **Buyer needs on the project page and in the preview dialog** (owner
+  decisions, 19 November). Both show all of a project's buyer needs directly
+  below the screenshots, as the same quiet filter links as on the cards.
+  Before this, buyer needs were displayed nowhere on the project page, the
+  case study or the preview dialog.
 - **Need-level sections (on hold).** Tagging a case-study section with the one
   need it evidences helped in simulation only if visitors read selectively.
   Decide after real data.
@@ -153,8 +162,40 @@ quantifying how much stronger queries and filters are than clicks.
 - **Source and target credit.** Every navigation has two parts. The click
   earns credit at once for what the link showed in its context, and keeps it
   even if the visitor leaves the target immediately. The target earns its own
-  credit (details, case study, service page, reading) only once the visitor has
-  stayed about 10 seconds.
+  credit (details, case study, service page, preview, reading) only once the
+  visitor has stayed about 10 seconds or has interacted with something on it
+  (owner decision, 19 November). Scrolling alone is not an interaction.
+- **Considered clicks** (owner decision, 19 November). Click credit is scaled
+  by how long the clicked element was visible before the click, so scrolling a
+  page and clicking everything earns close to nothing. Visible means at least
+  half inside the viewport with the tab visible. The time is held in memory
+  only and never stored. Three levels: none below half a second, half from
+  half a second to 3 seconds, full from 3 seconds. The marks are the owner's:
+  most click targets have short labels, so a visitor who knows where to go
+  needs little more than the time to reach the target, and a 1-second floor
+  would cut those clicks off. The research pass found nothing on pre-click
+  visibility, so the marks stay open to change. Clicks on search results and
+  on filter links, including the need links on cards, are exempt and always
+  earn full credit: the deliberate act there is the query or the filter.
+- **A hasty click only half-discounts the page it leads to** (owner decision,
+  19 November). A visitor can land somewhere by accident and still find it
+  interesting; the stay rule measures that. The target's credit is reduced by
+  half of the click's discount: full after a fully credited click, three
+  quarters after a half-credited one, half after an uncredited one. A target
+  left before the stay threshold still earns nothing. An arrival without a
+  click the profile saw (a pasted or shared URL, the back button, a link from
+  another site) counts like a hasty click: the page earns half when the visitor
+  stays.
+- **Signal strength.** Signals carry no per-signal strength today. Considered
+  clicks and the target discount need one, which touches the model, the
+  saved-profile format, the sharing API and its table.
+- **One view tracker** (owner's proposal, 19 November). Elements are tagged
+  with data attributes and a single listener records, in memory only, which
+  tagged parts were in view and for how long. It replaces the two separate
+  viewport timers that exist today (section reading and "project read") and
+  serves the considered clicks and the page rule above. A tag names a region;
+  a pure function says which terms that region displays, so shared events stay
+  checkable against the public catalog.
 - **Reading.** Keep the active-time guard (visible, focused, recent input).
   Count seconds per section in view, relative to the section's length, and
   treat a portion as read after about 5 seconds. Do not measure scroll speed.
@@ -305,7 +346,8 @@ limit.
   matched (owner decision, 19 November), which links them to a hashed browser
   key. The sharing consent and the search consent wording both need to say so.
   Free text can contain names or contact details.
-- Source and target credit, FAQ and outbound-link signals, the stage, the confirmation prompts and the
+- Source and target credit, considered clicks, FAQ and outbound-link signals,
+  the stage, the confirmation prompts and the
   additional filter dimensions need a line each in the EN/DE privacy descriptions and on the profile page.
 
 ## Changes to earlier decisions
@@ -331,6 +373,7 @@ text and inferred dislikes.
 2. Confirmation prompts, with their answers reported in the owner insights.
    They reuse the hint and give real ground truth early.
 3. Needs and product type on the cards, then visible-at-click attribution
-   with source and target credit.
+   with source and target credit, considered clicks and signal strength. Plan:
+   [2026-11-19-profile-click-credit.md](2026-11-19-profile-click-credit.md).
 4. Seriousness stages with the enquiry-form, FAQ and outbound-link signals.
 5. Typed search and the additional catalog dimensions, with the consent texts.
