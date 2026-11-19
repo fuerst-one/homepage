@@ -21,6 +21,13 @@
   display: block;
   shape-rendering: crispEdges;
 }
+/* Every change re-encodes the error-corrected shades of many cells at once, so
+   cells fade into their new colour instead of switching in a single frame. */
+@media (prefers-reduced-motion: no-preference) {
+  .profile-pixel-grid rect {
+    transition: fill 0.3s ease-out;
+  }
+}
 .profile-entry-link {
   display: inline-flex;
   min-height: 44px;

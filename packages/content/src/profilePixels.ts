@@ -31,6 +31,13 @@ export const PROFILE_PIXEL_HUES = [18, 81.21, 198, 300] as const;
 export const PROFILE_PIXEL_LEVELS = 128;
 /** Share of the wave reserved for each colour so none disappears with its family. */
 export const PROFILE_PIXEL_MIN_SHARE = 0.05;
+/**
+ * Evidence every family starts with, in quantized levels (127 is a score of
+ * 12). A first topic choice then moves the colour areas about a third of the
+ * way towards its family instead of all the way, and the prior fades as real
+ * evidence accumulates.
+ */
+export const PROFILE_PIXEL_SHARE_PRIOR = 32;
 // Magenta, coral, lime, azure from the trough of the wave to its crest.
 const BAND_ORDER = [3, 0, 1, 2];
 export const PROFILE_PIXEL_MAX_INTERACTIONS = 0xffff;
@@ -182,34 +189,54 @@ export function profilePixelCapacity(termCount: number) {
     extraTerms: maxTerms - termCount,
   };
 }
-/** Each hue first gets its reserved share; family interest divides the rest. */
-function waveHueCounts(
-  waveCells: number,
-  ids: readonly string[],
-  values: readonly number[],
-) {
-  const weights = familyWeights(ids, values),
-    total = weights.reduce((a, b) => a + b, 0);
-  const reserved = Math.round(waveCells * PROFILE_PIXEL_MIN_SHARE),
-    shared = waveCells - weights.length * reserved;
-  const exact = weights.map(
-    (weight) =>
-      reserved + shared * (total ? weight / total : 1 / weights.length),
-  );
+const sum = (values: readonly number[]) => values.reduce((a, b) => a + b, 0);
+/** Whole cell counts with the given total, rounding the largest remainders up. */
+function roundCellCounts(exact: readonly number[], total: number) {
   const counts = exact.map(Math.floor);
-  const unassigned = waveCells - counts.reduce((a, b) => a + b, 0);
+  const unassigned = total - sum(counts);
   const byRemainder = counts
     .map((_, hue) => hue)
     .sort((a, b) => exact[b] - counts[b] - (exact[a] - counts[a]) || a - b);
   for (let i = 0; i < unassigned; i++) counts[byRemainder[i]]++;
   return counts;
 }
+/** Each hue first gets its reserved share; family interest and the prior divide the rest. */
+function waveHueCounts(
+  waveCells: number,
+  ids: readonly string[],
+  values: readonly number[],
+) {
+  const weights = familyWeights(ids, values),
+    total = sum(weights) + weights.length * PROFILE_PIXEL_SHARE_PRIOR;
+  const reserved = Math.round(waveCells * PROFILE_PIXEL_MIN_SHARE),
+    shared = waveCells - weights.length * reserved;
+  return roundCellCounts(
+    weights.map(
+      (weight) =>
+        reserved + (shared * (weight + PROFILE_PIXEL_SHARE_PRIOR)) / total,
+    ),
+    waveCells,
+  );
+}
+/** Colour areas part of the way from one split to another, for frames between two states. */
+export function blendHueCounts(
+  from: readonly number[],
+  to: readonly number[],
+  progress: number,
+) {
+  const total = sum(to);
+  if (from.length !== to.length || sum(from) !== total) return [...to];
+  return roundCellCounts(
+    to.map((count, hue) => from[hue] + (count - from[hue]) * progress),
+    total,
+  );
+}
 function waveHues(
   { size, shades, hueCounts }: ProfilePayload,
-  orientation: ProfileOrientation,
+  angle: number,
   phase: number,
 ) {
-  const radians = (orientation * Math.PI) / 180,
+  const radians = (angle * Math.PI) / 180,
     c = Math.cos(radians),
     s = Math.sin(radians),
     center = (size - 1) / 2;
@@ -234,18 +261,21 @@ function waveHues(
     for (let i = 0; i < hueCounts[hue]; i++) hues[ranked[cursor++].at] = hue;
   return hues;
 }
-/** Colours one frame of the signature; only the hue layout depends on orientation and phase. */
+/**
+ * Colours one frame of the signature; only the hue layout depends on angle and
+ * phase. A resting picture uses a ProfileOrientation; frames of a turn between
+ * two of them use any angle in degrees.
+ */
 export function paintProfilePixels(
   payload: ProfilePayload,
-  orientation: ProfileOrientation = 0,
+  angle = 0,
   phase = 0,
 ): number[] {
-  if (!isProfileOrientation(orientation))
-    throw Error("Invalid profile orientation");
+  if (!Number.isFinite(angle)) throw Error("Invalid profile angle");
   if (!Number.isFinite(phase)) throw Error("Invalid profile flow phase");
   const { size, shades } = payload,
     colors = profilePixelPalette(),
-    hues = waveHues(payload, orientation, phase);
+    hues = waveHues(payload, ((angle % 360) + 360) % 360, phase);
   const pixels = shades.map((shade, at) =>
     shade < 0
       ? (markerColor(at, size) ?? 0)

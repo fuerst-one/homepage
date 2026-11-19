@@ -202,18 +202,31 @@ test("bands rise from magenta through coral and lime to azure", () => {
   );
 });
 
+// Forty more lime terms, so one family can gather far more evidence than a
+// single term carries, in a catalog of the same size.
+const strongLimeTerms = familyTerms.map((term, i) =>
+  i >= 4 && i < 44 ? { id: `capabilities:Frontend Development ${i}` } : term,
+);
+const strongLime = strongLimeTerms
+  .filter((term) => term.id.startsWith("capabilities:Frontend"))
+  .map((term) => ({ id: term.id, score: 12 }));
+const sum = (values) => values.reduce((a, b) => a + b, 0);
+
 test("every colour keeps at least five percent of the free cells", () => {
   const minimum = Math.round(FREE_CELLS * m.PROFILE_PIXEL_MIN_SHARE);
   assert.equal(minimum, 12);
+  const strong = m.encodeProfilePayload(strongLimeTerms, strongLime).hueCounts;
+  assert.equal(sum(strong), FREE_CELLS);
+  for (const hue of [0, 2, 3]) assert.ok(strong[hue] >= minimum);
+  assert.ok(strong[LIME] >= 0.95 * (FREE_CELLS - 3 * minimum), `${strong}`);
   for (const active of BAND_ORDER) {
     const interests = [{ id: familyTerm(active), score: 12 }];
     const { hueCounts } = m.encodeProfilePayload(familyTerms, interests);
-    assert.deepEqual(
-      hueCounts,
-      [0, 1, 2, 3].map((hue) =>
-        hue === active ? FREE_CELLS - 3 * minimum : minimum,
-      ),
-    );
+    assert.equal(sum(hueCounts), FREE_CELLS);
+    for (const [hue, count] of hueCounts.entries()) {
+      assert.ok(count >= minimum);
+      if (hue !== active) assert.ok(count < hueCounts[active]);
+    }
     const image = m.encodeProfilePixels(familyTerms, interests);
     // Two calibration cells per colour sit outside the wave.
     assert.deepEqual(
@@ -232,11 +245,51 @@ test("colour areas beyond the minimum follow family interest and start equal", (
     { id: familyTerm(LIME), score: 3 },
     { id: familyTerm(AZURE), score: 9 },
   ]);
-  assert.deepEqual(hueCounts, [12, 58, 149, 12]);
+  assert.ok(hueCounts[AZURE] > hueCounts[LIME], `${hueCounts}`);
+  assert.ok(hueCounts[LIME] > hueCounts[0], `${hueCounts}`);
+  assert.equal(hueCounts[0], hueCounts[3]);
   assert.deepEqual(
     m.encodeProfilePayload(familyTerms, []).hueCounts,
     [58, 58, 58, 57],
   );
+});
+
+test("a thin profile leans toward its family a little at a time", () => {
+  const even = m.encodeProfilePayload(familyTerms, []).hueCounts[LIME];
+  const undamped = FREE_CELLS - 3 * 12;
+  const lime = (score) =>
+    m.encodeProfilePayload(familyTerms, [{ id: familyTerm(LIME), score }])
+      .hueCounts[LIME];
+  // A first topic choice adds 6 points; it should not claim most of the picture.
+  assert.ok(lime(6) - even < (undamped - even) / 2, `${lime(6)}`);
+  assert.ok(lime(2) < lime(6) && lime(6) < lime(12));
+  assert.ok(lime(2) > even);
+  const strong = m.encodeProfilePayload(strongLimeTerms, strongLime).hueCounts;
+  assert.ok(strong[LIME] > lime(12));
+});
+
+test("blended colour areas move from one split to the next and keep the cell total", () => {
+  const from = [58, 58, 58, 57],
+    to = [12, 103, 74, 42];
+  assert.deepEqual(m.blendHueCounts(from, to, 0), from);
+  assert.deepEqual(m.blendHueCounts(from, to, 1), to);
+  let previous = from;
+  for (let step = 1; step <= 20; step++) {
+    const counts = m.blendHueCounts(from, to, step / 20);
+    assert.equal(sum(counts), sum(to));
+    counts.forEach((count, hue) => {
+      assert.ok(count >= Math.min(from[hue], to[hue]));
+      assert.ok(count <= Math.max(from[hue], to[hue]));
+      const stride = Math.ceil(Math.abs(to[hue] - from[hue]) / 20) + 1;
+      assert.ok(
+        Math.abs(count - previous[hue]) <= stride,
+        `${previous} → ${counts}`,
+      );
+    });
+    previous = counts;
+  }
+  // A grid of another size has nothing to blend from.
+  assert.deepEqual(m.blendHueCounts([10, 10, 10, 10], to, 0.5), to);
 });
 
 test("flow and rotation move colours without changing their counts or the decoded scores", () => {
@@ -277,8 +330,35 @@ test("each interaction moves the resting wave by one fixed step, the same every 
   }
   assert.ok(moved >= 45, `${moved} of 50 steps moved the wave`);
   const payload = m.encodeProfilePayload(terms, interests);
-  assert.throws(() => m.paintProfilePixels(payload, 30, 0), /orientation/i);
+  assert.throws(() => m.paintProfilePixels(payload, NaN, 0), /angle/i);
   assert.throws(() => m.paintProfilePixels(payload, 0, NaN), /phase/i);
+});
+
+test("frames between two orientations turn the wave a few cells at a time", () => {
+  const expected = Object.fromEntries(terms.map((t, i) => [t.id, i % 128]));
+  const payload = m.encodeProfilePayload(terms, interests, 3);
+  const phase = 3 * m.PROFILE_PIXEL_PHASE_PER_INTERACTION;
+  const still = m.paintProfilePixels(payload, 0, phase);
+  let previous = hueAt(still),
+    largest = 0;
+  for (let angle = 1; angle <= 360; angle++) {
+    const pixels = m.paintProfilePixels(payload, angle, phase);
+    assert.deepEqual(hueHistogram(pixels), hueHistogram(still));
+    assert.deepEqual(m.decodeProfilePixels(pixels, terms), expected);
+    const hues = hueAt(pixels);
+    largest = Math.max(
+      largest,
+      hues.filter((hue, at) => hue !== previous[at]).length / hues.length,
+    );
+    previous = hues;
+  }
+  // The worst degree measured moves 22 of 256 cells; snapping a 45-degree
+  // step moves about half of them.
+  assert.ok(largest <= 0.1, `one degree changed ${largest} of the cells`);
+  assert.deepEqual(
+    m.paintProfilePixels(payload, -45, phase),
+    m.paintProfilePixels(payload, 315, phase),
+  );
 });
 
 test("the image carries the exact interaction count next to every score", () => {

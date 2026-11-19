@@ -18,6 +18,113 @@ async function activate(page, text, keyboard = false) {
     }
   throw Error(`Missing button: ${text}`);
 }
+/** Runs `act` and returns every painted frame of the grid's fills for two seconds. */
+async function recordGridFrames(page, act) {
+  const recording = page.evaluate(async () => {
+    const grid = document.querySelector("[data-profile-grid]");
+    const fills = () =>
+      [...grid.querySelectorAll("rect")].map((r) => r.getAttribute("fill"));
+    const frames = [fills()];
+    window.profileFramesRecording = true;
+    const end = performance.now() + 2000;
+    while (performance.now() < end) {
+      await new Promise(requestAnimationFrame);
+      const next = fills();
+      if (next.join() !== frames.at(-1).join()) frames.push(next);
+    }
+    return { frames, angle: grid.dataset.gridOrientation };
+  });
+  await page.waitForFunction(() => window.profileFramesRecording);
+  await act();
+  return recording;
+}
+/** Clicks a new button at the lower left while recording the grid. */
+async function seedAndRecord(page, id) {
+  await page.evaluate((id) => {
+    window.profileFramesRecording = false;
+    const b = document.createElement("button");
+    b.id = id;
+    b.textContent = "Explore";
+    b.style.cssText = "position:fixed;left:40px;bottom:40px;z-index:99999";
+    document.body.append(b);
+  }, id);
+  return recordGridFrames(page, () => page.click(`#${id}`));
+}
+const largestFrameChange = (frames) =>
+  Math.max(
+    ...frames
+      .slice(1)
+      .map(
+        (frame, i) =>
+          frame.filter((fill, at) => fill !== frames[i][at]).length /
+          frame.length,
+      ),
+  );
+test(
+  "the first activation turns the signature to its seeded angle over several frames",
+  { timeout: 120000 },
+  async () => {
+    const browser = await puppeteer.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1360, height: 900 });
+      await page.goto(base + "/en/profile", { waitUntil: "networkidle2" });
+      await page.waitForFunction(
+        () =>
+          document.querySelector(".profile-summary-actions button")
+            ?.disabled === false,
+      );
+      await activate(page, "Start my live profile");
+      await page.waitForSelector("[data-profile-grid]");
+      const turned = await seedAndRecord(page, "turn-action");
+      assert.equal(turned.angle, "135");
+      assert.equal((await state(page)).orientation, 135);
+      assert.ok(turned.frames.length >= 8, `${turned.frames.length} frames`);
+      const largest = largestFrameChange(turned.frames);
+      assert.ok(largest <= 0.25, `one frame changed ${largest} of the cells`);
+
+      await activate(page, "Reset interests");
+      await page.emulateMediaFeatures([
+        { name: "prefers-reduced-motion", value: "reduce" },
+      ]);
+      const jumped = await seedAndRecord(page, "jump-action");
+      assert.equal(jumped.angle, "135");
+      assert.equal(jumped.frames.length, 2);
+      await activate(page, "Stop & clear profile");
+    } finally {
+      await browser.close();
+    }
+  },
+);
+test(
+  "a first topic choice changes the signature over several frames",
+  { timeout: 120000 },
+  async () => {
+    const browser = await puppeteer.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1360, height: 900 });
+      await page.goto(base + "/en/profile", { waitUntil: "networkidle2" });
+      await page.waitForFunction(
+        () =>
+          document.querySelector(".profile-summary-actions button")
+            ?.disabled === false,
+      );
+      await activate(page, "Start my live profile");
+      await page.goto(base + "/en/projects", { waitUntil: "networkidle2" });
+      await page.waitForSelector("[data-profile-grid]");
+      const chosen = await recordGridFrames(page, () =>
+        activate(page, "Automate repetitive work"),
+      );
+      assert.equal((await state(page)).interactions, 1);
+      assert.ok(chosen.frames.length >= 8, `${chosen.frames.length} frames`);
+      const largest = largestFrameChange(chosen.frames);
+      assert.ok(largest <= 0.3, `one frame changed ${largest} of the cells`);
+    } finally {
+      await browser.close();
+    }
+  },
+);
 test(
   "a deliberate activation seeds one remembered angle after opt-in, including keyboard and reset",
   { timeout: 120000 },

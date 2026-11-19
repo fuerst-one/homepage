@@ -121,7 +121,12 @@ from it and from each other. The legacy decoder keeps its own earlier hues.
 Hue areas summarize business/delivery (coral), engineering/hardware (lime),
 AI/data (azure) and UX/research (magenta) interest families. Each hue first
 receives `PROFILE_PIXEL_MIN_SHARE` (5%) of the wave cells, so none disappears;
-family interest divides the remaining cells. Every field, including tools and
+family interest divides the remaining cells. Every family starts with
+`PROFILE_PIXEL_SHARE_PRIOR` (32 quantized levels, about a score of 3) of
+evidence, so an empty profile splits evenly, a first topic choice (+6) moves the
+areas about a third of the way towards its family, and the prior fades as real
+evidence accumulates. Without it a single signal handed its family the whole
+remaining area at once. Every field, including tools and
 sectors, is carried independently by the shade values. Seventeen asymmetric
 black-and-white corner marker cells and eight fixed colour calibration cells
 keep their positions. Only the hue field rotates inside the upright square.
@@ -145,14 +150,30 @@ eases across at most the last two steps and comes to rest on the counted frame,
 so a reload always ends on the same picture. Replaying more of the history in
 that time would change up to half of the cells per frame at some counts. Steps,
 the run-in and rotation only move hues between cells; the
-number of cells per hue stays fixed. `encodeProfilePayload` computes the fixed
+number of cells per hue stays fixed. When the family split changes while a
+signature is on screen, `useProfileHueCounts` grows and shrinks the colour areas
+towards it within the same 0.3-second step, through `blendHueCounts`, so the
+band edges move a few cells per frame. `encodeProfilePayload` computes the fixed
 part once per profile state and `paintProfilePixels` colours a single frame.
+On screen every cell fades into its new colour over 0.3 seconds, unless
+`prefers-reduced-motion` is set. That also softens the error-corrected shades,
+which change in about a tenth of the cells with every new state and cannot move
+gradually. A signature that mounts appears at once, and the resting frame keeps
+its exact colours. Together with the damped split and the turn below, a first
+topic choice that seeds 135° spreads about 190 changed cells over roughly 60
+frames in one second, at most 32 in one frame; before, it switched up to three
+quarters of the cells in one.
 
 After opt-in, the first primary link or button activation outside profile controls
 chooses one of eight clockwise angles in 45-degree steps, based on its direction
 from the viewport centre. Keyboard activation uses the activated control's centre.
 Hover, scrolling, typing and profile controls do not seed it. Before that action,
-the badge uses 0°. The discrete angle is local visual metadata: coordinates are
+the badge uses 0°. When the angle is seeded while a signature is on screen,
+`useProfileTurn` turns the wave there from 0° over one second, the shorter way
+round, so no frame switches the two thirds of the cells a direct jump would.
+Frames of the turn pass any angle to `paintProfilePixels`; the picture rests on
+the discrete angle. A signature that appears with its angle, a reset and
+`prefers-reduced-motion` go straight to it. The discrete angle is local visual metadata: coordinates are
 never retained and it does not create a scoring or shared event. It follows the
 existing Remember setting and cross-tab synchronization; reset, stop and expiry
 clear it. Earlier saved profiles restore without an angle and seed on their next

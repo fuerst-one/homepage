@@ -7,13 +7,18 @@ import {
 } from "@homepage/content/profilePixels";
 import { useLocale } from "../i18n/LocaleProvider";
 import { useVisitorProfileStore } from "./profileStore";
-import { useProfileFlowPhase } from "./useProfileFlowPhase";
+import {
+  useProfileFlowPhase,
+  useProfileHueCounts,
+  useProfileTurn,
+} from "./useProfileFlowPhase";
 import { useProfileSnapshot } from "./useProfileSnapshot";
 
 /** With `runIn`, a profile that appears with interactions eases into its resting frame. */
 export function ProfilePixelGrid({ runIn = false }: { runIn?: boolean }) {
   const de = useLocale() === "de";
-  const orientation = useVisitorProfileStore((s) => s.orientation) ?? 0;
+  const seededOrientation = useVisitorProfileStore((s) => s.orientation);
+  const orientation = seededOrientation ?? 0;
   const interactions = useVisitorProfileStore((s) => s.interactions);
   const { catalog, interests } = useProfileSnapshot();
   const signature = useMemo(
@@ -24,9 +29,16 @@ export function ProfilePixelGrid({ runIn = false }: { runIn?: boolean }) {
     [catalog, interests, interactions],
   );
   const phase = useProfileFlowPhase(interactions, signature !== null, runIn);
+  const angle = useProfileTurn(seededOrientation, signature !== null);
+  const hueCounts = useProfileHueCounts(
+    signature?.hueCounts ?? [],
+    signature !== null,
+  );
   const pixels = useMemo(
-    () => signature && paintProfilePixels(signature, orientation, phase),
-    [signature, orientation, phase],
+    () =>
+      signature &&
+      paintProfilePixels({ ...signature, hueCounts }, angle, phase),
+    [signature, hueCounts, angle, phase],
   );
   if (!signature || !pixels) return null;
   return (
