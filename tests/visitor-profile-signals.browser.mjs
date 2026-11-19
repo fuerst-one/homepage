@@ -195,6 +195,9 @@ test(
       await lenses[1].click();
       await hasSignal(page, "explorer_lens_selected");
       await page.waitForSelector(".vs-cluster-trigger");
+      // The topic chosen above made the profile ready; at this viewport its
+      // hint sits over the first cluster until the visitor dismisses it.
+      await clickText(page, "Dismiss hint");
       await page.click(".vs-cluster-trigger");
       await hasSignal(page, "explorer_cluster_selected");
       await go("/en/projects/konfig-product-design-configurator");
@@ -210,7 +213,7 @@ test(
       ]);
       await hasSignal(page, "related_project_opened");
       await go("/en/profile");
-      assert.ok(await page.$(".profile-choice-list article"));
+      await page.waitForSelector(".profile-choice-list article");
       await page.waitForSelector(".profile-recommendation-card");
       const savedCount = await page.$$(".profile-choice-list article");
       assert.equal(savedCount.length, 1);

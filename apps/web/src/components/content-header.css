@@ -1,4 +1,5 @@
 .content-header {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
@@ -84,6 +85,55 @@
   min-height: 36px;
   min-width: 32px;
   font-size: 0.6875rem;
+}
+
+/* Appears only once a visitor's profile is ready, so it overlays the top-right
+   corner instead of taking a grid cell that would move the rest of the header. */
+.content-header-for-you {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  border: 1px solid hsl(var(--primary) / 55%);
+  padding: 0 8px;
+  background: #090b08;
+  color: hsl(var(--primary));
+  font-size: 0.625rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.content-header-for-you::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+}
+
+/* A larger touch target that grows into the page padding, away from the name. */
+.content-header-for-you::after {
+  content: "";
+  position: absolute;
+  inset: -12px -8px -2px;
+}
+
+@media (max-width: 380px) {
+  /* The name reaches under the link here, so it moves up into the padding. */
+  .content-header-for-you {
+    top: -6px;
+  }
+}
+
+@media (hover: hover) {
+  .content-header-for-you:hover {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
 }
 
 .content-header-navigation {

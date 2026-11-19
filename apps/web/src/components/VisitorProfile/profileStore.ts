@@ -40,6 +40,9 @@ type ProfileState = {
   setOrientation: (orientation: ProfileOrientation) => void;
   /** Accepted signals and manual choices since the profile started. */
   interactions: number;
+  /** The "For you" hint was dismissed or followed, so it stays away. */
+  forYouHintSeen: boolean;
+  markForYouHintSeen: () => void;
   enabled: boolean;
   remember: boolean;
   sharing: boolean;
@@ -68,7 +71,11 @@ type ProfileState = {
   reset: () => Promise<void>;
   stop: () => Promise<void>;
 };
-const UNSEEDED_SIGNATURE = { orientation: null, interactions: 0 } as const;
+const INITIAL_LOCAL_METADATA = {
+  orientation: null,
+  interactions: 0,
+  forYouHintSeen: false,
+} as const;
 const secret = () =>
   Array.from(crypto.getRandomValues(new Uint8Array(32)), (n) =>
     n.toString(16).padStart(2, "0"),
@@ -144,6 +151,7 @@ export function createVisitorProfileStore(
               profile: s.profile,
               orientation: s.orientation,
               interactions: s.interactions,
+              forYouHintSeen: s.forYouHintSeen,
               token: s.token,
               sharing: s.sharing,
               consentAt: s.consentAt,
@@ -222,6 +230,7 @@ export function createVisitorProfileStore(
           ? saved.orientation
           : null,
         interactions: clampProfileInteractions(saved.interactions),
+        forYouHintSeen: saved.forYouHintSeen === true,
         sharing: saved.sharing && !!catalog.sharingAvailable,
         token: validProfileToken(saved.token) ? saved.token : "",
         consentAt: saved.consentAt as number,
@@ -269,7 +278,7 @@ export function createVisitorProfileStore(
     return {
       catalog: null,
       profile: emptyVisitorProfile(0),
-      ...UNSEEDED_SIGNATURE,
+      ...INITIAL_LOCAL_METADATA,
       setOrientation: (orientation) => {
         if (
           !isProfileOrientation(orientation) ||
@@ -278,6 +287,11 @@ export function createVisitorProfileStore(
         )
           return;
         set({ orientation });
+        persist();
+      },
+      markForYouHintSeen: () => {
+        if (!active() || get().forYouHintSeen) return;
+        set({ forYouHintSeen: true });
         persist();
       },
       enabled: false,
@@ -301,7 +315,7 @@ export function createVisitorProfileStore(
           if (receipts.length)
             set({
               enabled: false,
-              ...UNSEEDED_SIGNATURE,
+              ...INITIAL_LOCAL_METADATA,
               remember: false,
               sharing: false,
               pending: [],
@@ -343,7 +357,7 @@ export function createVisitorProfileStore(
             controller?.abort();
             set({
               enabled: false,
-              ...UNSEEDED_SIGNATURE,
+              ...INITIAL_LOCAL_METADATA,
               remember: false,
               sharing: false,
               token: "",
@@ -360,7 +374,7 @@ export function createVisitorProfileStore(
             controller?.abort();
             set({
               enabled: false,
-              ...UNSEEDED_SIGNATURE,
+              ...INITIAL_LOCAL_METADATA,
               remember: false,
               sharing: false,
               token: "",
@@ -383,6 +397,11 @@ export function createVisitorProfileStore(
               saved.profile.startedAt === s.profile.startedAt
                 ? Math.max(s.interactions, saved.interactions)
                 : saved.interactions,
+            // Likewise an out-of-date snapshot must not bring the hint back.
+            forYouHintSeen:
+              saved.profile.startedAt === s.profile.startedAt
+                ? s.forYouHintSeen || saved.forYouHintSeen
+                : saved.forYouHintSeen,
             pending:
               saved.sharing && sameToken
                 ? uniqueEvents([...s.pending, ...saved.pending]).slice(-100)
@@ -449,7 +468,7 @@ export function createVisitorProfileStore(
           enabled: true,
           remember: true,
           profile: emptyVisitorProfile(Date.now()),
-          ...UNSEEDED_SIGNATURE,
+          ...INITIAL_LOCAL_METADATA,
         });
         persist();
       },
@@ -570,7 +589,7 @@ export function createVisitorProfileStore(
       reset: async () => {
         set({
           profile: emptyVisitorProfile(Date.now()),
-          ...UNSEEDED_SIGNATURE,
+          ...INITIAL_LOCAL_METADATA,
         });
         await get().deleteShared();
         persist();
@@ -580,7 +599,7 @@ export function createVisitorProfileStore(
           enabled: false,
           remember: false,
           profile: emptyVisitorProfile(Date.now()),
-          ...UNSEEDED_SIGNATURE,
+          ...INITIAL_LOCAL_METADATA,
         });
         await get().deleteShared();
         persist();
