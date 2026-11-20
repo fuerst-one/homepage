@@ -13,6 +13,7 @@ import {
   projectDeliveryModels,
 } from "@homepage/content/projectTaxonomy";
 import type { Locale } from "@homepage/content/i18n";
+import { atlasTerm } from "../ExperienceAtlas/atlasCopy";
 import type { ProjectListItem } from "../../server/api/projectListItem";
 import { getKeywordIconShape, getProjectIconShape } from "./iconCatalog";
 
@@ -40,6 +41,9 @@ const FILTER_GROUPS = [
 ] as const;
 
 type SearchField = (typeof FILTER_GROUPS)[number]["field"];
+const hasAtlasTerm = (field: SearchField) =>
+  field === "productTypes" || field === "capabilities" || field === "methods";
+/** Fields with an Atlas term already match it; entries there only add synonyms. */
 const GERMAN_FACETS: Partial<Record<SearchField, Record<string, string[]>>> = {
   tools: {
     "Vector Databases": ["Vektordatenbanken"],
@@ -47,51 +51,43 @@ const GERMAN_FACETS: Partial<Record<SearchField, Record<string, string[]>>> = {
   },
   methods: {
     "User Testing": ["Nutzertests", "Benutzertests"],
-    "Expert Research": ["Expertenrecherche"],
     Prototyping: ["Prototypen", "Prototyping"],
     Workshop: ["Workshop", "Workshops"],
     "Site Audit": ["Website-Analyse", "Website-Prüfung", "Website-Pruefung"],
-    "A/B-Testing": ["A/B-Tests"],
-    Personas: ["Personas"],
-    "Jobs To Be Done": ["Jobs To Be Done"],
+    "AI-Assisted Development": ["KI-gestuetzte Entwicklung"],
+    Dogfooding: ["Eigennutzung"],
   },
   capabilities: {
-    Conception: ["Konzeption"],
     Usability: ["Benutzerfreundlichkeit", "Gebrauchstauglichkeit"],
-    Consulting: ["Beratung"],
     "Artificial Intelligence": [
       "Künstliche Intelligenz",
       "Kuenstliche Intelligenz",
       "KI",
     ],
-    "Data Visualization": ["Datenvisualisierung"],
     "Conversion Rate Optimization": [
       "Conversion-Optimierung",
       "Konversionsoptimierung",
     ],
-    "Behaviour Psychology": ["Verhaltenspsychologie"],
     "User Research": ["Nutzerforschung", "Benutzerforschung"],
     "Agent Harnesses": ["Agenten-Harnesses", "Agentensysteme"],
-    "Data Aggregation": ["Datenaggregation"],
-    "Data Analysis": ["Datenanalyse"],
     Leadership: ["Führung", "Fuehrung"],
     "Geospatial Visualization": [
       "Geodatenvisualisierung",
       "Kartenvisualisierung",
     ],
-    Finance: ["Finanzen"],
-    "Business Administration": ["Betriebswirtschaft"],
     Reporting: ["Berichterstattung"],
     "Web-Scraping": ["Web-Scraping", "Datenextraktion"],
-    "Chat Bot Design": ["Chatbot-Design"],
     "Native Development": ["Native Entwicklung", "App-Entwicklung"],
     SEO: ["SEO", "Suchmaschinenoptimierung"],
-    "Fashion Design": ["Modedesign"],
     "Frontend-Development": ["Frontend-Entwicklung", "Frontend Entwicklung"],
     "Backend-Development": ["Backend-Entwicklung", "Backend Entwicklung"],
     "Fullstack-Development": ["Fullstack-Entwicklung", "Fullstack Entwicklung"],
     "UI-Design": ["UI-Design", "Oberflächendesign"],
     "UX-Design": ["UX-Design", "Nutzererfahrung"],
+    "E-Commerce Development": ["Shop-Entwicklung", "Onlineshop-Entwicklung"],
+    "API & Systems Integration": ["Systemintegration", "Schnittstellen"],
+    "Computer Vision": ["Maschinelles Sehen"],
+    "CAD & 3D Printing": ["3D-Druck"],
     "AI Engineering": [
       "KI-Engineering",
       "KI",
@@ -161,6 +157,7 @@ const facetAliases = (field: SearchField, value: string) =>
         value,
         ...(field === "industries" ? [sectorLabel(value, "de")] : []),
         ...(field === "deliveryModel" ? [deliveryLabel(value, "de")] : []),
+        ...(hasAtlasTerm(field) ? [atlasTerm("de", value)] : []),
         ...(GERMAN_FACETS[field]?.[value] ?? []),
       ];
 export type SearchFilter = { field: SearchField; value: string };
@@ -364,7 +361,9 @@ export const buildProjectSearchIndex = (
                 : (GERMAN_FACETS.industries?.[value]?.[0] ?? value)
               : group.field === "deliveryModel"
                 ? deliveryLabel(value, locale)
-                : (GERMAN_FACETS[group.field]?.[value]?.[0] ?? value)
+                : hasAtlasTerm(group.field)
+                  ? atlasTerm(locale, value)
+                  : (GERMAN_FACETS[group.field]?.[value]?.[0] ?? value)
           : value;
       keywords.push({
         id: `${group.field}:${value}`,

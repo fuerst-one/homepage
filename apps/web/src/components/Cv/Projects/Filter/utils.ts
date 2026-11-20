@@ -2,6 +2,7 @@ import { CvProject } from "@homepage/content/models";
 import type { Locale } from "@homepage/content/i18n";
 import countBy from "lodash/countBy";
 import { colors } from "../colors";
+import { atlasTerm } from "../../../ExperienceAtlas/atlasCopy";
 import { CASE_VOCABULARY, caseLabel } from "@homepage/content/projectCase";
 import {
   matchesLegacyTaxonomy,
@@ -42,7 +43,11 @@ export const facetValueLabel = (
   value: string,
   locale: Locale,
 ) =>
-  key === "industries" ? sectorLabel(value, locale) : caseLabel(value, locale);
+  key === "industries"
+    ? sectorLabel(value, locale)
+    : key === "productTypes" || key === "capabilities" || key === "methods"
+      ? atlasTerm(locale, value)
+      : caseLabel(value, locale);
 
 export const getFilterOptionCounts = (projects: CvProject[], key: FacetKey) => {
   const countsByKey = countBy(
