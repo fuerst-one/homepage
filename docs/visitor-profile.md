@@ -437,6 +437,11 @@ the navigation, so the navigation and the page move down by that row when the
 link appears. Visitors without a ready profile or without JavaScript get the
 header unchanged.
 
+The same link hangs under the floating signature as a one-line button in the
+primary colour, as wide as the signature (60px, 36px on phones, where the
+signature has no frame around it). It appears with a ready profile and stays
+away on `/for-you` itself.
+
 The hint and the header link both lead to the localized `/for-you`, which shows
 the local preview built in the browser from the profile
 (`packages/content/src/forYouPreview.ts`, see

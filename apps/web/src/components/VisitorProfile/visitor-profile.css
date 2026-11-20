@@ -1,17 +1,46 @@
-.profile-pixel-launcher,
+.profile-pixel-dock,
 .profile-entry-link {
   position: fixed;
   right: 20px;
   bottom: 18px;
   z-index: 80;
 }
+.profile-pixel-dock {
+  display: grid;
+  width: 60px;
+  box-shadow: 0 4px 20px #0008;
+}
 .profile-pixel-launcher {
   display: block;
-  padding: 3px;
-  width: 66px;
-  height: 66px;
-  background: #090b08;
-  box-shadow: 0 4px 20px #0008;
+  height: 60px;
+}
+/* Hangs under the signature once the profile is ready. */
+.profile-for-you-button {
+  position: relative;
+  display: flex;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* The touch target reaches down into the inset below the dock. */
+.profile-for-you-button::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 -12px;
+}
+@media (hover: hover) {
+  .profile-for-you-button:hover {
+    background: #fff;
+    color: #000;
+  }
 }
 .profile-pixel-launcher .profile-pixel-grid {
   width: 60px;
@@ -40,8 +69,8 @@
   font-size: 12px;
 }
 .profile-for-you-hint {
-  /* The launcher's height plus the gap between it and the hint. */
-  --profile-launcher-clearance: 78px;
+  /* The signature with the link under it, plus the gap between it and the hint. */
+  --profile-launcher-clearance: 92px;
   position: fixed;
   right: 20px;
   bottom: calc(18px + var(--profile-launcher-clearance));
@@ -63,7 +92,7 @@
 .profile-for-you-hint::after {
   content: "";
   position: absolute;
-  right: 28px;
+  right: 25px;
   bottom: -5px;
   width: 8px;
   height: 8px;
@@ -113,6 +142,7 @@
   }
 }
 .profile-pixel-launcher:focus-visible,
+.profile-for-you-button:focus-visible,
 .profile-entry-link:focus-visible,
 .profile-page :focus-visible {
   outline: 2px solid hsl(var(--primary));
@@ -753,31 +783,38 @@
    Like the rest of the page it is inert while a dialog is open: a click on it
    reaches the backdrop and closes the dialog. */
 @media (min-width: 1240px) {
-  .profile-pixel-launcher {
+  .profile-pixel-dock {
     z-index: 101;
   }
 }
 @media (max-width: 600px) {
-  .profile-pixel-launcher,
+  .profile-pixel-dock,
   .profile-entry-link {
     right: 12px;
     bottom: 12px;
   }
+  .profile-pixel-dock {
+    width: 36px;
+  }
   .profile-pixel-launcher {
-    width: 38px;
-    height: 38px;
+    height: 36px;
+  }
+  .profile-for-you-button {
+    height: 16px;
+    font-size: 7px;
+    letter-spacing: 0;
   }
   .profile-pixel-launcher .profile-pixel-grid {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
   .profile-for-you-hint {
-    --profile-launcher-clearance: 50px;
+    --profile-launcher-clearance: 64px;
     right: 12px;
     bottom: calc(12px + var(--profile-launcher-clearance));
   }
   .profile-for-you-hint::after {
-    right: 15px;
+    right: 14px;
   }
   .profile-for-you-hint a {
     min-height: 44px;
@@ -804,7 +841,7 @@
 }
 @media print {
   .profile-for-you-hint,
-  .profile-pixel-launcher,
+  .profile-pixel-dock,
   .profile-entry-link {
     display: none !important;
   }

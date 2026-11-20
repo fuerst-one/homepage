@@ -17,6 +17,7 @@ import {
 } from "./profileStore";
 import { ProfilePixelGrid } from "./ProfilePixelGrid";
 import { ForYouHint, useForYouHintVisible, useOpenDialog } from "./ForYouHint";
+import { useForYouReady } from "./useForYouReady";
 import "./visitor-profile.css";
 import { profileOrientationAt } from "@homepage/content/profilePixels";
 import { useRichProfileSignals } from "./useRichProfileSignals";
@@ -181,34 +182,46 @@ export default function VisitorProfile() {
   const bottom = useFooterClearance(pathname);
   const launcher = useRef<HTMLAnchorElement>(null);
   const hintVisible = useForYouHintVisible();
+  const forYouReady = useForYouReady();
   // Unlike the launcher, the entry link has nothing to show beside a dialog.
   const dialogOpen = useOpenDialog(!enabled);
   if (pathname === "/en/profile" || pathname === "/de/profile") return null;
+  const onForYou = pathname === "/en/for-you" || pathname === "/de/for-you";
+  const markHintSeen = hintVisible
+    ? () => useProfile.getState().markForYouHintSeen()
+    : undefined;
   if (savedOnLoad && !profileSettled) return null;
   if (!enabled && dialogOpen) return null;
   return enabled ? (
     <>
       <ForYouHint visible={hintVisible} bottom={bottom} launcher={launcher} />
-      <Link
-        ref={launcher}
-        href="/profile"
-        prefetch={false}
-        data-profile-ui
-        style={{ bottom }}
-        className="profile-pixel-launcher"
-        aria-label={
-          de
-            ? "Dein aktuelles Interessenprofil öffnen"
-            : "Open your current interest profile"
-        }
-        onClick={
-          hintVisible
-            ? () => useProfile.getState().markForYouHintSeen()
-            : undefined
-        }
-      >
-        <ProfilePixelGrid />
-      </Link>
+      <div className="profile-pixel-dock" data-profile-ui style={{ bottom }}>
+        <Link
+          ref={launcher}
+          href="/profile"
+          prefetch={false}
+          data-profile-ui
+          className="profile-pixel-launcher"
+          aria-label={
+            de
+              ? "Dein aktuelles Interessenprofil öffnen"
+              : "Open your current interest profile"
+          }
+          onClick={markHintSeen}
+        >
+          <ProfilePixelGrid />
+        </Link>
+        {forYouReady && !onForYou && (
+          <Link
+            href="/for-you"
+            prefetch={false}
+            className="profile-for-you-button"
+            onClick={markHintSeen}
+          >
+            {de ? "Für dich" : "For you"}
+          </Link>
+        )}
+      </div>
     </>
   ) : (
     <Link

@@ -451,7 +451,7 @@ test(
 );
 
 test(
-  "actual 192px, 60px and 32px SVG screenshots preserve every profile score",
+  "actual 192px, 60px and 36px SVG screenshots preserve every profile score",
   { timeout: 120000 },
   async () => {
     const { loadTs } = await import("./helpers/load-ts.mjs");
@@ -526,7 +526,7 @@ test(
       await verify("/en/projects?all=1", 60);
       await page.setViewport({ width: 390, height: 844 });
       await verify("/de/profile", 192);
-      await verify("/de/projects?all=1", 32);
+      await verify("/de/projects?all=1", 36);
       assert.equal(
         await page.evaluate(
           () => document.documentElement.scrollWidth > innerWidth,

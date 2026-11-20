@@ -6,6 +6,7 @@ const key = "fuerst-one:visitor-profile:v1";
 const HINT = ".profile-for-you-hint";
 const NAV_LINK = ".content-header-for-you";
 const LAUNCHER = ".profile-pixel-launcher";
+const DOCK_LINK = ".profile-for-you-button";
 const OPEN_DIALOG = '[role="dialog"][data-state="open"]';
 const READY_TOPIC = "buyerNeeds:Automate repetitive work";
 const copy = {
@@ -107,6 +108,7 @@ for (const { locale, width, height, finish } of [
         await page.waitForSelector(LAUNCHER);
         const navigationBefore = await box(page, ".content-header-navigation");
         assert.equal(await exists(page, NAV_LINK), false);
+        assert.equal(await exists(page, DOCK_LINK), false);
         assert.equal(await exists(page, HINT), false);
 
         const closeDialog = async () => {
@@ -198,6 +200,35 @@ for (const { locale, width, height, finish } of [
             href: el.getAttribute("href"),
           })),
           { text: text.nav, href: `/${locale}/for-you` },
+        );
+        // The same link hangs under the signature, as wide as it and on one line.
+        assert.deepEqual(
+          await page.$eval(DOCK_LINK, (el) => {
+            const box = el.getBoundingClientRect();
+            const launcher = document
+              .querySelector(".profile-pixel-launcher")
+              .getBoundingClientRect();
+            return {
+              text: el.textContent,
+              href: el.getAttribute("href"),
+              profileUi: !!el.closest("[data-profile-ui]"),
+              asWideAsLauncher:
+                Math.abs(box.left - launcher.left) < 1 &&
+                Math.abs(box.right - launcher.right) < 1,
+              attachedBelowLauncher: Math.abs(box.top - launcher.bottom) < 1,
+              labelFits: el.scrollWidth <= el.clientWidth,
+              inViewport: box.bottom <= innerHeight,
+            };
+          }),
+          {
+            text: text.nav,
+            href: `/${locale}/for-you`,
+            profileUi: true,
+            asWideAsLauncher: true,
+            attachedBelowLauncher: true,
+            labelFits: true,
+            inViewport: true,
+          },
         );
 
         await go(`${listing}&focus=${encodeURIComponent(project.id)}`);
@@ -297,6 +328,14 @@ for (const { locale, width, height, finish } of [
               ? '[data-for-you-state="ready"]'
               : ".profile-page-signature",
           );
+          if (finish === "follow") {
+            await page.waitForSelector(LAUNCHER);
+            assert.equal(
+              await exists(page, DOCK_LINK),
+              false,
+              "no link to the page it is on",
+            );
+          }
         }
         const after = await saved(page);
         assert.equal(after.forYouHintSeen, true);
