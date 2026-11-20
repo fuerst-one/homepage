@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { loadTs } from "./helpers/load-ts.mjs";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 const get = async (path) => {
   const response = await fetch(`${base}${path}`, { redirect: "manual" });
@@ -99,4 +100,24 @@ test("German API results retain their locale in detail links and do not expose t
   assert.equal(detail.descriptionDe, undefined);
   assert.equal(detail.kpisDe, undefined);
   assert.equal(detail.germanReady, undefined);
+});
+
+test("every public expertise, method and product format has a German term", async () => {
+  const { ATLAS_DE } = loadTs(
+    new URL(
+      "../apps/web/src/components/ExperienceAtlas/atlasCopy.ts",
+      import.meta.url,
+    ),
+  );
+  const { results } = await fetch(`${base}/api/projects?locale=en`).then(
+    (response) => response.json(),
+  );
+  const missing = new Set(
+    results.flatMap((project) =>
+      ["capabilities", "methods", "productTypes"].flatMap((key) =>
+        (project[key] ?? []).filter((value) => !ATLAS_DE[value]),
+      ),
+    ),
+  );
+  assert.deepEqual([...missing], [], "add these values to ATLAS_DE");
 });
