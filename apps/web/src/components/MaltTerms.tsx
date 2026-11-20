@@ -1,13 +1,16 @@
 import type { Locale } from "@homepage/content/i18n";
 import type { MaltMirrorView } from "@homepage/content/maltMirror";
 import Link from "./i18n/LocalizedLink";
+import { MaltRateReveal, type MaltRatePlace } from "./MaltRateReveal";
 
 export function MaltTerms({
   locale,
   mirror,
+  place,
 }: {
   locale: Locale;
   mirror: MaltMirrorView;
+  place: MaltRatePlace;
 }) {
   const de = locale === "de";
   const rate = mirror.rate
@@ -16,7 +19,7 @@ export function MaltTerms({
         currency: mirror.rate.currency,
         minimumFractionDigits: 0,
         maximumFractionDigits: 2,
-      }).format(mirror.rate.amount)
+      }).format(mirror.rate.amount) + (de ? "/Tag" : "/day")
     : null;
   const checked = mirror.observedAt
     ? new Intl.DateTimeFormat(de ? "de-DE" : "en-GB", {
@@ -36,10 +39,7 @@ export function MaltTerms({
         {rate ? (
           <>
             {de ? "Malt-Profilsatz" : "Malt profile rate"}:{" "}
-            <span className="text-white">
-              {rate}
-              {de ? "/Tag" : "/day"}
-            </span>
+            <MaltRateReveal locale={locale} place={place} rate={rate} />
           </>
         ) : de ? (
           "Honorar für dein Vorhaben auf Anfrage."

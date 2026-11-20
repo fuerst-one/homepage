@@ -13,6 +13,7 @@ try {
       "012-visitor-profile.sql",
       "013-visitor-profile-signals.sql",
       "014-visitor-profile-strength.sql",
+      "015-visitor-profile-rate.sql",
     ])
       await sql.unsafe(
         await readFile(

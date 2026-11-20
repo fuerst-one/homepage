@@ -163,6 +163,8 @@ export function subjectName(
     scale: ["Scale & delivery", "Größe & Umsetzung"],
     needs: ["Buyer needs", "Bedarf"],
     details: ["Project facts", "Projektdaten"],
+    home: ["Home page", "Startseite"],
+    hire: ["Work with me", "Zusammenarbeiten"],
   };
   if (signal.subject.includes("|"))
     return signal.subject

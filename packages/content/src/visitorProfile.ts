@@ -202,6 +202,7 @@ export function profileSubjectTerms(
       "explorer_lens_selected",
       "explorer_cluster_selected",
       "service_section_read",
+      "rate_revealed",
     ].includes(kind) ||
     isProjectChoiceKind(kind)
   )

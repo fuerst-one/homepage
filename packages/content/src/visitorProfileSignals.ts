@@ -30,6 +30,7 @@ export const EXTRA_SIGNAL_WEIGHTS = {
   project_card_clicked: 2,
   // A region of the project page earns what the page itself would.
   project_region_viewed: 3,
+  rate_revealed: 0,
 } as const;
 export const PROFILE_STRENGTHS = [0.5, 0.75, 1] as const;
 export type ProfileStrength = (typeof PROFILE_STRENGTHS)[number];
@@ -127,6 +128,8 @@ export const PROFILE_LENSES = [
   "contribution",
   "scale",
 ] as const;
+/** Where the Malt rate can be revealed; the page is the whole subject. */
+export const PROFILE_RATE_PLACES = ["home", "hire"] as const;
 export const PROFILE_SERVICE_SECTIONS = [
   "deliverables",
   "process",
@@ -250,6 +253,8 @@ export function validExtraProfileSubject(
   if (kind === "explorer_lens_selected" || kind === "explorer_cluster_selected")
     return (PROFILE_LENSES as readonly string[]).includes(subject);
   if (kind === "project_card_clicked") return project(subject);
+  if (kind === "rate_revealed")
+    return (PROFILE_RATE_PLACES as readonly string[]).includes(subject);
   if (kind === "project_region_viewed")
     return profileRegionTerms(`project:${subject}`, catalog) !== null;
   if (kind === "project_section_read" || kind === "proof_opened") {

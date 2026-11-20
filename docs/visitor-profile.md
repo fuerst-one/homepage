@@ -172,6 +172,17 @@ in the intent model design. None is validated on this site. Shared events need
 the two kinds, rule version 3); sharing is offered only once the table accepts
 them, and local profiling works without it.
 
+### Malt rate reveal
+
+The Malt day rate on the home and "Work with me" pages is blurred until it is
+clicked. The click records `rate_revealed` with the page (`home` or `hire`) as
+its subject, only for visitors with a live profile. It is zero-weight: it adds
+no topic points and no project affinity, and serves the owner report, where it
+appears per page under reading and in the enquiry journeys. The amount stays in
+the HTML and the public API; the blur is a choice, not concealment. Sharing it
+needs `packages/database/migrations/015-visitor-profile-rate.sql`, and sharing is
+offered only once the table accepts the new kind.
+
 ## Pixel signature
 
 `packages/content/src/profilePixels.ts` encodes every catalog term, sorted by ID,

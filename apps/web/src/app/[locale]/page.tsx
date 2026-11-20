@@ -101,7 +101,7 @@ export default async function Home({ params }: LocaleParams) {
         <div className="home-closing">
           <EnquiryStart locale={locale} />
           <div className="w-full pb-12">
-            <MaltTerms locale={locale} mirror={owner.malt} />
+            <MaltTerms locale={locale} mirror={owner.malt} place="home" />
           </div>
           <div className="home-closing-actions">
             <HomeActions locale={locale} closing />

@@ -8,18 +8,18 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
         „Mein Live-Profil starten“ werden gewählte Projektfilter, Projekt- und
         Leistungsaufrufe einschließlich Angebots- und Zusammenarbeitsseiten,
         gelesene Projekt- und Leistungsabschnitte, bewusst erkundete Bilder,
-        geöffnete GitHub- oder Live-Produktbelege, gewählte
-        Explorer-Perspektiven und Gruppen, feste Suchthemen, Projektverbindungen
-        und Wiederbesuche, gemerkte Projekte und bewusst gewählte ähnliche
-        Projekte, angezeigte oder geöffnete Vorschläge, manuelle
-        Interessensänderungen sowie Beginn und erfolgreicher Abschluss einer
-        Anfrage erfasst. Das Profil zeigt abgeleitete Interessen, deren Gründe
-        und Ihre eigenen Vorgaben. Es dient passenden Projektvorschlägen. Das
-        Profil erklärt auch Muster aus mehreren Aktionen, etwa gemeinsamen
-        Bedarf in gelesenen Projekten oder die Reihenfolge Fallstudie,
-        Zusammenarbeit und Anfrage. Es leitet daraus keine Identität und keinen
-        Beruf ab. Suchtexte, Formularinhalte, Mausbewegungen und Kontaktdaten
-        gehören nicht zum Profil.
+        geöffnete GitHub- oder Live-Produktbelege, das Aufdecken des
+        Malt-Tagessatzes, gewählte Explorer-Perspektiven und Gruppen, feste
+        Suchthemen, Projektverbindungen und Wiederbesuche, gemerkte Projekte und
+        bewusst gewählte ähnliche Projekte, angezeigte oder geöffnete
+        Vorschläge, manuelle Interessensänderungen sowie Beginn und
+        erfolgreicher Abschluss einer Anfrage erfasst. Das Profil zeigt
+        abgeleitete Interessen, deren Gründe und Ihre eigenen Vorgaben. Es dient
+        passenden Projektvorschlägen. Das Profil erklärt auch Muster aus
+        mehreren Aktionen, etwa gemeinsamen Bedarf in gelesenen Projekten oder
+        die Reihenfolge Fallstudie, Zusammenarbeit und Anfrage. Es leitet daraus
+        keine Identität und keinen Beruf ab. Suchtexte, Formularinhalte,
+        Mausbewegungen und Kontaktdaten gehören nicht zum Profil.
       </p>
       <p>
         Auch Klicks auf Projektkarten zählen. Wie lange eine Karte oder ein Teil
@@ -79,16 +79,16 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
         my live profile” do we capture selected project filters, project and
         service views including focused offers and collaboration pages, active
         reading of project and service sections, deliberate image exploration,
-        GitHub or live-product evidence links, selected Explorer perspectives
-        and clusters, fixed search topics, project connections and return
-        visits, saved projects and requests for similar projects, suggestions
-        displayed or opened, manual interest changes, and enquiry starts and
-        successful submissions. The profile displays inferred interests, their
-        evidence and your own preferences to suggest relevant projects. It also
-        explains patterns across actions, such as shared needs across projects
-        you read, or a case-study, collaboration and enquiry sequence. These do
-        not infer an identity or occupation. Search text, form contents, pointer
-        trails and contact details are excluded.
+        GitHub or live-product evidence links, revealing the Malt rate, selected
+        Explorer perspectives and clusters, fixed search topics, project
+        connections and return visits, saved projects and requests for similar
+        projects, suggestions displayed or opened, manual interest changes, and
+        enquiry starts and successful submissions. The profile displays inferred
+        interests, their evidence and your own preferences to suggest relevant
+        projects. It also explains patterns across actions, such as shared needs
+        across projects you read, or a case-study, collaboration and enquiry
+        sequence. These do not infer an identity or occupation. Search text,
+        form contents, pointer trails and contact details are excluded.
       </p>
       <p>
         Clicks on project cards count too. How long a card or a part of a

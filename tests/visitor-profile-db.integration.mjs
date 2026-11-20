@@ -42,6 +42,15 @@ test("profile migration is additive and rerunnable", async () => {
   );
   await sql.unsafe(strength);
   await sql.unsafe(strength);
+  const rate = await readFile(
+    new URL(
+      "../packages/database/migrations/015-visitor-profile-rate.sql",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  await sql.unsafe(rate);
+  await sql.unsafe(rate);
 });
 test("duplicate delivery and revocation cannot recreate shared data", async () => {
   const { storeProfileEvents, deleteProfileEvents } =
@@ -128,6 +137,7 @@ test("extended public signals can be shared and reported without publishing brow
   events.push(
     { id: randomUUID(), kind: "project_section_read", subject: "a|outcomes" },
     { id: randomUUID(), kind: "proof_opened", subject: "a|github" },
+    { id: randomUUID(), kind: "rate_revealed", subject: "hire" },
     {
       id: randomUUID(),
       kind: "explorer_cluster_selected",
@@ -138,6 +148,11 @@ test("extended public signals can be shared and reported without publishing brow
     assert.equal(await storeProfileEvents(token, events, sql), true);
     const report = await profileInsights(sql);
     assert.ok(report.events.some((row) => row.kind === "gallery_explored"));
+    assert.ok(
+      report.reading.some(
+        (row) => row.kind === "rate_revealed" && row.subject === "hire",
+      ),
+    );
     assert.ok(!JSON.stringify(report).includes(token));
     assert.equal(report.ruleVersion, 3);
   } finally {

@@ -10,7 +10,7 @@ const hashToken = (token: string) =>
 export async function profileCollectionAvailable(sql = knowledgeDatabase()) {
   try {
     const [row] =
-      await sql`SELECT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid=to_regclass('visitor_profile_events') AND conname='visitor_profile_events_kind_check' AND pg_get_constraintdef(oid) LIKE '%project_region_viewed%') AS available`;
+      await sql`SELECT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid=to_regclass('visitor_profile_events') AND conname='visitor_profile_events_kind_check' AND pg_get_constraintdef(oid) LIKE '%rate_revealed%') AS available`;
     return row?.available === true;
   } catch {
     return false;
@@ -65,7 +65,7 @@ export async function profileInsights(sql = knowledgeDatabase()) {
   const projectFeedback =
     await sql`SELECT subject,kind,count(*)::int AS actions,count(DISTINCT session_hash)::int AS profiles FROM visitor_profile_events WHERE received_at >= now()-interval '30 days' AND kind IN ('project_saved','project_unsaved','project_more','project_less','project_neutral') GROUP BY subject,kind ORDER BY actions DESC LIMIT 50`;
   const reading =
-    await sql`SELECT kind,subject,count(*)::int AS actions FROM visitor_profile_events WHERE received_at >= now()-interval '30 days' AND kind IN ('project_section_read','proof_opened','service_section_read','explorer_lens_selected','explorer_cluster_selected','related_project_opened') GROUP BY kind,subject ORDER BY actions DESC LIMIT 50`;
+    await sql`SELECT kind,subject,count(*)::int AS actions FROM visitor_profile_events WHERE received_at >= now()-interval '30 days' AND kind IN ('project_section_read','proof_opened','service_section_read','explorer_lens_selected','explorer_cluster_selected','related_project_opened','rate_revealed') GROUP BY kind,subject ORDER BY actions DESC LIMIT 50`;
   const corrections =
     await sql`SELECT subject,preference,previous,count(*)::int AS corrections,round(avg(inferred_score)::numeric,2) AS average_inference FROM visitor_profile_events WHERE received_at >= now()-interval '30 days' AND kind='preference_changed' GROUP BY subject,preference,previous ORDER BY corrections DESC LIMIT 50`;
   const journeys =

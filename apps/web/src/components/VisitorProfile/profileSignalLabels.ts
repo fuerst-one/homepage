@@ -50,4 +50,5 @@ export const richSignalNames: Record<
     "Saw part of a project page",
     "Teil einer Projektseite gesehen",
   ],
+  rate_revealed: ["Revealed the Malt rate", "Malt-Tagessatz aufgedeckt"],
 };

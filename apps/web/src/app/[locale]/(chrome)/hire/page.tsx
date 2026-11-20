@@ -134,7 +134,7 @@ export default async function HirePage({ params }: LocaleParams) {
               ))}
             </section>
           </div>
-          <MaltTerms locale={locale} mirror={mirror} />
+          <MaltTerms locale={locale} mirror={mirror} place="hire" />
         </div>
         <section className="hire-page-direct space-y-5">
           <div className="space-y-2">

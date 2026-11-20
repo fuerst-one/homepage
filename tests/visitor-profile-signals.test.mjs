@@ -702,3 +702,37 @@ test("the two Rules v3 signals name the card and the region they credit", () => 
     "A",
   );
 });
+
+test("revealing the Malt rate is shared per page and earns no topic points", () => {
+  const batch = (subject) => ({
+    version: 1,
+    token: "a".repeat(64),
+    consentAt: now,
+    events: [{ id: crypto.randomUUID(), kind: "rate_revealed", subject }],
+  });
+  for (const subject of ["home", "hire"])
+    assert.ok(m.parseProfileEventBatch(batch(subject), catalog, now));
+  for (const subject of ["a", "malt", "home|hire", "https://secret.example"])
+    assert.equal(m.parseProfileEventBatch(batch(subject), catalog, now), null);
+  const p = add(fresh(), "rate_revealed", "hire");
+  assert.equal(p.signals.length, 1);
+  assert.deepEqual(
+    m.profileInterests(p, catalog, now).filter((t) => t.inferredScore > 0),
+    [],
+  );
+});
+
+test("a revealed rate names the page it was revealed on", () => {
+  const presentation = loadTs(
+    new URL(
+      "../apps/web/src/components/VisitorProfile/profilePresentation.ts",
+      import.meta.url,
+    ),
+  );
+  const signal = { kind: "rate_revealed", subject: "hire" };
+  assert.equal(presentation.subjectName(signal, catalog, "en"), "Work with me");
+  assert.equal(
+    presentation.subjectName({ ...signal, subject: "home" }, catalog, "de"),
+    "Startseite",
+  );
+});
