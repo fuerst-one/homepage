@@ -1,0 +1,196 @@
+/* Sections reuse the service landing page styles; this file adds what a
+   generated, streamed page needs on top of them. */
+.for-you-page .for-you-hero {
+  grid-template-columns: minmax(0, 1fr);
+}
+.for-you-page .for-you-hero h1 {
+  max-width: 20ch;
+}
+.for-you-section {
+  animation: for-you-enter 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes for-you-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.for-you-statement {
+  margin-top: 1.5rem;
+  max-width: 52ch;
+  color: #e8eae3;
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  line-height: 1.7;
+  letter-spacing: -0.02em;
+}
+.for-you-project-links {
+  list-style: none;
+  max-width: 54rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+.for-you-project-links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 44px;
+  padding-block: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.for-you-project-links strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.for-you-project-links small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.6;
+}
+.for-you-project-links a:hover strong,
+.for-you-proof:hover .for-you-card-link {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+.for-you-proof-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.for-you-proof {
+  position: relative;
+  min-width: 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.for-you-proof-frame {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 1.25rem;
+  object-fit: cover;
+  object-position: top;
+  border: 1px solid var(--line);
+  background: #0a0a0a;
+}
+.for-you-proof h3 {
+  font-size: 1.15rem;
+  overflow-wrap: anywhere;
+}
+/* The title link covers the card, so the whole card is one named target. */
+.for-you-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.for-you-fit {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+.for-you-page .for-you-spotlight {
+  margin-top: 1rem;
+}
+.for-you-page .for-you-spotlight h2 {
+  margin-top: 0;
+}
+.for-you-story {
+  display: grid;
+  gap: 1.5rem;
+  margin-block: 2rem 1rem;
+}
+.for-you-story dt {
+  color: #cbe996;
+  font-size: 0.65rem;
+  line-height: 1.7;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.for-you-story dd {
+  margin-top: 0.4rem;
+  color: #dedede;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+.for-you-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.for-you-offer-fit {
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  line-height: 1.6;
+  letter-spacing: -0.02em;
+}
+.for-you-page .for-you-faq {
+  margin-left: 0;
+}
+.for-you-placeholder {
+  display: grid;
+  gap: 0.9rem;
+  padding: 3rem var(--gutter);
+  border-top: 1px solid var(--line);
+}
+.for-you-placeholder > span[aria-hidden] {
+  display: block;
+  height: 0.9rem;
+  width: 55%;
+  background: linear-gradient(90deg, #ffffff0d, #ffffff26, #ffffff0d);
+  background-size: 200% 100%;
+  animation: for-you-shimmer 1.6s linear infinite;
+}
+.for-you-placeholder > span[aria-hidden]:nth-of-type(2) {
+  width: 35%;
+  height: 2rem;
+}
+.for-you-placeholder > span[aria-hidden]:nth-of-type(3) {
+  width: 70%;
+}
+@keyframes for-you-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.for-you-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  padding: 1.5rem var(--gutter);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.8;
+}
+.for-you-footer strong {
+  color: #f5f5f5;
+  font-weight: 500;
+}
+.for-you-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  color: #f5f5f5;
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .for-you-section,
+  .for-you-placeholder > span[aria-hidden] {
+    animation: none;
+  }
+}
