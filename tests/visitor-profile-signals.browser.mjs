@@ -29,6 +29,27 @@ async function clickText(page, text, scope = "body") {
     }
   }
 }
+// Like clickText for links: a click that lands while its section still
+// hydrates can be dropped, so click again until the address changes.
+async function clickLink(page, selector) {
+  const from = page.url();
+  const deadline = Date.now() + 15_000;
+  for (;;) {
+    await page.locator(selector).click();
+    try {
+      await page.waitForFunction(
+        (from) => location.href !== from,
+        {
+          timeout: 3_000,
+        },
+        from,
+      );
+      return;
+    } catch (error) {
+      if (Date.now() > deadline) throw error;
+    }
+  }
+}
 const hasSignal = (page, kind) =>
   page.waitForFunction(
     (key, kind) =>
@@ -165,10 +186,7 @@ test(
       await page.screenshot({
         path: "/tmp/profile-signals-project-desktop.png",
       });
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-        page.locator('a[href$="/case-study"]').click(),
-      ]);
+      await clickLink(page, 'a[href$="/case-study"]');
       await hasSignal(page, "case_study_viewed");
       await go("/en/services/ai-automation/collaboration");
       await hasSignal(page, "service_collaboration_viewed");
@@ -205,10 +223,7 @@ test(
       await hasSignal(page, "explorer_cluster_selected");
       await go("/en/projects/konfig-product-design-configurator");
       // Fails here if a published project has no related-project navigation.
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-        page.locator("a[data-profile-related]").click(),
-      ]);
+      await clickLink(page, "a[data-profile-related]");
       await hasSignal(page, "related_project_opened");
       await go("/en/profile");
       await page.waitForSelector(".profile-choice-list article");
