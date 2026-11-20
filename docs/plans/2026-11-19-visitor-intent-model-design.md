@@ -372,7 +372,8 @@ text and inferred dislikes.
 
 ## Open decisions
 
-- The "For you" page concept.
+None here. The "For you" page concept is designed in
+[2026-11-20-for-you-page-design.md](2026-11-20-for-you-page-design.md).
 
 ## Suggested order
 
