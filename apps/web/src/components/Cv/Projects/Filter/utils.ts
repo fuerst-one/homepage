@@ -45,7 +45,7 @@ export const facetValueLabel = (
 ) =>
   key === "industries"
     ? sectorLabel(value, locale)
-    : key === "productTypes"
+    : key === "productTypes" || key === "capabilities" || key === "methods"
       ? atlasTerm(locale, value)
       : caseLabel(value, locale);
 

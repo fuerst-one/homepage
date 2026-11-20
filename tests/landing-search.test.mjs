@@ -616,3 +616,42 @@ test("client matches include every matching project suggestion and retain other 
     );
   }
 });
+
+test("German chips for expertise, methods and product formats use the Atlas terms", () => {
+  const german = buildProjectSearchIndex(
+    [
+      {
+        ...projects[0],
+        capabilities: ["E-Commerce Development"],
+        methods: ["AI-Assisted Development"],
+        productTypes: ["MCP Server"],
+      },
+    ],
+    "de",
+  );
+  for (const [query, label, field, value] of [
+    [
+      "E-Commerce-Entwicklung",
+      "E-Commerce-Entwicklung",
+      "capabilities",
+      "E-Commerce Development",
+    ],
+    [
+      "KI-gestützte Entwicklung",
+      "KI-gestützte Entwicklung",
+      "methods",
+      "AI-Assisted Development",
+    ],
+    ["MCP-Server", "MCP-Server", "productTypes", "MCP Server"],
+  ]) {
+    const result = searchProjectIndex(german, query);
+    assert.deepEqual(
+      result.projects.map((project) => project.id),
+      ["atlas"],
+      query,
+    );
+    const chip = result.suggestions.find((item) => item.label === label);
+    assert.ok(chip, `Missing German chip for ${query}`);
+    assert.deepEqual(chip.filter, { field, value });
+  }
+});

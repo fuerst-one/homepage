@@ -105,3 +105,15 @@ test("buyer-need links open the projects that name that need", () => {
     ["one"],
   );
 });
+
+test("German project views label expertise, methods and product formats with the Atlas terms", () => {
+  for (const [key, value, label] of [
+    ["capabilities", "Conception", "Konzeption"],
+    ["capabilities", "E-Commerce Development", "E-Commerce-Entwicklung"],
+    ["methods", "AI-Assisted Development", "KI-gestützte Entwicklung"],
+    ["productTypes", "MCP Server", "MCP-Server"],
+  ]) {
+    assert.equal(subject.facetValueLabel(key, value, "de"), label);
+    assert.equal(subject.facetValueLabel(key, value, "en"), value);
+  }
+});
