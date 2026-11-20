@@ -198,8 +198,9 @@ for (const { locale, width, height, finish } of [
           await page.$eval(NAV_LINK, (el) => ({
             text: el.textContent,
             href: el.getAttribute("href"),
+            current: el.getAttribute("aria-current"),
           })),
-          { text: text.nav, href: `/${locale}/for-you` },
+          { text: text.nav, href: `/${locale}/for-you`, current: null },
         );
         // The same link hangs under the signature, as wide as it and on one line.
         assert.deepEqual(
@@ -329,6 +330,13 @@ for (const { locale, width, height, finish } of [
               : ".profile-page-signature",
           );
           if (finish === "follow") {
+            assert.equal(
+              await page.$eval(NAV_LINK, (el) =>
+                el.getAttribute("aria-current"),
+              ),
+              "page",
+              "the header link marks the page it leads to",
+            );
             await page.waitForSelector(LAUNCHER);
             assert.equal(
               await exists(page, DOCK_LINK),

@@ -133,6 +133,12 @@
   }
 }
 
+.content-header-for-you[aria-current] {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
 @media (hover: hover) {
   .content-header-for-you:hover {
     border-color: hsl(var(--primary));
