@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, ImageUp, LucideIcon, Shapes, Waves } from "lucide-react";
+import { Camera, LucideIcon, Shapes, Waves } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Source } from "./types";
 
@@ -31,14 +31,6 @@ export const PlaygroundSplash = ({ de, onChoose }: PlaygroundSplashProps) => {
       description: de
         ? "Du, live in ASCII. Das Bild bleibt auf deinem Gerät."
         : "You, live in ASCII. The video never leaves your device.",
-    },
-    {
-      source: "upload",
-      icon: ImageUp,
-      title: de ? "Datei" : "Upload",
-      description: de
-        ? "Ein Bild oder Video von deinem Gerät."
-        : "An image or video from your device.",
     },
     {
       source: "shapes",

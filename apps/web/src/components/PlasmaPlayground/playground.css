@@ -111,8 +111,7 @@
 }
 
 .playground-chip,
-.playground-action,
-.playground-button {
+.playground-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -132,8 +131,7 @@
     border-color 180ms;
 }
 .playground-chip:hover,
-.playground-action:hover,
-.playground-button:hover {
+.playground-action:hover {
   color: #fff;
   border-color: #ffffff70;
   background: #1a1a18f0;
@@ -298,18 +296,6 @@
   font-size: 11px;
   line-height: 1.45;
 }
-.playground-dropzone {
-  width: min(420px, 100%);
-  border-style: dashed;
-  pointer-events: auto;
-}
-.playground-dropzone-icon {
-  color: #aaa7a1;
-}
-.playground-button {
-  margin-top: 6px;
-}
-
 .playground :focus-visible {
   outline: 2px solid #eeece8;
   outline-offset: 2px;

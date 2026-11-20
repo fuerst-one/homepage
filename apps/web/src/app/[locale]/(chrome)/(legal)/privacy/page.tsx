@@ -120,17 +120,17 @@ export default function PrivacyPage() {
         the saved settings; the playground continues to work.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Camera, selected files and recordings
+        Camera and recordings
       </h2>
       <p>
         If you choose the camera feature in the Plasma playground, access
         requires your browser’s camera permission. No microphone access is
-        requested. Camera images and image or video files you select are
-        processed locally in your browser to generate the visual effect. They
-        are not uploaded to our servers. Recordings are also created locally and
-        can be downloaded to your device. You can stop the camera by switching
-        to another source or leaving the playground, and revoke camera
-        permission in your browser settings.
+        requested. Camera images are processed locally in your browser to
+        generate the visual effect and are not uploaded to our servers.
+        Recordings are also created locally and can be downloaded to your
+        device. You can stop the camera by switching to another source or
+        leaving the playground, and revoke camera permission in your browser
+        settings.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Website content, fonts and external links

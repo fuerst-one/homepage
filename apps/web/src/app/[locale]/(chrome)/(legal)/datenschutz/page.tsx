@@ -125,17 +125,16 @@ export default function DatenschutzPage() {
         bleibt ohne Speicherung nutzbar.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Kamera, ausgewählte Dateien und Aufnahmen
+        Kamera und Aufnahmen
       </h2>
       <p>
         Wenn Sie im Plasma-Spielplatz die Kamerafunktion wählen, ist dafür die
         Kamerafreigabe Ihres Browsers erforderlich. Ein Mikrofonzugriff wird
-        nicht angefordert. Kamerabilder sowie von Ihnen ausgewählte Bild- oder
-        Videodateien werden lokal in Ihrem Browser verarbeitet, um den
-        Bildeffekt zu erzeugen. Sie werden nicht auf unsere Server hochgeladen.
-        Auch Aufnahmen werden lokal erstellt und können auf Ihr Gerät
-        heruntergeladen werden. Sie können die Kamera durch den Wechsel zu einer
-        anderen Quelle oder das Verlassen des Spielplatzes stoppen und die
+        nicht angefordert. Kamerabilder werden lokal in Ihrem Browser
+        verarbeitet, um den Bildeffekt zu erzeugen, und nicht auf unsere Server
+        hochgeladen. Auch Aufnahmen werden lokal erstellt und können auf Ihr
+        Gerät heruntergeladen werden. Sie können die Kamera durch den Wechsel zu
+        einer anderen Quelle oder das Verlassen des Spielplatzes stoppen und die
         Kamerafreigabe in Ihren Browsereinstellungen widerrufen.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">

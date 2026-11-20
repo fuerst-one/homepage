@@ -7,7 +7,6 @@ import {
   Check,
   Circle,
   Copy,
-  ImageUp,
   Pause,
   Play,
   Save,
@@ -34,7 +33,6 @@ type PlaygroundToolbarProps = {
   recorderStatus: RecorderStatus;
   recorderElapsedSeconds: number;
   remember: boolean;
-  hasUploadedFile: boolean;
   onKnobChange: <K extends keyof KnobState>(
     key: K,
     value: KnobState[K],
@@ -43,7 +41,6 @@ type PlaygroundToolbarProps = {
   onCopy: () => void;
   onSnap: () => void;
   onToggleRec: () => void;
-  onUpload: () => void;
   onRememberChange: (remember: boolean) => void;
   onEngagedChange: (engaged: boolean) => void;
 };
@@ -76,13 +73,11 @@ export const PlaygroundToolbar = ({
   recorderStatus,
   recorderElapsedSeconds,
   remember,
-  hasUploadedFile,
   onKnobChange,
   onTogglePause,
   onCopy,
   onSnap,
   onToggleRec,
-  onUpload,
   onRememberChange,
   onEngagedChange,
 }: PlaygroundToolbarProps) => {
@@ -97,11 +92,6 @@ export const PlaygroundToolbar = ({
       label: de ? "Kamera" : "Camera",
       icon: <Camera size={ICON_SIZE} aria-hidden />,
       isBusy: pendingSource === "camera",
-    },
-    {
-      value: "upload",
-      label: de ? "Datei" : "Upload",
-      icon: <ImageUp size={ICON_SIZE} aria-hidden />,
     },
     {
       value: "shapes",
@@ -299,16 +289,6 @@ export const PlaygroundToolbar = ({
             options={sources}
             onChange={(value) => onKnobChange("source", value)}
           />
-          {knobs.source === "upload" && hasUploadedFile && (
-            <button
-              type="button"
-              className="playground-action"
-              onClick={onUpload}
-            >
-              <ImageUp size={ICON_SIZE} aria-hidden />
-              <span>{de ? "Andere Datei" : "Replace file"}</span>
-            </button>
-          )}
         </div>
       </div>
     </div>

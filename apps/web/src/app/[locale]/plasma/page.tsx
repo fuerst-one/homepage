@@ -11,8 +11,8 @@ export async function generateMetadata({ params }: LocaleParams) {
       ? "Interaktiver Plasma-Spielplatz — Alexander Fürst | FUERST.ONE"
       : "Interactive Plasma Playground — Alexander Fuerst | FUERST.ONE",
     locale === "de"
-      ? "Experimentiere mit ASCII-Animationen in Echtzeit, Formen, Bild-Uploads und Webcam-Modi auf Alexander Fürsts interaktivem Plasma-Spielplatz."
-      : "Explore Alexander Fuerst's interactive plasma playground. Experiment with real-time ASCII animation, shapes, image uploads, and webcam modes.",
+      ? "Experimentiere mit ASCII-Animationen in Echtzeit, 3D-Formen und Webcam-Modus auf Alexander Fürsts interaktivem Plasma-Spielplatz."
+      : "Explore Alexander Fuerst's interactive plasma playground. Experiment with real-time ASCII animation, 3D shapes and webcam mode.",
     { locale },
   );
 }
