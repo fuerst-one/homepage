@@ -8,7 +8,7 @@ import {
   useProjectListStore,
 } from "./projectListStore";
 import { getFilterOptionCounts, type FacetKey } from "./Filter/utils";
-import { filterConfigs } from "./filterConfigs";
+import { chartTypeFor, filterConfigs } from "./filterConfigs";
 import { FilterConfig } from "./Filter/types";
 import { BarChartFilter } from "./Filter/BarChartFilter";
 import { PieChartFilter } from "./Filter/PieChartFilter";
@@ -118,7 +118,10 @@ const ChartTabContent = ({
     );
   }
 
-  const { displayType } = filterConfig;
+  const displayType = chartTypeFor(
+    filterConfig.displayType,
+    palette.values.size,
+  );
   return (
     <div className="h-full min-h-0 w-full p-2">
       {displayType === "bar" && (

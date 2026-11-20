@@ -1,4 +1,16 @@
-import { FilterConfig } from "./Filter/types";
+import { DisplayType, FilterConfig } from "./Filter/types";
+
+/** Beyond these counts, slices and tiles get too small to label, so a list reads better. */
+const CHART_VALUES_MAX: Partial<Record<DisplayType, number>> = {
+  pie: 6,
+  treemap: 10,
+};
+
+export const chartTypeFor = (
+  preferred: DisplayType,
+  valueCount: number,
+): DisplayType =>
+  valueCount > (CHART_VALUES_MAX[preferred] ?? Infinity) ? "bar" : preferred;
 
 export const filterConfigs: FilterConfig[] = [
   {

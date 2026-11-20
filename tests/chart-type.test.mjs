@@ -1,0 +1,18 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { loadTs } from "./helpers/load-ts.mjs";
+
+const { chartTypeFor } = loadTs(
+  new URL(
+    "../apps/web/src/components/Cv/Projects/filterConfigs.ts",
+    import.meta.url,
+  ),
+);
+
+test("pies keep up to six values and treemaps up to ten, beyond that a list reads better", () => {
+  assert.equal(chartTypeFor("pie", 6), "pie");
+  assert.equal(chartTypeFor("pie", 7), "bar");
+  assert.equal(chartTypeFor("treemap", 10), "treemap");
+  assert.equal(chartTypeFor("treemap", 11), "bar");
+  assert.equal(chartTypeFor("bar", 2), "bar");
+});

@@ -220,6 +220,37 @@
 .home-facet-chart {
   height: 240px;
 }
+/* Matches the treemap, its caption and the category drawer, so the cards line up. */
+.home-facet-list {
+  max-height: 331px;
+  overflow-y: auto;
+}
+.home-facet-list a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  padding: 8px 4px;
+  border-top: 1px solid #ffffff14;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.home-facet-list a::after {
+  content: "";
+  grid-column: 1 / -1;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--facet-color) var(--facet-share),
+    #ffffff14 var(--facet-share)
+  );
+}
+.home-facet-list a:hover {
+  color: #d4dfad;
+}
+.home-facet-list a > span:nth-child(2) {
+  color: #aaa79f;
+  font-variant-numeric: tabular-nums;
+}
 .home-facet-categories {
   margin-top: 16px;
   border-top: 1px solid #ffffff26;

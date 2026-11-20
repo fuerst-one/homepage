@@ -412,3 +412,58 @@ test("German cards and charts show buyer needs in German", async () => {
     await browser.close();
   }
 });
+
+test("views with many values show a list, small ones keep their chart", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    const analysis = "aside [role=region][aria-label]";
+    for (const view of ["industries", "methods", "productTypes"]) {
+      await page.select("aside select", view);
+      await page.waitForSelector(`${analysis} [role=progressbar]`);
+      assert.equal(await page.$(`${analysis} canvas`), null, view);
+    }
+    await page.select("aside select", "projectType");
+    await page.waitForSelector(`${analysis} canvas`);
+    assert.equal(await page.$(`${analysis} [role=progressbar]`), null);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("home lists every expertise and method, while industries stay a treemap", async () => {
+  const data = await fetch(`${base}/api/projects?locale=en`).then((r) =>
+    r.json(),
+  );
+  const distinct = (key) =>
+    new Set(data.results.flatMap((project) => project[key] ?? [])).size;
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    for (const key of ["capabilities", "methods"]) {
+      const rows = await page.$$eval(
+        `[data-home-facet="${key}"] [data-home-facet-list] a`,
+        (links) => links.map((link) => link.getAttribute("href")),
+      );
+      assert.equal(rows.length, distinct(key), key);
+      assert.ok(rows.every((href) => href.includes(`/en/projects?${key}=`)));
+      assert.equal(
+        await page.$(`[data-home-facet="${key}"] .home-facet-chart`),
+        null,
+      );
+    }
+    assert.ok(await page.$('[data-home-facet="industries"] .home-facet-chart'));
+  } finally {
+    await browser.close();
+  }
+});
