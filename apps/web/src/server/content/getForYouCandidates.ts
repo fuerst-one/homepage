@@ -75,9 +75,12 @@ async function forYouProjects(
         src ? [{ src, number: index + 1 }] : [],
       );
       const kept = screenshots === "first" ? published.slice(0, 1) : published;
-      const descriptions = kept.length
-        ? await getPublicImageDescriptions(project.id, locale)
-        : [];
+      // Preview cards show their screenshot decoratively, so the page avoids
+      // one description query per published project on every request.
+      const descriptions =
+        screenshots === "all" && kept.length
+          ? await getPublicImageDescriptions(project.id, locale)
+          : [];
       const { title, subtitle } = projectHeading(project.name);
       const images = Object.fromEntries(
         kept.map(({ src, number }) => {
