@@ -22,7 +22,7 @@
   align-items: center;
   justify-content: center;
   /* A dark line sets the link apart from the signature's own pixels. */
-  border-top: 1px solid #090b08;
+  border-top: 2px solid #090b08;
   background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
   font-size: 9px;
@@ -803,7 +803,7 @@
   }
   .profile-for-you-button {
     height: 16px;
-    font-size: 7px;
+    font-size: 6px;
     letter-spacing: 0;
   }
   .profile-pixel-launcher .profile-pixel-grid {
