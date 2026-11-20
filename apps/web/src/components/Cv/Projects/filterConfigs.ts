@@ -7,16 +7,16 @@ export const filterConfigs: FilterConfig[] = [
     displayType: "treemap",
   },
   {
+    label: "Project setting",
+    projectKey: "projectType",
+    displayType: "pie",
+  },
+  {
     label: "Capabilities",
     projectKey: "capabilities",
     displayType: "treemap",
   },
   { label: "Methods", projectKey: "methods", displayType: "treemap" },
-  {
-    label: "Types",
-    projectKey: "projectType",
-    displayType: "pie",
-  },
   {
     label: "Tools",
     projectKey: "tools",

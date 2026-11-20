@@ -44,7 +44,7 @@ export const ProjectAnalysisTabs = ({
               methods: "Methoden",
               tools: "Tools",
               languages: "Sprachen",
-              projectType: "Projekttyp",
+              projectType: "Projektrahmen",
               workplace: "Arbeitsort",
             } as Record<string, string>
           )[c.projectKey] ?? c.label)

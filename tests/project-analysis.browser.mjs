@@ -173,8 +173,14 @@ for (const locale of ["en", "de"]) {
           options.map((option) => option.textContent),
         ),
         locale === "de"
-          ? ["Branchen", "Kompetenzen", "Methoden", "Projekttyp", "Tools"]
-          : ["Industries", "Capabilities", "Methods", "Types", "Tools"],
+          ? ["Branchen", "Projektrahmen", "Kompetenzen", "Methoden", "Tools"]
+          : [
+              "Industries",
+              "Project setting",
+              "Capabilities",
+              "Methods",
+              "Tools",
+            ],
       );
       assert.equal(
         await views.evaluate((select) => select.value),
