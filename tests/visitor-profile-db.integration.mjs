@@ -202,3 +202,32 @@ test("Rules v3 events keep their strength, and sharing is offered only once the 
     await deleteProfileEvents(token, sql);
   }
 });
+
+test("the migrate command reruns on a table that already holds the newest kinds and rule version", async () => {
+  const { execFile } = await import("node:child_process");
+  const { promisify } = await import("node:util");
+  const { storeProfileEvents, deleteProfileEvents } =
+    await import("../packages/database/src/visitorProfile.ts");
+  const token = randomBytes(32).toString("hex");
+  const events = [
+    { id: randomUUID(), kind: "project_card_clicked", subject: "a" },
+    { id: randomUUID(), kind: "rate_revealed", subject: "home" },
+  ];
+  try {
+    assert.equal(await storeProfileEvents(token, events, sql), true);
+    await promisify(execFile)(
+      process.execPath,
+      ["--import", "tsx", "scripts/profile-insights.mjs", "migrate"],
+      { cwd: new URL("..", import.meta.url), env: process.env },
+    );
+    const constraints =
+      await sql`SELECT conname,convalidated FROM pg_constraint WHERE conrelid='visitor_profile_events'::regclass AND contype='c' AND conname IN ('visitor_profile_events_kind_check','visitor_profile_events_rule_version_check')`;
+    assert.deepEqual(
+      constraints.map((c) => c.convalidated),
+      [true, true],
+      "replayed constraints are validated again",
+    );
+  } finally {
+    await deleteProfileEvents(token, sql);
+  }
+});

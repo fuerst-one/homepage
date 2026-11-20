@@ -327,6 +327,13 @@ Apply the additive migration as database owner before deploying collection:
 node --env-file=.env.local --import tsx scripts/profile-insights.mjs migrate
 ```
 
+The command replays every profile migration in one transaction, so each file must
+be safe to replay on a table that already holds newer data. A migration that
+redefines the kind or rule-version check adds it `NOT VALID`; the command
+validates the final constraints at the end. A single file applied on its own (as
+on production) leaves its check unvalidated, which is harmless because earlier
+rows only use older, narrower values.
+
 The catalog exposes whether collection is available. Local personalisation works
 when collection is unavailable, and its sharing checkbox is disabled. After
 migration, visitors may separately opt into sharing _subsequent_ actions; earlier
