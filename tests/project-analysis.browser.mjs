@@ -272,3 +272,65 @@ test("switching the sidebar Explorer's lens changes the question it answers", as
     await browser.close();
   }
 });
+
+test("the analysis view decides what the project cards lead with", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    const cardFacets = () =>
+      page.$$eval("article [data-project-facet-values]", (lines) =>
+        lines.map((line) => ({
+          view: line.getAttribute("data-project-facet-values"),
+          labels: [...line.querySelectorAll("[data-facet-value]")].map(
+            (label) => label.textContent,
+          ),
+          more: line.querySelector("[data-facet-more]")?.textContent ?? null,
+        })),
+      );
+
+    const industries = await cardFacets();
+    assert.ok(industries.length > 0);
+    assert.ok(industries.every(({ view }) => view === "industries"));
+
+    await page.select("aside select", "projectType");
+    await page.waitForFunction(() =>
+      [
+        ...document.querySelectorAll("article [data-project-facet-values]"),
+      ].every(
+        (line) =>
+          line.getAttribute("data-project-facet-values") === "projectType",
+      ),
+    );
+    const settings = await page.$$eval("article", (cards) =>
+      cards.map((card) => ({
+        header: card.querySelector("[data-project-facet-values]")?.textContent,
+        meta: card
+          .querySelector("header p.text-xs")
+          ?.textContent.split(" · ")[0],
+      })),
+    );
+    assert.ok(settings.every(({ header, meta }) => header === meta));
+
+    await page.select("aside select", "tools");
+    await page.waitForFunction(() =>
+      [
+        ...document.querySelectorAll("article [data-project-facet-values]"),
+      ].every(
+        (line) => line.getAttribute("data-project-facet-values") === "tools",
+      ),
+    );
+    const tools = await cardFacets();
+    assert.ok(tools.every(({ labels }) => labels.length <= 3));
+    assert.ok(tools.some(({ more }) => more?.startsWith("+")));
+    assert.deepEqual(errors, []);
+  } finally {
+    await browser.close();
+  }
+});

@@ -20,6 +20,7 @@ import { useProjectFocusStore } from "./projectFocusStore";
 import { useProjectListSearch } from "./useProjectListSearch";
 import { ProjectListSearch } from "./ProjectListSearch";
 import { useProjectsInView } from "./useProjectsInView";
+import { facetPalette, type ProjectFacet } from "./facetColors";
 
 const SLICE_DEFAULT = 8;
 
@@ -37,6 +38,11 @@ export function ProjectsClientView({
   const cluster = useProjectListStore((s) => s.cluster);
   const clearCluster = useProjectListStore((s) => s.clearCluster);
   const revealId = useProjectListStore((s) => s.revealId);
+  const facetView = useProjectListStore((s) => s.facetView);
+  const facet = useMemo(
+    () => ({ view: facetView, palette: facetPalette(projects, facetView) }),
+    [projects, facetView],
+  );
   const clearReveal = useProjectListStore((s) => s.clearReveal);
 
   const search = useProjectListSearch(projects, semanticEnabled);
@@ -143,6 +149,7 @@ export function ProjectsClientView({
             <ProjectCardWithHover
               key={project.id}
               project={project}
+              facet={facet}
               onHoverChange={(hovered) =>
                 setHovered(hovered ? project.id : null)
               }
@@ -157,6 +164,7 @@ export function ProjectsClientView({
                 <ProjectCardWithHover
                   key={project.id}
                   project={project}
+                  facet={facet}
                   onHoverChange={(hovered) =>
                     setHovered(hovered ? project.id : null)
                   }
@@ -172,9 +180,11 @@ export function ProjectsClientView({
 
 const ProjectCardWithHover = ({
   project,
+  facet,
   onHoverChange,
 }: {
   project: CvProject;
+  facet: ProjectFacet;
   onHoverChange: (hovered: boolean) => void;
 }) => (
   <div
@@ -182,6 +192,6 @@ const ProjectCardWithHover = ({
     onPointerEnter={() => onHoverChange(true)}
     onPointerLeave={() => onHoverChange(false)}
   >
-    <ProjectCard project={project} />
+    <ProjectCard project={project} facet={facet} />
   </div>
 );

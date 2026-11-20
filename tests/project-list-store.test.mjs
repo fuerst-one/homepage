@@ -61,6 +61,18 @@ beforeEach(() => {
   useProjectListStore.setState(useProjectListStore.getInitialState(), true);
 });
 
+test("the facet view starts on industries and follows the analysis box", () => {
+  assert.equal(state().facetView, "industries");
+  state().setFacetView("tools");
+  assert.equal(state().facetView, "tools");
+});
+
+test("leaving the list resets the facet view to industries", () => {
+  state().setFacetView("tools");
+  state().resetListView();
+  assert.equal(state().facetView, "industries");
+});
+
 test("selecting a cluster drops the default featured filter, like any other filter change", () => {
   assert.deepEqual(state().filters, { featured: ["true"] });
   state().toggleCluster(webApps);

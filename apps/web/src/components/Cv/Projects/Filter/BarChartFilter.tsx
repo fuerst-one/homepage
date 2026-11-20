@@ -5,13 +5,17 @@ import { FilterConfig } from "./types";
 import { getFilterOptionCounts } from "./utils";
 import { CvProject } from "@homepage/content/models";
 import maxBy from "lodash/maxBy";
+import type { CSSProperties } from "react";
+import { facetColor, type FacetPalette } from "../facetColors";
 
 export const BarChartFilter = ({
   filterConfig,
   projects,
+  palette,
 }: {
   filterConfig: FilterConfig;
   projects: CvProject[];
+  palette: FacetPalette;
 }) => {
   const { projectKey } = filterConfig;
   const itemCounts = getFilterOptionCounts(projects, projectKey);
@@ -41,7 +45,12 @@ export const BarChartFilter = ({
               <Progress
                 value={(count / maxCount) * 100}
                 className="h-1.5 bg-white/10"
-                indicatorClassName="bg-white"
+                indicatorClassName="bg-[var(--facet-color)]"
+                style={
+                  {
+                    "--facet-color": facetColor(palette, itemKey),
+                  } as CSSProperties
+                }
               />
             </Tag>
           </Fragment>

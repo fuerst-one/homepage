@@ -2,31 +2,25 @@ import { ClientChartWrapper } from "./ClientChartWrapper";
 import { FilterConfig } from "./types";
 import { getFilterOptionCounts } from "./utils";
 import { CvProject } from "@homepage/content/models";
-
-const GRAYSCALE_PALETTE = [
-  "#f5f5f5",
-  "#bdbdbd",
-  "#8a8a8a",
-  "#5a5a5a",
-  "#3a3a3a",
-  "#1f1f1f",
-];
+import { facetColor, type FacetPalette } from "../facetColors";
 
 export const PieChartFilter = ({
   filterConfig,
   projects,
+  palette,
 }: {
   filterConfig: FilterConfig;
   projects: CvProject[];
+  palette: FacetPalette;
 }) => {
   const { projectKey } = filterConfig;
   const itemCounts = getFilterOptionCounts(projects, projectKey);
 
-  const data = itemCounts.map(({ itemKey, count }, index) => ({
+  const data = itemCounts.map(({ itemKey, count }) => ({
     name: itemKey,
     value: count,
     itemStyle: {
-      color: GRAYSCALE_PALETTE[index % GRAYSCALE_PALETTE.length],
+      color: facetColor(palette, itemKey),
       borderColor: "#000",
       borderWidth: 1,
     },

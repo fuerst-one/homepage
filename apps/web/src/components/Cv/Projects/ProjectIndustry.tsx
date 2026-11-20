@@ -5,6 +5,7 @@ import {
   sectorColor,
   sectorLabel,
 } from "@homepage/content/projectTaxonomy";
+import { FacetLabel } from "./ProjectFacetValues";
 
 export function ProjectIndustry({
   project,
@@ -14,24 +15,16 @@ export function ProjectIndustry({
   locale?: Locale;
 }) {
   const sector = projectSector(project);
-  const color = sectorColor(sector);
   return (
-    <span
-      className="inline-flex min-w-0 items-center gap-2 text-[0.65rem] uppercase tracking-[0.2em]"
-      style={{ color }}
+    <FacetLabel
+      color={sectorColor(sector)}
+      className="text-[0.65rem] uppercase tracking-[0.2em]"
     >
-      <span
-        aria-hidden="true"
-        className="inline-block size-2 shrink-0 rounded-full border"
-        style={{ borderColor: color, backgroundColor: `${color}66` }}
-      />
-      <span>
-        {sector
-          ? sectorLabel(sector, locale)
-          : locale === "de"
-            ? "Branche nicht zugeordnet"
-            : "Industry unclassified"}
-      </span>
-    </span>
+      {sector
+        ? sectorLabel(sector, locale)
+        : locale === "de"
+          ? "Branche nicht zugeordnet"
+          : "Industry unclassified"}
+    </FacetLabel>
   );
 }

@@ -27,6 +27,8 @@ export type ProjectListState = {
   /** Published by the list, which alone holds the projects; null while no list is mounted. */
   resultIds: string[] | null;
   revealId: string | null;
+  /** The analysis box view; project cards lead with the same facet. */
+  facetView: keyof CvProject;
   setFilters: (next: FilterParams) => void;
   toggle: (key: string, value: string) => void;
   clearKey: (key: string) => void;
@@ -39,6 +41,7 @@ export type ProjectListState = {
   setResultIds: (ids: string[]) => void;
   revealProject: (id: string) => void;
   clearReveal: () => void;
+  setFacetView: (view: keyof CvProject) => void;
   resetListView: () => void;
 };
 
@@ -58,6 +61,7 @@ export const useProjectListStore = create<ProjectListState>((set, get) => ({
   cluster: null,
   resultIds: null,
   revealId: null,
+  facetView: "industries",
   setFilters: (next) => set({ filters: next }),
   toggle: (key, value) => {
     const prev = get().filters;
@@ -99,6 +103,7 @@ export const useProjectListStore = create<ProjectListState>((set, get) => ({
   setResultIds: (resultIds) => set({ resultIds }),
   revealProject: (revealId) => set({ revealId }),
   clearReveal: () => set({ revealId: null }),
+  setFacetView: (facetView) => set({ facetView }),
   resetListView: () =>
     set({
       query: "",
@@ -107,6 +112,7 @@ export const useProjectListStore = create<ProjectListState>((set, get) => ({
       cluster: null,
       resultIds: null,
       revealId: null,
+      facetView: "industries",
     }),
 }));
 
