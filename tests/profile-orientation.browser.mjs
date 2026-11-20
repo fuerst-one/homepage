@@ -9,6 +9,14 @@ async function activate(page, text, keyboard = false) {
   const buttons = await page.$$("button");
   for (const button of buttons)
     if ((await button.evaluate((el) => el.textContent.trim())) === text) {
+      // Profile settings live in a tab that may not be open yet.
+      await button.evaluate((el) => {
+        const panel = el.closest('[role="tabpanel"]');
+        if (panel?.hidden)
+          document
+            .getElementById(panel.getAttribute("aria-labelledby"))
+            .click();
+      });
       await button.scrollIntoView();
       if (keyboard) {
         await button.focus();

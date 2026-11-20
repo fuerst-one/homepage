@@ -245,11 +245,13 @@ test(
         path: "/tmp/profile-signals-de-mobile.png",
         fullPage: true,
       });
+      await page.locator("#profile-tab-projects").click();
       await page.locator(".profile-choice-list [data-project-save]").click();
       await page.waitForFunction(
         () => document.activeElement?.id === "profile-choices-title",
       );
       assert.equal(await page.$(".profile-choice-list article"), null);
+      await page.locator("#profile-tab-settings").click();
       await clickText(page, "Interessen zurücksetzen");
       await page.waitForFunction(
         (key) =>

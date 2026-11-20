@@ -188,25 +188,44 @@
   text-transform: uppercase;
 }
 .profile-page-nav {
+  --profile-tabs-height: 53px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0 24px;
+  gap: 0 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
   border-block: 1px solid var(--profile-line);
-  padding-block: 8px;
+  background: #090b08;
 }
-.profile-page-nav a {
+.profile-page-nav button {
   display: inline-flex;
-  min-height: 44px;
+  flex-shrink: 0;
+  min-height: 51px;
   align-items: center;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
   color: #a3a3a3;
   font-size: 12px;
+  white-space: nowrap;
 }
-.profile-page-nav a:hover {
+.profile-page-nav button:hover {
   color: var(--profile-accent);
+}
+.profile-page-nav button[aria-selected="true"] {
+  color: #f5f5f5;
+  border-bottom-color: var(--profile-accent);
+}
+.profile-page-nav button:focus-visible {
+  outline-offset: -2px;
+}
+.profile-tab-panels,
+.profile-page-section {
+  scroll-margin-top: calc(var(--profile-tabs-height, 53px) + 1rem);
 }
 .profile-page-section {
   padding-block: clamp(2rem, 4vw, 3rem);
-  scroll-margin-top: 2rem;
 }
 .profile-page-section + .profile-page-section {
   border-top: 1px solid var(--profile-line);
@@ -265,9 +284,28 @@
   border: 1px solid var(--profile-line);
   font-size: 11px;
 }
+.profile-facets button {
+  --facet-color: var(--profile-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.profile-facets button[style] {
+  --facet-color: hsl(var(--facet-hue) 70% 68%);
+}
+.profile-facets button[style]::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--facet-color);
+}
 .profile-facets button[aria-pressed="true"] {
-  color: var(--profile-accent);
-  border-color: var(--profile-accent);
+  color: var(--facet-color);
+  border-color: var(--facet-color);
+}
+.profile-interest-detail .profile-page-eyebrow,
+.profile-interest-detail .profile-interest-top span {
+  color: hsl(var(--facet-hue) 70% 68%);
 }
 .profile-search-label {
   display: block;
@@ -317,16 +355,123 @@
   padding-block: 16px 8px;
   font-size: 13px;
 }
-.profile-interest-grid {
+.profile-interest-layout {
   display: grid;
-  column-gap: 40px;
-  margin-top: 16px;
+  gap: 32px 48px;
   align-items: start;
 }
-.profile-interest {
-  padding-block: 24px;
-  border-bottom: 1px solid var(--profile-line);
+.profile-interest-chart,
+.profile-interest-side {
+  display: grid;
+  gap: 20px;
   min-width: 0;
+}
+.profile-radar {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 1;
+  justify-self: center;
+}
+.profile-radar svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.profile-radar-loading {
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff0d 0 60%, transparent 61%);
+}
+.profile-radar-ring {
+  fill: none;
+  stroke: #ffffff1f;
+  stroke-width: 0.5;
+}
+.profile-radar-axis {
+  stroke: #ffffff26;
+  stroke-width: 0.5;
+}
+.profile-radar-axis[data-selected] {
+  stroke: hsl(var(--facet-hue) 70% 68%);
+}
+.profile-radar-sector {
+  fill: hsl(var(--facet-hue) 70% 68% / 0.22);
+}
+.profile-radar-edge {
+  fill: none;
+  stroke: hsl(var(--facet-hue) 70% 68%);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.profile-radar-point {
+  fill: hsl(var(--facet-hue) 70% 68%);
+}
+.profile-radar-point[data-selected] {
+  fill: #fff;
+}
+.profile-radar-scale {
+  fill: #737373;
+  font-size: 5px;
+}
+.profile-radar-label {
+  position: absolute;
+  display: grid;
+  width: max-content;
+  padding: 2px 4px;
+  transform: translate(var(--label-x), var(--label-y));
+  color: #bdbdbd;
+  font-size: 11px;
+  line-height: 1.3;
+}
+.profile-radar-label:hover,
+.profile-radar-label[aria-pressed="true"] {
+  color: #fff;
+}
+.profile-radar-name {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.profile-radar-label[aria-pressed="true"] .profile-radar-name {
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--facet-hue) 70% 68%);
+  text-underline-offset: 3px;
+}
+.profile-radar-score {
+  color: hsl(var(--facet-hue) 70% 68%);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.profile-hidden-interests {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: #a3a3a3;
+  font-size: 11px;
+}
+.profile-hidden-interests button {
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 1px dashed var(--profile-line);
+  color: #a3a3a3;
+  text-decoration: line-through;
+}
+.profile-hidden-interests button[aria-pressed="true"] {
+  border-color: var(--profile-accent);
+  color: #ddd;
+}
+.profile-interest-detail {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--profile-line);
 }
 .profile-interest-top {
   display: flex;
@@ -334,9 +479,11 @@
   justify-content: space-between;
   gap: 16px;
 }
-.profile-interest-top strong {
-  font-size: 14px;
+.profile-interest-top h3 {
+  color: #f5f5f5;
+  font-size: 18px;
   font-weight: 500;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 .profile-interest-top span {
@@ -349,34 +496,33 @@
   color: #a3a3a3;
   font-size: 10px;
 }
-.profile-interest progress {
+.profile-interest-detail progress {
   display: block;
   appearance: none;
   width: 100%;
   height: 3px;
-  margin-block: 14px;
   border: 0;
   background: #ffffff14;
 }
-.profile-interest progress::-webkit-progress-bar {
+.profile-interest-detail progress::-webkit-progress-bar {
   background: #ffffff14;
 }
-.profile-interest progress::-webkit-progress-value {
-  background: var(--profile-accent);
+.profile-interest-detail progress::-webkit-progress-value {
+  background: hsl(var(--facet-hue) 70% 68%);
 }
-.profile-interest progress::-moz-progress-bar {
-  background: var(--profile-accent);
+.profile-interest-detail progress::-moz-progress-bar {
+  background: hsl(var(--facet-hue) 70% 68%);
 }
-.profile-interest-source {
+.profile-interest-preference {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
   color: #a3a3a3;
-  font-size: 11px;
+  font-size: 12px;
 }
-.profile-interest-source select {
+.profile-interest-preference select {
   min-height: 40px;
   max-width: 100%;
   padding: 6px 8px;
@@ -384,6 +530,32 @@
   background: #090b08;
   color: #ddd;
   font-size: 12px;
+}
+.profile-interest-detail .profile-reasons {
+  margin-top: 4px;
+  border-top: 1px solid var(--profile-line);
+  padding-top: 12px;
+}
+.profile-reasons h4 {
+  color: #ddd;
+  font-size: 12px;
+  font-weight: 500;
+}
+.profile-reasons ol {
+  padding: 0;
+  margin-top: 8px;
+  list-style: none;
+}
+.profile-reasons li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 6px;
+  border-bottom: 1px solid #ffffff12;
+}
+.profile-reasons li span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .profile-reasons {
   color: #a3a3a3;
@@ -436,32 +608,49 @@
   padding: 0;
 }
 .profile-signal {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 24px;
-  padding-block: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 13rem) minmax(0, 1fr) auto 9rem;
+  align-items: baseline;
+  gap: 4px 20px;
+  padding-block: 9px;
   border-bottom: 1px solid var(--profile-line);
+  font-size: 13px;
 }
 .profile-signal strong {
   font-weight: 500;
   color: #f5f5f5;
 }
-.profile-signal p {
+.profile-signal-subject {
+  overflow: hidden;
   color: #a3a3a3;
-  font-size: 13px;
-  margin-top: 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.profile-signal small {
-  display: block;
-  color: #a3a3a3;
+.profile-signal-weight {
+  color: var(--profile-accent);
   font-size: 11px;
-  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .profile-signal time {
   color: #a3a3a3;
-  font-size: 10px;
-  flex-shrink: 0;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.profile-signal-pages {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  color: #a3a3a3;
+  font-size: 12px;
+}
+.profile-signal-pages button:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 .profile-explanation-grid {
   display: grid;
@@ -551,9 +740,11 @@
   }
 }
 @media (min-width: 1024px) {
-  .profile-interest-grid,
   .profile-explanation-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .profile-interest-layout {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   }
 }
 /* From this width the launcher fits beside the 64rem project dialog, so it
@@ -596,8 +787,16 @@
     height: 44px;
   }
   .profile-signal {
-    flex-direction: column;
-    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .profile-signal-subject {
+    grid-row: 2;
+  }
+  .profile-radar-label {
+    font-size: 10px;
+  }
+  .profile-interest-detail {
+    padding: 18px;
   }
   .profile-facets button {
     min-height: 44px;
