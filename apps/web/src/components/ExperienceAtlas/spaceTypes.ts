@@ -11,7 +11,7 @@ export const SPACE_RECIPES = [
     id: "engineering",
     label: "Engineering",
     question: "How is it built?",
-    fields: ["Tools & libraries", "Languages"],
+    fields: ["Technologies", "Languages"],
   },
   {
     id: "practice",

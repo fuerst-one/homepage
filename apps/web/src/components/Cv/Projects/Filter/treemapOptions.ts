@@ -17,11 +17,17 @@ const GRAYSCALE_PALETTE = [
 ];
 
 /** Shared chart presentation for sidebar filters and homepage project views. */
-export function treemapOption(items: ItemCount[], label: string) {
+/** Chart items keep their stored value as name, so clicks filter by it; labelOf only changes what is shown. */
+export function treemapOption(
+  items: ItemCount[],
+  label: string,
+  labelOf: (value: string) => string = (value) => value,
+) {
   return {
     tooltip: {
       trigger: "item",
-      formatter: "{b}: {c}",
+      formatter: ({ name, value }: { name: string; value: number }) =>
+        `${labelOf(name)}: ${value}`,
       backgroundColor: "#000",
       borderColor: "#fff",
       confine: true,
@@ -47,6 +53,7 @@ export function treemapOption(items: ItemCount[], label: string) {
         itemStyle: { borderColor: "#000", borderWidth: 1 },
         label: {
           show: true,
+          formatter: ({ name }: { name: string }) => labelOf(name),
           fontSize: 10,
           color: "#fff",
           textBorderColor: "#000",

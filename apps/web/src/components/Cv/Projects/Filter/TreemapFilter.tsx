@@ -1,6 +1,7 @@
 import { FilterConfig } from "./types";
 import { CvProject } from "@homepage/content/models";
-import { getFilterOptionCounts } from "./utils";
+import { facetValueLabel, getFilterOptionCounts } from "./utils";
+import { useLocale } from "../../../i18n/LocaleProvider";
 import { ClientChartWrapper } from "./ClientChartWrapper";
 import { treemapOption } from "./treemapOptions";
 import { facetColor, type FacetPalette } from "../facetColors";
@@ -14,6 +15,7 @@ export const TreemapFilter = ({
   projects: CvProject[];
   palette: FacetPalette;
 }) => {
+  const locale = useLocale();
   const { projectKey } = filterConfig;
   const itemCounts = getFilterOptionCounts(projects, projectKey).map(
     (item) => ({ ...item, color: facetColor(palette, item.itemKey) }),
@@ -23,7 +25,11 @@ export const TreemapFilter = ({
       <div className="h-full w-full overflow-hidden">
         <ClientChartWrapper
           projectKey={projectKey}
-          chartProps={{ option: treemapOption(itemCounts, filterConfig.label) }}
+          chartProps={{
+            option: treemapOption(itemCounts, filterConfig.label, (value) =>
+              facetValueLabel(projectKey, value, locale),
+            ),
+          }}
         />
       </div>
       <dl className="hidden">

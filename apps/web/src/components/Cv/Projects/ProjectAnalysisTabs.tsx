@@ -7,7 +7,7 @@ import {
   publishedResultProjects,
   useProjectListStore,
 } from "./projectListStore";
-import { getFilterOptionCounts } from "./Filter/utils";
+import { getFilterOptionCounts, type FacetKey } from "./Filter/utils";
 import { filterConfigs } from "./filterConfigs";
 import { FilterConfig } from "./Filter/types";
 import { BarChartFilter } from "./Filter/BarChartFilter";
@@ -38,21 +38,7 @@ export const ProjectAnalysisTabs = ({
   const panelId = `${selectorId}-panel`;
   const tabs = filterConfigs.map((c) => ({
     id: c.projectKey,
-    label:
-      locale === "de"
-        ? ((
-            {
-              clients: "Kunden",
-              industries: "Branchen",
-              capabilities: "Kompetenzen",
-              methods: "Methoden",
-              tools: "Tools",
-              languages: "Sprachen",
-              projectType: "Projektrahmen",
-              workplace: "Arbeitsort",
-            } as Record<string, string>
-          )[c.projectKey] ?? c.label)
-        : c.label,
+    label: locale === "de" ? c.labelDe : c.label,
   }));
 
   return (
@@ -68,9 +54,7 @@ export const ProjectAnalysisTabs = ({
           id={selectorId}
           value={activeTab}
           aria-controls={panelId}
-          onChange={(event) =>
-            setActiveTab(event.target.value as keyof CvProject)
-          }
+          onChange={(event) => setActiveTab(event.target.value as FacetKey)}
           className="min-h-11 min-w-0 flex-1 bg-transparent px-3 py-2 text-xs text-white outline-none [color-scheme:dark] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
         >
           {tabs.map((tab) => (
@@ -96,7 +80,7 @@ export const ProjectAnalysisTabs = ({
   );
 };
 
-const getFilterConfig = (projectKey: keyof CvProject): FilterConfig | null =>
+const getFilterConfig = (projectKey: FacetKey): FilterConfig | null =>
   filterConfigs.find((c) => c.projectKey === projectKey) ?? null;
 
 const ChartTabContent = ({

@@ -1,10 +1,12 @@
 import { CvProject } from "@homepage/content/models";
+import type { FacetKey } from "./utils";
 
 export type DisplayType = "bar" | "pie" | "treemap";
 
 export type FilterConfig = {
-  projectKey: keyof CvProject;
+  projectKey: FacetKey;
   label: string;
+  labelDe: string;
   displayType: DisplayType;
 };
 

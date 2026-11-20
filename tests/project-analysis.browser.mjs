@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import puppeteer from "puppeteer";
+import { loadTs } from "./helpers/load-ts.mjs";
 
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6894";
 
@@ -173,13 +174,27 @@ for (const locale of ["en", "de"]) {
           options.map((option) => option.textContent),
         ),
         locale === "de"
-          ? ["Branchen", "Projektrahmen", "Kompetenzen", "Methoden", "Tools"]
+          ? [
+              "Branchen",
+              "Projektrahmen",
+              "Expertise",
+              "Methoden & Prinzipien",
+              "Technologien",
+              "Bedarf",
+              "Produktformate",
+              "Umsetzungsstand",
+              "Zielmarkt",
+            ]
           : [
               "Industries",
               "Project setting",
-              "Capabilities",
-              "Methods",
-              "Tools",
+              "Expertise",
+              "Methods & principles",
+              "Technologies",
+              "Buyer needs",
+              "Product formats",
+              "Delivery stage",
+              "Target market",
             ],
       );
       assert.equal(
@@ -330,6 +345,69 @@ test("the analysis view decides what the project cards lead with", async () => {
     assert.ok(tools.every(({ labels }) => labels.length <= 3));
     assert.ok(tools.some(({ more }) => more?.startsWith("+")));
     assert.deepEqual(errors, []);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("capabilities show as a full list like tools, not a capped treemap", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    await page.select("aside select", "capabilities");
+    const analysis = "aside [role=region][aria-label]";
+    await page.waitForSelector(`${analysis} [role=progressbar]`);
+    assert.equal(await page.$(`${analysis} canvas`), null);
+    const rows = await page.$$eval(
+      `${analysis} [role=progressbar]`,
+      (bars) => bars.length,
+    );
+    assert.ok(rows > 12, `expected every capability, got ${rows} rows`);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("German cards and charts show buyer needs in German", async () => {
+  const { CASE_VOCABULARY } = loadTs(
+    new URL("../packages/content/src/projectCase.ts", import.meta.url),
+  );
+  const german = new Set(Object.values(CASE_VOCABULARY.buyerNeeds));
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/de/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    await page.select("aside select", "buyerNeeds");
+    await page.waitForSelector(
+      'article [data-project-facet-values="buyerNeeds"] [data-facet-value]',
+    );
+    const cardLabels = await page.$$eval(
+      "article [data-facet-value]",
+      (labels) => labels.map((label) => label.textContent),
+    );
+    assert.ok(cardLabels.length > 0);
+    assert.deepEqual(
+      cardLabels.filter((label) => !german.has(label)),
+      [],
+    );
+    const chartLabels = await page.$$eval(
+      "aside [role=region][aria-label] [data-facet-option]",
+      (rows) => rows.map((row) => row.getAttribute("data-facet-option-label")),
+    );
+    assert.ok(chartLabels.length > 0);
+    assert.deepEqual(
+      chartLabels.filter((label) => !german.has(label)),
+      [],
+    );
   } finally {
     await browser.close();
   }

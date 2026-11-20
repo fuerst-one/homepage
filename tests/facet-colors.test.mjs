@@ -142,3 +142,23 @@ test("later cards lead with values the cards above them have not shown yet", () 
   assert.deepEqual(shown("third"), ["A", "B", "C"]);
   assert.equal(leading.get("second").hiddenCount, 3);
 });
+
+test("case facets like buyer needs are read from the project's case data", () => {
+  const projects = [
+    project("a", { matching: { buyerNeeds: ["Improve conversion"] } }),
+    project("b", {
+      matching: { buyerNeeds: ["Improve conversion", "Sell products"] },
+    }),
+  ];
+  const palette = facetPalette(projects, "buyerNeeds");
+  assert.deepEqual(
+    [...palette.values.keys()],
+    ["Improve conversion", "Sell products"],
+  );
+  assert.deepEqual(
+    leadingFacetValues(projects[1], "buyerNeeds", palette).values.map(
+      ({ value }) => value,
+    ),
+    ["Improve conversion", "Sell products"],
+  );
+});

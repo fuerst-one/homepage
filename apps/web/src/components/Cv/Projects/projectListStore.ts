@@ -6,7 +6,11 @@ import {
   searchProjectIndex,
   type buildProjectSearchIndex,
 } from "../../PlasmaLanding/projectSearch";
-import { filterProjects, type FilterParams } from "./Filter/utils";
+import {
+  filterProjects,
+  type FacetKey,
+  type FilterParams,
+} from "./Filter/utils";
 
 /** Cluster numbers repeat across Explorer lenses, so the lens is part of a cluster's identity. */
 export type ClusterSelection = {
@@ -28,7 +32,7 @@ export type ProjectListState = {
   resultIds: string[] | null;
   revealId: string | null;
   /** The analysis box view; project cards lead with the same facet. */
-  facetView: keyof CvProject;
+  facetView: FacetKey;
   setFilters: (next: FilterParams) => void;
   toggle: (key: string, value: string) => void;
   clearKey: (key: string) => void;
@@ -41,7 +45,7 @@ export type ProjectListState = {
   setResultIds: (ids: string[]) => void;
   revealProject: (id: string) => void;
   clearReveal: () => void;
-  setFacetView: (view: keyof CvProject) => void;
+  setFacetView: (view: FacetKey) => void;
   resetListView: () => void;
 };
 

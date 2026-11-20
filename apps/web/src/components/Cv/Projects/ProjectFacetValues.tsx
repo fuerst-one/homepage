@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Locale } from "@homepage/content/i18n";
-import { sectorLabel } from "@homepage/content/projectTaxonomy";
+import { facetValueLabel } from "./Filter/utils";
 import type { ProjectFacet } from "./facetColors";
 
 export function FacetLabel({
@@ -43,7 +43,7 @@ export function ProjectFacetValues({
       {values.length ? (
         values.map(({ value, color }) => (
           <FacetLabel key={value} color={color}>
-            {view === "industries" ? sectorLabel(value, locale) : value}
+            {facetValueLabel(view, value, locale)}
           </FacetLabel>
         ))
       ) : (

@@ -1,6 +1,10 @@
 import type { CvProject } from "@homepage/content/models";
 import { SECTORS, sectorColor } from "@homepage/content/projectTaxonomy";
-import { getFilterOptionCounts } from "./Filter/utils";
+import {
+  facetValue,
+  getFilterOptionCounts,
+  type FacetKey,
+} from "./Filter/utils";
 
 /** Every analysis view shares the sector colors so charts and cards read as one system. */
 export const FACET_PALETTE = Object.values(SECTORS).map(({ color }) => color);
@@ -19,11 +23,11 @@ export type LeadingFacetValues = {
   hiddenCount: number;
 };
 
-export type ProjectFacet = { view: keyof CvProject } & LeadingFacetValues;
+export type ProjectFacet = { view: FacetKey } & LeadingFacetValues;
 
 export function facetPalette(
   projects: CvProject[],
-  key: keyof CvProject,
+  key: FacetKey,
 ): FacetPalette {
   const ranked = getFilterOptionCounts(projects, key).sort(
     (a, b) => b.count - a.count || a.itemKey.localeCompare(b.itemKey),
@@ -62,11 +66,11 @@ type ShownCounts = Map<string, number>;
 
 export function leadingFacetValues(
   project: CvProject,
-  key: keyof CvProject,
+  key: FacetKey,
   palette: FacetPalette,
   shown: ShownCounts = new Map(),
 ): LeadingFacetValues {
-  const raw = project[key];
+  const raw = facetValue(project, key);
   const ranks = new Map(
     [...palette.values.keys()].map((value, rank) => [value, rank]),
   );
@@ -95,7 +99,7 @@ export function leadingFacetValues(
 /** Cards claim values in list order, so each card leads with what the cards above it have not shown yet. */
 export function leadingFacetValuesInList(
   projects: CvProject[],
-  key: keyof CvProject,
+  key: FacetKey,
   palette: FacetPalette,
 ) {
   const shown: ShownCounts = new Map();

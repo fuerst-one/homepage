@@ -1,6 +1,7 @@
 import { ClientChartWrapper } from "./ClientChartWrapper";
 import { FilterConfig } from "./types";
-import { getFilterOptionCounts } from "./utils";
+import { facetValueLabel, getFilterOptionCounts } from "./utils";
+import { useLocale } from "../../../i18n/LocaleProvider";
 import { CvProject } from "@homepage/content/models";
 import { facetColor, type FacetPalette } from "../facetColors";
 
@@ -13,7 +14,9 @@ export const PieChartFilter = ({
   projects: CvProject[];
   palette: FacetPalette;
 }) => {
+  const locale = useLocale();
   const { projectKey } = filterConfig;
+  const labelOf = (value: string) => facetValueLabel(projectKey, value, locale);
   const itemCounts = getFilterOptionCounts(projects, projectKey);
 
   const data = itemCounts.map(({ itemKey, count }) => ({
@@ -37,7 +40,15 @@ export const PieChartFilter = ({
           option: {
             tooltip: {
               trigger: "item",
-              formatter: "{b}: {c} ({d}%)",
+              formatter: ({
+                name,
+                value,
+                percent,
+              }: {
+                name: string;
+                value: number;
+                percent: number;
+              }) => `${labelOf(name)}: ${value} (${percent}%)`,
               backgroundColor: "#000",
               borderColor: "#fff",
               confine: true,
@@ -53,6 +64,7 @@ export const PieChartFilter = ({
                 center: ["50%", "50%"],
                 data: data,
                 label: {
+                  formatter: ({ name }: { name: string }) => labelOf(name),
                   position: "inside",
                   color: "#fff",
                   textBorderColor: "#000",

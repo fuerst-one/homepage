@@ -18,9 +18,12 @@ export function HomeProjectViews({
 }) {
   const de = locale === "de";
   const facets = [
-    { key: "capabilities", label: de ? "Kompetenzen" : "Capabilities" },
+    { key: "capabilities", label: "Expertise" },
     { key: "industries", label: de ? "Branchen" : "Industries" },
-    { key: "methods", label: de ? "Methoden" : "Methods" },
+    {
+      key: "methods",
+      label: de ? "Methoden & Prinzipien" : "Methods & principles",
+    },
   ] as const;
   return (
     <div className="home-project-views">
