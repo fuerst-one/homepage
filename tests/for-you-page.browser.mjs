@@ -431,3 +431,27 @@ test("a project opened from the preview is recorded and leaves the proof grid", 
   assert.equal(ids.includes(id), false);
   await page.close();
 });
+
+for (const locale of ["en", "de"])
+  test(`${locale}: the header link and the ready hint lead to For you, where the hint stays away`, async () => {
+    const { page } = await openReal(`/${locale}/projects?all=1`, {
+      saved: savedProfile(READY_SIGNALS, { unlocked: true, hintSeen: false }),
+    });
+    const NAV_LINK = ".content-header-for-you";
+    const HINT = ".profile-for-you-hint";
+    await page.waitForSelector(NAV_LINK);
+    await page.waitForSelector(HINT);
+    assert.equal(
+      await page.$eval(NAV_LINK, (el) => el.getAttribute("href")),
+      `/${locale}/for-you`,
+    );
+    assert.equal(
+      await page.$eval(`${HINT} a`, (el) => el.getAttribute("href")),
+      `/${locale}/for-you`,
+    );
+    await page.goto(`${base}/${locale}/for-you`, { waitUntil: "networkidle0" });
+    await visible(page, `${STATE("ready")} [data-for-you-section="hero"]`);
+    await page.waitForSelector(NAV_LINK);
+    assert.equal(await page.$(HINT), null, "no hint on the page it points to");
+    await page.close();
+  });

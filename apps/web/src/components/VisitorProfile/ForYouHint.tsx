@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useSyncExternalStore, type RefObject } from "react";
+import { usePathname } from "next/navigation";
 import Link from "../i18n/LocalizedLink";
 import { useLocale } from "../i18n/LocaleProvider";
 import { useVisitorProfileStore } from "./profileStore";
@@ -25,11 +26,15 @@ export function useOpenDialog(watching: boolean) {
   );
 }
 
-/** The hint is due until it is dismissed, and stays away while a dialog covers the launcher. */
+/**
+ * The hint is due until it is dismissed, stays away while a dialog covers the
+ * launcher, and is not shown on the page it points to.
+ */
 export function useForYouHintVisible() {
   const ready = useForYouReady();
   const seen = useVisitorProfileStore((s) => s.forYouHintSeen);
-  const due = ready && !seen;
+  const onForYou = /^\/(en|de)\/for-you$/.test(usePathname());
+  const due = ready && !seen && !onForYou;
   const covered = useOpenDialog(due);
   return due && !covered;
 }
@@ -75,7 +80,7 @@ export function ForYouHint({
           }}
         >
           <p>{de ? "Dein Profil ist bereit." : "Your profile is ready."}</p>
-          <Link href="/profile#suggestions" prefetch={false} onClick={markSeen}>
+          <Link href="/for-you" prefetch={false} onClick={markSeen}>
             {de ? "Vorschläge ansehen" : "See your matches"}{" "}
             <span aria-hidden="true">→</span>
           </Link>

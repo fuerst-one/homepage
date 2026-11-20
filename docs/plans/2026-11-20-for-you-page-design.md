@@ -1,7 +1,8 @@
 # For you page — design
 
-Discussed with the owner on 20 November 2026. Step 1 of the suggested order
-(section library, plan format and renderer) is implemented on
+Discussed with the owner on 20 November 2026. Steps 1 and 2 of the suggested
+order (section library, plan format and renderer; the page with the local
+preview, reached from the header link and the hint) are implemented on
 `feature/live-visitor-profile` and not pushed; everything else described here
 does not exist yet. It fills the open decision
 "The For you page concept" in
@@ -238,9 +239,14 @@ the harness is the main instrument.
    `packages/content/src/data/for-you-plans/` and the review route `/en/for-you` and
    `/de/for-you` (`?example=<name>`, not indexed, not linked). The examples
    together use all nine section types; a plan holds at most seven.
-2. The route with the local preview and the button; header link and hint point
-   to it.
+2. The route with the local preview; header link and hint point to it.
+   **Implemented, not pushed:** `/for-you` without `?example=` shows no
+   profile, a profile that is not ready, or the preview built in the browser
+   by `packages/content/src/forYouPreview.ts` (hero on the leading need, proof
+   grid, second need, closing to the Explorer). The owner decided on 20
+   November 2026 that the "Design my page" button and its consent line move to
+   step 4; until then the preview is the whole page.
 3. The harness, the prompt rounds and the model choice.
-4. The streaming endpoint with ticket, controls, budget, storage and the
-   button's consent text.
+4. The streaming endpoint with ticket, controls, budget, storage, the "Design
+   my page" button and its consent text.
 5. The owner insights.

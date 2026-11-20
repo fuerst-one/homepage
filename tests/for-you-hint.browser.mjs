@@ -183,7 +183,7 @@ for (const { locale, width, height, finish } of [
         assert.deepEqual(hint, {
           text: text.hint,
           link: `${text.link} →`,
-          href: `/${locale}/profile#suggestions`,
+          href: `/${locale}/for-you`,
           dismiss: text.dismiss,
           live: "polite",
           profileUi: true,
@@ -197,7 +197,7 @@ for (const { locale, width, height, finish } of [
             text: el.textContent,
             href: el.getAttribute("href"),
           })),
-          { text: text.nav, href: `/${locale}/profile#suggestions` },
+          { text: text.nav, href: `/${locale}/for-you` },
         );
 
         await go(`${listing}&focus=${encodeURIComponent(project.id)}`);
@@ -273,7 +273,7 @@ for (const { locale, width, height, finish } of [
             await page.evaluate(() =>
               document.activeElement.getAttribute("href"),
             ),
-            `/${locale}/profile#suggestions`,
+            `/${locale}/for-you`,
           );
           await page.keyboard.press("Escape");
           await page.waitForSelector(HINT, { hidden: true });
@@ -288,18 +288,20 @@ for (const { locale, width, height, finish } of [
         } else {
           await page.click(finish === "follow" ? `${HINT} a` : LAUNCHER);
           await page.waitForFunction(
-            (path, hash) =>
-              location.pathname === path && location.hash === hash,
+            (path) => location.pathname === path && location.hash === "",
             {},
-            `/${locale}/profile`,
-            finish === "follow" ? "#suggestions" : "",
+            finish === "follow" ? `/${locale}/for-you` : `/${locale}/profile`,
           );
-          await page.waitForSelector(".profile-page-signature");
+          await page.waitForSelector(
+            finish === "follow"
+              ? '[data-for-you-state="ready"]'
+              : ".profile-page-signature",
+          );
         }
         const after = await saved(page);
         assert.equal(after.forYouHintSeen, true);
         assert.equal(after.orientation, before.orientation);
-        // The profile page reports the suggestions it displays; the hint adds nothing.
+        // The page the hint leads to reports the suggestions it displays; the hint adds nothing.
         const added = after.profile.signals.slice(
           before.profile.signals.length,
         );

@@ -10,7 +10,7 @@ export function ForYouNavLink() {
   if (!ready) return null;
   return (
     <Link
-      href="/profile#suggestions"
+      href="/for-you"
       prefetch={false}
       data-profile-ui
       className="content-header-for-you"

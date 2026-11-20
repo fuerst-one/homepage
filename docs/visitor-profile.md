@@ -437,8 +437,11 @@ the navigation, so the navigation and the page move down by that row when the
 link appears. Visitors without a ready profile or without JavaScript get the
 header unchanged.
 
-Until the For you page exists, the hint and the header link both lead to the
-localized `/profile#suggestions`.
+The hint and the header link both lead to the localized `/for-you`, which shows
+the local preview built in the browser from the profile
+(`packages/content/src/forYouPreview.ts`, see
+[the For you design](plans/2026-11-20-for-you-page-design.md)). The hint is not
+shown on `/for-you` itself.
 
 Unit behaviour: `node --test tests/for-you-readiness.test.mjs tests/for-you-hint.test.mjs tests/profile-benchmark.test.mjs`.
 Browser behaviour: `SEO_TEST_BASE_URL=http://localhost:6895 node --test tests/for-you-hint.browser.mjs`
