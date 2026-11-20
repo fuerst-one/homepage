@@ -1,16 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FrameBounds, Glyph, LabelGroup } from "../Plasma/types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FrameBounds, Glyph } from "../Plasma/types";
 import { PlasmaCanvas, PlasmaCanvasHandle } from "../Plasma/PlasmaCanvas";
-import { LabelOverlay } from "../Plasma/LabelOverlay";
-import {
-  getLabelGroupPlacements,
-  LabelPlacement,
-} from "../Plasma/getLabelGroupPlacements";
 import { useInterval } from "../Plasma/useInterval";
 import { getIsReducedMotion } from "../Plasma/getIsReducedMotion";
-import { KnobDropdown } from "./KnobDropdown";
 import { useLocale } from "../i18n/LocaleProvider";
 import {
   PLAYGROUND_REMEMBER_KEY,
@@ -18,8 +12,11 @@ import {
   writePlaygroundPreference,
   rememberPlaygroundPreferences,
 } from "../../lib/playgroundPreferences";
-import { getPlaygroundLabels } from "./playgroundLabels";
-import { getSplashLabels } from "./splashLabels";
+import { PlaygroundToolbar } from "./PlaygroundToolbar";
+import { PlaygroundSplash } from "./PlaygroundSplash";
+import { UploadDropZone } from "./UploadDropZone";
+import { useIdleOverlays } from "./useIdleOverlays";
+import "./playground.css";
 import { useWebcamStream } from "./useWebcamStream";
 import { useWebcamLuminance } from "./useWebcamLuminance";
 import { useUploadLuminance } from "./useUploadLuminance";
@@ -42,16 +39,7 @@ import {
   SPLASH_LOCAL_STORAGE_KEY,
   WEBCAM_RAMPS,
 } from "./constants";
-import {
-  ContrastKey,
-  KnobId,
-  KnobState,
-  SizeKey,
-  Source,
-  SplashChoice,
-} from "./types";
-
-const FOOTER_RESERVED_PX = 84;
+import { KnobState, SizeKey, Source, SplashChoice } from "./types";
 
 const readSplashChoice = (): SplashChoice => {
   if (typeof window === "undefined") {
@@ -101,9 +89,6 @@ const isSource = (value: unknown): value is Source =>
 const isSizeKey = (value: unknown): value is SizeKey =>
   value === "small" || value === "medium" || value === "large";
 
-const isContrastKey = (value: unknown): value is ContrastKey =>
-  value === "low" || value === "medium" || value === "high";
-
 const readKnobs = (): KnobState | null => {
   if (typeof window === "undefined") {
     return null;
@@ -119,17 +104,14 @@ const readKnobs = (): KnobState | null => {
       return null;
     }
     const candidate = parsed as Record<string, unknown>;
-    if (
-      !isSource(candidate.source) ||
-      !isSizeKey(candidate.size) ||
-      !isContrastKey(candidate.contrast)
-    ) {
+    if (!isSource(candidate.source) || !isSizeKey(candidate.size)) {
       return null;
     }
+    // Contrast is no longer adjustable, so a stored choice must not stick.
     return {
       source: candidate.source,
       size: candidate.size,
-      contrast: candidate.contrast,
+      contrast: DEFAULT_KNOBS.contrast,
     };
   } catch {
     return null;
@@ -182,7 +164,7 @@ export const PlasmaPlayground = () => {
   const de = useLocale() === "de";
   const [remember, setRemember] = useState(false);
   const [knobs, setKnobs] = useState<KnobState>(DEFAULT_KNOBS);
-  const [openKnob, setOpenKnob] = useState<KnobId | null>(null);
+  const [isOverlayEngaged, setIsOverlayEngaged] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [bounds, setBounds] = useState<FrameBounds | null>(null);
   const [splashChoice, setSplashChoice] = useState<SplashChoice>(null);
@@ -255,8 +237,7 @@ export const PlasmaPlayground = () => {
   useEffect(() => {
     const update = () => {
       const width = Math.floor(window.innerWidth / cellWidth) - 1;
-      const height =
-        Math.floor((window.innerHeight - FOOTER_RESERVED_PX) / cellSize) - 1;
+      const height = Math.floor(window.innerHeight / cellSize) - 1;
       setBounds({ width: Math.max(10, width), height: Math.max(10, height) });
     };
     update();
@@ -265,11 +246,6 @@ export const PlasmaPlayground = () => {
   }, [cellSize, cellWidth]);
 
   const togglePause = useCallback(() => setIsPaused((p) => !p), []);
-  const toggleKnob = useCallback(
-    (id: KnobId) => setOpenKnob((cur) => (cur === id ? null : id)),
-    [],
-  );
-  const closeKnob = useCallback(() => setOpenKnob(null), []);
 
   const handleCopy = useCallback(() => {
     const current = frameRef.current;
@@ -403,39 +379,44 @@ export const PlasmaPlayground = () => {
   const handleKnobChange = useCallback(
     <K extends keyof KnobState>(key: K, value: KnobState[K]) => {
       if (key === "source") {
-        setOpenKnob(null);
         void requestSourceChange(value as Source);
         return;
       }
       setKnobs((prev) => ({ ...prev, [key]: value }));
-      setOpenKnob(null);
     },
     [requestSourceChange],
   );
 
-  const handleChooseCamera = useCallback(() => {
-    writeSplashChoice("camera");
-    setSplashChoice("camera");
-    void requestSourceChange("camera");
-  }, [requestSourceChange]);
+  const handleChooseSplash = useCallback(
+    (source: Source) => {
+      writeSplashChoice(source);
+      setSplashChoice(source);
+      void requestSourceChange(source);
+      if (source === "upload") {
+        openFilePicker();
+      }
+    },
+    [requestSourceChange, openFilePicker],
+  );
 
-  const handleChooseUpload = useCallback(() => {
-    writeSplashChoice("upload");
-    setSplashChoice("upload");
-    void requestSourceChange("upload");
-    openFilePicker();
-  }, [requestSourceChange, openFilePicker]);
-
-  const handleChoosePlasma = useCallback(() => {
-    writeSplashChoice("plasma");
-    setSplashChoice("plasma");
-  }, []);
-
-  const handleChooseShapes = useCallback(() => {
-    writeSplashChoice("shapes");
-    setSplashChoice("shapes");
-    void requestSourceChange("shapes");
-  }, [requestSourceChange]);
+  const handleRememberChange = useCallback(
+    (checked: boolean) => {
+      try {
+        const allowed = rememberPlaygroundPreferences(
+          window.localStorage,
+          checked,
+        );
+        setRemember(allowed);
+        if (allowed) {
+          writeKnobs(knobs);
+          if (splashChoice) writeSplashChoice(splashChoice);
+        }
+      } catch {
+        setRemember(false);
+      }
+    },
+    [knobs, splashChoice],
+  );
 
   useEffect(() => {
     if (!splashHydrated || showSplash || pendingSource !== null) {
@@ -536,89 +517,16 @@ export const PlasmaPlayground = () => {
 
   const showUploadPrompt = isUploadSource && !uploadedFile;
 
-  const labelGroups: LabelGroup[] = useMemo(() => {
-    if (showSplash) {
-      return getSplashLabels({
-        fontPx,
-        onChooseCamera: handleChooseCamera,
-        onChooseUpload: handleChooseUpload,
-        onChoosePlasma: handleChoosePlasma,
-        onChooseShapes: handleChooseShapes,
-      });
-    }
-    if (!showChrome) {
-      return [];
-    }
-    return getPlaygroundLabels({
-      isPaused,
-      copyStatus,
-      snapStatus,
-      recorderStatus: recorder.status,
-      recorderElapsedSeconds: recorder.elapsedSeconds,
-      showUploadPrompt,
-      onTogglePause: togglePause,
-      onKnobToggle: toggleKnob,
-      onCopy: handleCopy,
-      onSnap: handleSnap,
-      onToggleRec: handleToggleRec,
-      onUpload: openFilePicker,
-    });
-  }, [
-    showSplash,
-    showChrome,
-    fontPx,
-    handleChooseCamera,
-    handleChooseUpload,
-    handleChoosePlasma,
-    handleChooseShapes,
-    isPaused,
-    copyStatus,
-    snapStatus,
-    recorder.status,
-    recorder.elapsedSeconds,
-    showUploadPrompt,
-    togglePause,
-    toggleKnob,
-    handleCopy,
-    handleSnap,
-    handleToggleRec,
-    openFilePicker,
-  ]);
+  const isRecording = recorder.status === "recording";
+  const areOverlaysHidden = useIdleOverlays(
+    !showChrome ||
+      showUploadPrompt ||
+      isPaused ||
+      isRecording ||
+      isOverlayEngaged ||
+      pendingSource !== null,
+  );
 
-  const placements = useMemo<LabelPlacement[]>(() => {
-    if (!bounds) {
-      return [];
-    }
-    return labelGroups.flatMap((group) =>
-      getLabelGroupPlacements(bounds, group),
-    );
-  }, [bounds, labelGroups]);
-
-  const knobPlacements = useMemo<Record<KnobId, LabelPlacement | null>>(() => {
-    const empty: Record<KnobId, LabelPlacement | null> = {
-      source: null,
-      size: null,
-      contrast: null,
-    };
-    if (!bounds || !showChrome) {
-      return empty;
-    }
-    const knobsGroup = labelGroups.find(
-      (group) => group.yAlign === "bottom" && group.xAlign === "center",
-    );
-    if (!knobsGroup) {
-      return empty;
-    }
-    const bottomPlacements = getLabelGroupPlacements(bounds, knobsGroup);
-    const ids: KnobId[] = ["source", "size", "contrast"];
-    return ids.reduce(
-      (acc, id, idx) => ({ ...acc, [id]: bottomPlacements[idx] ?? null }),
-      empty,
-    );
-  }, [bounds, labelGroups, showChrome]);
-
-  const placementsRef = useRef(placements);
-  placementsRef.current = placements;
   const knobsRef = useRef(knobs);
   knobsRef.current = knobs;
   const sampleCameraRef = useRef(sampleCamera);
@@ -634,27 +542,9 @@ export const PlasmaPlayground = () => {
   const shapesReadyRef = useRef(shapesReady);
   shapesReadyRef.current = shapesReady;
 
-  const blankLabelsInPlace = useCallback((target: Glyph[][]) => {
-    for (const { row, startCol, label } of placementsRef.current) {
-      const targetRow = target[row];
-      if (!targetRow) {
-        continue;
-      }
-      for (let i = 0; i < label.label.length; i++) {
-        if (targetRow[startCol + i]) {
-          targetRow[startCol + i] = { character: " " };
-        }
-      }
-    }
+  const handleTextFrame = useCallback((next: Glyph[][]) => {
+    frameRef.current = next;
   }, []);
-
-  const handleTextFrame = useCallback(
-    (next: Glyph[][]) => {
-      blankLabelsInPlace(next);
-      frameRef.current = next;
-    },
-    [blankLabelsInPlace],
-  );
 
   const renderFrame = useCallback(
     (currentBounds: FrameBounds) => {
@@ -748,12 +638,11 @@ export const PlasmaPlayground = () => {
     }
   }, intervalMs);
 
-  const openKnobPlacement = openKnob ? knobPlacements[openKnob] : null;
   const canvasWidthPx = (bounds?.width ?? 0) * cellWidth;
   const canvasHeightPx = (bounds?.height ?? 0) * cellSize;
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center">
+    <div className="playground" data-idle={areOverlaysHidden}>
       <div
         className="relative"
         style={{ width: canvasWidthPx, height: canvasHeightPx }}
@@ -775,49 +664,34 @@ export const PlasmaPlayground = () => {
             onCanvasReady={setCanvasElement}
           />
         )}
-        <LabelOverlay
-          placements={placements}
-          cellSize={cellSize}
-          cellWidth={cellWidth}
-          fontPx={fontPx}
-        />
-        <KnobDropdown
-          openKnob={openKnob}
-          placement={openKnobPlacement}
-          cellSize={cellSize}
-          cellWidth={cellWidth}
-          knobs={knobs}
-          cameraSourceEnabled
-          onChange={handleKnobChange}
-          onClose={closeKnob}
-        />
       </div>
-      <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 px-4 text-xs text-neutral-400">
-        <input
-          type="checkbox"
-          data-remember-playground
-          checked={remember}
-          onChange={(event) => {
-            try {
-              const allowed = rememberPlaygroundPreferences(
-                window.localStorage,
-                event.target.checked,
-              );
-              setRemember(allowed);
-              if (allowed) {
-                writeKnobs(knobs);
-                if (splashChoice) writeSplashChoice(splashChoice);
-              }
-            } catch {
-              setRemember(false);
-            }
-          }}
-          className="h-4 w-4 accent-[#dfc993]"
+      {showChrome && (
+        <PlaygroundToolbar
+          de={de}
+          isHidden={areOverlaysHidden}
+          knobs={knobs}
+          pendingSource={pendingSource}
+          isPaused={isPaused}
+          copyStatus={copyStatus}
+          snapStatus={snapStatus}
+          recorderStatus={recorder.status}
+          recorderElapsedSeconds={recorder.elapsedSeconds}
+          remember={remember}
+          hasUploadedFile={uploadedFile !== null}
+          onKnobChange={handleKnobChange}
+          onTogglePause={togglePause}
+          onCopy={handleCopy}
+          onSnap={handleSnap}
+          onToggleRec={handleToggleRec}
+          onUpload={openFilePicker}
+          onRememberChange={handleRememberChange}
+          onEngagedChange={setIsOverlayEngaged}
         />
-        {de
-          ? "Darstellung auf diesem Gerät merken (freiwillig)"
-          : "Remember visual settings on this device (optional)"}
-      </label>
+      )}
+      {showSplash && <PlaygroundSplash de={de} onChoose={handleChooseSplash} />}
+      {showChrome && showUploadPrompt && (
+        <UploadDropZone de={de} onBrowse={openFilePicker} />
+      )}
       <video
         ref={videoRef}
         playsInline
