@@ -313,7 +313,9 @@ function sectionProblem(
         (id) => {
           const candidate = project(id);
           if (!candidate) return "is not a candidate project";
-          return candidate.opened ? "was already opened" : null;
+          if (candidate.opened) return "was already opened";
+          // Proof cards are compared side by side; one without a screenshot reads as broken.
+          return candidate.images.length ? null : "has no image";
         },
       );
     }

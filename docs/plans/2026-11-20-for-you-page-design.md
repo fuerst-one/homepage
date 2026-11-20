@@ -97,6 +97,8 @@ from the library and its content.
 
 - The second-need section exists because the gate promises the real need among
   the top two, not in first place.
+- The proof grid shows only projects with a published screenshot (owner, 20
+  November 2026); a card without one fails the section check.
 - The model never writes a URL. It picks project ids, image references and
   calls to action from lists it was handed: an enquiry with service, offer and
   intent, the two starting offers, the hire page, email, the Explorer, a need's

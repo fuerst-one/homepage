@@ -16,10 +16,11 @@ const context = {
     { id: "opened-a", opened: true, images: ["opened-a#1"] },
     { id: "opened-b", opened: true, images: [] },
     { id: "fresh-a", opened: false, images: ["fresh-a#1", "fresh-a#2"] },
-    { id: "fresh-b", opened: false, images: [] },
-    { id: "fresh-c", opened: false, images: [] },
-    { id: "fresh-d", opened: false, images: [] },
-    { id: "fresh-e", opened: false, images: [] },
+    { id: "fresh-b", opened: false, images: ["fresh-b#1"] },
+    { id: "fresh-c", opened: false, images: ["fresh-c#1"] },
+    { id: "fresh-d", opened: false, images: ["fresh-d#1"] },
+    { id: "fresh-e", opened: false, images: ["fresh-e#1"] },
+    { id: "fresh-bare", opened: false, images: [] },
   ],
   faqIds: ["product-interfaces:1", "product-interfaces:2", "ai-automation:1"],
   needs: ["Improve a complex interface", "Make data actionable"],
@@ -165,10 +166,13 @@ test("the allowlist lists every action once and resolves each id", () => {
       intent: "explore",
     },
   );
-  assert.deepEqual(plan.parseForYouAction("projects:Make data actionable", context.needs), {
-    kind: "projects",
-    need: "Make data actionable",
-  });
+  assert.deepEqual(
+    plan.parseForYouAction("projects:Make data actionable", context.needs),
+    {
+      kind: "projects",
+      need: "Make data actionable",
+    },
+  );
 });
 
 test("the starting offers are the site's two service products", () => {
@@ -183,7 +187,10 @@ test("projects must be candidates: unopened in the proof grid, opened in the bri
   const item = (projectId) => ({ projectId, fit: "Fits." });
   const grid = (ids) => ({ ...sections.proofGrid, items: ids.map(item) });
   assert.equal(check(grid(["fresh-a"])).ok, false, "one project");
-  assert.equal(check(grid(["fresh-a", "fresh-b", "fresh-c", "fresh-d"])).ok, true);
+  assert.equal(
+    check(grid(["fresh-a", "fresh-b", "fresh-c", "fresh-d"])).ok,
+    true,
+  );
   assert.equal(
     check(grid(["fresh-a", "fresh-b", "fresh-c", "fresh-d", "fresh-e"])).ok,
     false,
@@ -210,6 +217,18 @@ test("projects must be candidates: unopened in the proof grid, opened in the bri
   );
 });
 
+test("a proof grid shows only projects with an image", () => {
+  const result = check({
+    ...sections.proofGrid,
+    items: [
+      { projectId: "fresh-a", fit: "Fits." },
+      { projectId: "fresh-bare", fit: "Fits." },
+    ],
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.reason, /fresh-bare has no image/);
+});
+
 test("the spotlight image must be one of that project's candidate images", () => {
   assert.equal(check({ ...sections.spotlight, image: "fresh-a#1" }).ok, true);
   assert.equal(check({ ...sections.spotlight, image: "opened-a#1" }).ok, false);
@@ -230,7 +249,10 @@ test("the spotlight image must be one of that project's candidate images", () =>
 });
 
 test("the second need must be a known need, the approach has three steps", () => {
-  assert.equal(check({ ...sections.secondNeed, need: "Rule the world" }).ok, false);
+  assert.equal(
+    check({ ...sections.secondNeed, need: "Rule the world" }).ok,
+    false,
+  );
   assert.equal(
     check({ ...sections.approach, steps: sections.approach.steps.slice(0, 2) })
       .ok,
@@ -242,10 +264,14 @@ test("FAQ picks are two or three distinct ids from the list passed in", () => {
   const pick = (faqIds) => check({ ...sections.questions, faqIds });
   assert.equal(pick(["product-interfaces:1"]).ok, false);
   assert.equal(
-    pick(["product-interfaces:1", "product-interfaces:2", "ai-automation:1"]).ok,
+    pick(["product-interfaces:1", "product-interfaces:2", "ai-automation:1"])
+      .ok,
     true,
   );
-  assert.equal(pick(["product-interfaces:1", "product-interfaces:1"]).ok, false);
+  assert.equal(
+    pick(["product-interfaces:1", "product-interfaces:1"]).ok,
+    false,
+  );
   assert.equal(pick(["product-interfaces:1", "ai-products:9"]).ok, false);
 });
 
@@ -288,12 +314,20 @@ test("a plan keeps its valid sections and reports the dropped ones", () => {
 
 test("a plan needs four valid sections and keeps at most seven", () => {
   const short = plan.validateForYouPlan(
-    fullPlan([sections.hero, sections.bridge, { type: "testimonial" }, sections.closing]),
+    fullPlan([
+      sections.hero,
+      sections.bridge,
+      { type: "testimonial" },
+      sections.closing,
+    ]),
     context,
   );
   assert.equal(short.ok, false);
   assert.match(short.reason, /four/);
-  const all = plan.validateForYouPlan(fullPlan(Object.values(sections)), context);
+  const all = plan.validateForYouPlan(
+    fullPlan(Object.values(sections)),
+    context,
+  );
   assert.equal(all.ok, true);
   assert.equal(all.plan.sections.length, plan.FOR_YOU_MAX_SECTIONS);
   assert.deepEqual(
@@ -332,6 +366,9 @@ test("FAQ ids are stable per service and position and match across languages", (
   assert.ok(en.every((faq) => /^[a-z-]+:[1-9]\d*$/.test(faq.id)));
   const first = en.find((faq) => faq.id === "product-interfaces:1");
   assert.match(first.question, /existing product/);
-  assert.equal(faqs.serviceFaq("de", "product-interfaces:1").answer.length > 0, true);
+  assert.equal(
+    faqs.serviceFaq("de", "product-interfaces:1").answer.length > 0,
+    true,
+  );
   assert.equal(faqs.serviceFaq("en", "product-interfaces:99"), undefined);
 });

@@ -33,7 +33,7 @@ export function ForYouProofGrid({
           const image = Object.values(project.images)[0];
           return (
             <li key={projectId} className="for-you-proof">
-              {image ? (
+              {image && (
                 // The existing Notion image proxy serves the published screenshots.
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -42,11 +42,7 @@ export function ForYouProofGrid({
                   loading="lazy"
                   width={640}
                   height={400}
-                  className="for-you-proof-frame"
                 />
-              ) : (
-                // An empty frame keeps the titles of all cards on one line.
-                <div className="for-you-proof-frame" aria-hidden="true" />
               )}
               <h3 lang="en">
                 <Link
