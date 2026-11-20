@@ -16,6 +16,8 @@ import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 import { getProjectLogoSources } from "./getProjectLogoSources";
 import { ProjectLogo } from "./ProjectLogo";
 import { ProjectIndustry } from "./ProjectIndustry";
+import { ProjectFacetValues } from "./ProjectFacetValues";
+import type { ProjectFacet } from "./facetColors";
 import { useProjectFocusStore } from "./projectFocusStore";
 import { projectPath } from "../../../lib/seo";
 import { localeFromPath } from "@homepage/content/i18n";
@@ -28,7 +30,14 @@ import { CARD_BUYER_NEED_COUNT } from "@homepage/content/visitorProfileSignals";
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-export const ProjectCard = ({ project }: { project: CvProject }) => {
+export const ProjectCard = ({
+  project,
+  facet,
+}: {
+  project: CvProject;
+  /** Without one (the PDF CV) the card leads with its industry. */
+  facet?: ProjectFacet;
+}) => {
   const locale = useLocale();
   const {
     id,
@@ -127,7 +136,11 @@ export const ProjectCard = ({ project }: { project: CvProject }) => {
       <div className="pointer-events-none relative z-10 flex min-w-0 flex-col gap-4">
         <header className="space-y-3">
           <div className="flex items-center justify-between gap-3">
-            <ProjectIndustry project={project} locale={locale} />
+            {facet ? (
+              <ProjectFacetValues facet={facet} locale={locale} />
+            ) : (
+              <ProjectIndustry project={project} locale={locale} />
+            )}
             {primaryLogo && (
               <ProjectLogo src={primaryLogo} alt={`${name} logo`} />
             )}

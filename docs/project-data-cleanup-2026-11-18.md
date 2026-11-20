@@ -123,3 +123,25 @@ delivered shop. Six other unmeasured projects have no mapped product source.
   source/operator artifacts; it is excluded from the publication.
 - Scoped cleanup commit and exact final status are recorded in exported
   `receipt.json`, outside the commit so the recorded SHA is not self-referential.
+
+## Update 2026-11-20: code vocabularies follow Notion
+
+- Owner decision: **Direct Consumer** and **OSS** are accepted customer markets
+  again (10 and 1 projects), reversing the OSS removal above. AI capabilities
+  **Suggestion generation** and **Data analysis**, and the product formats
+  **MCP Server**, **Concept** and **Clickdummy** were added to the code
+  vocabularies, so none of them is dropped from the publication any more.
+- Unused Notion options were deleted: the Tools Jobs To Be Done, Limbic Types,
+  Personas and 7-Level-Model (they live in Methods); the product types SaaS,
+  Configurator, Educational app, CRO Consulting, A/B-Testing and E-commerce (two
+  hidden projects moved to Website first); usage context Open Source; ownership
+  Not established; and the sector-like domains Logistics and maritime, Tourism
+  and travel, Public sector, Nonprofit, Healthcare, Education, Automotive and
+  Sustainability. The code keeps those domains as `RETIRED_DOMAINS`, so saved
+  links and enquiry wording still resolve to their sectors, while selecting one
+  in Notion is flagged again.
+- The source review now also compares every option of a controlled Notion field
+  with the code (`unknown-option`), stores the result after each sync, shows
+  counts in `notion:status`, and `notion:review` prints details and exits
+  non-zero while drift exists. The container health check deliberately ignores
+  it. After this update the review reports no issues.

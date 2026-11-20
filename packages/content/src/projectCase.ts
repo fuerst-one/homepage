@@ -2,6 +2,18 @@ import type { Locale } from "@homepage/content/i18n";
 import { sectorLabel, deliveryLabel } from "./projectTaxonomy";
 
 // This allowlist is the public matching vocabulary, not the full editorial record.
+/** Sector-like domains retired from Notion; old links and enquiry wording still resolve through them. */
+export const RETIRED_DOMAINS: Record<string, string> = {
+  "Logistics and maritime": "Logistik und Schifffahrt",
+  "Tourism and travel": "Tourismus und Reisen",
+  "Public sector": "Öffentlicher Sektor",
+  Nonprofit: "Gemeinnützigkeit",
+  Healthcare: "Gesundheitswesen",
+  Education: "Bildung",
+  Automotive: "Automobil",
+  Sustainability: "Nachhaltigkeit",
+};
+
 export const CASE_VOCABULARY = {
   buyerNeeds: {
     "Launch a new product": "Ein neues Produkt starten",
@@ -62,20 +74,12 @@ export const CASE_VOCABULARY = {
     "Creative editing": "Kreative Bearbeitung",
     "Sustainability reporting": "Nachhaltigkeitsnachweise",
     "Developer tooling": "Entwicklerwerkzeuge",
-    "Logistics and maritime": "Logistik und Schifffahrt",
     "E-commerce": "E-Commerce",
     "Marketing and research": "Marketing und Forschung",
-    "Tourism and travel": "Tourismus und Reisen",
-    "Public sector": "Öffentlicher Sektor",
-    Nonprofit: "Gemeinnützigkeit",
-    Healthcare: "Gesundheitswesen",
-    Education: "Bildung",
     Entertainment: "Unterhaltung",
-    Automotive: "Automobil",
     "Personal productivity": "Persönliche Produktivität",
     "Embedded systems": "Eingebettete Systeme",
     "Brand and portfolio": "Marke und Portfolio",
-    Sustainability: "Nachhaltigkeit",
     "Geospatial analysis": "Geodatenanalyse",
   },
   aiUsage: {
@@ -103,6 +107,8 @@ export const CASE_VOCABULARY = {
     "Geo suggestion": "Ortsvorschläge",
     "Trip planning": "Reiseplanung",
     Routing: "Routenberechnung",
+    "Suggestion generation": "Vorschlagsgenerierung",
+    "Data analysis": "Datenanalyse",
   },
   ownership: {
     "Solo delivery": "Eigenständige Umsetzung",
@@ -175,7 +181,9 @@ const germanLabels: Record<string, string> = Object.assign(
     "Developer tool": "Entwicklerwerkzeug",
     "Open Source": "Quelloffene Distribution",
     "Automated Testing": "Automatisierte Tests",
+    "Direct Consumer": "Direkt an Endkunden",
   },
+  RETIRED_DOMAINS,
   ...Object.values(CASE_VOCABULARY),
 );
 export function caseLabel(value: string, locale: Locale) {

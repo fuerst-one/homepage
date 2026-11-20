@@ -20,10 +20,10 @@ export type ComparisonProject = Pick<
 export const COMPARISON_FIELDS = [
   { id: "needs", label: "Client needs" },
   { id: "useCases", label: "Use cases" },
-  { id: "tools", label: "Tools & libraries" },
+  { id: "tools", label: "Technologies" },
   { id: "languages", label: "Languages" },
-  { id: "capabilities", label: "Capabilities" },
-  { id: "methods", label: "Methods" },
+  { id: "capabilities", label: "Expertise" },
+  { id: "methods", label: "Methods & principles" },
   { id: "formats", label: "Product formats" },
   { id: "sectors", label: "Sectors" },
 ] as const;

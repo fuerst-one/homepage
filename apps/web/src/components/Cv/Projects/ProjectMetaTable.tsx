@@ -14,9 +14,9 @@ const ROW_LABELS: Partial<Record<keyof CvProject, string>> = {
   targetMarket: "Customer market",
   usageContext: "Usage context",
   deliveryModel: "Delivery & operation",
-  capabilities: "Capabilities",
-  methods: "Methods",
-  tools: "Tools",
+  capabilities: "Expertise",
+  methods: "Methods & principles",
+  tools: "Technologies",
   languages: "Languages",
 };
 
@@ -50,9 +50,9 @@ export const ProjectMetaTable = ({
                 targetMarket: "Zielmarkt",
                 usageContext: "Nutzungskontext",
                 deliveryModel: "Bereitstellung & Betrieb",
-                capabilities: "Kompetenzen",
-                methods: "Methoden",
-                tools: "Tools",
+                capabilities: "Expertise",
+                methods: "Methoden & Prinzipien",
+                tools: "Technologien",
                 languages: "Sprachen",
               } as Record<string, string>
             )[key]

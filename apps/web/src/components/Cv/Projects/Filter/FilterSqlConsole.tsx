@@ -66,7 +66,7 @@ type CliFilterGroup = {
 };
 
 const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
-  { key: "methods", label: "Methods" },
+  { key: "methods", label: "Methods & principles" },
   { key: "domains", label: "Use cases" },
   { key: "productTypes", label: "Product formats" },
   { key: "targetMarket", label: "Customer market" },
@@ -78,7 +78,7 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
   },
   {
     key: "capabilities",
-    label: "Capabilities",
+    label: "Expertise",
   },
   {
     key: "industries",
@@ -86,11 +86,11 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
   },
   {
     key: "projectType",
-    label: "Project types",
+    label: "Project setting",
   },
   {
     key: "tools",
-    label: "Tools",
+    label: "Technologies",
   },
   {
     key: "languages",
@@ -105,11 +105,11 @@ const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
   usageContext: "Nutzungskontext",
   deliveryModel: "Bereitstellung & Betrieb",
   featured: "Ausgewählt",
-  capabilities: "Kompetenzen",
-  methods: "Methoden",
+  capabilities: "Expertise",
+  methods: "Methoden & Prinzipien",
   industries: "Branchen",
-  projectType: "Projekttypen",
-  tools: "Tools",
+  projectType: "Projektrahmen",
+  tools: "Technologien",
   languages: "Sprachen",
 };
 

@@ -119,13 +119,19 @@ const GROUPS: Record<AtlasLens, GroupDefinition[]> = {
       id: "research",
       label: "Research & optimization",
       color: "#e5b183",
-      tags: ["CRO Consulting", "A/B-Testing"],
+      tags: ["CRO Consulting", "A/B-Testing", "Concept", "Clickdummy"],
     },
     {
       id: "integrations",
       label: "Tools & integrations",
       color: "#8bb8dd",
-      tags: ["Developer tool", "Plugin / integration", "API", "Chatbot"],
+      tags: [
+        "Developer tool",
+        "Plugin / integration",
+        "API",
+        "Chatbot",
+        "MCP Server",
+      ],
     },
     {
       id: "websites",

@@ -95,34 +95,13 @@
             "name": "Developer tooling"
           },
           {
-            "name": "Logistics and maritime"
-          },
-          {
             "name": "E-commerce"
           },
           {
             "name": "Marketing and research"
           },
           {
-            "name": "Tourism and travel"
-          },
-          {
-            "name": "Public sector"
-          },
-          {
-            "name": "Nonprofit"
-          },
-          {
-            "name": "Healthcare"
-          },
-          {
-            "name": "Education"
-          },
-          {
             "name": "Entertainment"
-          },
-          {
-            "name": "Automotive"
           },
           {
             "name": "Personal productivity"
@@ -132,9 +111,6 @@
           },
           {
             "name": "Brand and portfolio"
-          },
-          {
-            "name": "Sustainability"
           },
           {
             "name": "Geospatial analysis"
@@ -372,6 +348,12 @@
           },
           {
             "name": "Computer vision detection"
+          },
+          {
+            "name": "Suggestion generation"
+          },
+          {
+            "name": "Data analysis"
           }
         ]
       }

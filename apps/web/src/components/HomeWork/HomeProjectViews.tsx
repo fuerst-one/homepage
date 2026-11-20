@@ -1,11 +1,14 @@
 import type { CvProject } from "@homepage/content/models";
 import type { Locale } from "@homepage/content/i18n";
-import { sectorLabel } from "@homepage/content/projectTaxonomy";
+import type { CSSProperties } from "react";
 import {
+  facetValueLabel,
   getFilterOptionCounts,
   projectFacetHref,
 } from "../Cv/Projects/Filter/utils";
+import { facetColor, facetPalette } from "../Cv/Projects/facetColors";
 import { TREEMAP_ITEMS_MAX } from "../Cv/Projects/Filter/treemapOptions";
+import { chartTypeFor, filterConfigs } from "../Cv/Projects/filterConfigs";
 import Link from "../i18n/LocalizedLink";
 import { DeferredProjectBreakdown } from "./DeferredProjectBreakdown";
 
@@ -17,21 +20,49 @@ export function HomeProjectViews({
   locale: Locale;
 }) {
   const de = locale === "de";
-  const facets = [
-    { key: "capabilities", label: de ? "Kompetenzen" : "Capabilities" },
-    { key: "industries", label: de ? "Branchen" : "Industries" },
-    { key: "methods", label: de ? "Methoden" : "Methods" },
-  ] as const;
+  const facets = (["capabilities", "industries", "methods"] as const).map(
+    (key) => filterConfigs.find((config) => config.projectKey === key)!,
+  );
   return (
     <div className="home-project-views">
       <div className="home-project-view-grid">
-        {facets.map(({ key, label }) => {
+        {facets.map((config) => {
+          const key = config.projectKey as
+            "capabilities" | "industries" | "methods";
+          const label = de ? config.labelDe : config.label;
           const items = getFilterOptionCounts(projects, key);
           if (!items.length) return null;
+          const chart = chartTypeFor(config, items.length) !== "bar";
+          const countLabel = (count: number) => (
+            <span>
+              {new Intl.NumberFormat(locale).format(count)}
+              <span className="sr-only"> {de ? "Projekte" : "projects"}</span>
+            </span>
+          );
+          const palette = chart ? undefined : facetPalette(projects, key);
+          const barStyle = (itemKey: string, count: number) =>
+            palette &&
+            ({
+              "--facet-color": facetColor(palette, itemKey),
+              "--facet-share": `${(count / items[0].count) * 100}%`,
+            } as CSSProperties);
+          const links = items.map(({ itemKey, count }) => (
+            <li key={itemKey}>
+              <Link
+                href={projectFacetHref(key, itemKey, locale)}
+                prefetch={false}
+                style={barStyle(itemKey, count)}
+              >
+                <span>{facetValueLabel(key, itemKey, locale)}</span>
+                {countLabel(count)}
+              </Link>
+            </li>
+          ));
           return (
             <section
               className="home-project-view"
               key={key}
+              data-home-facet={key}
               aria-labelledby={`home-facet-${key}`}
             >
               <header>
@@ -40,52 +71,38 @@ export function HomeProjectViews({
                   {de ? "Projekte pro Kategorie" : "Projects per category"}
                 </span>
               </header>
-              <div className="home-facet-chart" aria-hidden="true">
-                <DeferredProjectBreakdown
-                  items={items}
-                  facet={key}
-                  label={label}
-                  locale={locale}
-                />
-              </div>
-              <p className="home-facet-limit">
-                {items.length > TREEMAP_ITEMS_MAX
-                  ? de
-                    ? `Die ${TREEMAP_ITEMS_MAX} häufigsten Kategorien`
-                    : `The ${TREEMAP_ITEMS_MAX} most common categories`
-                  : de
-                    ? `Alle ${items.length} Kategorien`
-                    : `All ${items.length} categories`}
-              </p>
-              <details className="home-facet-categories">
-                <summary>
-                  {de ? "Kategorien durchsuchen" : "Browse categories"}
-                  <span>{items.length}</span>
-                </summary>
-                <ul>
-                  {items.map(({ itemKey, count }) => (
-                    <li key={itemKey}>
-                      <Link
-                        href={projectFacetHref(key, itemKey, locale)}
-                        prefetch={false}
-                      >
-                        <span>
-                          {key === "industries"
-                            ? sectorLabel(itemKey, locale)
-                            : itemKey}
-                        </span>
-                        <span>
-                          {new Intl.NumberFormat(locale).format(count)}
-                          <span className="sr-only">
-                            {" "}
-                            {de ? "Projekte" : "projects"}
-                          </span>
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
+              {chart ? (
+                <>
+                  <div className="home-facet-chart" aria-hidden="true">
+                    <DeferredProjectBreakdown
+                      items={items}
+                      facet={key}
+                      label={label}
+                      locale={locale}
+                    />
+                  </div>
+                  <p className="home-facet-limit">
+                    {items.length > TREEMAP_ITEMS_MAX
+                      ? de
+                        ? `Die ${TREEMAP_ITEMS_MAX} häufigsten Kategorien`
+                        : `The ${TREEMAP_ITEMS_MAX} most common categories`
+                      : de
+                        ? `Alle ${items.length} Kategorien`
+                        : `All ${items.length} categories`}
+                  </p>
+                  <details className="home-facet-categories">
+                    <summary>
+                      {de ? "Kategorien durchsuchen" : "Browse categories"}
+                      <span>{items.length}</span>
+                    </summary>
+                    <ul>{links}</ul>
+                  </details>
+                </>
+              ) : (
+                <ul className="home-facet-list" data-home-facet-list>
+                  {links}
                 </ul>
-              </details>
+              )}
             </section>
           );
         })}

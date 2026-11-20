@@ -3,6 +3,10 @@ import { readFile } from "node:fs/promises";
 import { knowledgeDatabase } from "@homepage/database/database";
 import { syncWebsiteContent } from "../src/notion/syncWebsiteContent";
 import {
+  readProjectReview,
+  summarizeProjectReview,
+} from "../src/notion/projectReviewStore";
+import {
   deliverPendingEnquiries,
   seedMaltMirror,
   watchNotion,
@@ -45,7 +49,14 @@ async function main() {
         (SELECT min(created_at) FROM notion_enquiry_outbox WHERE delivered_at IS NULL) AS oldest_pending_at,
         (SELECT max(attempts) FROM notion_enquiry_outbox WHERE delivered_at IS NULL) AS max_delivery_attempts,
         (SELECT max(cooldown_until) FROM notion_request_gate) AS notion_cooldown_until`;
-      console.log(JSON.stringify(state));
+      const review = await readProjectReview(sql);
+      console.log(
+        JSON.stringify({
+          ...state,
+          project_review_checked_at: review?.checkedAt ?? null,
+          project_review_issues: summarizeProjectReview(review?.issues ?? []),
+        }),
+      );
       if (
         command === "health" &&
         (!state.content_published_at ||
@@ -56,8 +67,15 @@ async function main() {
               15 * 60_000))
       )
         process.exitCode = 1;
+    } else if (command === "review") {
+      // Unlike health, drift must not mark a working worker container unhealthy.
+      const review = await readProjectReview(sql);
+      console.log(JSON.stringify(review ?? null, null, 2));
+      if (!review || review.issues.length) process.exitCode = 1;
     } else
-      throw new Error("Use migrate, sync, deliver, watch, status or health");
+      throw new Error(
+        "Use migrate, sync, deliver, watch, status, health or review",
+      );
   } finally {
     await sql.end();
   }

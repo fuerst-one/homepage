@@ -11,13 +11,13 @@ export const SPACE_RECIPES = [
     id: "engineering",
     label: "Engineering",
     question: "How is it built?",
-    fields: ["Tools & libraries", "Languages"],
+    fields: ["Technologies", "Languages"],
   },
   {
     id: "practice",
     label: "Contribution model",
     question: "How did I contribute?",
-    fields: ["Ownership", "Engagement type", "Working pattern", "Team size"],
+    fields: ["Ownership", "Project setting", "Working pattern", "Team size"],
   },
 ] as const;
 export type SpaceRecipe = (typeof SPACE_RECIPES)[number]["id"];

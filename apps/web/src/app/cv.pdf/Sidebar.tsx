@@ -50,7 +50,9 @@ export const Sidebar = ({
 
   return (
     <View style={styles.sidebar}>
-      <Section label="Tools">{tools}</Section>
+      <Section label={locale === "de" ? "Technologien" : "Technologies"}>
+        {tools}
+      </Section>
       <Section label={locale === "de" ? "Branchen" : "Industries"}>
         {industries}
       </Section>

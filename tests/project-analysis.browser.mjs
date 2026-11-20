@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import puppeteer from "puppeteer";
+import { loadTs } from "./helpers/load-ts.mjs";
 
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6894";
 
@@ -173,8 +174,28 @@ for (const locale of ["en", "de"]) {
           options.map((option) => option.textContent),
         ),
         locale === "de"
-          ? ["Branchen", "Kompetenzen", "Methoden", "Projekttyp", "Tools"]
-          : ["Industries", "Capabilities", "Methods", "Types", "Tools"],
+          ? [
+              "Branchen",
+              "Projektrahmen",
+              "Expertise",
+              "Methoden & Prinzipien",
+              "Technologien",
+              "Bedarf",
+              "Produktformate",
+              "Umsetzungsstand",
+              "Zielmarkt",
+            ]
+          : [
+              "Industries",
+              "Project setting",
+              "Expertise",
+              "Methods & principles",
+              "Technologies",
+              "Buyer needs",
+              "Product formats",
+              "Delivery stage",
+              "Target market",
+            ],
       );
       assert.equal(
         await views.evaluate((select) => select.value),
@@ -262,6 +283,220 @@ test("switching the sidebar Explorer's lens changes the question it answers", as
     assert.deepEqual(await pressed(), ["false", "false", "false", "true"]);
     assert.ok(await page.waitForSelector("[data-explorer-preview] canvas"));
     assert.deepEqual(errors, []);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("the analysis view decides what the project cards lead with", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    const cardFacets = () =>
+      page.$$eval("article [data-project-facet-values]", (lines) =>
+        lines.map((line) => ({
+          view: line.getAttribute("data-project-facet-values"),
+          labels: [...line.querySelectorAll("[data-facet-value]")].map(
+            (label) => label.textContent,
+          ),
+          more: line.querySelector("[data-facet-more]")?.textContent ?? null,
+        })),
+      );
+
+    const industries = await cardFacets();
+    assert.ok(industries.length > 0);
+    assert.ok(industries.every(({ view }) => view === "industries"));
+
+    await page.select("aside select", "projectType");
+    await page.waitForFunction(() =>
+      [
+        ...document.querySelectorAll("article [data-project-facet-values]"),
+      ].every(
+        (line) =>
+          line.getAttribute("data-project-facet-values") === "projectType",
+      ),
+    );
+    const settings = await page.$$eval("article", (cards) =>
+      cards.map((card) => ({
+        header: card.querySelector("[data-project-facet-values]")?.textContent,
+        meta: card
+          .querySelector("header p.text-xs")
+          ?.textContent.split(" · ")[0],
+      })),
+    );
+    assert.ok(settings.every(({ header, meta }) => header === meta));
+
+    await page.select("aside select", "tools");
+    await page.waitForFunction(() =>
+      [
+        ...document.querySelectorAll("article [data-project-facet-values]"),
+      ].every(
+        (line) => line.getAttribute("data-project-facet-values") === "tools",
+      ),
+    );
+    const tools = await cardFacets();
+    assert.ok(tools.every(({ labels }) => labels.length <= 3));
+    assert.ok(tools.some(({ more }) => more?.startsWith("+")));
+    assert.deepEqual(errors, []);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("capabilities show as a full list like tools, not a capped treemap", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    await page.select("aside select", "capabilities");
+    const analysis = "aside [role=region][aria-label]";
+    await page.waitForSelector(`${analysis} [role=progressbar]`);
+    assert.equal(await page.$(`${analysis} canvas`), null);
+    const rows = await page.$$eval(
+      `${analysis} [role=progressbar]`,
+      (bars) => bars.length,
+    );
+    assert.ok(rows > 12, `expected every capability, got ${rows} rows`);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("German cards and charts show buyer needs in German", async () => {
+  const { CASE_VOCABULARY } = loadTs(
+    new URL("../packages/content/src/projectCase.ts", import.meta.url),
+  );
+  const german = new Set(Object.values(CASE_VOCABULARY.buyerNeeds));
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/de/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    await page.select("aside select", "buyerNeeds");
+    await page.waitForSelector(
+      'article [data-project-facet-values="buyerNeeds"] [data-facet-value]',
+    );
+    const cardLabels = await page.$$eval(
+      "article [data-facet-value]",
+      (labels) => labels.map((label) => label.textContent),
+    );
+    assert.ok(cardLabels.length > 0);
+    assert.deepEqual(
+      cardLabels.filter((label) => !german.has(label)),
+      [],
+    );
+    const chartLabels = await page.$$eval(
+      "aside [role=region][aria-label] [data-facet-option]",
+      (rows) => rows.map((row) => row.getAttribute("data-facet-option-label")),
+    );
+    assert.ok(chartLabels.length > 0);
+    assert.deepEqual(
+      chartLabels.filter((label) => !german.has(label)),
+      [],
+    );
+  } finally {
+    await browser.close();
+  }
+});
+
+test("views with many values show a list; small ones and industries keep their chart", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    const analysis = "aside [role=region][aria-label]";
+    for (const view of ["methods", "productTypes"]) {
+      await page.select("aside select", view);
+      await page.waitForSelector(`${analysis} [role=progressbar]`);
+      assert.equal(await page.$(`${analysis} canvas`), null, view);
+    }
+    await page.select("aside select", "industries");
+    await page.waitForSelector(`${analysis} canvas`);
+    await page.select("aside select", "projectType");
+    await page.waitForSelector(`${analysis} canvas`);
+    assert.equal(await page.$(`${analysis} [role=progressbar]`), null);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("home lists every expertise and method, while industries stay a treemap", async () => {
+  const data = await fetch(`${base}/api/projects?locale=en`).then((r) =>
+    r.json(),
+  );
+  const distinct = (key) =>
+    new Set(data.results.flatMap((project) => project[key] ?? [])).size;
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    for (const key of ["capabilities", "methods"]) {
+      const rows = await page.$$eval(
+        `[data-home-facet="${key}"] [data-home-facet-list] a`,
+        (links) => links.map((link) => link.getAttribute("href")),
+      );
+      assert.equal(rows.length, distinct(key), key);
+      assert.ok(rows.every((href) => href.includes(`/en/projects?${key}=`)));
+      assert.equal(
+        await page.$(`[data-home-facet="${key}"] .home-facet-chart`),
+        null,
+      );
+    }
+    assert.ok(await page.$('[data-home-facet="industries"] .home-facet-chart'));
+  } finally {
+    await browser.close();
+  }
+});
+
+test("list rows show every name and count in full", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    for (const view of ["capabilities", "buyerNeeds"]) {
+      await page.select("aside select", view);
+      await page.waitForSelector(
+        "aside [role=region][aria-label] [data-facet-option]",
+      );
+      const clipped = await page.$$eval(
+        "aside [role=region][aria-label] [data-facet-option]",
+        (rows) =>
+          rows
+            .filter((row) =>
+              [row, ...row.querySelectorAll("*")].some(
+                (element) => element.scrollWidth > element.clientWidth,
+              ),
+            )
+            .map((row) => row.textContent),
+      );
+      assert.deepEqual(clipped, [], view);
+    }
   } finally {
     await browser.close();
   }

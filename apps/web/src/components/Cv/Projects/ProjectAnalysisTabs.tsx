@@ -1,18 +1,19 @@
 "use client";
 
 import { useLocale } from "../../i18n/LocaleProvider";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo } from "react";
 import { CvProject } from "@homepage/content/models";
 import {
   publishedResultProjects,
   useProjectListStore,
 } from "./projectListStore";
-import { getFilterOptionCounts } from "./Filter/utils";
-import { filterConfigs } from "./filterConfigs";
+import { getFilterOptionCounts, type FacetKey } from "./Filter/utils";
+import { chartTypeFor, filterConfigs } from "./filterConfigs";
 import { FilterConfig } from "./Filter/types";
 import { BarChartFilter } from "./Filter/BarChartFilter";
 import { PieChartFilter } from "./Filter/PieChartFilter";
 import { TreemapFilter } from "./Filter/TreemapFilter";
+import { facetPalette, type FacetPalette } from "./facetColors";
 
 export const ProjectAnalysisTabs = ({
   projects,
@@ -20,8 +21,11 @@ export const ProjectAnalysisTabs = ({
   projects: CvProject[];
 }) => {
   const locale = useLocale();
-  const [activeTab, setActiveTab] = useState<string>(
-    filterConfigs[0].projectKey,
+  const activeTab = useProjectListStore((s) => s.facetView);
+  const setActiveTab = useProjectListStore((s) => s.setFacetView);
+  const palette = useMemo(
+    () => facetPalette(projects, activeTab),
+    [projects, activeTab],
   );
   const filterParams = useProjectListStore((s) => s.filters);
   const resultIds = useProjectListStore((s) => s.resultIds);
@@ -34,21 +38,7 @@ export const ProjectAnalysisTabs = ({
   const panelId = `${selectorId}-panel`;
   const tabs = filterConfigs.map((c) => ({
     id: c.projectKey,
-    label:
-      locale === "de"
-        ? ((
-            {
-              clients: "Kunden",
-              industries: "Branchen",
-              capabilities: "Kompetenzen",
-              methods: "Methoden",
-              tools: "Tools",
-              languages: "Sprachen",
-              projectType: "Projekttyp",
-              workplace: "Arbeitsort",
-            } as Record<string, string>
-          )[c.projectKey] ?? c.label)
-        : c.label,
+    label: locale === "de" ? c.labelDe : c.label,
   }));
 
   return (
@@ -64,7 +54,7 @@ export const ProjectAnalysisTabs = ({
           id={selectorId}
           value={activeTab}
           aria-controls={panelId}
-          onChange={(event) => setActiveTab(event.target.value)}
+          onChange={(event) => setActiveTab(event.target.value as FacetKey)}
           className="min-h-11 min-w-0 flex-1 bg-transparent px-3 py-2 text-xs text-white outline-none [color-scheme:dark] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
         >
           {tabs.map((tab) => (
@@ -83,21 +73,24 @@ export const ProjectAnalysisTabs = ({
         <ChartTabContent
           filterConfig={getFilterConfig(activeTab)}
           projects={filteredProjects}
+          palette={palette}
         />
       </div>
     </div>
   );
 };
 
-const getFilterConfig = (projectKey: string): FilterConfig | null =>
+const getFilterConfig = (projectKey: FacetKey): FilterConfig | null =>
   filterConfigs.find((c) => c.projectKey === projectKey) ?? null;
 
 const ChartTabContent = ({
   filterConfig,
   projects,
+  palette,
 }: {
   filterConfig: FilterConfig | null;
   projects: CvProject[];
+  palette: FacetPalette;
 }) => {
   const locale = useLocale();
   if (!filterConfig) return null;
@@ -125,17 +118,29 @@ const ChartTabContent = ({
     );
   }
 
-  const { displayType } = filterConfig;
+  const displayType = chartTypeFor(filterConfig, palette.values.size);
   return (
     <div className="h-full min-h-0 w-full p-2">
       {displayType === "bar" && (
-        <BarChartFilter filterConfig={filterConfig} projects={projects} />
+        <BarChartFilter
+          filterConfig={filterConfig}
+          projects={projects}
+          palette={palette}
+        />
       )}
       {displayType === "pie" && (
-        <PieChartFilter filterConfig={filterConfig} projects={projects} />
+        <PieChartFilter
+          filterConfig={filterConfig}
+          projects={projects}
+          palette={palette}
+        />
       )}
       {displayType === "treemap" && (
-        <TreemapFilter filterConfig={filterConfig} projects={projects} />
+        <TreemapFilter
+          filterConfig={filterConfig}
+          projects={projects}
+          palette={palette}
+        />
       )}
     </div>
   );

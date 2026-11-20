@@ -6,7 +6,11 @@ import {
   searchProjectIndex,
   type buildProjectSearchIndex,
 } from "../../PlasmaLanding/projectSearch";
-import { filterProjects, type FilterParams } from "./Filter/utils";
+import {
+  filterProjects,
+  type FacetKey,
+  type FilterParams,
+} from "./Filter/utils";
 
 /** Cluster numbers repeat across Explorer lenses, so the lens is part of a cluster's identity. */
 export type ClusterSelection = {
@@ -27,6 +31,8 @@ export type ProjectListState = {
   /** Published by the list, which alone holds the projects; null while no list is mounted. */
   resultIds: string[] | null;
   revealId: string | null;
+  /** The analysis box view; project cards lead with the same facet. */
+  facetView: FacetKey;
   setFilters: (next: FilterParams) => void;
   toggle: (key: string, value: string) => void;
   clearKey: (key: string) => void;
@@ -39,6 +45,7 @@ export type ProjectListState = {
   setResultIds: (ids: string[]) => void;
   revealProject: (id: string) => void;
   clearReveal: () => void;
+  setFacetView: (view: FacetKey) => void;
   resetListView: () => void;
 };
 
@@ -58,6 +65,7 @@ export const useProjectListStore = create<ProjectListState>((set, get) => ({
   cluster: null,
   resultIds: null,
   revealId: null,
+  facetView: "industries",
   setFilters: (next) => set({ filters: next }),
   toggle: (key, value) => {
     const prev = get().filters;
@@ -99,6 +107,7 @@ export const useProjectListStore = create<ProjectListState>((set, get) => ({
   setResultIds: (resultIds) => set({ resultIds }),
   revealProject: (revealId) => set({ revealId }),
   clearReveal: () => set({ revealId: null }),
+  setFacetView: (facetView) => set({ facetView }),
   resetListView: () =>
     set({
       query: "",
@@ -107,6 +116,7 @@ export const useProjectListStore = create<ProjectListState>((set, get) => ({
       cluster: null,
       resultIds: null,
       revealId: null,
+      facetView: "industries",
     }),
 }));
 

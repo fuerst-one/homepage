@@ -2,10 +2,11 @@ import { CvProject } from "@homepage/content/models";
 import type { Locale } from "@homepage/content/i18n";
 import countBy from "lodash/countBy";
 import { colors } from "../colors";
-import { CASE_VOCABULARY } from "@homepage/content/projectCase";
+import { CASE_VOCABULARY, caseLabel } from "@homepage/content/projectCase";
 import {
   matchesLegacyTaxonomy,
   projectDeliveryModels,
+  sectorLabel,
 } from "@homepage/content/projectTaxonomy";
 
 type FilterKey =
@@ -24,17 +25,29 @@ type FilterKey =
     >
   | keyof typeof CASE_VOCABULARY;
 export type FilterParams = Partial<Record<FilterKey, string[]>>;
+/** Project fields plus the case facets that live on the project's case data. */
+export type FacetKey = keyof CvProject | keyof typeof CASE_VOCABULARY;
 
-export const getFilterOptionCounts = (
-  projects: CvProject[],
-  key: keyof CvProject,
-) => {
+export function facetValue(project: CvProject, key: FacetKey): unknown {
+  if (Object.hasOwn(CASE_VOCABULARY, key))
+    return project.matching?.[key as keyof typeof CASE_VOCABULARY];
+  if (key === "deliveryModel" || key === "deliveryModels")
+    return projectDeliveryModels(project);
+  return project[key as keyof CvProject];
+}
+
+/** Values stay stored in English; German readers see the shared vocabulary translations. */
+export const facetValueLabel = (
+  key: FacetKey,
+  value: string,
+  locale: Locale,
+) =>
+  key === "industries" ? sectorLabel(value, locale) : caseLabel(value, locale);
+
+export const getFilterOptionCounts = (projects: CvProject[], key: FacetKey) => {
   const countsByKey = countBy(
     projects.flatMap<unknown>((project) => {
-      const value =
-        key === "deliveryModel" || key === "deliveryModels"
-          ? projectDeliveryModels(project)
-          : project[key];
+      const value = facetValue(project, key);
       return Array.isArray(value)
         ? [...new Set<unknown>(value)]
         : value == null
@@ -46,7 +59,7 @@ export const getFilterOptionCounts = (
   return countsSorted.map(([itemKey, count]) => ({
     itemKey,
     count,
-    color: colors[key]?.[itemKey]?.hex,
+    color: colors[key as keyof CvProject]?.[itemKey]?.hex,
   }));
 };
 
@@ -61,11 +74,7 @@ export const filterProjects = (
       if (!searchValues?.length) {
         return true;
       }
-      const value = Object.hasOwn(CASE_VOCABULARY, key)
-        ? project.matching?.[key as keyof typeof CASE_VOCABULARY]
-        : key === "deliveryModel" || key === "deliveryModels"
-          ? projectDeliveryModels(project)
-          : project[key as keyof CvProject];
+      const value = facetValue(project, key);
       return searchValues.some(
         (searchValue) =>
           getIsMatchingProject(value, [searchValue]) ||

@@ -1,32 +1,29 @@
 import { ClientChartWrapper } from "./ClientChartWrapper";
 import { FilterConfig } from "./types";
-import { getFilterOptionCounts } from "./utils";
+import { facetValueLabel, getFilterOptionCounts } from "./utils";
+import { useLocale } from "../../../i18n/LocaleProvider";
 import { CvProject } from "@homepage/content/models";
-
-const GRAYSCALE_PALETTE = [
-  "#f5f5f5",
-  "#bdbdbd",
-  "#8a8a8a",
-  "#5a5a5a",
-  "#3a3a3a",
-  "#1f1f1f",
-];
+import { facetColor, type FacetPalette } from "../facetColors";
 
 export const PieChartFilter = ({
   filterConfig,
   projects,
+  palette,
 }: {
   filterConfig: FilterConfig;
   projects: CvProject[];
+  palette: FacetPalette;
 }) => {
+  const locale = useLocale();
   const { projectKey } = filterConfig;
+  const labelOf = (value: string) => facetValueLabel(projectKey, value, locale);
   const itemCounts = getFilterOptionCounts(projects, projectKey);
 
-  const data = itemCounts.map(({ itemKey, count }, index) => ({
+  const data = itemCounts.map(({ itemKey, count }) => ({
     name: itemKey,
     value: count,
     itemStyle: {
-      color: GRAYSCALE_PALETTE[index % GRAYSCALE_PALETTE.length],
+      color: facetColor(palette, itemKey),
       borderColor: "#000",
       borderWidth: 1,
     },
@@ -43,7 +40,15 @@ export const PieChartFilter = ({
           option: {
             tooltip: {
               trigger: "item",
-              formatter: "{b}: {c} ({d}%)",
+              formatter: ({
+                name,
+                value,
+                percent,
+              }: {
+                name: string;
+                value: number;
+                percent: number;
+              }) => `${labelOf(name)}: ${value} (${percent}%)`,
               backgroundColor: "#000",
               borderColor: "#fff",
               confine: true,
@@ -59,6 +64,7 @@ export const PieChartFilter = ({
                 center: ["50%", "50%"],
                 data: data,
                 label: {
+                  formatter: ({ name }: { name: string }) => labelOf(name),
                   position: "inside",
                   color: "#fff",
                   textBorderColor: "#000",

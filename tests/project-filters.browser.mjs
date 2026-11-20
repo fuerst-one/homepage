@@ -104,11 +104,11 @@ test("named filters remain visible and removable with the filter console collaps
     );
     assert.ok(
       await page.$(
-        '.filter-active-summary button[aria-label="Remove Capabilities: AI Engineering"]',
+        '.filter-active-summary button[aria-label="Remove Expertise: AI Engineering"]',
       ),
     );
     await page.click(
-      '.filter-active-summary button[aria-label="Remove Capabilities: AI Engineering"]',
+      '.filter-active-summary button[aria-label="Remove Expertise: AI Engineering"]',
     );
     await page.waitForFunction(
       () => !new URLSearchParams(location.search).has("capabilities"),
@@ -192,7 +192,7 @@ test("named filters remain visible and removable with the filter console collaps
     );
     assert.ok(
       await page.$(
-        '.filter-active-summary button[aria-label="Entfernen Kompetenzen: AI Engineering"]',
+        '.filter-active-summary button[aria-label="Entfernen Expertise: AI Engineering"]',
       ),
     );
     assert.equal(

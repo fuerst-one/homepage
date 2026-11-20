@@ -20,6 +20,11 @@ import { useProjectFocusStore } from "./projectFocusStore";
 import { useProjectListSearch } from "./useProjectListSearch";
 import { ProjectListSearch } from "./ProjectListSearch";
 import { useProjectsInView } from "./useProjectsInView";
+import {
+  facetPalette,
+  leadingFacetValuesInList,
+  type ProjectFacet,
+} from "./facetColors";
 
 const SLICE_DEFAULT = 8;
 
@@ -37,11 +42,24 @@ export function ProjectsClientView({
   const cluster = useProjectListStore((s) => s.cluster);
   const clearCluster = useProjectListStore((s) => s.clearCluster);
   const revealId = useProjectListStore((s) => s.revealId);
+  const facetView = useProjectListStore((s) => s.facetView);
+  const palette = useMemo(
+    () => facetPalette(projects, facetView),
+    [projects, facetView],
+  );
   const clearReveal = useProjectListStore((s) => s.clearReveal);
 
   const search = useProjectListSearch(projects, semanticEnabled);
   const filteredProjects = search.results;
   const searching = !!search.query.trim();
+  const leadingFacets = useMemo(
+    () => leadingFacetValuesInList(filteredProjects, facetView, palette),
+    [filteredProjects, facetView, palette],
+  );
+  const facetOf = (project: CvProject): ProjectFacet => ({
+    view: facetView,
+    ...leadingFacets.get(project.id)!,
+  });
 
   const headline = useMemo(() => {
     if (filteredProjects.length === 0) {
@@ -143,6 +161,7 @@ export function ProjectsClientView({
             <ProjectCardWithHover
               key={project.id}
               project={project}
+              facet={facetOf(project)}
               onHoverChange={(hovered) =>
                 setHovered(hovered ? project.id : null)
               }
@@ -157,6 +176,7 @@ export function ProjectsClientView({
                 <ProjectCardWithHover
                   key={project.id}
                   project={project}
+                  facet={facetOf(project)}
                   onHoverChange={(hovered) =>
                     setHovered(hovered ? project.id : null)
                   }
@@ -172,9 +192,11 @@ export function ProjectsClientView({
 
 const ProjectCardWithHover = ({
   project,
+  facet,
   onHoverChange,
 }: {
   project: CvProject;
+  facet: ProjectFacet;
   onHoverChange: (hovered: boolean) => void;
 }) => (
   <div
@@ -182,6 +204,6 @@ const ProjectCardWithHover = ({
     onPointerEnter={() => onHoverChange(true)}
     onPointerLeave={() => onHoverChange(false)}
   >
-    <ProjectCard project={project} />
+    <ProjectCard project={project} facet={facet} />
   </div>
 );

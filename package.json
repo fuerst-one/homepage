@@ -23,6 +23,7 @@
     "notion:sync": "node --env-file=.env.local --import tsx apps/sync/scripts/notion.ts sync",
     "notion:watch": "node --env-file=.env.local --import tsx apps/sync/scripts/notion.ts watch",
     "notion:status": "node --env-file=.env.local --import tsx apps/sync/scripts/notion.ts status",
+    "notion:review": "node --env-file=.env.local --import tsx apps/sync/scripts/notion.ts review",
     "notion:migrate": "node --env-file=.env.local --import tsx apps/sync/scripts/notion.ts migrate",
     "knowledge:db": "docker compose --env-file .env.local -f compose.ai.yaml up -d --wait",
     "malt:import": "node --env-file=.env.local --import tsx apps/sync/scripts/import-malt-observation.mjs",

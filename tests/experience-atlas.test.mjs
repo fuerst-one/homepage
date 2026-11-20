@@ -256,3 +256,23 @@ test("every public buyer need has an Atlas use-case group and a German term", ()
     assert.ok(ATLAS_DE[need], `${need} has no German Atlas term`);
   }
 });
+
+test("every product format has an Atlas product group and a German term", () => {
+  const { PRODUCT_FORMATS } = loadTs(
+    new URL("../packages/content/src/projectTaxonomy.ts", import.meta.url),
+  );
+  const { ATLAS_DE } = loadTs(
+    new URL(
+      "../apps/web/src/components/ExperienceAtlas/atlasCopy.ts",
+      import.meta.url,
+    ),
+  );
+  for (const format of PRODUCT_FORMATS) {
+    const memberships = atlasMemberships({ productTypes: [format] }, "product");
+    assert.ok(
+      !memberships.includes("unmapped"),
+      `${format} has no Atlas group`,
+    );
+    assert.ok(ATLAS_DE[format], `${format} has no German Atlas term`);
+  }
+});

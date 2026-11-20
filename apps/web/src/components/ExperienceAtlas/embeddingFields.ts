@@ -19,12 +19,16 @@ export const EMBEDDING_FIELDS = [
   },
   {
     id: "tools",
-    label: "Tools & libraries",
+    label: "Technologies",
     inputLabel: "Tools and libraries",
   },
   { id: "languages", label: "Languages", inputLabel: "Programming languages" },
-  { id: "capabilities", label: "Capabilities", inputLabel: "Capabilities" },
-  { id: "methods", label: "Methods", inputLabel: "Methods" },
+  { id: "capabilities", label: "Expertise", inputLabel: "Capabilities" },
+  {
+    id: "methods",
+    label: "Methods & principles",
+    inputLabel: "Methods",
+  },
   { id: "ownership", label: "Ownership", inputLabel: "Ownership" },
   { id: "stages", label: "Delivery stages", inputLabel: "Delivery stages" },
   { id: "industries", label: "Sector", inputLabel: "Sector" },
@@ -50,7 +54,7 @@ export const EMBEDDING_FIELDS = [
   { id: "maintenance", label: "Maintenance", inputLabel: "Maintenance" },
   {
     id: "projectType",
-    label: "Engagement type",
+    label: "Project setting",
     inputLabel: "Engagement type",
   },
   { id: "status", label: "Project status", inputLabel: "Project status" },

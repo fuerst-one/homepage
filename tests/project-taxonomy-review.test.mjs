@@ -108,3 +108,83 @@ test("hidden and withdrawn sources produce no review details or completeness war
   ])
     assert.deepEqual(reviewProjectSource(source), []);
 });
+
+test("every target market and AI capability Notion offers survives the public projection", () => {
+  const { reviewProjectSource } = loadTs(
+    new URL("../packages/content/src/projectSourceReview.ts", import.meta.url),
+  );
+  const { readNotionProjectTaxonomy, publicProjectTaxonomy } = loadTs(
+    new URL("../packages/content/src/projectTaxonomy.ts", import.meta.url),
+  );
+  const { readPublicProjectCase, caseLabel } = loadTs(
+    new URL("../packages/content/src/projectCase.ts", import.meta.url),
+  );
+  const source = page({
+    "Target market": multi("Direct Consumer", "OSS"),
+    "AI Capabilities": multi("Suggestion generation", "Data analysis"),
+  });
+  assert.deepEqual(reviewProjectSource(source), []);
+  assert.deepEqual(
+    publicProjectTaxonomy(readNotionProjectTaxonomy(source)).targetMarket,
+    ["Direct Consumer", "OSS"],
+  );
+  const { aiCapabilities } = readPublicProjectCase(source);
+  assert.deepEqual(aiCapabilities, ["Suggestion generation", "Data analysis"]);
+  for (const value of [...aiCapabilities, "Direct Consumer"])
+    assert.notEqual(caseLabel(value, "de"), value);
+});
+
+test("retired sector-like domains are flagged in Notion but still label and resolve old links", () => {
+  const { reviewProjectSource } = loadTs(
+    new URL("../packages/content/src/projectSourceReview.ts", import.meta.url),
+  );
+  const { caseLabel } = loadTs(
+    new URL("../packages/content/src/projectCase.ts", import.meta.url),
+  );
+  const { projectCaseAliases } = loadTs(
+    new URL("../packages/content/src/enquiryEvidence.ts", import.meta.url),
+  );
+  const issues = reviewProjectSource(
+    page({ "Project Domains": multi("Developer tooling", "Public sector") }),
+  );
+  assert.deepEqual(
+    issues.filter((i) => i.field === "Project Domains").map((i) => i.values),
+    [["Public sector"]],
+  );
+  assert.equal(caseLabel("Public sector", "de"), "Öffentlicher Sektor");
+  assert.ok(projectCaseAliases("domains", "Public sector").includes("kommune"));
+});
+
+test("schema review flags Notion options the code does not know, in controlled fields only", () => {
+  const { reviewProjectSchema } = loadTs(
+    new URL("../packages/content/src/projectSourceReview.ts", import.meta.url),
+  );
+  const options = (...names) => ({
+    multi_select: { options: names.map((name) => ({ name })) },
+  });
+  assert.deepEqual(
+    reviewProjectSchema({
+      "Target market": { type: "multi_select", ...options("B2B", "Retail") },
+      "Buyer Needs": { type: "multi_select", ...options("Sell products") },
+      Tools: { type: "multi_select", ...options("Anything goes") },
+    }),
+    [{ field: "Target market", reason: "unknown-option", values: ["Retail"] }],
+  );
+});
+
+test("product formats editors added in Notion are published", () => {
+  const { reviewProjectSource } = loadTs(
+    new URL("../packages/content/src/projectSourceReview.ts", import.meta.url),
+  );
+  const { readNotionProjectTaxonomy, publicProjectTaxonomy } = loadTs(
+    new URL("../packages/content/src/projectTaxonomy.ts", import.meta.url),
+  );
+  const source = page({
+    "Product type": multi("MCP Server", "Concept", "Clickdummy"),
+  });
+  assert.deepEqual(reviewProjectSource(source), []);
+  assert.deepEqual(
+    publicProjectTaxonomy(readNotionProjectTaxonomy(source)).productTypes,
+    ["MCP Server", "Concept", "Clickdummy"],
+  );
+});
