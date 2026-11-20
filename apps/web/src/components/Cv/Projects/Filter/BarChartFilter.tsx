@@ -33,7 +33,7 @@ export const BarChartFilter = ({
 
   return (
     <div className="h-full min-h-0 w-full overflow-y-auto pr-1">
-      <div className="flex flex-col gap-2 text-xs text-neutral-200">
+      <div className="flex flex-col gap-3 text-xs text-neutral-200">
         {itemCounts.map(({ itemKey, count }) => {
           const label = facetValueLabel(projectKey, itemKey, locale);
           return (
@@ -41,15 +41,15 @@ export const BarChartFilter = ({
               <Tag
                 searchParamKey={projectKey}
                 value={itemKey}
-                className="flex items-center gap-0.5 border-none py-0"
+                className="flex flex-col items-stretch gap-1 border-none py-0"
               >
                 <span
                   data-facet-option={itemKey}
                   data-facet-option-label={label}
-                  title={label}
-                  className="w-1/2 flex-shrink-0 overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="flex items-baseline justify-between gap-3"
                 >
-                  {label} <span className="text-neutral-400">({count})</span>
+                  <span className="min-w-0 break-words">{label}</span>
+                  <span className="shrink-0 text-neutral-400">{count}</span>
                 </span>
                 <Progress
                   value={(count / maxCount) * 100}

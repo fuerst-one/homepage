@@ -7,10 +7,12 @@ const CHART_VALUES_MAX: Partial<Record<DisplayType, number>> = {
 };
 
 export const chartTypeFor = (
-  preferred: DisplayType,
+  { displayType, keepChart }: Pick<FilterConfig, "displayType" | "keepChart">,
   valueCount: number,
 ): DisplayType =>
-  valueCount > (CHART_VALUES_MAX[preferred] ?? Infinity) ? "bar" : preferred;
+  !keepChart && valueCount > (CHART_VALUES_MAX[displayType] ?? Infinity)
+    ? "bar"
+    : displayType;
 
 export const filterConfigs: FilterConfig[] = [
   {
@@ -18,6 +20,7 @@ export const filterConfigs: FilterConfig[] = [
     labelDe: "Branchen",
     projectKey: "industries",
     displayType: "treemap",
+    keepChart: true,
   },
   {
     label: "Project setting",

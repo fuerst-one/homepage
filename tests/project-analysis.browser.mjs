@@ -413,7 +413,7 @@ test("German cards and charts show buyer needs in German", async () => {
   }
 });
 
-test("views with many values show a list, small ones keep their chart", async () => {
+test("views with many values show a list; small ones and industries keep their chart", async () => {
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
@@ -423,11 +423,13 @@ test("views with many values show a list, small ones keep their chart", async ()
       timeout: 90000,
     });
     const analysis = "aside [role=region][aria-label]";
-    for (const view of ["industries", "methods", "productTypes"]) {
+    for (const view of ["methods", "productTypes"]) {
       await page.select("aside select", view);
       await page.waitForSelector(`${analysis} [role=progressbar]`);
       assert.equal(await page.$(`${analysis} canvas`), null, view);
     }
+    await page.select("aside select", "industries");
+    await page.waitForSelector(`${analysis} canvas`);
     await page.select("aside select", "projectType");
     await page.waitForSelector(`${analysis} canvas`);
     assert.equal(await page.$(`${analysis} [role=progressbar]`), null);
@@ -463,6 +465,38 @@ test("home lists every expertise and method, while industries stay a treemap", a
       );
     }
     assert.ok(await page.$('[data-home-facet="industries"] .home-facet-chart'));
+  } finally {
+    await browser.close();
+  }
+});
+
+test("list rows show every name and count in full", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${base}/en/projects?all=1`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    for (const view of ["capabilities", "buyerNeeds"]) {
+      await page.select("aside select", view);
+      await page.waitForSelector(
+        "aside [role=region][aria-label] [data-facet-option]",
+      );
+      const clipped = await page.$$eval(
+        "aside [role=region][aria-label] [data-facet-option]",
+        (rows) =>
+          rows
+            .filter((row) =>
+              [row, ...row.querySelectorAll("*")].some(
+                (element) => element.scrollWidth > element.clientWidth,
+              ),
+            )
+            .map((row) => row.textContent),
+      );
+      assert.deepEqual(clipped, [], view);
+    }
   } finally {
     await browser.close();
   }

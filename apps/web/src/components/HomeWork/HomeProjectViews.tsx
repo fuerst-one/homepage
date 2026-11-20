@@ -8,6 +8,7 @@ import {
 } from "../Cv/Projects/Filter/utils";
 import { facetColor, facetPalette } from "../Cv/Projects/facetColors";
 import { TREEMAP_ITEMS_MAX } from "../Cv/Projects/Filter/treemapOptions";
+import { chartTypeFor, filterConfigs } from "../Cv/Projects/filterConfigs";
 import Link from "../i18n/LocalizedLink";
 import { DeferredProjectBreakdown } from "./DeferredProjectBreakdown";
 
@@ -19,22 +20,19 @@ export function HomeProjectViews({
   locale: Locale;
 }) {
   const de = locale === "de";
-  // Industries stay a treemap by choice; the longer facets read better as a full list.
-  const facets = [
-    { key: "capabilities", label: "Expertise", chart: false },
-    { key: "industries", label: de ? "Branchen" : "Industries", chart: true },
-    {
-      key: "methods",
-      label: de ? "Methoden & Prinzipien" : "Methods & principles",
-      chart: false,
-    },
-  ] as const;
+  const facets = (["capabilities", "industries", "methods"] as const).map(
+    (key) => filterConfigs.find((config) => config.projectKey === key)!,
+  );
   return (
     <div className="home-project-views">
       <div className="home-project-view-grid">
-        {facets.map(({ key, label, chart }) => {
+        {facets.map((config) => {
+          const key = config.projectKey as
+            "capabilities" | "industries" | "methods";
+          const label = de ? config.labelDe : config.label;
           const items = getFilterOptionCounts(projects, key);
           if (!items.length) return null;
+          const chart = chartTypeFor(config, items.length) !== "bar";
           const countLabel = (count: number) => (
             <span>
               {new Intl.NumberFormat(locale).format(count)}

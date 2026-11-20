@@ -118,10 +118,7 @@ const ChartTabContent = ({
     );
   }
 
-  const displayType = chartTypeFor(
-    filterConfig.displayType,
-    palette.values.size,
-  );
+  const displayType = chartTypeFor(filterConfig, palette.values.size);
   return (
     <div className="h-full min-h-0 w-full p-2">
       {displayType === "bar" && (

@@ -8,6 +8,8 @@ export type FilterConfig = {
   label: string;
   labelDe: string;
   displayType: DisplayType;
+  /** Keep the chart even past the size where a list would otherwise take over. */
+  keepChart?: boolean;
 };
 
 export type FilterOption = {
