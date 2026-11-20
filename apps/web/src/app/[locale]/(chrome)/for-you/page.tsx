@@ -1,7 +1,9 @@
+import { notFound } from "next/navigation";
 import type { LocaleParams } from "@homepage/content/i18n";
 import { validateForYouPlan } from "@homepage/content/forYouPlan";
 import { getLocale } from "../../../../server/i18n/getLocale";
 import { pageMetadata } from "../../../../lib/seo";
+import { FOR_YOU_ENABLED } from "../../../../lib/forYouEnabled";
 import { Layout } from "../../../../components/Layout";
 import { ForYouPlanView } from "../../../../components/ForYou/ForYouPlanView";
 import { ForYouReviewAid } from "../../../../components/ForYou/ForYouReviewAid";
@@ -19,6 +21,7 @@ type ForYouPageProps = LocaleParams & {
 };
 
 export async function generateMetadata({ params }: LocaleParams) {
+  if (!FOR_YOU_ENABLED) notFound();
   const locale = await getLocale(params);
   return {
     ...pageMetadata(
@@ -37,6 +40,7 @@ export default async function ForYouRoute({
   params,
   searchParams,
 }: ForYouPageProps) {
+  if (!FOR_YOU_ENABLED) notFound();
   const locale = await getLocale(params);
   const query = await searchParams;
   if (query.example !== undefined)

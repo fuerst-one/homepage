@@ -401,8 +401,18 @@ moment later. A saved profile that already passes restores unlocked, also when i
 saved before the field existed. Like `forYouHintSeen` it follows the Remember
 setting, merges across tabs (an unlock in any tab wins for the same profile),
 and is cleared by reset, stop and expiry. `useForYouReady` reads
-`enabled && forYouUnlocked`; the hint and the header link both read that hook
-and add no profile conditions of their own.
+`FOR_YOU_ENABLED && enabled && forYouUnlocked`; the hint, the header link and
+the button under the signature all read that hook and add no profile
+conditions of their own.
+
+**Release switch.** `FOR_YOU_ENABLED` in `apps/web/src/lib/forYouEnabled.ts` is
+`false`: For you is not released. While it is off, `/for-you` answers 404 in
+both languages, including the `?example=` review plans, and the hint, the
+header link and the button under the signature are never rendered. The store
+keeps latching `forYouUnlocked` and leaves `forYouHintSeen` untouched, so a
+visitor whose profile became ready in the meantime gets the hint as soon as the
+switch is turned on. Everything below describes the released state. To work on
+the page locally, set the constant to `true` and do not commit that.
 
 The gate is held to a simulation benchmark, `tests/profile-benchmark.test.mjs`.
 Seeded simulated visitors, each with one real buyer need, browse
@@ -467,6 +477,12 @@ the local preview built in the browser from the profile
 shown on `/for-you` itself.
 
 Unit behaviour: `node --test tests/for-you-readiness.test.mjs tests/for-you-hint.test.mjs tests/profile-benchmark.test.mjs`.
+`tests/for-you-release.test.mjs` asks a running server that `/for-you` exists
+exactly when the switch is on. The browser tests follow the switch as well:
+`tests/for-you-disabled.browser.mjs` runs while it is off (a ready profile gets
+no entry and stays ready) and is skipped while it is on;
+`tests/for-you-hint.browser.mjs` and `tests/for-you-page.browser.mjs` are
+skipped while it is off.
 Browser behaviour: `SEO_TEST_BASE_URL=http://localhost:6895 node --test tests/for-you-hint.browser.mjs`
 runs the journey in English and German at 1360 and 375 pixels: a buyer-need
 topic chip on the project list makes the profile ready, then the dialog and

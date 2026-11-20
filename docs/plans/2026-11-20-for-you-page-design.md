@@ -2,9 +2,11 @@
 
 Discussed with the owner on 20 November 2026. Steps 1 and 2 of the suggested
 order (section library, plan format and renderer; the page with the local
-preview, reached from the header link and the hint) are implemented on
-`feature/live-visitor-profile` and not pushed; everything else described here
-does not exist yet. It fills the open decision
+preview, reached from the header link and the hint) are implemented but not
+released: the owner decided on 21 November 2026 to keep the page and every
+entry to it behind `FOR_YOU_ENABLED` (`apps/web/src/lib/forYouEnabled.ts`),
+which is off. Everything else described here does not exist yet. It fills the
+open decision
 "The For you page concept" in
 [2026-11-19-visitor-intent-model-design.md](2026-11-19-visitor-intent-model-design.md)
 and builds on the live visitor profile
@@ -233,14 +235,14 @@ the harness is the main instrument.
 ## Suggested order
 
 1. Section library, plan format and renderer, fed with hand-written plans.
-   **Implemented, not pushed:** the plan format and its checks in
+   **Implemented, switched off:** the plan format and its checks in
    `packages/content/src/forYouPlan.ts`, the sections in
    `apps/web/src/components/ForYou/`, the example plans in
    `packages/content/src/data/for-you-plans/` and the review route `/en/for-you` and
    `/de/for-you` (`?example=<name>`, not indexed, not linked). The examples
    together use all nine section types; a plan holds at most seven.
 2. The route with the local preview; header link and hint point to it.
-   **Implemented, not pushed:** `/for-you` without `?example=` shows no
+   **Implemented, switched off:** `/for-you` without `?example=` shows no
    profile, a profile that is not ready, or the preview built in the browser
    by `packages/content/src/forYouPreview.ts` (hero on the leading need, proof
    grid, second need, closing to the Explorer). The owner decided on 20

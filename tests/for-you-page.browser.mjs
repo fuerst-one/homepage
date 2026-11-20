@@ -1,9 +1,15 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
-import { after, before, test } from "node:test";
+import { after, before, test as runTest } from "node:test";
 import puppeteer from "puppeteer";
+import { loadTs } from "./helpers/load-ts.mjs";
 
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6895";
+const { FOR_YOU_ENABLED } = loadTs(
+  new URL("../apps/web/src/lib/forYouEnabled.ts", import.meta.url),
+);
+// The switched-off state is covered by for-you-disabled.
+const test = FOR_YOU_ENABLED ? runTest : runTest.skip;
 const folder = new URL(
   "../packages/content/src/data/for-you-plans/",
   import.meta.url,
