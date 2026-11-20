@@ -44,20 +44,48 @@ export async function getForYouProjects(
   locale: Locale,
 ): Promise<Record<string, ForYouProject>> {
   const ids = new Set(sections.flatMap(sectionProjectIds));
-  const shown = projects.filter((project) => ids.has(project.id));
+  return forYouProjects(
+    projects.filter((project) => ids.has(project.id)),
+    locale,
+    "all",
+  );
+}
+
+/**
+ * Card data for every published project, for the preview built in the
+ * browser: the catalog it ranks with carries no images, and stays that way.
+ */
+export async function getForYouCards(locale: Locale) {
+  const { projects } = await readWebsiteSections(
+    ["projects"],
+    undefined,
+    locale,
+  );
+  return forYouProjects(projects, locale, "first");
+}
+
+async function forYouProjects(
+  projects: readonly CvProject[],
+  locale: Locale,
+  screenshots: "all" | "first",
+): Promise<Record<string, ForYouProject>> {
   const entries = await Promise.all(
-    shown.map(async (project) => {
-      const descriptions = await getPublicImageDescriptions(project.id, locale);
+    projects.map(async (project) => {
+      const published = (project.screenshots ?? []).flatMap((src, index) =>
+        src ? [{ src, number: index + 1 }] : [],
+      );
+      const kept = screenshots === "first" ? published.slice(0, 1) : published;
+      const descriptions = kept.length
+        ? await getPublicImageDescriptions(project.id, locale)
+        : [];
       const { title, subtitle } = projectHeading(project.name);
       const images = Object.fromEntries(
-        (project.screenshots ?? []).flatMap((src, index) => {
-          if (!src) return [];
-          const ref = forYouImageRef(project.id, index + 1);
+        kept.map(({ src, number }) => {
           const described = descriptions.find((row) => row.href === src);
           const alt =
             described?.altText ||
-            `${title}: ${locale === "de" ? "Produktansicht" : "Product view"} ${index + 1}`;
-          return [[ref, { src, alt }]];
+            `${title}: ${locale === "de" ? "Produktansicht" : "Product view"} ${number}`;
+          return [forYouImageRef(project.id, number), { src, alt }];
         }),
       );
       return [

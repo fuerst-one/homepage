@@ -12,7 +12,11 @@ export function ForYouProjectLinks({
     <ul className="for-you-project-links" aria-label={label}>
       {projects.map((project) => (
         <li key={project.id}>
-          <Link href={project.href} prefetch={false} data-for-you-project>
+          <Link
+            href={project.href}
+            prefetch={false}
+            data-for-you-project={project.id}
+          >
             <span>
               <strong lang="en">{project.title}</strong>
               {project.subtitle && <small lang="en">{project.subtitle}</small>}

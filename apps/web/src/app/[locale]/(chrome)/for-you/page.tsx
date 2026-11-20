@@ -6,10 +6,13 @@ import { Layout } from "../../../../components/Layout";
 import { ForYouPlanView } from "../../../../components/ForYou/ForYouPlanView";
 import { ForYouReviewAid } from "../../../../components/ForYou/ForYouReviewAid";
 import { forYouExamples } from "../../../../components/ForYou/forYouExamples";
+import { ForYouPage } from "../../../../components/ForYou/ForYouPage";
 import {
   getForYouCandidates,
+  getForYouCards,
   getForYouProjects,
 } from "../../../../server/content/getForYouCandidates";
+import type { Locale } from "@homepage/content/i18n";
 
 type ForYouPageProps = LocaleParams & {
   searchParams: Promise<{ example?: string; shown?: string }>;
@@ -30,13 +33,30 @@ export async function generateMetadata({ params }: LocaleParams) {
   };
 }
 
-/** Until a model writes plans, this route renders hand-written examples for review. */
-export default async function ForYouPage({
+export default async function ForYouRoute({
   params,
   searchParams,
 }: ForYouPageProps) {
   const locale = await getLocale(params);
   const query = await searchParams;
+  if (query.example !== undefined)
+    return <ExampleReview locale={locale} query={query} />;
+  // The profile lives in the browser, so the page picks its state there.
+  return (
+    <Layout locale={locale} wide>
+      <ForYouPage locale={locale} cards={await getForYouCards(locale)} />
+    </Layout>
+  );
+}
+
+/** Hand-written example plans for reviewing the section library. */
+async function ExampleReview({
+  locale,
+  query,
+}: {
+  locale: Locale;
+  query: Awaited<ForYouPageProps["searchParams"]>;
+}) {
   const example =
     forYouExamples.find(({ name }) => name === query.example) ??
     forYouExamples[0];

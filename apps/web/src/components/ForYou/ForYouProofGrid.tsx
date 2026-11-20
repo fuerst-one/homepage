@@ -48,7 +48,7 @@ export function ForYouProofGrid({
                 <Link
                   href={project.href}
                   prefetch={false}
-                  data-for-you-project
+                  data-for-you-project={project.id}
                   className="for-you-card-link"
                 >
                   {project.title} <span aria-hidden="true">↗</span>

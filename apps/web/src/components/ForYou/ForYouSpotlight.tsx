@@ -50,7 +50,7 @@ export function ForYouSpotlight({
             href={project.href}
             prefetch={false}
             className={styles.textLink}
-            data-for-you-project
+            data-for-you-project={project.id}
           >
             {de ? "Zum Projekt" : "View the project"}:{" "}
             <span lang="en">{project.title}</span>{" "}

@@ -194,3 +194,11 @@
     animation: none;
   }
 }
+/* Server HTML holds the no-profile state and the loading state; the attribute
+   set before the first paint by a saved profile decides which is displayed. */
+.for-you-states[data-for-you-loading] > [data-for-you-state="none"],
+.for-you-states:not([data-for-you-loading])
+  > [data-for-you-state="none"]
+  + [data-for-you-state="loading"] {
+  display: none;
+}
