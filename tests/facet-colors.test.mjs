@@ -4,9 +4,10 @@ import { loadTs } from "./helpers/load-ts.mjs";
 
 const {
   facetPalette,
+  facetColor,
   leadingFacetValues,
+  leadingFacetValuesInList,
   FACET_PALETTE,
-  UNRANKED_FACET_COLOR,
 } = loadTs(
   new URL(
     "../apps/web/src/components/Cv/Projects/facetColors.ts",
@@ -26,6 +27,8 @@ const project = (id, overrides = {}) => ({
   projectType: "Hobby",
   ...overrides,
 });
+const colorsOf = (palette) =>
+  [...palette.values].map(([value]) => [value, facetColor(palette, value)]);
 
 test("the most common values take the sector colors in rank order, ties by name", () => {
   const palette = facetPalette(
@@ -36,27 +39,27 @@ test("the most common values take the sector colors in rank order, ties by name"
     ],
     "tools",
   );
-  assert.deepEqual(
-    [...palette],
-    [
-      ["React", FACET_PALETTE[0]],
-      ["Vue", FACET_PALETTE[1]],
-      ["Angular", FACET_PALETTE[2]],
-      ["Docker", FACET_PALETTE[3]],
-    ],
-  );
+  assert.deepEqual(colorsOf(palette), [
+    ["React", FACET_PALETTE[0]],
+    ["Vue", FACET_PALETTE[1]],
+    ["Angular", FACET_PALETTE[2]],
+    ["Docker", FACET_PALETTE[3]],
+  ]);
 });
 
-test("values beyond the palette stay neutral", () => {
+test("values beyond the palette cycle through its colors", () => {
   const tools = Array.from(
     { length: FACET_PALETTE.length + 2 },
     (_, i) => `Tool ${String(i).padStart(2, "0")}`,
   );
   const palette = facetPalette([project("a", { tools })], "tools");
-  assert.equal(palette.get("Tool 00"), FACET_PALETTE[0]);
+  assert.equal(facetColor(palette, "Tool 00"), FACET_PALETTE[0]);
   assert.equal(
-    palette.get(`Tool ${String(FACET_PALETTE.length).padStart(2, "0")}`),
-    UNRANKED_FACET_COLOR,
+    facetColor(
+      palette,
+      `Tool ${String(FACET_PALETTE.length + 1).padStart(2, "0")}`,
+    ),
+    FACET_PALETTE[1],
   );
 });
 
@@ -69,8 +72,8 @@ test("industries keep their own sector color whatever their rank", () => {
     ],
     "industries",
   );
-  assert.equal(palette.get("Healthcare"), SECTORS.Healthcare.color);
-  assert.equal(palette.get("Education"), SECTORS.Education.color);
+  assert.equal(facetColor(palette, "Healthcare"), SECTORS.Healthcare.color);
+  assert.equal(facetColor(palette, "Education"), SECTORS.Education.color);
 });
 
 test("single-value facets like the project setting are colored too", () => {
@@ -82,53 +85,60 @@ test("single-value facets like the project setting are colored too", () => {
     ],
     "projectType",
   );
-  assert.deepEqual(
-    [...palette],
-    [
-      ["Freelance", FACET_PALETTE[0]],
-      ["Hobby", FACET_PALETTE[1]],
-    ],
-  );
+  assert.deepEqual(colorsOf(palette), [
+    ["Freelance", FACET_PALETTE[0]],
+    ["Hobby", FACET_PALETTE[1]],
+  ]);
 });
 
-test("a card leads with its three highest-ranked values and counts the rest", () => {
-  const palette = new Map([
-    ["React", "#1"],
-    ["Docker", "#2"],
-    ["Vue", "#3"],
-    ["Node", "#4"],
-  ]);
-  assert.deepEqual(
-    leadingFacetValues(
-      project("a", { tools: ["Node", "Vue", "React", "Docker", "Rare"] }),
-      "tools",
-      palette,
-    ),
-    {
-      values: [
-        { value: "React", color: "#1" },
-        { value: "Docker", color: "#2" },
-        { value: "Vue", color: "#3" },
+test("a card leads with values shared by some projects, not with ubiquitous or one-off ones", () => {
+  const projects = Array.from({ length: 10 }, (_, i) =>
+    project(`p${i}`, {
+      tools: [
+        "Everywhere",
+        ...(i < 4 ? ["Often"] : []),
+        ...(i < 2 ? ["Sometimes"] : []),
+        ...(i === 0 ? ["Once"] : []),
       ],
-      hiddenCount: 2,
-    },
+    }),
   );
+  const palette = facetPalette(projects, "tools");
+  assert.deepEqual(leadingFacetValues(projects[0], "tools", palette), {
+    values: ["Often", "Sometimes", "Everywhere"].map((value) => ({
+      value,
+      color: facetColor(palette, value),
+    })),
+    hiddenCount: 1,
+  });
 });
 
 test("a card without values for the view has nothing to lead with", () => {
-  assert.deepEqual(leadingFacetValues(project("a"), "methods", new Map()), {
+  const palette = facetPalette([project("a")], "methods");
+  assert.deepEqual(leadingFacetValues(project("a"), "methods", palette), {
     values: [],
     hiddenCount: 0,
   });
 });
 
 test("a single-value facet leads with that value", () => {
-  assert.deepEqual(
-    leadingFacetValues(
-      project("a", { projectType: "Startup" }),
-      "projectType",
-      new Map([["Startup", "#1"]]),
-    ),
-    { values: [{ value: "Startup", color: "#1" }], hiddenCount: 0 },
+  const startup = project("a", { projectType: "Startup" });
+  const palette = facetPalette([startup], "projectType");
+  assert.deepEqual(leadingFacetValues(startup, "projectType", palette), {
+    values: [{ value: "Startup", color: FACET_PALETTE[0] }],
+    hiddenCount: 0,
+  });
+});
+
+test("later cards lead with values the cards above them have not shown yet", () => {
+  const tools = ["A", "B", "C", "D", "E", "F"];
+  const projects = ["first", "second", "third"].map((id) =>
+    project(id, { tools }),
   );
+  const palette = facetPalette(projects, "tools");
+  const leading = leadingFacetValuesInList(projects, "tools", palette);
+  const shown = (id) => leading.get(id).values.map(({ value }) => value);
+  assert.deepEqual(shown("first"), ["A", "B", "C"]);
+  assert.deepEqual(shown("second"), ["D", "E", "F"]);
+  assert.deepEqual(shown("third"), ["A", "B", "C"]);
+  assert.equal(leading.get("second").hiddenCount, 3);
 });

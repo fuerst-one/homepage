@@ -126,12 +126,7 @@ export const ProjectCard = ({
         <header className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             {facet ? (
-              <ProjectFacetValues
-                project={project}
-                view={facet.view}
-                palette={facet.palette}
-                locale={locale}
-              />
+              <ProjectFacetValues facet={facet} locale={locale} />
             ) : (
               <ProjectIndustry project={project} locale={locale} />
             )}

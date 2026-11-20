@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
-import type { CvProject } from "@homepage/content/models";
 import type { Locale } from "@homepage/content/i18n";
 import { sectorLabel } from "@homepage/content/projectTaxonomy";
-import { leadingFacetValues, type FacetPalette } from "./facetColors";
+import type { ProjectFacet } from "./facetColors";
 
 export function FacetLabel({
   color,
@@ -30,17 +29,12 @@ export function FacetLabel({
 }
 
 export function ProjectFacetValues({
-  project,
-  view,
-  palette,
+  facet: { view, values, hiddenCount },
   locale,
 }: {
-  project: CvProject;
-  view: keyof CvProject;
-  palette: FacetPalette;
+  facet: ProjectFacet;
   locale: Locale;
 }) {
-  const { values, hiddenCount } = leadingFacetValues(project, view, palette);
   return (
     <span
       data-project-facet-values={view}
