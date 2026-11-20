@@ -2,6 +2,7 @@ import type { Enquiry } from "@homepage/content/enquiry";
 import { SECTORS, matchesLegacyTaxonomy, sectorLabel } from "./projectTaxonomy";
 import {
   CASE_VOCABULARY,
+  RETIRED_DOMAINS,
   type ProjectCase,
 } from "@homepage/content/projectCase";
 
@@ -207,7 +208,8 @@ export const projectCaseAliases = (
 ) =>
   [
     value,
-    (CASE_VOCABULARY[field] as Record<string, string>)[value],
+    (CASE_VOCABULARY[field] as Record<string, string>)[value] ??
+      (field === "domains" ? RETIRED_DOMAINS[value] : undefined),
     ...(field === "domains" ? [sectorLabel(value, "de")] : []),
     ...(aliases[value] ?? []),
   ].filter(Boolean);
@@ -217,7 +219,9 @@ const topics: Signal[] = (
   [
     ...new Set([
       ...Object.keys(CASE_VOCABULARY[field]),
-      ...(field === "domains" ? Object.keys(SECTORS) : []),
+      ...(field === "domains"
+        ? [...Object.keys(RETIRED_DOMAINS), ...Object.keys(SECTORS)]
+        : []),
     ]),
   ].map((value) => ({ field, value })),
 );

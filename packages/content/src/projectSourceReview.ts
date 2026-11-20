@@ -10,7 +10,7 @@ import {
 
 export type ProjectSourceIssue = {
   field: string;
-  reason: "unknown-value" | "missing-required";
+  reason: "unknown-value" | "unknown-option" | "missing-required";
   values: string[];
 };
 const record = (value: unknown): Record<string, unknown> =>
@@ -18,7 +18,8 @@ const record = (value: unknown): Record<string, unknown> =>
     ? (value as Record<string, unknown>)
     : {};
 const rows = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
-const controlled: Record<string, readonly string[]> = {
+/** Notion fields whose values the code only publishes when it knows them. */
+export const CONTROLLED_FIELDS: Record<string, readonly string[]> = {
   Sector: Object.keys(SECTORS),
   "Product type": PRODUCT_FORMATS,
   "Target market": CUSTOMER_MARKETS,
@@ -62,7 +63,7 @@ export function reviewProjectSource(page: unknown): ProjectSourceIssue[] {
     ].filter((v): v is string => typeof v === "string" && Boolean(v.trim()));
   };
   const issues: ProjectSourceIssue[] = [];
-  for (const [field, vocabulary] of Object.entries(controlled)) {
+  for (const [field, vocabulary] of Object.entries(CONTROLLED_FIELDS)) {
     const unknown = [
       ...new Set(values(field).filter((v) => !vocabulary.includes(v))),
     ];
@@ -72,9 +73,26 @@ export function reviewProjectSource(page: unknown): ProjectSourceIssue[] {
   for (const field of required)
     if (
       !values(field).some(
-        (v) => !controlled[field] || controlled[field].includes(v),
+        (v) =>
+          !CONTROLLED_FIELDS[field] || CONTROLLED_FIELDS[field].includes(v),
       )
     )
       issues.push({ field, reason: "missing-required", values: [] });
   return issues;
+}
+
+/** Options an editor could select today but the code would silently drop. */
+export function reviewProjectSchema(
+  properties: Record<string, unknown>,
+): ProjectSourceIssue[] {
+  return Object.entries(CONTROLLED_FIELDS).flatMap(([field, vocabulary]) => {
+    const property = record(properties[field]);
+    const options = rows(record(property[String(property.type)]).options)
+      .map((option) => record(option).name)
+      .filter((name): name is string => typeof name === "string");
+    const unknown = options.filter((name) => !vocabulary.includes(name));
+    return unknown.length
+      ? [{ field, reason: "unknown-option" as const, values: unknown }]
+      : [];
+  });
 }

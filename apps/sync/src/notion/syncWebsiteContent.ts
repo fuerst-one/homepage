@@ -4,7 +4,14 @@ import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoint
 import source from "../data/notion-site-copy.json";
 import { caseStudyPageId } from "@homepage/content/projectCaseStudy";
 import { readPublicProjectCase } from "@homepage/content/projectCase";
-import { reviewProjectSource } from "@homepage/content/projectSourceReview";
+import {
+  reviewProjectSchema,
+  reviewProjectSource,
+} from "@homepage/content/projectSourceReview";
+import {
+  saveProjectReview,
+  type ProjectReviewIssue,
+} from "./projectReviewStore";
 import { knowledgeDatabase } from "@homepage/database/database";
 import { createNotionReadFetch } from "./createNotionFetch";
 import {
@@ -65,15 +72,31 @@ export async function syncWebsiteContent(force = false) {
         (p): p is PageObjectResponse =>
           "properties" in p && publicIds.has(p.id),
       );
-      const sourceReview = pages.flatMap((page) =>
-        reviewProjectSource(page).map(({ field, reason }) => ({
+      const pageIssues = pages.flatMap((page) =>
+        reviewProjectSource(page).map((issue) => ({
+          ...issue,
           projectId: page.id,
-          field,
-          reason,
         })),
       );
-      if (sourceReview.length)
-        console.warn("Website project source needs review", sourceReview);
+      const database = await notion.databases.retrieve({
+        database_id: projectDb,
+      });
+      const reviewIssues: ProjectReviewIssue[] = [
+        ...("properties" in database
+          ? reviewProjectSchema(database.properties)
+          : []),
+        ...pageIssues,
+      ];
+      await saveProjectReview(reviewIssues, sql);
+      if (reviewIssues.length)
+        console.warn(
+          "Website project source needs review (details: notion:review)",
+          reviewIssues.map(({ projectId, field, reason }) => ({
+            projectId,
+            field,
+            reason,
+          })),
+        );
       const ownerPage = await notion.pages.retrieve({ page_id: ownerId });
       if (
         !("properties" in ownerPage) ||

@@ -37,8 +37,18 @@ export const PRODUCT_FORMATS = [
   "Physical product",
   "Game",
   "Interactive experience",
+  "MCP Server",
+  "Concept",
+  "Clickdummy",
 ] as const;
-export const CUSTOMER_MARKETS = ["B2B", "B2C", "B2G", "B2B2C"] as const;
+export const CUSTOMER_MARKETS = [
+  "B2B",
+  "B2C",
+  "B2G",
+  "B2B2C",
+  "Direct Consumer",
+  "OSS",
+] as const;
 export const USAGE_CONTEXTS = [
   "Commercial",
   "Internal",
