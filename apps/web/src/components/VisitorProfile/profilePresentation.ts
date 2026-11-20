@@ -1,4 +1,6 @@
 import { richSignalNames } from "./profileSignalLabels";
+import { filterConfigs } from "../Cv/Projects/filterConfigs";
+import { facetValueLabel } from "../Cv/Projects/Filter/utils";
 import {
   PROFILE_FACETS,
   type ProfileFacet,
@@ -114,15 +116,20 @@ export function signalLogPage(
   };
 }
 
-export const facetNames: Record<ProfileFacet, [string, string]> = {
-  buyerNeeds: ["Needs", "Bedarf"],
-  capabilities: ["Capabilities", "Kompetenzen"],
-  methods: ["Methods", "Methoden"],
-  industries: ["Sectors", "Branchen"],
-  tools: ["Tools", "Tools"],
-  productTypes: ["Formats", "Formate"],
-  stages: ["Stages", "Phasen"],
-};
+/** The project analysis views own these names, so both pages always say the same. */
+export const facetNames = Object.fromEntries(
+  PROFILE_FACETS.map((facet) => {
+    const config = filterConfigs.find((c) => c.projectKey === facet);
+    if (!config) throw new Error(`No analysis view for ${facet}`);
+    return [facet, [config.label, config.labelDe]];
+  }),
+) as Record<ProfileFacet, [string, string]>;
+
+/** Stored values stay English; readers see the shared translation. */
+export const termLabel = (
+  term: Pick<ProfileTerm, "facet" | "value">,
+  locale: "en" | "de",
+) => facetValueLabel(term.facet, term.value, locale);
 export const signalNames: Record<ProfileSignal["kind"], [string, string]> = {
   ...richSignalNames,
   project_opened: ["Opened a project", "Projekt geöffnet"],
@@ -169,8 +176,9 @@ export function subjectName(
       .join(" · ");
   if (sectionNames[signal.subject])
     return sectionNames[signal.subject][locale === "de" ? 1 : 0];
+  const term = catalog.terms.find((t) => t.id === signal.subject);
   return (
-    catalog.terms.find((t) => t.id === signal.subject)?.value ??
+    (term && termLabel(term, locale)) ??
     catalog.projects.find((p) => p.id === signal.subject)?.name ??
     {
       "ai-automation": "AI & automation",

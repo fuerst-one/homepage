@@ -10,6 +10,7 @@ import {
   MAX_PROFILE_SCORE,
   facetHues,
   facetNames,
+  termLabel,
   preferenceNames,
   signalNames,
   subjectName,
@@ -29,7 +30,8 @@ export function ProfileInterestDetail({
   onChoose: (id: string, preference: ProfilePreference | "auto") => void;
 }) {
   const de = locale === "de",
-    language = de ? 1 : 0;
+    language = de ? 1 : 0,
+    label = termLabel(interest, locale);
   const evidence = interest.evidence.slice(-SHOWN_EVIDENCE).reverse();
   return (
     <article
@@ -48,7 +50,7 @@ export function ProfileInterestDetail({
             : "inferred"}
       </p>
       <div className="profile-interest-top">
-        <h3 id="profile-interest-detail-title">{interest.value}</h3>
+        <h3 id="profile-interest-detail-title">{label}</h3>
         <span>
           {interest.score.toFixed(1)}
           <small>/{MAX_PROFILE_SCORE}</small>
@@ -57,12 +59,12 @@ export function ProfileInterestDetail({
       <progress
         max={MAX_PROFILE_SCORE}
         value={interest.score}
-        aria-label={`${interest.value}: ${interest.score.toFixed(1)} / ${MAX_PROFILE_SCORE}`}
+        aria-label={`${label}: ${interest.score.toFixed(1)} / ${MAX_PROFILE_SCORE}`}
       />
       <label className="profile-interest-preference">
         {de ? "Deine Auswahl" : "Your choice"}
         <select
-          aria-label={`${de ? "Präferenz für" : "Preference for"} ${interest.value}`}
+          aria-label={`${de ? "Präferenz für" : "Preference for"} ${label}`}
           value={interest.preference ?? "auto"}
           onChange={(event) =>
             onChoose(

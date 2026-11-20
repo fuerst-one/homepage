@@ -326,12 +326,11 @@ test("the analysis view decides what the project cards lead with", async () => {
     const settings = await page.$$eval("article", (cards) =>
       cards.map((card) => ({
         header: card.querySelector("[data-project-facet-values]")?.textContent,
-        meta: card
-          .querySelector("header p.text-xs")
-          ?.textContent.split(" · ")[0],
+        meta: card.querySelector("header p.text-xs")?.textContent.split(" · "),
       })),
     );
-    assert.ok(settings.every(({ header, meta }) => header === meta));
+    // The meta line may start with product formats; the project setting is one of its parts.
+    assert.ok(settings.every(({ header, meta }) => meta?.includes(header)));
 
     await page.select("aside select", "tools");
     await page.waitForFunction(() =>

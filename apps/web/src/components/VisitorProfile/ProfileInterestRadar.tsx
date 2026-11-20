@@ -14,6 +14,7 @@ import type {
 import {
   MAX_PROFILE_SCORE,
   facetHues,
+  termLabel,
   radarSlots,
   type RadarSlot,
 } from "./profilePresentation";
@@ -156,7 +157,7 @@ export function ProfileInterestRadar({
     };
   });
   const label = (interest: ProfileInterest) =>
-    `${interest.value}: ${interest.score.toFixed(1)} / ${MAX_PROFILE_SCORE}`;
+    `${termLabel(interest, de ? "de" : "en")}: ${interest.score.toFixed(1)} / ${MAX_PROFILE_SCORE}`;
   const labelStyle = (slot: number, hue: number, opacity: number) => {
     const { x, y, cos, sin } = at(slot, count, LABEL_RADIUS);
     const left = (x / SIZE) * 100;
@@ -180,7 +181,9 @@ export function ProfileInterestRadar({
   };
   const labelContent = (interest: ProfileInterest) => (
     <>
-      <span className="profile-radar-name">{interest.value}</span>
+      <span className="profile-radar-name">
+        {termLabel(interest, de ? "de" : "en")}
+      </span>
       <span className="profile-radar-score">{interest.score.toFixed(1)}</span>
     </>
   );

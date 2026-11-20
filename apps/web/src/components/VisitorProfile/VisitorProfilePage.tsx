@@ -42,7 +42,12 @@ import {
   recordVisitorInteraction,
 } from "./profileStore";
 import { useProfileSnapshot } from "./useProfileSnapshot";
-import { facetHues, facetNames, topInterests } from "./profilePresentation";
+import {
+  facetHues,
+  facetNames,
+  termLabel,
+  topInterests,
+} from "./profilePresentation";
 import "./visitor-profile.css";
 
 const tabNames: Record<ProfileTabId, [string, string]> = {
@@ -277,7 +282,9 @@ export default function VisitorProfilePage() {
           .filter(
             (t) =>
               (facet === "all" || t.facet === facet) &&
-              t.value.toLowerCase().includes(query.trim().toLowerCase()),
+              [t.value, termLabel(t, locale)].some((text) =>
+                text.toLowerCase().includes(query.trim().toLowerCase()),
+              ),
           )
           .slice(0, 8)
       : [];
@@ -555,7 +562,7 @@ export default function VisitorProfilePage() {
                             aria-pressed={interest.id === selected?.id}
                             onClick={() => setSelectedId(interest.id)}
                           >
-                            {interest.value}
+                            {termLabel(interest, locale)}
                           </button>
                         ))}
                       </div>
@@ -590,10 +597,10 @@ export default function VisitorProfilePage() {
                                 type="button"
                                 key={term.id}
                                 onClick={() =>
-                                  openInterest(term.id, term.value)
+                                  openInterest(term.id, termLabel(term, locale))
                                 }
                               >
-                                {term.value}
+                                {termLabel(term, locale)}
                                 <span>
                                   {known
                                     ? `${known.score.toFixed(1)} · ${facetNames[term.facet][language]}`
@@ -695,7 +702,7 @@ export default function VisitorProfilePage() {
                       <strong>{project.name} ↗</strong>
                       <p>
                         {reasons.length
-                          ? reasons.map((r) => r.value).join(" · ")
+                          ? reasons.map((r) => termLabel(r, locale)).join(" · ")
                           : affinity > 0
                             ? de
                               ? "Du hast Belege für dieses Projekt erkundet."

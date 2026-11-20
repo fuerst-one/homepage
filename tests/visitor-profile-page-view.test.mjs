@@ -205,3 +205,48 @@ test("the signal log clamps a page that no longer exists", () => {
   const empty = presentation.signalLogPage([], 3);
   assert.deepEqual(empty, { entries: [], page: 0, pages: 1 });
 });
+
+test("profile dimensions carry the same names as the project analysis views", () => {
+  const { filterConfigs } = loadTs(
+    new URL(
+      "../apps/web/src/components/Cv/Projects/filterConfigs.ts",
+      import.meta.url,
+    ),
+  );
+  for (const facet of PROFILE_FACETS) {
+    const config = filterConfigs.find((c) => c.projectKey === facet);
+    assert.ok(config, `${facet} has no analysis view`);
+    assert.deepEqual(presentation.facetNames[facet], [
+      config.label,
+      config.labelDe,
+    ]);
+  }
+});
+
+test("German readers see interests and logged subjects in German", () => {
+  const term = {
+    id: "buyerNeeds:Make data actionable",
+    facet: "buyerNeeds",
+    value: "Make data actionable",
+  };
+  assert.equal(presentation.termLabel(term, "en"), "Make data actionable");
+  assert.equal(presentation.termLabel(term, "de"), "Daten nutzbar machen");
+  assert.equal(
+    presentation.subjectName(
+      { kind: "filter_selected", subject: term.id },
+      { projects: [], terms: [term] },
+      "de",
+    ),
+    "Daten nutzbar machen",
+  );
+});
+
+test("product formats read in German like everywhere else on the German site", () => {
+  assert.equal(
+    presentation.termLabel(
+      { id: "productTypes:Web app", facet: "productTypes", value: "Web app" },
+      "de",
+    ),
+    "Webanwendung",
+  );
+});
