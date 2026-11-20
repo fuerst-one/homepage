@@ -1,28 +1,34 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FrameBounds, Glyph, LabelGroup } from "../Plasma/types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FrameBounds, Glyph } from "../Plasma/types";
 import { PlasmaCanvas, PlasmaCanvasHandle } from "../Plasma/PlasmaCanvas";
-import { LabelOverlay } from "../Plasma/LabelOverlay";
-import {
-  getLabelGroupPlacements,
-  LabelPlacement,
-} from "../Plasma/getLabelGroupPlacements";
 import { useInterval } from "../Plasma/useInterval";
 import { getIsReducedMotion } from "../Plasma/getIsReducedMotion";
-import { KnobDropdown } from "./KnobDropdown";
 import { useLocale } from "../i18n/LocaleProvider";
 import {
   PLAYGROUND_REMEMBER_KEY,
+  RIPPLES_SETUP_KEY,
   readPlaygroundPreference,
   writePlaygroundPreference,
   rememberPlaygroundPreferences,
 } from "../../lib/playgroundPreferences";
-import { getPlaygroundLabels } from "./playgroundLabels";
-import { getSplashLabels } from "./splashLabels";
+import { PlaygroundToolbar } from "./PlaygroundToolbar";
+import { PlaygroundSplash } from "./PlaygroundSplash";
+import { useIdleOverlays } from "./useIdleOverlays";
+import { useRipples } from "./ripples/useRipples";
+import {
+  parseRipplesSetup,
+  serializeRipplesSetup,
+} from "./ripples/ripplesSetup";
+import { RipplesControls } from "./ripples/RipplesControls";
+import { RipplesMarkers } from "./ripples/RipplesMarkers";
+import { RipplesArrangement } from "./ripples/RipplesArrangement";
+import { RipplesSoundToggle } from "./ripples/RipplesSoundToggle";
+import { RippleMode } from "./ripples/types";
+import "./playground.css";
 import { useWebcamStream } from "./useWebcamStream";
 import { useWebcamLuminance } from "./useWebcamLuminance";
-import { useUploadLuminance } from "./useUploadLuminance";
 import { useShapesLuminance } from "./useShapesLuminance";
 import { getRadialLuminance } from "./getRadialLuminance";
 import { useCanvasRecorder } from "./useCanvasRecorder";
@@ -42,16 +48,7 @@ import {
   SPLASH_LOCAL_STORAGE_KEY,
   WEBCAM_RAMPS,
 } from "./constants";
-import {
-  ContrastKey,
-  KnobId,
-  KnobState,
-  SizeKey,
-  Source,
-  SplashChoice,
-} from "./types";
-
-const FOOTER_RESERVED_PX = 84;
+import { KnobState, SizeKey, Source, SplashChoice } from "./types";
 
 const readSplashChoice = (): SplashChoice => {
   if (typeof window === "undefined") {
@@ -68,9 +65,9 @@ const readSplashChoice = (): SplashChoice => {
   }
   if (
     stored === "camera" ||
-    stored === "upload" ||
     stored === "plasma" ||
-    stored === "shapes"
+    stored === "shapes" ||
+    stored === "ripples"
   ) {
     return stored;
   }
@@ -93,16 +90,13 @@ const writeSplashChoice = (choice: Exclude<SplashChoice, null>) => {
 };
 
 const isSource = (value: unknown): value is Source =>
-  value === "plasma" ||
+  value === "ripples" ||
   value === "camera" ||
-  value === "upload" ||
-  value === "shapes";
+  value === "shapes" ||
+  value === "plasma";
 
 const isSizeKey = (value: unknown): value is SizeKey =>
   value === "small" || value === "medium" || value === "large";
-
-const isContrastKey = (value: unknown): value is ContrastKey =>
-  value === "low" || value === "medium" || value === "high";
 
 const readKnobs = (): KnobState | null => {
   if (typeof window === "undefined") {
@@ -119,17 +113,14 @@ const readKnobs = (): KnobState | null => {
       return null;
     }
     const candidate = parsed as Record<string, unknown>;
-    if (
-      !isSource(candidate.source) ||
-      !isSizeKey(candidate.size) ||
-      !isContrastKey(candidate.contrast)
-    ) {
+    if (!isSource(candidate.source) || !isSizeKey(candidate.size)) {
       return null;
     }
+    // Contrast is no longer adjustable, so a stored choice must not stick.
     return {
       source: candidate.source,
       size: candidate.size,
-      contrast: candidate.contrast,
+      contrast: DEFAULT_KNOBS.contrast,
     };
   } catch {
     return null;
@@ -151,38 +142,11 @@ const writeKnobs = (knobs: KnobState) => {
   }
 };
 
-const isSupportedUploadFile = (file: File): boolean =>
-  file.type.startsWith("image/") || file.type.startsWith("video/");
-
-const pickFileFromDataTransfer = (dataTransfer: DataTransfer): File | null => {
-  const items = dataTransfer.items;
-  if (items) {
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.kind !== "file") {
-        continue;
-      }
-      const file = item.getAsFile();
-      if (file && isSupportedUploadFile(file)) {
-        return file;
-      }
-    }
-  }
-  const files = dataTransfer.files;
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    if (isSupportedUploadFile(file)) {
-      return file;
-    }
-  }
-  return null;
-};
-
 export const PlasmaPlayground = () => {
   const de = useLocale() === "de";
   const [remember, setRemember] = useState(false);
   const [knobs, setKnobs] = useState<KnobState>(DEFAULT_KNOBS);
-  const [openKnob, setOpenKnob] = useState<KnobId | null>(null);
+  const [isOverlayEngaged, setIsOverlayEngaged] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [bounds, setBounds] = useState<FrameBounds | null>(null);
   const [splashChoice, setSplashChoice] = useState<SplashChoice>(null);
@@ -190,11 +154,9 @@ export const PlasmaPlayground = () => {
   const [pendingSource, setPendingSource] = useState<Source | null>(null);
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied">("idle");
   const [snapStatus, setSnapStatus] = useState<"idle" | "saved">("idle");
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [canvasElement, setCanvasElement] = useState<HTMLCanvasElement | null>(
     null,
   );
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const snapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const frameRef = useRef<Glyph[][] | null>(null);
@@ -207,8 +169,9 @@ export const PlasmaPlayground = () => {
   const showSplash = splashHydrated && splashChoice === null;
   const showChrome = splashHydrated && splashChoice !== null;
   const isCameraSource = knobs.source === "camera";
-  const isUploadSource = knobs.source === "upload";
   const isShapesSource = knobs.source === "shapes";
+  const isRipplesSource = knobs.source === "ripples";
+  const [rippleMode, setRippleMode] = useState<RippleMode>("sand");
 
   const { stream, permission, request } = useWebcamStream(isCameraSource);
   const {
@@ -216,12 +179,64 @@ export const PlasmaPlayground = () => {
     sample: sampleCamera,
     ready: cameraReady,
   } = useWebcamLuminance(stream);
-  const { sample: sampleUpload, ready: uploadReady } =
-    useUploadLuminance(uploadedFile);
   const { sample: sampleShapes, ready: shapesReady } = useShapesLuminance(
     isShapesSource,
     isShapesSource ? canvasElement : null,
   );
+  const ripples = useRipples(isRipplesSource, canvasElement, {
+    mode: rippleMode,
+  });
+  const sampleRipples = ripples.sample;
+  const { restore: restoreRipples } = ripples;
+  const [ripplesRestored, setRipplesRestored] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = parseRipplesSetup(
+        readPlaygroundPreference(window.localStorage, RIPPLES_SETUP_KEY),
+      );
+      if (saved) {
+        const { mode, ...setup } = saved;
+        restoreRipples(setup);
+        setRippleMode(mode);
+      }
+    } catch {
+      /* Storage can be unavailable; the piece then starts empty. */
+    }
+    setRipplesRestored(true);
+  }, [restoreRipples]);
+
+  useEffect(() => {
+    // Saving before the restore ran would overwrite the saved piece with an empty one.
+    if (!ripplesRestored) return;
+    try {
+      writePlaygroundPreference(
+        window.localStorage,
+        RIPPLES_SETUP_KEY,
+        serializeRipplesSetup({
+          mode: rippleMode,
+          bpm: ripples.bpm,
+          signature: ripples.signature,
+          root: ripples.root,
+          scale: ripples.scale,
+          sources: ripples.sources,
+          notes: [...ripples.notes],
+        }),
+      );
+    } catch {
+      /* Keep the piece in memory. */
+    }
+  }, [
+    ripplesRestored,
+    remember,
+    rippleMode,
+    ripples.bpm,
+    ripples.signature,
+    ripples.root,
+    ripples.scale,
+    ripples.sources,
+    ripples.notes,
+  ]);
 
   useEffect(() => {
     try {
@@ -255,8 +270,7 @@ export const PlasmaPlayground = () => {
   useEffect(() => {
     const update = () => {
       const width = Math.floor(window.innerWidth / cellWidth) - 1;
-      const height =
-        Math.floor((window.innerHeight - FOOTER_RESERVED_PX) / cellSize) - 1;
+      const height = Math.floor(window.innerHeight / cellSize) - 1;
       setBounds({ width: Math.max(10, width), height: Math.max(10, height) });
     };
     update();
@@ -265,11 +279,6 @@ export const PlasmaPlayground = () => {
   }, [cellSize, cellWidth]);
 
   const togglePause = useCallback(() => setIsPaused((p) => !p), []);
-  const toggleKnob = useCallback(
-    (id: KnobId) => setOpenKnob((cur) => (cur === id ? null : id)),
-    [],
-  );
-  const closeKnob = useCallback(() => setOpenKnob(null), []);
 
   const handleCopy = useCallback(() => {
     const current = frameRef.current;
@@ -348,7 +357,7 @@ export const PlasmaPlayground = () => {
       if (next === knobs.source) {
         return;
       }
-      if (next === "plasma" || next === "upload" || next === "shapes") {
+      if (next !== "camera") {
         setKnobs((prev) => ({ ...prev, source: next }));
         setPendingSource(null);
         return;
@@ -371,71 +380,44 @@ export const PlasmaPlayground = () => {
     [knobs.source, permission, request],
   );
 
-  const openFilePicker = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
-  const adoptFile = useCallback((file: File) => {
-    setUploadedFile(file);
-    setKnobs((prev) =>
-      prev.source === "upload" ? prev : { ...prev, source: "upload" },
-    );
-    setSplashChoice((prev) => {
-      if (prev !== null) {
-        return prev;
-      }
-      writeSplashChoice("upload");
-      return "upload";
-    });
-  }, []);
-
-  const handleFileInputChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      event.target.value = "";
-      if (file && isSupportedUploadFile(file)) {
-        adoptFile(file);
-      }
-    },
-    [adoptFile],
-  );
-
   const handleKnobChange = useCallback(
     <K extends keyof KnobState>(key: K, value: KnobState[K]) => {
       if (key === "source") {
-        setOpenKnob(null);
         void requestSourceChange(value as Source);
         return;
       }
       setKnobs((prev) => ({ ...prev, [key]: value }));
-      setOpenKnob(null);
     },
     [requestSourceChange],
   );
 
-  const handleChooseCamera = useCallback(() => {
-    writeSplashChoice("camera");
-    setSplashChoice("camera");
-    void requestSourceChange("camera");
-  }, [requestSourceChange]);
+  const handleChooseSplash = useCallback(
+    (source: Exclude<SplashChoice, null>) => {
+      writeSplashChoice(source);
+      setSplashChoice(source);
+      void requestSourceChange(source);
+    },
+    [requestSourceChange],
+  );
 
-  const handleChooseUpload = useCallback(() => {
-    writeSplashChoice("upload");
-    setSplashChoice("upload");
-    void requestSourceChange("upload");
-    openFilePicker();
-  }, [requestSourceChange, openFilePicker]);
-
-  const handleChoosePlasma = useCallback(() => {
-    writeSplashChoice("plasma");
-    setSplashChoice("plasma");
-  }, []);
-
-  const handleChooseShapes = useCallback(() => {
-    writeSplashChoice("shapes");
-    setSplashChoice("shapes");
-    void requestSourceChange("shapes");
-  }, [requestSourceChange]);
+  const handleRememberChange = useCallback(
+    (checked: boolean) => {
+      try {
+        const allowed = rememberPlaygroundPreferences(
+          window.localStorage,
+          checked,
+        );
+        setRemember(allowed);
+        if (allowed) {
+          writeKnobs(knobs);
+          if (splashChoice) writeSplashChoice(splashChoice);
+        }
+      } catch {
+        setRemember(false);
+      }
+    },
+    [knobs, splashChoice],
+  );
 
   useEffect(() => {
     if (!splashHydrated || showSplash || pendingSource !== null) {
@@ -501,160 +483,31 @@ export const PlasmaPlayground = () => {
     };
   }, [canvasElement, knobs.source, cellWidth, cellSize]);
 
-  useEffect(() => {
-    const handleDragOver = (event: DragEvent) => {
-      if (!event.dataTransfer) {
-        return;
-      }
-      const items = event.dataTransfer.items;
-      const hasFile =
-        items && Array.from(items).some((item) => item.kind === "file");
-      if (!hasFile) {
-        return;
-      }
-      event.preventDefault();
-      event.dataTransfer.dropEffect = "copy";
-    };
-    const handleDrop = (event: DragEvent) => {
-      if (!event.dataTransfer) {
-        return;
-      }
-      const file = pickFileFromDataTransfer(event.dataTransfer);
-      if (!file) {
-        return;
-      }
-      event.preventDefault();
-      adoptFile(file);
-    };
-    window.addEventListener("dragover", handleDragOver);
-    window.addEventListener("drop", handleDrop);
-    return () => {
-      window.removeEventListener("dragover", handleDragOver);
-      window.removeEventListener("drop", handleDrop);
-    };
-  }, [adoptFile]);
+  const isRecording = recorder.status === "recording";
+  const areOverlaysHidden = useIdleOverlays(
+    !showChrome ||
+      isPaused ||
+      isRecording ||
+      isOverlayEngaged ||
+      pendingSource !== null,
+  );
 
-  const showUploadPrompt = isUploadSource && !uploadedFile;
-
-  const labelGroups: LabelGroup[] = useMemo(() => {
-    if (showSplash) {
-      return getSplashLabels({
-        fontPx,
-        onChooseCamera: handleChooseCamera,
-        onChooseUpload: handleChooseUpload,
-        onChoosePlasma: handleChoosePlasma,
-        onChooseShapes: handleChooseShapes,
-      });
-    }
-    if (!showChrome) {
-      return [];
-    }
-    return getPlaygroundLabels({
-      isPaused,
-      copyStatus,
-      snapStatus,
-      recorderStatus: recorder.status,
-      recorderElapsedSeconds: recorder.elapsedSeconds,
-      showUploadPrompt,
-      onTogglePause: togglePause,
-      onKnobToggle: toggleKnob,
-      onCopy: handleCopy,
-      onSnap: handleSnap,
-      onToggleRec: handleToggleRec,
-      onUpload: openFilePicker,
-    });
-  }, [
-    showSplash,
-    showChrome,
-    fontPx,
-    handleChooseCamera,
-    handleChooseUpload,
-    handleChoosePlasma,
-    handleChooseShapes,
-    isPaused,
-    copyStatus,
-    snapStatus,
-    recorder.status,
-    recorder.elapsedSeconds,
-    showUploadPrompt,
-    togglePause,
-    toggleKnob,
-    handleCopy,
-    handleSnap,
-    handleToggleRec,
-    openFilePicker,
-  ]);
-
-  const placements = useMemo<LabelPlacement[]>(() => {
-    if (!bounds) {
-      return [];
-    }
-    return labelGroups.flatMap((group) =>
-      getLabelGroupPlacements(bounds, group),
-    );
-  }, [bounds, labelGroups]);
-
-  const knobPlacements = useMemo<Record<KnobId, LabelPlacement | null>>(() => {
-    const empty: Record<KnobId, LabelPlacement | null> = {
-      source: null,
-      size: null,
-      contrast: null,
-    };
-    if (!bounds || !showChrome) {
-      return empty;
-    }
-    const knobsGroup = labelGroups.find(
-      (group) => group.yAlign === "bottom" && group.xAlign === "center",
-    );
-    if (!knobsGroup) {
-      return empty;
-    }
-    const bottomPlacements = getLabelGroupPlacements(bounds, knobsGroup);
-    const ids: KnobId[] = ["source", "size", "contrast"];
-    return ids.reduce(
-      (acc, id, idx) => ({ ...acc, [id]: bottomPlacements[idx] ?? null }),
-      empty,
-    );
-  }, [bounds, labelGroups, showChrome]);
-
-  const placementsRef = useRef(placements);
-  placementsRef.current = placements;
   const knobsRef = useRef(knobs);
   knobsRef.current = knobs;
   const sampleCameraRef = useRef(sampleCamera);
   sampleCameraRef.current = sampleCamera;
   const cameraReadyRef = useRef(cameraReady);
   cameraReadyRef.current = cameraReady;
-  const sampleUploadRef = useRef(sampleUpload);
-  sampleUploadRef.current = sampleUpload;
-  const uploadReadyRef = useRef(uploadReady);
-  uploadReadyRef.current = uploadReady;
   const sampleShapesRef = useRef(sampleShapes);
   sampleShapesRef.current = sampleShapes;
   const shapesReadyRef = useRef(shapesReady);
   shapesReadyRef.current = shapesReady;
+  const sampleRipplesRef = useRef(sampleRipples);
+  sampleRipplesRef.current = sampleRipples;
 
-  const blankLabelsInPlace = useCallback((target: Glyph[][]) => {
-    for (const { row, startCol, label } of placementsRef.current) {
-      const targetRow = target[row];
-      if (!targetRow) {
-        continue;
-      }
-      for (let i = 0; i < label.label.length; i++) {
-        if (targetRow[startCol + i]) {
-          targetRow[startCol + i] = { character: " " };
-        }
-      }
-    }
+  const handleTextFrame = useCallback((next: Glyph[][]) => {
+    frameRef.current = next;
   }, []);
-
-  const handleTextFrame = useCallback(
-    (next: Glyph[][]) => {
-      blankLabelsInPlace(next);
-      frameRef.current = next;
-    },
-    [blankLabelsInPlace],
-  );
 
   const renderFrame = useCallback(
     (currentBounds: FrameBounds) => {
@@ -667,24 +520,6 @@ export const PlasmaPlayground = () => {
       if (k.source === "camera") {
         const sampleResult = cameraReadyRef.current
           ? sampleCameraRef.current({
-              width,
-              height,
-              cellAspect,
-              contrast: k.contrast,
-            })
-          : null;
-        if (sampleResult) {
-          handle.renderLuminance(sampleResult.luminance, width, height);
-        } else {
-          const radial = getRadialLuminance({ width, height, cellAspect });
-          handle.renderLuminance(radial, width, height);
-        }
-        return;
-      }
-
-      if (k.source === "upload") {
-        const sampleResult = uploadReadyRef.current
-          ? sampleUploadRef.current({
               width,
               height,
               cellAspect,
@@ -717,6 +552,16 @@ export const PlasmaPlayground = () => {
         return;
       }
 
+      if (k.source === "ripples") {
+        const { luminance } = sampleRipplesRef.current({
+          width,
+          height,
+          cellAspect,
+        });
+        handle.renderLuminance(luminance, width, height);
+        return;
+      }
+
       handle.renderPlasma();
     },
     [cellWidth, cellSize],
@@ -731,8 +576,7 @@ export const PlasmaPlayground = () => {
   const isAnimatedSource =
     knobs.source === "camera" ||
     knobs.source === "shapes" ||
-    (knobs.source === "upload" &&
-      uploadedFile?.type.startsWith("video/") === true);
+    knobs.source === "ripples";
   const targetFps = isAnimatedSource ? WEBCAM_FPS : PLASMA_FPS;
   const reducedMotion =
     knobs.source === "plasma" && getIsReducedMotion()
@@ -748,12 +592,15 @@ export const PlasmaPlayground = () => {
     }
   }, intervalMs);
 
-  const openKnobPlacement = openKnob ? knobPlacements[openKnob] : null;
   const canvasWidthPx = (bounds?.width ?? 0) * cellWidth;
   const canvasHeightPx = (bounds?.height ?? 0) * cellSize;
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center">
+    <div
+      className="playground"
+      data-idle={areOverlaysHidden}
+      onContextMenu={(event) => event.preventDefault()}
+    >
       <div
         className="relative"
         style={{ width: canvasWidthPx, height: canvasHeightPx }}
@@ -775,49 +622,88 @@ export const PlasmaPlayground = () => {
             onCanvasReady={setCanvasElement}
           />
         )}
-        <LabelOverlay
-          placements={placements}
-          cellSize={cellSize}
-          cellWidth={cellWidth}
-          fontPx={fontPx}
-        />
-        <KnobDropdown
-          openKnob={openKnob}
-          placement={openKnobPlacement}
-          cellSize={cellSize}
-          cellWidth={cellWidth}
-          knobs={knobs}
-          cameraSourceEnabled
-          onChange={handleKnobChange}
-          onClose={closeKnob}
-        />
+        {showChrome && isRipplesSource && (
+          <RipplesMarkers
+            de={de}
+            sources={ripples.sources}
+            getFireAge={ripples.getFireAge}
+            onMove={ripples.moveSource}
+            onRemove={ripples.removeSource}
+            onSoundChange={ripples.updateSource}
+            getPreviewBeats={ripples.getPreviewBeats}
+          />
+        )}
       </div>
-      <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 px-4 text-xs text-neutral-400">
-        <input
-          type="checkbox"
-          data-remember-playground
-          checked={remember}
-          onChange={(event) => {
-            try {
-              const allowed = rememberPlaygroundPreferences(
-                window.localStorage,
-                event.target.checked,
-              );
-              setRemember(allowed);
-              if (allowed) {
-                writeKnobs(knobs);
-                if (splashChoice) writeSplashChoice(splashChoice);
-              }
-            } catch {
-              setRemember(false);
-            }
-          }}
-          className="h-4 w-4 accent-[#dfc993]"
+      {showChrome && (
+        <PlaygroundToolbar
+          de={de}
+          isHidden={areOverlaysHidden}
+          knobs={knobs}
+          pendingSource={pendingSource}
+          isPaused={isPaused}
+          copyStatus={copyStatus}
+          snapStatus={snapStatus}
+          recorderStatus={recorder.status}
+          recorderElapsedSeconds={recorder.elapsedSeconds}
+          remember={remember}
+          rippleMode={isRipplesSource ? rippleMode : null}
+          sourceControls={
+            isRipplesSource && (
+              <RipplesControls
+                de={de}
+                mode={rippleMode}
+                onModeChange={setRippleMode}
+                onResetField={ripples.resetField}
+              />
+            )
+          }
+          dockContent={
+            isRipplesSource && (
+              <RipplesArrangement
+                de={de}
+                sources={ripples.sources}
+                notes={ripples.notes}
+                stepCount={ripples.stepCount}
+                signature={ripples.signature}
+                bpm={ripples.bpm}
+                scaleChoice={{ root: ripples.root, scale: ripples.scale }}
+                getPlayhead={ripples.getPlayhead}
+                onBpmChange={ripples.setBpm}
+                onSignatureChange={ripples.setSignature}
+                onRootChange={ripples.setRoot}
+                onScaleChange={ripples.setScale}
+                onVoiceChange={ripples.updateSource}
+                onMutedChange={ripples.setSourceMuted}
+                onAddNote={ripples.addNote}
+                onMoveNote={ripples.moveNote}
+                onResizeNote={ripples.resizeNote}
+                onNoteSpanChange={ripples.setNoteSpan}
+                onNotePitchChange={ripples.setNotePitch}
+                onRemoveNote={ripples.removeNote}
+                onUndo={ripples.undo}
+                onClear={ripples.clear}
+              />
+            )
+          }
+          cornerContent={
+            isRipplesSource && (
+              <RipplesSoundToggle
+                de={de}
+                soundOn={ripples.soundOn}
+                onToggle={ripples.toggleSound}
+              />
+            )
+          }
+          onKnobChange={handleKnobChange}
+          onTogglePause={togglePause}
+          onCopy={handleCopy}
+          onSnap={handleSnap}
+          onToggleRec={handleToggleRec}
+          onRememberChange={handleRememberChange}
+          onEngagedChange={setIsOverlayEngaged}
         />
-        {de
-          ? "Darstellung auf diesem Gerät merken (freiwillig)"
-          : "Remember visual settings on this device (optional)"}
-      </label>
+      )}
+      {showSplash && <PlaygroundSplash de={de} onChoose={handleChooseSplash} />}
       <video
         ref={videoRef}
         playsInline
@@ -826,13 +712,6 @@ export const PlasmaPlayground = () => {
         aria-hidden
         className="pointer-events-none absolute h-px w-px opacity-0"
         style={{ top: 0, left: 0 }}
-      />
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*,video/*"
-        className="hidden"
-        onChange={handleFileInputChange}
       />
     </div>
   );

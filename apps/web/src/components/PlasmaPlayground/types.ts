@@ -1,9 +1,7 @@
-export type Source = "plasma" | "camera" | "upload" | "shapes";
+export type Source = "ripples" | "camera" | "shapes" | "plasma";
 
 export type SizeKey = "small" | "medium" | "large";
 export type ContrastKey = "low" | "medium" | "high";
-
-export type KnobId = "source" | "size" | "contrast";
 
 export type KnobState = {
   source: Source;
@@ -11,6 +9,6 @@ export type KnobState = {
   contrast: ContrastKey;
 };
 
-export type SplashChoice = "camera" | "upload" | "plasma" | "shapes" | null;
+export type SplashChoice = "ripples" | "camera" | "shapes" | "plasma" | null;
 
 export type PermissionState = "idle" | "requesting" | "granted" | "denied";

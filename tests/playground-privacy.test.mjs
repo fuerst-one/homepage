@@ -29,3 +29,20 @@ test("visual preferences are never read or saved until requested; withdrawing re
   rememberPlaygroundPreferences(storage, false);
   assert.equal(values.size, 0);
 });
+
+test("withdrawing also removes a saved ripples setup", () => {
+  const { rememberPlaygroundPreferences, writePlaygroundPreference } = loadTs(
+    new URL("../apps/web/src/lib/playgroundPreferences.ts", import.meta.url),
+  );
+  const values = new Map();
+  const storage = {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => values.set(key, value),
+    removeItem: (key) => values.delete(key),
+  };
+  rememberPlaygroundPreferences(storage, true);
+  writePlaygroundPreference(storage, "plasma:ripples:v1", "{}");
+  assert.equal(values.has("plasma:ripples:v1"), true);
+  rememberPlaygroundPreferences(storage, false);
+  assert.equal(values.size, 0);
+});

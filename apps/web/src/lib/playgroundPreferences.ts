@@ -1,4 +1,5 @@
 export const PLAYGROUND_REMEMBER_KEY = "plasma:remember:v1";
+export const RIPPLES_SETUP_KEY = "plasma:ripples:v1";
 type PreferenceStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
 export function readPlaygroundPreference(
@@ -36,6 +37,7 @@ export function rememberPlaygroundPreferences(
         PLAYGROUND_REMEMBER_KEY,
         "plasma:splash",
         "plasma:knobs",
+        RIPPLES_SETUP_KEY,
       ])
         storage.removeItem(key);
     return remember;
