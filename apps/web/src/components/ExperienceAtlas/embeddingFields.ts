@@ -50,7 +50,7 @@ export const EMBEDDING_FIELDS = [
   { id: "maintenance", label: "Maintenance", inputLabel: "Maintenance" },
   {
     id: "projectType",
-    label: "Engagement type",
+    label: "Project setting",
     inputLabel: "Engagement type",
   },
   { id: "status", label: "Project status", inputLabel: "Project status" },

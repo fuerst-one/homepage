@@ -369,7 +369,7 @@ export const ATLAS_DE: Record<string, string> = {
   "Product formats": "Produktformate",
   "Tools & libraries": "Werkzeuge & Bibliotheken",
   Ownership: "Verantwortung",
-  "Engagement type": "Projektart",
+  "Project setting": "Projektrahmen",
   "Working pattern": "Arbeitsweise",
   "Team size": "Teamgröße",
   Complexity: "Komplexität",

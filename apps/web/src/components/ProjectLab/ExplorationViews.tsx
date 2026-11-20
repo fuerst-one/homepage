@@ -116,7 +116,7 @@ function DeliveryFlow({ projects, onSelect }: ViewProps) {
   return (
     <>
       <ViewHeading number="05" title="How the work takes shape.">
-        Follow the same projects from engagement type through ownership to
+        Follow the same projects from project setting through ownership to
         outcome provenance. Every column totals {projects.length} projects.
         Flows describe the records; they do not imply that one delivery model
         causes better outcomes.
@@ -124,7 +124,7 @@ function DeliveryFlow({ projects, onSelect }: ViewProps) {
       <div className="lab-chart-scroll">
         <div className="lab-flow-chart">
           <div className="lab-flow-headings">
-            <span>Engagement type</span>
+            <span>Project setting</span>
             <span>Ownership</span>
             <span>Outcome basis</span>
           </div>

@@ -85,7 +85,7 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
   },
   {
     key: "projectType",
-    label: "Project types",
+    label: "Project setting",
   },
   {
     key: "tools",
@@ -107,7 +107,7 @@ const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
   capabilities: "Kompetenzen",
   methods: "Methoden",
   industries: "Branchen",
-  projectType: "Projekttypen",
+  projectType: "Projektrahmen",
   tools: "Tools",
   languages: "Sprachen",
 };

@@ -17,7 +17,7 @@ export const SPACE_RECIPES = [
     id: "practice",
     label: "Contribution model",
     question: "How did I contribute?",
-    fields: ["Ownership", "Engagement type", "Working pattern", "Team size"],
+    fields: ["Ownership", "Project setting", "Working pattern", "Team size"],
   },
 ] as const;
 export type SpaceRecipe = (typeof SPACE_RECIPES)[number]["id"];
