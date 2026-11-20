@@ -1,0 +1,47 @@
+{
+  "title": "Add AI capabilities (four sections)",
+  "visitor": {
+    "leadingNeeds": ["Add AI capabilities", "Build internal tooling"],
+    "openedProjects": []
+  },
+  "plan": {
+    "version": 1,
+    "locale": "en",
+    "sections": [
+      {
+        "type": "hero",
+        "headline": "AI features with one defined job.",
+        "lead": "In these projects AI takes on one task inside a product: evaluating survey answers, helping visitors act on a website, remembering what agents learn. I help find that task in your product and build it in.",
+        "action": "enquiry:ai-products:explore"
+      },
+      {
+        "type": "proofGrid",
+        "heading": "Where AI already works in my projects",
+        "items": [
+          {
+            "projectId": "11d86514-f736-80ed-935c-e6fe30b59d42",
+            "fit": "AI-assisted survey creation, translation and evaluation; the owner estimates more than 50% less time for creation and evaluation."
+          },
+          {
+            "projectId": "41786514-f736-80ab-bead-e2ccd429b958",
+            "fit": "An embeddable assistant that answers, navigates and helps fill forms, with approval before anything is submitted."
+          },
+          {
+            "projectId": "35486514-f736-8087-86dd-f41b80c8b0ad",
+            "fit": "Agent memory that combines graph and vector storage with LLM-assisted memorisation and retrieval."
+          }
+        ]
+      },
+      {
+        "type": "questions",
+        "faqIds": ["ai-products:1", "ai-products:3"]
+      },
+      {
+        "type": "closing",
+        "heading": "What could your product do with AI?",
+        "text": "Start with your product and the people using it. You don’t need a feature specification.",
+        "action": "enquiry:ai-products:explore"
+      }
+    ]
+  }
+}

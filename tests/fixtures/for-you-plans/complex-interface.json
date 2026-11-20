@@ -1,0 +1,75 @@
+{
+  "title": "Improve a complex interface",
+  "visitor": {
+    "leadingNeeds": ["Improve a complex interface", "Make data actionable"],
+    "openedProjects": [
+      "15b86514-f736-803e-b9b7-e47ebc2406d1",
+      "153f6668-f4d6-490a-8345-0b999b35305a"
+    ]
+  },
+  "plan": {
+    "version": 1,
+    "locale": "en",
+    "sections": [
+      {
+        "type": "hero",
+        "headline": "Complex products, interfaces people can operate.",
+        "lead": "You have been looking at a design tool and a chartering app. Both are interfaces where many dependent options have to become one clear decision. I design and build that kind of interface, from the first interaction to the details that make it work.",
+        "action": "enquiry:product-interfaces:improve"
+      },
+      {
+        "type": "bridge",
+        "heading": "A decal editor and a chartering app share one problem",
+        "text": "Konfig lets riders create decals from scratch or adapt kits through colour variables, and turns the result into a print-ready PDF. Seabo turns brokers’ offer emails into data for voyage calculation, route monitoring and negotiation. Both take a specialist task with many inputs and give it a workflow people can follow.",
+        "projectIds": [
+          "15b86514-f736-803e-b9b7-e47ebc2406d1",
+          "153f6668-f4d6-490a-8345-0b999b35305a"
+        ]
+      },
+      {
+        "type": "proofGrid",
+        "heading": "The same challenge in other products",
+        "items": [
+          {
+            "projectId": "482c21e0-0e0d-436b-8858-a338875ee4bd",
+            "fit": "The first Vue.js frontend for a car-offer search, built with design and UX in a young startup team."
+          },
+          {
+            "projectId": "129bf87c-e0d6-4217-9c16-c320eeb0e29b",
+            "fit": "An e-food shopping concept explored with Axure prototypes, eye tracking and other usability tests."
+          },
+          {
+            "projectId": "6a549850-e00b-47fa-9fda-d2609c40431d",
+            "fit": "Packaging choices guided as a branching conversation instead of a form."
+          }
+        ]
+      },
+      {
+        "type": "spotlight",
+        "projectId": "afd09462-172e-40a9-8011-d2f6af5f5859",
+        "problem": "Packaging can be complicated to configure, and the shop’s product configuration flow had to become simpler.",
+        "built": "As the team’s frontend and e-commerce specialist, I turned interface designs into working features on an existing Shopware theme, together with CRM API integration and delivery pipelines.",
+        "result": "A reported +35% conversion rate in the packaging configurator.",
+        "image": "afd09462-172e-40a9-8011-d2f6af5f5859#1"
+      },
+      {
+        "type": "secondNeed",
+        "need": "Make data actionable",
+        "heading": "When the hard part is the data",
+        "text": "Public Searoutes makes sea-route calculations available without a paid service, with more than 1,000 free route calculations per month reported. It is the same kind of work as Seabo: dense professional information brought into an interface that supports a decision.",
+        "projectIds": ["94b5c46b-abd4-4eec-9a4a-19a07654db84"]
+      },
+      {
+        "type": "offer",
+        "offer": "product-interfaces",
+        "text": "If you already have a working interface and one task users keep struggling with, a review of that single flow is the smallest useful start."
+      },
+      {
+        "type": "closing",
+        "heading": "Which screen does everyone explain twice?",
+        "text": "Send a link or a screenshot of the flow that feels harder than it should. A few lines about your product are enough to start.",
+        "action": "enquiry:product-interfaces:review:improve"
+      }
+    ]
+  }
+}

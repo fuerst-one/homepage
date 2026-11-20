@@ -1,0 +1,68 @@
+{
+  "title": "Enable collaboration (one published project)",
+  "visitor": {
+    "leadingNeeds": [
+      "Enable collaboration",
+      "Create an interactive experience"
+    ],
+    "openedProjects": ["e3884152-6e82-4d93-a596-ddce91e6bfd0"]
+  },
+  "plan": {
+    "version": 1,
+    "locale": "en",
+    "sections": [
+      {
+        "type": "hero",
+        "headline": "Planning together, on one shared map.",
+        "lead": "One project in my portfolio is built around collaboration, so this page shows it in depth: RoadTrippin, a trip planner where friends edit the same plan live while they chat or call.",
+        "action": "enquiry:product-interfaces:explore"
+      },
+      {
+        "type": "spotlight",
+        "projectId": "35486514-f736-803d-ae01-dc666a99d11c",
+        "problem": "Trip ideas and changes get buried in endless chat histories.",
+        "built": "A map-based planner that drafts whole trips around a travel profile, with live collaboration on one shared map and an import that turns shared web pages into structured travel information.",
+        "result": "Used to plan and manage my own trips, with live collaboration.",
+        "image": "35486514-f736-803d-ae01-dc666a99d11c#1"
+      },
+      {
+        "type": "secondNeed",
+        "need": "Create an interactive experience",
+        "heading": "Interfaces people work with directly",
+        "text": "Playlist-Canvas turns album covers into a collage you drag, rotate and arrange yourself. Burger Loop explains programming loops with a chef following a burger recipe.",
+        "projectIds": [
+          "f9cc2539-c940-4864-8ff0-8424ed0d9fb9",
+          "9d4999cb-5ee7-4fc3-a99e-9ee7fbadce5d"
+        ]
+      },
+      {
+        "type": "approach",
+        "heading": "How we would start",
+        "steps": [
+          {
+            "title": "Find the sticking point",
+            "text": "We look at the product, the people using it and one task that matters, starting from a walkthrough."
+          },
+          {
+            "title": "Make the interaction testable",
+            "text": "I turn the critical flow into a prototype, and we review it before committing to the wider build."
+          },
+          {
+            "title": "Build it into your product",
+            "text": "I implement the agreed experience with your existing stack where practical, with a handover your team can use."
+          }
+        ]
+      },
+      {
+        "type": "questions",
+        "faqIds": ["product-interfaces:2", "product-interfaces:4"]
+      },
+      {
+        "type": "closing",
+        "heading": "Who needs to work on the same thing?",
+        "text": "Tell me who plans, edits or decides together today, and where that work gets lost between tools.",
+        "action": "enquiry:product-interfaces:explore"
+      }
+    ]
+  }
+}

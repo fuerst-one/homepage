@@ -1,0 +1,86 @@
+{
+  "title": "Automate repetitive work (DE)",
+  "visitor": {
+    "leadingNeeds": ["Automate repetitive work", "Integrate business systems"],
+    "openedProjects": [
+      "35686514-f736-8019-921c-e5d8d77e7f23",
+      "41786514-f736-8074-8dcb-dd79f906d12a"
+    ]
+  },
+  "plan": {
+    "version": 1,
+    "locale": "de",
+    "sections": [
+      {
+        "type": "hero",
+        "headline": "Wiederkehrende Arbeit, als Software gebaut.",
+        "lead": "Du hast dir Werkzeuge angesehen, die Abläufe übernehmen: Tests, die selbst durch eine Website finden, und eine Übersicht, die Daten aus vielen Diensten sammelt. Ich entwickle Datenpipelines, Tool-Anbindungen und Browser-Automatisierungen. KI kommt dort zum Einsatz, wo sie der Aufgabe hilft.",
+        "action": "enquiry:ai-automation:assessment:explore"
+      },
+      {
+        "type": "bridge",
+        "heading": "Was Test Flow und Business Hub verbindet",
+        "text": "Beide nehmen eine Aufgabe ab, die sonst von Hand passiert. Test Flow lässt einen Agenten selbst durch eine Website finden und macht dabei Usability-Probleme sichtbar. Business Hub sammelt Nachrichten, Termine, Aufgaben und Rechnungen aus verschiedenen Diensten und ordnet sie Projekten zu.",
+        "projectIds": [
+          "35686514-f736-8019-921c-e5d8d77e7f23",
+          "41786514-f736-8074-8dcb-dd79f906d12a"
+        ]
+      },
+      {
+        "type": "proofGrid",
+        "heading": "Weitere Automatisierungen aus dem Portfolio",
+        "items": [
+          {
+            "projectId": "41c86514-f736-801e-8825-cbf28db44596",
+            "fit": "Überführt Webseiten in strukturierte Daten und erzeugt das Extraktionsschema neu, wenn sich ein Layout ändert."
+          },
+          {
+            "projectId": "41c86514-f736-80bf-8395-e263d6532bd9",
+            "fit": "Läuft im Hintergrund, bündelt Wohnungsangebote und meldet nur Anzeigen mit einer Bewertung von 10/10."
+          },
+          {
+            "projectId": "41c86514-f736-808a-8e7b-ffbc4b0c44c0",
+            "fit": "Bündelt Nachrichten, Kalender und Projektinformationen und zeigt fehlgeschlagene Quellen sichtbar an."
+          }
+        ]
+      },
+      {
+        "type": "spotlight",
+        "projectId": "35686514-f736-8019-921c-e5d8d77e7f23",
+        "problem": "Starre Klick-für-Klick-Skripte prüfen nur den vorgegebenen Weg und übersehen Probleme, die echte Nutzer im Browser haben.",
+        "built": "Ein lokales, LLM-gestütztes E2E-Testwerkzeug: Nutzerabläufe werden in natürlicher Sprache beschrieben, ein Agent findet in einem MCP-gesteuerten Browser selbst den Weg.",
+        "result": "Usability- und Barrierefreiheitsprobleme in echten Browserabläufen aufgedeckt, unter anderem im Konfig-Designeditor.",
+        "image": "35686514-f736-8019-921c-e5d8d77e7f23#3"
+      },
+      {
+        "type": "approach",
+        "heading": "So würden wir mit deinem Ablauf starten",
+        "steps": [
+          {
+            "title": "Einen sinnvollen Anfang finden",
+            "text": "Wir verfolgen einen Ablauf und klären Eingaben, gewünschtes Ergebnis und Rahmenbedingungen, bevor wir Tools auswählen."
+          },
+          {
+            "title": "Eine kleine, echte Version bauen",
+            "text": "Ich verbinde die entscheidenden Systeme und teste mit echten Beispielen. Grenzen, Fehlerfälle und Prüfschritte bleiben sichtbar."
+          },
+          {
+            "title": "Entscheiden, was wachsen soll",
+            "text": "Wir vergleichen das Ergebnis mit dem Ausgangspunkt. Wenn es hilft, planen wir Überwachung, Dokumentation und den nächsten Schritt."
+          }
+        ]
+      },
+      {
+        "type": "offer",
+        "offer": "ai-automation",
+        "text": "Wenn du einen Ablauf im Kopf hast, aber noch nicht weißt, ob sich eine Automatisierung lohnt, klärt das Assessment genau diese Frage."
+      },
+      {
+        "type": "closing",
+        "heading": "Was möchtest du nicht mehr von Hand erledigen?",
+        "text": "Beschreibe eine wiederkehrende Aufgabe und die beteiligten Tools. Ein technisches Konzept brauchst du dafür noch nicht.",
+        "action": "enquiry:ai-automation:explore"
+      }
+    ]
+  }
+}

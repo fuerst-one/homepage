@@ -1,7 +1,9 @@
 # For you page — design
 
-Discussed with the owner on 20 November 2026. This is a design, not an
-implementation: nothing described here exists yet. It fills the open decision
+Discussed with the owner on 20 November 2026. Step 1 of the suggested order
+(section library, plan format and renderer) is implemented on
+`feature/live-visitor-profile` and not pushed; everything else described here
+does not exist yet. It fills the open decision
 "The For you page concept" in
 [2026-11-19-visitor-intent-model-design.md](2026-11-19-visitor-intent-model-design.md)
 and builds on the live visitor profile
@@ -228,6 +230,12 @@ the harness is the main instrument.
 ## Suggested order
 
 1. Section library, plan format and renderer, fed with hand-written plans.
+   **Implemented, not pushed:** the plan format and its checks in
+   `packages/content/src/forYouPlan.ts`, the sections in
+   `apps/web/src/components/ForYou/`, the example plans in
+   `tests/fixtures/for-you-plans/` and the review route `/en/for-you` and
+   `/de/for-you` (`?example=<name>`, not indexed, not linked). The examples
+   together use all nine section types; a plan holds at most seven.
 2. The route with the local preview and the button; header link and hint point
    to it.
 3. The harness, the prompt rounds and the model choice.
