@@ -87,21 +87,19 @@
   font-size: 0.6875rem;
 }
 
-/* Appears only once a visitor's profile is ready, so it overlays the top-right
-   corner instead of taking a grid cell that would move the rest of the header. */
+/* Appears only once a visitor's profile is ready. */
 .content-header-for-you {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: inline-flex;
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  min-height: 24px;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
   border: 1px solid hsl(var(--primary) / 55%);
-  padding: 0 8px;
+  padding: 0 14px;
   background: #090b08;
   color: hsl(var(--primary));
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -109,22 +107,29 @@
 
 .content-header-for-you::before {
   content: "";
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   background: currentColor;
 }
 
-/* A larger touch target that grows into the page padding, away from the name. */
+/* A touch target of 44px that grows into the row gaps. */
 .content-header-for-you::after {
   content: "";
   position: absolute;
-  inset: -12px -8px -2px;
+  inset: -2px 0;
 }
 
-@media (max-width: 380px) {
-  /* The name reaches under the link here, so it moves up into the padding. */
+@media (max-width: 767.98px) {
+  .content-header:has(.content-header-for-you) {
+    grid-template-areas:
+      "identity identity"
+      "availability languages"
+      "for-you for-you"
+      "navigation navigation";
+  }
+
   .content-header-for-you {
-    top: -6px;
+    grid-area: for-you;
   }
 }
 
@@ -262,6 +267,24 @@
   .content-header-availability {
     align-self: center;
     font-size: 0.75rem;
+  }
+
+  /* Availability and languages move up, and the link fills the space under
+     them down to the portrait's lower edge: the header keeps its height. */
+  .content-header:has(.content-header-for-you) .content-header-availability,
+  .content-header:has(.content-header-for-you) .content-header-languages {
+    align-self: start;
+  }
+
+  .content-header-for-you {
+    position: absolute;
+    top: 44px;
+    right: 0;
+    min-height: 36px;
+  }
+
+  .content-header-for-you::after {
+    inset: -4px 0;
   }
 
   .content-header-navigation {

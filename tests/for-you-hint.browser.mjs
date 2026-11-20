@@ -44,17 +44,23 @@ async function clickButton(page, text) {
   await button.scrollIntoView();
   await button.click();
 }
-/** Everything in the header except the "For you" link, which must not move it. */
-const headerLayout = (page) =>
+const box = (page, selector) =>
+  page.$eval(selector, (el) => {
+    const { x, y, width, height } = el.getBoundingClientRect();
+    return [x, y + scrollY, width, height].map(Math.round).join(",");
+  });
+/** The link belongs under availability and languages, above the navigation. */
+const linkPlacement = (page) =>
   page.evaluate((navLink) => {
-    const box = (el) => {
-      const { x, y, width, height } = el.getBoundingClientRect();
-      return [x, y + scrollY, width, height].map(Math.round).join(",");
+    const rect = (selector) =>
+      document.querySelector(selector).getBoundingClientRect();
+    const link = rect(navLink);
+    return {
+      belowAvailability:
+        link.top >= rect(".content-header-availability").bottom,
+      belowLanguages: link.top >= rect(".content-header-languages").bottom,
+      aboveNavigation: link.bottom <= rect(".content-header-navigation").top,
     };
-    const header = document.querySelector(".content-header");
-    return [header, ...header.querySelectorAll(`:scope *:not(${navLink})`)]
-      .map(box)
-      .join(";");
   }, NAV_LINK);
 
 for (const { locale, width, height, finish } of [
@@ -99,7 +105,7 @@ for (const { locale, width, height, finish } of [
 
         await go(listing);
         await page.waitForSelector(LAUNCHER);
-        const layoutBefore = await headerLayout(page);
+        const navigationBefore = await box(page, ".content-header-navigation");
         assert.equal(await exists(page, NAV_LINK), false);
         assert.equal(await exists(page, HINT), false);
 
@@ -205,11 +211,22 @@ for (const { locale, width, height, finish } of [
         await closeDialog();
         await page.waitForSelector(HINT);
 
-        // Still due after a reload, and the link has not moved the header.
+        // Still due after a reload, with the link in its place in the header.
         await go(listing);
         await page.waitForSelector(HINT);
         await page.waitForSelector(NAV_LINK);
-        assert.equal(await headerLayout(page), layoutBefore);
+        assert.deepEqual(await linkPlacement(page), {
+          belowAvailability: true,
+          belowLanguages: true,
+          aboveNavigation: true,
+        });
+        // Beside the portrait there is room for it; a phone gets a row of its own.
+        if (width >= 768)
+          assert.equal(
+            await box(page, ".content-header-navigation"),
+            navigationBefore,
+            "the link does not move the page",
+          );
         await page.emulateMediaFeatures([
           { name: "prefers-reduced-motion", value: "reduce" },
         ]);

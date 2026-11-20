@@ -429,10 +429,13 @@ after a dismissal focus continues from the signature. It carries
 Its entrance animation is skipped under `prefers-reduced-motion`.
 
 The header link "For you" / „Für dich" (`ForYouNavLink` in the shared Layout)
-renders only in the browser and only for a ready, opted-in profile. It overlays
-the top-right corner of the header, above the language switch, and takes no grid
-cell, so the header keeps its exact layout when the link appears. Visitors
-without a ready profile or without JavaScript get the header unchanged.
+renders only in the browser and only for a ready, opted-in profile. It sits
+below the availability link and the language switch. From 768px it fills the
+space beside the portrait: availability and languages move up, and the header
+keeps its height. On narrower screens it is a full-width row of its own above
+the navigation, so the navigation and the page move down by that row when the
+link appears. Visitors without a ready profile or without JavaScript get the
+header unchanged.
 
 Until the For you page exists, the hint and the header link both lead to the
 localized `/profile#suggestions`.
