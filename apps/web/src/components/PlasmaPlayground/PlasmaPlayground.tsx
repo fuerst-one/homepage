@@ -8,6 +8,7 @@ import { getIsReducedMotion } from "../Plasma/getIsReducedMotion";
 import { useLocale } from "../i18n/LocaleProvider";
 import {
   PLAYGROUND_REMEMBER_KEY,
+  RIPPLES_SETUP_KEY,
   readPlaygroundPreference,
   writePlaygroundPreference,
   rememberPlaygroundPreferences,
@@ -15,6 +16,16 @@ import {
 import { PlaygroundToolbar } from "./PlaygroundToolbar";
 import { PlaygroundSplash } from "./PlaygroundSplash";
 import { useIdleOverlays } from "./useIdleOverlays";
+import { useRipples } from "./ripples/useRipples";
+import {
+  parseRipplesSetup,
+  serializeRipplesSetup,
+} from "./ripples/ripplesSetup";
+import { RipplesControls } from "./ripples/RipplesControls";
+import { RipplesMarkers } from "./ripples/RipplesMarkers";
+import { RipplesArrangement } from "./ripples/RipplesArrangement";
+import { RipplesSoundToggle } from "./ripples/RipplesSoundToggle";
+import { RippleMode } from "./ripples/types";
 import "./playground.css";
 import { useWebcamStream } from "./useWebcamStream";
 import { useWebcamLuminance } from "./useWebcamLuminance";
@@ -52,7 +63,12 @@ const readSplashChoice = (): SplashChoice => {
   } catch {
     /* Storage can be unavailable. */
   }
-  if (stored === "camera" || stored === "plasma" || stored === "shapes") {
+  if (
+    stored === "camera" ||
+    stored === "plasma" ||
+    stored === "shapes" ||
+    stored === "ripples"
+  ) {
     return stored;
   }
   return null;
@@ -74,7 +90,10 @@ const writeSplashChoice = (choice: Exclude<SplashChoice, null>) => {
 };
 
 const isSource = (value: unknown): value is Source =>
-  value === "plasma" || value === "camera" || value === "shapes";
+  value === "ripples" ||
+  value === "camera" ||
+  value === "shapes" ||
+  value === "plasma";
 
 const isSizeKey = (value: unknown): value is SizeKey =>
   value === "small" || value === "medium" || value === "large";
@@ -151,6 +170,8 @@ export const PlasmaPlayground = () => {
   const showChrome = splashHydrated && splashChoice !== null;
   const isCameraSource = knobs.source === "camera";
   const isShapesSource = knobs.source === "shapes";
+  const isRipplesSource = knobs.source === "ripples";
+  const [rippleMode, setRippleMode] = useState<RippleMode>("sand");
 
   const { stream, permission, request } = useWebcamStream(isCameraSource);
   const {
@@ -162,6 +183,60 @@ export const PlasmaPlayground = () => {
     isShapesSource,
     isShapesSource ? canvasElement : null,
   );
+  const ripples = useRipples(isRipplesSource, canvasElement, {
+    mode: rippleMode,
+  });
+  const sampleRipples = ripples.sample;
+  const { restore: restoreRipples } = ripples;
+  const [ripplesRestored, setRipplesRestored] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = parseRipplesSetup(
+        readPlaygroundPreference(window.localStorage, RIPPLES_SETUP_KEY),
+      );
+      if (saved) {
+        const { mode, ...setup } = saved;
+        restoreRipples(setup);
+        setRippleMode(mode);
+      }
+    } catch {
+      /* Storage can be unavailable; the piece then starts empty. */
+    }
+    setRipplesRestored(true);
+  }, [restoreRipples]);
+
+  useEffect(() => {
+    // Saving before the restore ran would overwrite the saved piece with an empty one.
+    if (!ripplesRestored) return;
+    try {
+      writePlaygroundPreference(
+        window.localStorage,
+        RIPPLES_SETUP_KEY,
+        serializeRipplesSetup({
+          mode: rippleMode,
+          bpm: ripples.bpm,
+          signature: ripples.signature,
+          root: ripples.root,
+          scale: ripples.scale,
+          sources: ripples.sources,
+          notes: [...ripples.notes],
+        }),
+      );
+    } catch {
+      /* Keep the piece in memory. */
+    }
+  }, [
+    ripplesRestored,
+    remember,
+    rippleMode,
+    ripples.bpm,
+    ripples.signature,
+    ripples.root,
+    ripples.scale,
+    ripples.sources,
+    ripples.notes,
+  ]);
 
   useEffect(() => {
     try {
@@ -317,7 +392,7 @@ export const PlasmaPlayground = () => {
   );
 
   const handleChooseSplash = useCallback(
-    (source: Source) => {
+    (source: Exclude<SplashChoice, null>) => {
       writeSplashChoice(source);
       setSplashChoice(source);
       void requestSourceChange(source);
@@ -427,6 +502,8 @@ export const PlasmaPlayground = () => {
   sampleShapesRef.current = sampleShapes;
   const shapesReadyRef = useRef(shapesReady);
   shapesReadyRef.current = shapesReady;
+  const sampleRipplesRef = useRef(sampleRipples);
+  sampleRipplesRef.current = sampleRipples;
 
   const handleTextFrame = useCallback((next: Glyph[][]) => {
     frameRef.current = next;
@@ -475,6 +552,16 @@ export const PlasmaPlayground = () => {
         return;
       }
 
+      if (k.source === "ripples") {
+        const { luminance } = sampleRipplesRef.current({
+          width,
+          height,
+          cellAspect,
+        });
+        handle.renderLuminance(luminance, width, height);
+        return;
+      }
+
       handle.renderPlasma();
     },
     [cellWidth, cellSize],
@@ -487,7 +574,9 @@ export const PlasmaPlayground = () => {
   }, [bounds, renderFrame, knobs.size, knobs.contrast]);
 
   const isAnimatedSource =
-    knobs.source === "camera" || knobs.source === "shapes";
+    knobs.source === "camera" ||
+    knobs.source === "shapes" ||
+    knobs.source === "ripples";
   const targetFps = isAnimatedSource ? WEBCAM_FPS : PLASMA_FPS;
   const reducedMotion =
     knobs.source === "plasma" && getIsReducedMotion()
@@ -507,7 +596,11 @@ export const PlasmaPlayground = () => {
   const canvasHeightPx = (bounds?.height ?? 0) * cellSize;
 
   return (
-    <div className="playground" data-idle={areOverlaysHidden}>
+    <div
+      className="playground"
+      data-idle={areOverlaysHidden}
+      onContextMenu={(event) => event.preventDefault()}
+    >
       <div
         className="relative"
         style={{ width: canvasWidthPx, height: canvasHeightPx }}
@@ -529,6 +622,17 @@ export const PlasmaPlayground = () => {
             onCanvasReady={setCanvasElement}
           />
         )}
+        {showChrome && isRipplesSource && (
+          <RipplesMarkers
+            de={de}
+            sources={ripples.sources}
+            getFireAge={ripples.getFireAge}
+            onMove={ripples.moveSource}
+            onRemove={ripples.removeSource}
+            onSoundChange={ripples.updateSource}
+            getPreviewBeats={ripples.getPreviewBeats}
+          />
+        )}
       </div>
       {showChrome && (
         <PlaygroundToolbar
@@ -542,6 +646,54 @@ export const PlasmaPlayground = () => {
           recorderStatus={recorder.status}
           recorderElapsedSeconds={recorder.elapsedSeconds}
           remember={remember}
+          rippleMode={isRipplesSource ? rippleMode : null}
+          sourceControls={
+            isRipplesSource && (
+              <RipplesControls
+                de={de}
+                mode={rippleMode}
+                onModeChange={setRippleMode}
+                onResetField={ripples.resetField}
+              />
+            )
+          }
+          dockContent={
+            isRipplesSource && (
+              <RipplesArrangement
+                de={de}
+                sources={ripples.sources}
+                notes={ripples.notes}
+                stepCount={ripples.stepCount}
+                signature={ripples.signature}
+                bpm={ripples.bpm}
+                scaleChoice={{ root: ripples.root, scale: ripples.scale }}
+                getPlayhead={ripples.getPlayhead}
+                onBpmChange={ripples.setBpm}
+                onSignatureChange={ripples.setSignature}
+                onRootChange={ripples.setRoot}
+                onScaleChange={ripples.setScale}
+                onVoiceChange={ripples.updateSource}
+                onMutedChange={ripples.setSourceMuted}
+                onAddNote={ripples.addNote}
+                onMoveNote={ripples.moveNote}
+                onResizeNote={ripples.resizeNote}
+                onNoteSpanChange={ripples.setNoteSpan}
+                onNotePitchChange={ripples.setNotePitch}
+                onRemoveNote={ripples.removeNote}
+                onUndo={ripples.undo}
+                onClear={ripples.clear}
+              />
+            )
+          }
+          cornerContent={
+            isRipplesSource && (
+              <RipplesSoundToggle
+                de={de}
+                soundOn={ripples.soundOn}
+                onToggle={ripples.toggleSound}
+              />
+            )
+          }
           onKnobChange={handleKnobChange}
           onTogglePause={togglePause}
           onCopy={handleCopy}

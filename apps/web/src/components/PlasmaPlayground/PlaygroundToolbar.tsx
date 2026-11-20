@@ -9,15 +9,18 @@ import {
   Copy,
   Pause,
   Play,
+  Radio,
   Save,
   Shapes,
   Square,
   Waves,
 } from "lucide-react";
+import { ReactNode } from "react";
 import Link from "../i18n/LocalizedLink";
 import { cn } from "../../lib/utils";
 import { SegmentedControl, SegmentedOption } from "./SegmentedControl";
 import { RecorderStatus } from "./useCanvasRecorder";
+import { RippleMode } from "./ripples/types";
 import { KnobState, SizeKey, Source } from "./types";
 
 const ICON_SIZE = 14;
@@ -33,6 +36,12 @@ type PlaygroundToolbarProps = {
   recorderStatus: RecorderStatus;
   recorderElapsedSeconds: number;
   remember: boolean;
+  rippleMode: RippleMode | null;
+  sourceControls?: ReactNode;
+  /** Extra panel stacked above the toolbar, e.g. the ripples arrangement. */
+  dockContent?: ReactNode;
+  /** Extra controls placed right after play/pause, e.g. the ripples sound toggle. */
+  cornerContent?: ReactNode;
   onKnobChange: <K extends keyof KnobState>(
     key: K,
     value: KnobState[K],
@@ -48,7 +57,11 @@ type PlaygroundToolbarProps = {
 const formatElapsed = (seconds: number) =>
   `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, "0")}`;
 
-const getInteractionHint = (source: Source, de: boolean): string | null => {
+const getInteractionHint = (
+  source: Source,
+  rippleMode: RippleMode | null,
+  de: boolean,
+): string | null => {
   if (source === "plasma") {
     return de
       ? "Klicken für Wellen · Scrollen zum Zoomen"
@@ -58,6 +71,21 @@ const getInteractionHint = (source: Source, de: boolean): string | null => {
     return de
       ? "Ziehen zum Drehen · Klicken für nächste Form · Scrollen zum Zoomen"
       : "Drag to orbit · Click for next shape · Scroll to zoom";
+  }
+  if (source === "ripples" && rippleMode === "cymatics") {
+    return de
+      ? "Klicken setzt eine summende Quelle · Sand sammelt sich, wo die Fläche ruht"
+      : "Click to place a humming source · sand gathers where the surface stays still";
+  }
+  if (source === "ripples" && rippleMode === "sand") {
+    return de
+      ? "Klicken setzt eine Quelle · Klick auf eine Quelle öffnet ihre Einstellungen"
+      : "Click to place a source · click a source to tune it";
+  }
+  if (source === "ripples") {
+    return de
+      ? "Klicken setzt eine Quelle · sie wiederholt sich jeden Takt"
+      : "Click to place a source · it repeats every bar";
   }
   return null;
 };
@@ -73,6 +101,10 @@ export const PlaygroundToolbar = ({
   recorderStatus,
   recorderElapsedSeconds,
   remember,
+  rippleMode,
+  sourceControls,
+  dockContent,
+  cornerContent,
   onKnobChange,
   onTogglePause,
   onCopy,
@@ -83,9 +115,9 @@ export const PlaygroundToolbar = ({
 }: PlaygroundToolbarProps) => {
   const sources: SegmentedOption<Source>[] = [
     {
-      value: "plasma",
-      label: "Plasma",
-      icon: <Waves size={ICON_SIZE} aria-hidden />,
+      value: "ripples",
+      label: "Ripples",
+      icon: <Radio size={ICON_SIZE} aria-hidden />,
     },
     {
       value: "camera",
@@ -97,6 +129,11 @@ export const PlaygroundToolbar = ({
       value: "shapes",
       label: de ? "Formen" : "Shapes",
       icon: <Shapes size={ICON_SIZE} aria-hidden />,
+    },
+    {
+      value: "plasma",
+      label: "Plasma",
+      icon: <Waves size={ICON_SIZE} aria-hidden />,
     },
   ];
   const sizes: SegmentedOption<SizeKey>[] = [
@@ -119,7 +156,7 @@ export const PlaygroundToolbar = ({
   const isRecording = recorderStatus === "recording";
   const canRecord =
     recorderStatus !== "unsupported" && recorderStatus !== "detecting";
-  const hint = getInteractionHint(knobs.source, de);
+  const hint = getInteractionHint(knobs.source, rippleMode, de);
   const copyLabel =
     copyStatus === "copied"
       ? de
@@ -148,8 +185,8 @@ export const PlaygroundToolbar = ({
       ? "Auf diesem Gerät gemerkt · Klicken zum Vergessen"
       : "Remembered on this device · Click to forget"
     : de
-      ? "Einstellungen auf diesem Gerät merken (freiwillig)"
-      : "Remember settings on this device (optional)";
+      ? "Einstellungen und Ripples-Stücke auf diesem Gerät merken (freiwillig)"
+      : "Remember settings and Ripples pieces on this device (optional)";
   const pauseLabel = isPaused
     ? de
       ? "Animation fortsetzen"
@@ -198,6 +235,7 @@ export const PlaygroundToolbar = ({
             <Pause size={ICON_SIZE} aria-hidden />
           )}
         </button>
+        {cornerContent}
         <SegmentedControl
           label={de ? "Zeichengröße" : "Character size"}
           isGroupLabelHidden
@@ -277,6 +315,11 @@ export const PlaygroundToolbar = ({
 
       <div className="playground-dock">
         {hint && <p className="playground-hint">{hint}</p>}
+        {dockContent && (
+          <div className="playground-dock-panel" {...engagementHandlers}>
+            {dockContent}
+          </div>
+        )}
         <div
           className="playground-toolbar"
           role="toolbar"
@@ -289,6 +332,7 @@ export const PlaygroundToolbar = ({
             options={sources}
             onChange={(value) => onKnobChange("source", value)}
           />
+          {sourceControls}
         </div>
       </div>
     </div>

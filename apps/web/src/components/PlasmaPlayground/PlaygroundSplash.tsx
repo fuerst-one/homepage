@@ -1,16 +1,18 @@
 "use client";
 
-import { Camera, LucideIcon, Shapes, Waves } from "lucide-react";
+import { Camera, LucideIcon, Radio, Shapes, Waves } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { Source } from "./types";
+import { SplashChoice } from "./types";
+
+type SplashSource = Exclude<SplashChoice, null>;
 
 type PlaygroundSplashProps = {
   de: boolean;
-  onChoose: (source: Source) => void;
+  onChoose: (source: SplashSource) => void;
 };
 
 type SplashTile = {
-  source: Source;
+  source: SplashSource;
   icon: LucideIcon;
   title: string;
   description: string;
@@ -24,6 +26,14 @@ export const PlaygroundSplash = ({ de, onChoose }: PlaygroundSplashProps) => {
   }, []);
 
   const tiles: SplashTile[] = [
+    {
+      source: "ripples",
+      icon: Radio,
+      title: "Ripples",
+      description: de
+        ? "Ein Instrument zum Anfassen: Setze Quellen auf eine schwingende Platte, gib jeder Klang und Noten und sieh zu, wie der Sand zu deinem Loop tanzt."
+        : "A playable instrument: place sources on a vibrating plate, give each a sound and notes, and watch the sand dance to your loop.",
+    },
     {
       source: "camera",
       icon: Camera,

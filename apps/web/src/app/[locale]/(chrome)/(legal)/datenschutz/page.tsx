@@ -116,26 +116,29 @@ export default function DatenschutzPage() {
       </p>
       <p>
         Der Plasma-Spielplatz hält Einstellungen zunächst nur im Arbeitsspeicher
-        der Seite. Erst wenn Sie „Darstellung auf diesem Gerät merken“ wählen,
-        werden Quelle, Größe, Kontrast und Ihre Auswahl im lokalen Browser-
-        Speicher aufbewahrt. Sie werden nicht an uns gesendet und enthalten
-        keine Besucherkennung. Grundlage ist Ihre Einwilligung nach §25 Abs. 1
-        TDDDG. Entfernen Sie das Häkchen oder löschen Sie die Website-Daten im
-        Browser, werden die gespeicherten Einstellungen entfernt. Der Spielplatz
-        bleibt ohne Speicherung nutzbar.
+        der Seite. Erst wenn Sie „Einstellungen und Ripples-Stücke auf diesem
+        Gerät merken“ (das Speichern-Symbol) einschalten, werden Quelle, Größe,
+        Ihr Ripples-Stück (gesetzte Quellen, Noten, Klänge, Tempo und Skala) und
+        Ihre Auswahl im lokalen Browser-Speicher aufbewahrt. Sie werden nicht an
+        uns gesendet und enthalten keine Besucherkennung. Grundlage ist Ihre
+        Einwilligung nach §25 Abs. 1 TDDDG. Schalten Sie die Option aus oder
+        löschen Sie die Website-Daten im Browser, werden die gespeicherten Daten
+        entfernt. Der Spielplatz bleibt ohne Speicherung nutzbar.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Kamera und Aufnahmen
+        Kamera, Ton und Aufnahmen
       </h2>
       <p>
         Wenn Sie im Plasma-Spielplatz die Kamerafunktion wählen, ist dafür die
         Kamerafreigabe Ihres Browsers erforderlich. Ein Mikrofonzugriff wird
         nicht angefordert. Kamerabilder werden lokal in Ihrem Browser
         verarbeitet, um den Bildeffekt zu erzeugen, und nicht auf unsere Server
-        hochgeladen. Auch Aufnahmen werden lokal erstellt und können auf Ihr
-        Gerät heruntergeladen werden. Sie können die Kamera durch den Wechsel zu
-        einer anderen Quelle oder das Verlassen des Spielplatzes stoppen und die
-        Kamerafreigabe in Ihren Browsereinstellungen widerrufen.
+        hochgeladen. Klänge im Ripples-Instrument werden in Ihrem Browser
+        erzeugt und erst abgespielt, wenn Sie den Ton einschalten. Auch
+        Aufnahmen werden lokal erstellt und können auf Ihr Gerät heruntergeladen
+        werden. Sie können die Kamera durch den Wechsel zu einer anderen Quelle
+        oder das Verlassen des Spielplatzes stoppen und die Kamerafreigabe in
+        Ihren Browsereinstellungen widerrufen.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Inhalte, Schriftarten und externe Links

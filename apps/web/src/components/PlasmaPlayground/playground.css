@@ -7,6 +7,15 @@
   overflow: hidden;
   background: #000;
 }
+/* A playground of drags and long presses: no text selection, callouts or browser gestures. */
+.playground {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.playground canvas {
+  touch-action: none;
+}
 .playground[data-idle="true"] {
   cursor: none;
 }
@@ -67,6 +76,16 @@
   transition:
     color 180ms,
     background 180ms;
+}
+.playground-slider {
+  width: 96px;
+  accent-color: #eeece8;
+}
+.playground-slider-value {
+  min-width: 44px;
+  color: #d8d5cd;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
 }
 .playground-icon-button[data-tooltip] {
   position: relative;
@@ -327,4 +346,412 @@
   .playground-segment[aria-busy="true"] {
     animation: none;
   }
+}
+
+.playground-dock-panel {
+  max-width: 100%;
+  pointer-events: auto;
+}
+
+.ripples-markers {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.ripples-marker {
+  --flash: 0;
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgb(238 236 232 / calc(0.45 + var(--flash) * 0.55));
+  border-radius: 50%;
+  background: rgb(10 10 9 / 0.75);
+  color: #eeece8;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  transform: translate(-50%, -50%) scale(calc(1 + var(--flash) * 0.35));
+  box-shadow: 0 0 calc(var(--flash) * 18px)
+    rgb(238 236 232 / calc(var(--flash) * 0.8));
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+.ripples-marker:active {
+  cursor: grabbing;
+}
+.ripples-marker:hover {
+  border-color: #fff;
+}
+
+.ripples-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 100%;
+  padding: 12px;
+  border: 1px solid #ffffff26;
+  background: #10100ff0;
+  box-shadow: 0 8px 50px #0008;
+  backdrop-filter: blur(8px);
+}
+.ripples-timeline-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 16px;
+}
+.ripples-timeline-actions {
+  display: flex;
+  gap: 8px;
+}
+.ripples-bpm {
+  display: inline-flex;
+  align-items: center;
+  min-width: 72px;
+  justify-content: center;
+  padding: 0 8px;
+  color: #eeece8;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  border-left: 1px solid #ffffff1a;
+  border-right: 1px solid #ffffff1a;
+}
+.playground-segment:disabled,
+.playground-action:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.ripples-steps {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+}
+.ripples-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  flex: 1 0 22px;
+  min-height: 34px;
+  padding: 4px 2px;
+  border-top: 2px solid #ffffff1a;
+  background: #ffffff08;
+  transition: background 80ms;
+}
+.ripples-step[data-beat-start] {
+  border-top-color: #ffffff50;
+}
+.ripples-step[data-current] {
+  background: #ffffff2e;
+  border-top-color: #eeece8;
+}
+.ripples-step-source {
+  color: #eeece8;
+  font-size: 9px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes ripples-menu-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ripples-wave {
+    animation: none;
+  }
+}
+
+.ripples-wave {
+  position: absolute;
+  z-index: 6;
+  width: 260px;
+  margin: -78px 0 0 28px;
+  padding: 10px 10px 8px;
+  border: 1px solid #ffffff26;
+  border-radius: 10px;
+  background: #0a0a09b3;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 40px #0009;
+  pointer-events: auto;
+  animation: ripples-menu-in 160ms ease-out both;
+}
+.ripples-wave[data-side="left"] {
+  margin-left: -288px;
+}
+.ripples-wave-plot {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  touch-action: none;
+}
+.ripples-wave-axis {
+  stroke: #ffffff26;
+  stroke-width: 1;
+}
+.ripples-wave-lane {
+  stroke: #ffffff26;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.ripples-wave-guide {
+  stroke: #ffffff26;
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.ripples-wave-path {
+  fill: none;
+  stroke: #eeece8;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+.ripples-wave-handle {
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+}
+.ripples-wave-handle:active {
+  cursor: grabbing;
+}
+.ripples-wave-hit {
+  fill: transparent;
+}
+.ripples-wave-knob {
+  fill: #10100f;
+  stroke: #eeece8;
+  stroke-width: 2;
+}
+.ripples-wave-handle:hover .ripples-wave-knob,
+.ripples-wave-handle:focus-visible .ripples-wave-knob,
+.ripples-wave-handle:active .ripples-wave-knob {
+  fill: #eeece8;
+}
+.ripples-wave-knob-label {
+  fill: #aaa7a1;
+  font-size: 8px;
+  pointer-events: none;
+}
+.ripples-wave-handle:hover .ripples-wave-knob-label,
+.ripples-wave-handle:focus-visible .ripples-wave-knob-label {
+  fill: #eeece8;
+}
+.ripples-wave-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  color: #aaa7a1;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.ripples-wave-delete {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #ffffff26;
+  color: #d8d5cd;
+}
+.ripples-wave-delete:hover {
+  color: #ff6b6b;
+  border-color: #ff6b6b80;
+}
+.ripples-wave-envelope {
+  fill: none;
+  stroke: #ffffff59;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.ripples-arrangement {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(920px, calc(100vw - 32px));
+  padding: 12px;
+  border: 1px solid #ffffff26;
+  background: #10100ff0;
+  box-shadow: 0 8px 50px #0008;
+  backdrop-filter: blur(8px);
+}
+.ripples-select {
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 1px solid #ffffff26;
+  background: #0a0a09;
+  color: #d8d5cd;
+  font: inherit;
+  font-size: 11px;
+}
+.ripples-lanes {
+  --head: 232px;
+  --playhead: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 32vh;
+  overflow-y: auto;
+}
+.ripples-lanes-empty {
+  padding: 10px;
+  color: #8b8882;
+  font-size: 11px;
+  text-align: center;
+}
+.ripples-lane {
+  display: grid;
+  grid-template-columns: var(--head) 1fr;
+  align-items: stretch;
+}
+.ripples-lane-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 8px;
+}
+.ripples-lane-number {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #ffffff59;
+  border-radius: 50%;
+  color: #eeece8;
+  font-size: 10px;
+}
+.ripples-lane-head .ripples-select {
+  min-width: 0;
+  flex: 1;
+}
+.ripples-lane-grid {
+  position: relative;
+  min-height: 30px;
+  cursor: crosshair;
+  touch-action: none;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #ffffff26 0 1px,
+      transparent 1px calc(100% * var(--beat-steps) / var(--steps))
+    ),
+    repeating-linear-gradient(
+      90deg,
+      #ffffff0d 0 1px,
+      transparent 1px calc(100% / var(--steps))
+    ),
+    #ffffff06;
+}
+.ripples-note {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  display: flex;
+  align-items: center;
+  min-width: 6px;
+  padding-left: 11px;
+  overflow: hidden;
+  border: 1px solid #eeece8b3;
+  border-radius: 3px;
+  background: #eeece840;
+  color: #f2efe9;
+  font-size: 9px;
+  cursor: grab;
+  outline: none;
+}
+.ripples-note[data-selected],
+.ripples-note:focus-visible {
+  background: #eeece8;
+  color: #0a0a09;
+}
+.ripples-note-name {
+  position: relative;
+  z-index: 1;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: #0a0a0959;
+  white-space: nowrap;
+  cursor: ns-resize;
+}
+.ripples-note-name:hover {
+  background: #0a0a09b3;
+  color: #fff;
+}
+.ripples-note[data-selected] .ripples-note-name,
+.ripples-note:focus-visible .ripples-note-name {
+  color: #f2efe9;
+}
+.ripples-note-grip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  cursor: ew-resize;
+}
+.ripples-note-grip[data-grip="start"] {
+  left: 0;
+}
+.ripples-note-grip[data-grip="end"] {
+  right: 0;
+}
+/* Grips only show on hover so the notes stay calm while the loop plays. */
+.ripples-note-grip::after {
+  content: "";
+  position: absolute;
+  top: 25%;
+  bottom: 25%;
+  left: 4px;
+  width: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 120ms;
+}
+.ripples-note:hover .ripples-note-grip::after {
+  opacity: 0.85;
+}
+.ripples-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--head) + (100% - var(--head)) * var(--playhead));
+  width: 2px;
+  margin-left: -1px;
+  background: #eeece8;
+  pointer-events: none;
+}
+
+.ripples-lane-mute {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #ffffff26;
+  color: #d8d5cd;
+}
+.ripples-lane-mute:hover {
+  color: #fff;
+  border-color: #ffffff70;
+}
+.ripples-lane-mute[aria-pressed="true"] {
+  color: #0a0a09;
+  background: #eeece8;
+}
+/* Muted sources stay editable but read as switched off. */
+.ripples-lane[data-muted] .ripples-lane-grid,
+.ripples-lane[data-muted] .ripples-lane-number,
+.ripples-lane[data-muted] .ripples-select,
+.ripples-marker[data-muted] {
+  opacity: 0.45;
 }

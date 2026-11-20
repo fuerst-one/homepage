@@ -111,26 +111,29 @@ export default function PrivacyPage() {
         not create visitor profiles.
       </p>
       <p>
-        The Plasma playground keeps visual settings in page memory by default.
-        If you select “Remember visual settings on this device”, your source,
-        size and contrast settings and that choice are saved in local storage
-        until you uncheck the option or clear this website’s browser data. They
-        are not sent to us and contain no visitor identifier. This optional
-        storage is based on your consent under §25(1) TDDDG. Unchecking removes
-        the saved settings; the playground continues to work.
+        The Plasma playground keeps its settings in page memory by default. If
+        you switch on “Remember settings and Ripples pieces on this device” (the
+        save icon), your source and size settings, the Ripples piece you built
+        (placed sources, notes, sounds, tempo and scale) and that choice are
+        saved in local storage until you switch it off or clear this website’s
+        browser data. They are not sent to us and contain no visitor identifier.
+        This optional storage is based on your consent under §25(1) TDDDG.
+        Switching it off removes the saved data; the playground continues to
+        work.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Camera and recordings
+        Camera, sound and recordings
       </h2>
       <p>
         If you choose the camera feature in the Plasma playground, access
         requires your browser’s camera permission. No microphone access is
         requested. Camera images are processed locally in your browser to
-        generate the visual effect and are not uploaded to our servers.
-        Recordings are also created locally and can be downloaded to your
-        device. You can stop the camera by switching to another source or
-        leaving the playground, and revoke camera permission in your browser
-        settings.
+        generate the visual effect and are not uploaded to our servers. Sounds
+        in the Ripples instrument are synthesized in your browser and only play
+        after you switch sound on. Recordings are also created locally and can
+        be downloaded to your device. You can stop the camera by switching to
+        another source or leaving the playground, and revoke camera permission
+        in your browser settings.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Website content, fonts and external links
