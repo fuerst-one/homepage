@@ -233,7 +233,7 @@ the harness is the main instrument.
    **Implemented, not pushed:** the plan format and its checks in
    `packages/content/src/forYouPlan.ts`, the sections in
    `apps/web/src/components/ForYou/`, the example plans in
-   `tests/fixtures/for-you-plans/` and the review route `/en/for-you` and
+   `packages/content/src/data/for-you-plans/` and the review route `/en/for-you` and
    `/de/for-you` (`?example=<name>`, not indexed, not linked). The examples
    together use all nine section types; a plan holds at most seven.
 2. The route with the local preview and the button; header link and hint point

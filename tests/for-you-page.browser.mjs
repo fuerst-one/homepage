@@ -4,7 +4,10 @@ import { after, before, test } from "node:test";
 import puppeteer from "puppeteer";
 
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6895";
-const folder = new URL("./fixtures/for-you-plans/", import.meta.url);
+const folder = new URL(
+  "../packages/content/src/data/for-you-plans/",
+  import.meta.url,
+);
 const examples = readdirSync(folder)
   .filter((file) => file.endsWith(".json"))
   .map((file) => ({

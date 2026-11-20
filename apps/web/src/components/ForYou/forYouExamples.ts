@@ -1,7 +1,7 @@
-import complexInterface from "../../../../../tests/fixtures/for-you-plans/complex-interface.json";
-import automationDe from "../../../../../tests/fixtures/for-you-plans/automation-de.json";
-import aiMinimal from "../../../../../tests/fixtures/for-you-plans/ai-minimal.json";
-import collaborationSingleProject from "../../../../../tests/fixtures/for-you-plans/collaboration-single-project.json";
+import complexInterface from "@homepage/content/data/for-you-plans/complex-interface.json";
+import automationDe from "@homepage/content/data/for-you-plans/automation-de.json";
+import aiMinimal from "@homepage/content/data/for-you-plans/ai-minimal.json";
+import collaborationSingleProject from "@homepage/content/data/for-you-plans/collaboration-single-project.json";
 
 export type ForYouExample = {
   name: string;
