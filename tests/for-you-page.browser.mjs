@@ -400,6 +400,23 @@ for (const locale of ["en", "de"])
     });
   }
 
+test("de: the fit lines name expertise with the German terms of the project views", async () => {
+  const { page } = await openReal("/de/for-you", {
+    saved: savedProfile(
+      [...READY_SIGNALS, ["filter_selected", "capabilities:AI Engineering"]],
+      { unlocked: true },
+    ),
+  });
+  await visible(page, `${STATE("ready")} [data-for-you-section="proofGrid"]`);
+  const fits = await page.$eval(
+    '[data-for-you-section="proofGrid"]',
+    (el) => el.innerText,
+  );
+  assert.match(fits, /KI-Engineering/);
+  assert.doesNotMatch(fits, /AI Engineering/);
+  await page.close();
+});
+
 test("a project opened from the preview is recorded and leaves the proof grid", async () => {
   const { page } = await openReal("/en/for-you", {
     saved: savedProfile(READY_SIGNALS, { unlocked: true }),

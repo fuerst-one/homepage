@@ -7,11 +7,11 @@ import {
   type ForYouSection,
 } from "./forYouPlan";
 import type { Locale } from "./i18n";
-import { caseLabel } from "./projectCase";
 import {
   profileInterests,
   recommendProfileProjects,
   type ProfileCatalog,
+  type ProfileTerm,
   type VisitorProfile,
 } from "./visitorProfile";
 
@@ -71,6 +71,7 @@ export function buildForYouPreview({
   catalog,
   images,
   locale,
+  termLabel,
   now,
 }: {
   profile: VisitorProfile;
@@ -78,6 +79,8 @@ export function buildForYouPreview({
   /** Image references per project id; projects without one stay out of the proof grid. */
   images: Readonly<Record<string, readonly string[]>>;
   locale: Locale;
+  /** The site's name for a term; the project views own the translations. */
+  termLabel: (term: Pick<ProfileTerm, "facet" | "value">) => string;
   now: number;
 }): ForYouSection[] {
   const t = copy[locale];
@@ -108,7 +111,6 @@ export function buildForYouPreview({
         !opened.has(project.id) && (images[project.id]?.length ?? 0) > 0,
     )
     .slice(0, FOR_YOU_PROOF_PROJECTS.max);
-  const label = (value: string) => caseLabel(value, locale);
   const rank = (id: string) => {
     const index = ranked.findIndex(({ project }) => project.id === id);
     return index < 0 ? ranked.length : index;
@@ -128,7 +130,7 @@ export function buildForYouPreview({
   const sections: ForYouSection[] = [
     {
       type: "hero",
-      headline: t.headline(label(leading.value)),
+      headline: t.headline(termLabel(leading)),
       lead: t.lead,
       action: `projects:${leading.value}`,
     },
@@ -139,17 +141,14 @@ export function buildForYouPreview({
       heading: t.proofHeading,
       items: proof.map(({ project, reasons }) => ({
         projectId: project.id,
-        fit: fitLine(
-          reasons.map((reason) => label(reason.value)),
-          t,
-        ),
+        fit: fitLine(reasons.map(termLabel), t),
       })),
     });
   if (runnerUp && secondProjects.length)
     sections.push({
       type: "secondNeed",
       need: runnerUp.value,
-      heading: t.secondHeading(label(runnerUp.value)),
+      heading: t.secondHeading(termLabel(runnerUp)),
       text: t.secondText(secondProjects.length),
       projectIds: secondProjects,
     });

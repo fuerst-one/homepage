@@ -30,6 +30,7 @@ const build = (profile, options = {}) =>
     catalog,
     images: allImages(),
     locale: "en",
+    termLabel: (term) => term.value,
     now,
     ...options,
   });
@@ -116,6 +117,31 @@ test("the fit line names the terms a project shares with the profile", () => {
   assert.match(grid.items[0].fit, new RegExp(LEAD));
 });
 
+test("terms of every facet are named with the labels the page supplies", () => {
+  const profile = add(
+    twoNeeds(),
+    "filter_selected",
+    "capabilities:AI Engineering",
+  );
+  const sections = build(profile, {
+    termLabel: (term) => `${term.facet}=${term.value}`,
+  });
+  assert.match(
+    section(sections, "hero").headline,
+    new RegExp(`buyerNeeds=${LEAD}`),
+  );
+  assert.match(
+    section(sections, "secondNeed").heading,
+    new RegExp(`buyerNeeds=${RUNNER_UP}`),
+  );
+  assert.match(
+    section(sections, "proofGrid")
+      .items.map((item) => item.fit)
+      .join("\n"),
+    /capabilities=AI Engineering/,
+  );
+});
+
 test("a proof grid needs two qualifying projects, or it is left out", () => {
   const profile = twoNeeds();
   const images = Object.fromEntries(
@@ -157,10 +183,7 @@ test("a profile without a leading need gives no preview", () => {
 
 test("the copy follows the language", () => {
   const sections = build(twoNeeds(), { locale: "de" });
-  const hero = section(sections, "hero");
-  assert.match(hero.headline, /Wiederkehrende Arbeit automatisieren/);
-  assert.match(hero.lead, /\b(du|dein|deinem)\b/i);
-  assert.match(section(sections, "secondNeed").heading, /Daten nutzbar machen/);
+  assert.match(section(sections, "hero").lead, /\b(du|dein|deinem)\b/i);
   assert.match(section(sections, "proofGrid").heading, /noch nicht/);
   const en = build(twoNeeds());
   assert.notEqual(

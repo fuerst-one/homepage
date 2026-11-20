@@ -14,6 +14,7 @@ import { localizedPath, type Locale } from "@homepage/content/i18n";
 import { PROFILE_STORAGE_KEY } from "@homepage/content/visitorProfile";
 import Link from "next/link";
 import { Button } from "../Button";
+import { facetValueLabel } from "../Cv/Projects/Filter/utils";
 import {
   recordVisitorInteraction,
   useVisitorProfileStore as useProfile,
@@ -108,6 +109,7 @@ export function ForYouPage({
           ]),
         ),
         locale,
+        termLabel: (term) => facetValueLabel(term.facet, term.value, locale),
         now: Date.now(),
       }),
     );
