@@ -145,3 +145,7 @@ delivered shop. Six other unmeasured projects have no mapped product source.
   counts in `notion:status`, and `notion:review` prints details and exits
   non-zero while drift exists. The container health check deliberately ignores
   it. After this update the review reports no issues.
+- The duplicate Capabilities **CAD Design** and **Embedded System Development**
+  were merged into **CAD & 3D Printing** and **Embedded & IoT Development**.
+  Glyphstone and Pigeon Turret, the only projects that carried them, already had
+  the broader values, and both old options were deleted in Notion.
