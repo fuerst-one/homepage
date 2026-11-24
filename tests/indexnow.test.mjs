@@ -23,11 +23,15 @@ const sitemap = (...urls) =>
     )
     .join("\n")}</urlset>`;
 
-function fakeWeb(xml, submitStatus = 202) {
+function fakeWeb(xml, submitStatus = 202, servedKey = INDEXNOW_KEY) {
   const submissions = [];
   const fetcher = async (url, init) => {
     if (String(url) === "https://fuerst.one/sitemap.xml")
       return new Response(xml, { status: 200 });
+    if (String(url) === `https://fuerst.one${INDEXNOW_KEY_PATH}`)
+      return servedKey === null
+        ? new Response("Not found", { status: 404 })
+        : new Response(servedKey, { status: 200 });
     submissions.push({ url: String(url), body: JSON.parse(init.body) });
     return new Response("", { status: submitStatus });
   };
@@ -172,4 +176,18 @@ test("the site serves the IndexNow key as plain text at its key path", async () 
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type"), /^text\/plain/);
   assert.equal(await response.text(), INDEXNOW_KEY);
+});
+
+test("nothing is submitted while the site does not serve the key yet", async () => {
+  for (const servedKey of [null, "an-older-key"]) {
+    const { fetcher, submissions } = fakeWeb(
+      sitemap(["https://fuerst.one/en", null]),
+      202,
+      servedKey,
+    );
+    const store = memoryStore();
+    await assert.rejects(syncIndexNow(store, fetcher), /key/);
+    assert.equal(submissions.length, 0);
+    assert.equal(store.rows.size, 0);
+  }
 });

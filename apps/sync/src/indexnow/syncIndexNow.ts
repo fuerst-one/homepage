@@ -1,3 +1,4 @@
+import { INDEXNOW_KEY, INDEXNOW_KEY_PATH } from "@homepage/content/indexNow";
 import { sitemapEntries, type SitemapEntry } from "./sitemapEntries";
 import { SITE_ORIGIN, submitIndexNow } from "./submitIndexNow";
 
@@ -15,6 +16,15 @@ export async function syncIndexNow(store: IndexNowStore, fetcher = fetch) {
   if (!response.ok) throw new Error(`sitemap unavailable (${response.status})`);
   const entries = sitemapEntries(await response.text());
   if (!entries.length) throw new Error("sitemap has no URLs");
+
+  // Engines cache a failed key check, so a submission racing the web deploy
+  // would get every later submission rejected.
+  const key = await fetcher(`${SITE_ORIGIN}${INDEXNOW_KEY_PATH}`, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!key.ok || (await key.text()).trim() !== INDEXNOW_KEY)
+    throw new Error("IndexNow key not served yet");
 
   const submitted = await store.submitted();
   const pending = entries.filter(
