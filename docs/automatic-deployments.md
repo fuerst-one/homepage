@@ -22,6 +22,19 @@ settings. Deployment changes do not enable AI or modify its rollout percentage.
 The database remains a separate persistent Coolify resource and is not rebuilt
 by repository pushes. Schema migrations require their own release preparation.
 
+A Coolify deployment can hang. On 2026-11-24 deployment 1239 (`4a06e58`) stayed
+"in progress" after its container had started, later deployments queued behind
+it, and at 11:59 UTC the application went `exited:unhealthy` with no container
+left, so the worker was down until 12:22. The removed container took its logs
+with it, and the cause is unknown; the health check's own conditions were met
+just before. If a deployment stays in progress well past the 300-second health
+start period, save `docker logs` of the worker container first, then cancel the
+deployment and start the queue: on the server,
+`docker exec coolify php artisan tinker` with
+`ApplicationDeploymentQueue::find(<id>)->update(['status' => 'cancelled-by-user'])`
+followed by `queue_next_deployment(Application::find(24))`. Coolify's UI
+"Cancel" and "Redeploy" buttons do the same.
+
 To hold releases again, disable Vercel Git deployments and the worker's
 auto-deploy setting before pushing further commits. Application rollback should
 preserve the database and any enquiries received since the release.

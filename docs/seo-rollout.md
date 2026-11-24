@@ -55,7 +55,9 @@ Bing Webmaster Tools already held the `https://fuerst.one/` site (and `burger-lo
 
 IndexNow pushes changed URLs to Bing and the other participating engines without waiting for a crawl. The sync worker runs an "IndexNow sync" loop every five minutes (`apps/sync/src/indexnow/`). It reads the live sitemap, which keeps the web app as the only source of URLs, and submits URLs that are new or whose `lastmod` changed. `indexnow_submissions` remembers what was sent, and a rejected submission records nothing, so the next run retries. Static pages have no `lastmod` and are sent once. The loop is skipped in development so local workers never push production URLs.
 
-The key is public by design: `packages/content/src/indexNow.ts`, served at `https://fuerst.one/indexnow-key.txt` and named as `keyLocation` in each submission. Activation order: deploy the web app so the key URL returns 200, run `pnpm notion:migrate` against production (adds `016-indexnow.sql`), then redeploy the worker. Its first run submits every sitemap URL once. Submissions appear under IndexNow in Bing Webmaster Tools.
+The key is public by design: `packages/content/src/indexNow.ts`, served at `https://fuerst.one/indexnow-key.txt` and named as `keyLocation` in each submission. Before submitting, the worker checks that this URL serves its own key and otherwise defers. Engines cache a failed key check, so a submission must never race the web deploy that publishes a new key.
+
+Released on 2026-11-24. `016-indexnow.sql` was applied to production by hand after a database backup; `pnpm notion:migrate` includes it for other databases. The first release submitted all URLs about a minute before Vercel served the key. `api.indexnow.org` still answered 202, but Bing cached the failed check and answered 403 for the next half hour, so the key was rotated (`ad56128`) and `indexnow_submissions` cleared; Bing then accepted the new key, and its IndexNow report listed all 162 resubmitted URLs within minutes. To rotate again: change the constant, push, and clear `indexnow_submissions` once the new key is served, so every URL is resent under it.
 
 ## Verification
 
