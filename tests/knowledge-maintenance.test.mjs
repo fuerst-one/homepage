@@ -37,6 +37,11 @@ test("independent maintenance runs GitHub, daily cache and profile pruning and h
     "../github/syncGitHubActivity": {
       syncGitHubActivity: async () => calls.push("github"),
     },
+    "../indexnow/syncIndexNow": {
+      syncIndexNow: async () => calls.push("indexnow"),
+    },
+    "../indexnow/indexNowStore": { indexNowStore: () => ({}) },
+    "../utils/env": { isDev: () => false },
     "@homepage/knowledge/policy": {
       cleanupKnowledgeUsage: async () => calls.push("usage"),
       cleanupKnowledgeCache: async () => calls.push("cache"),
@@ -64,8 +69,18 @@ test("independent maintenance runs GitHub, daily cache and profile pruning and h
   assert.equal(calls.filter((call) => call === "usage").length, 1);
   assert.equal(calls.filter((call) => call === "profiles").length, 1);
   assert.equal(calls.filter((call) => call === "github").length, 1);
+  assert.equal(calls.filter((call) => call === "indexnow").length, 1);
   assert.deepEqual(
     intervals.sort((a, b) => a - b),
-    [5000, 60000, 60000, 60000, 3600_000, 24 * 3600_000, 24 * 3600_000],
+    [
+      5000,
+      60000,
+      60000,
+      60000,
+      5 * 60_000,
+      3600_000,
+      24 * 3600_000,
+      24 * 3600_000,
+    ],
   );
 });

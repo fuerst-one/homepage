@@ -23,6 +23,7 @@ async function main() {
         "007-malt-refresh.sql",
         "008-project-dimensions.sql",
         "011-github-activity.sql",
+        "016-indexnow.sql",
       ])
         await sql.unsafe(
           await readFile(

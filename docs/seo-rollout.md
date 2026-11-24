@@ -49,6 +49,14 @@ Reviewed revisions: homepage SEO/header `c78f5c5366761ac2b3580aa3cfca99494cf1182
 7. In Search Console, submit/resubmit `https://fuerst.one/sitemap.xml` and `https://buchstabiene.fuerst.one/sitemap.xml` **after checking public 200 XML responses**. Remove stale HTTP/www submissions after the canonical sitemap is accepted.
 8. Inspect and request recrawls for the new homepage/CV, a project, one old portfolio URL, and a dated Buchstabiene page. Confirm the intended canonical, redirects, and noindex as Google sees them. A temporary removal for **only** `https://buchstabiene.fuerst.one/spielen/` can accelerate hiding game pages; the scope must not include the Buchstabiene homepage or the whole fuerst.one property. Removals expire after about six months and do not replace the deployed directives. Do not use the Removals tool to canonicalize cv/portfolio aliases.
 
+## Bing Webmaster Tools and IndexNow
+
+Bing Webmaster Tools already held the `https://fuerst.one/` site (and `burger-loop.fuerst.one`) from an import in February 2021; its only sitemap had last been crawled then, with 11 URLs. On 2026-11-24 `https://fuerst.one/sitemap.xml` was resubmitted there and accepted for processing. Buchstabiene is not listed there; it is intentionally noindex apart from its homepage.
+
+IndexNow pushes changed URLs to Bing and the other participating engines without waiting for a crawl. The sync worker runs an "IndexNow sync" loop every five minutes (`apps/sync/src/indexnow/`). It reads the live sitemap, which keeps the web app as the only source of URLs, and submits URLs that are new or whose `lastmod` changed. `indexnow_submissions` remembers what was sent, and a rejected submission records nothing, so the next run retries. Static pages have no `lastmod` and are sent once. The loop is skipped in development so local workers never push production URLs.
+
+The key is public by design: `packages/content/src/indexNow.ts`, served at `https://fuerst.one/indexnow-key.txt` and named as `keyLocation` in each submission. Activation order: deploy the web app so the key URL returns 200, run `pnpm notion:migrate` against production (adds `016-indexnow.sql`), then redeploy the worker. Its first run submits every sitemap URL once. Submissions appear under IndexNow in Bing Webmaster Tools.
+
 ## Verification
 
 With a production server running (for example `pnpm build && pnpm start --port 6891`):

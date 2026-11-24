@@ -12,6 +12,9 @@ import { refreshMaltIfDue } from "../malt/scheduledRefresh";
 import { notionMaltMirrorStore } from "../malt/notionMaltMirrorStore";
 import { syncWebsiteContent } from "./syncWebsiteContent";
 import { syncGitHubActivity } from "../github/syncGitHubActivity";
+import { syncIndexNow } from "../indexnow/syncIndexNow";
+import { indexNowStore } from "../indexnow/indexNowStore";
+import { isDev } from "../utils/env";
 import {
   cleanupKnowledgeUsage,
   cleanupKnowledgeCache,
@@ -70,6 +73,14 @@ export async function watchNotion(signal: AbortSignal) {
     ),
     loop(deliverPendingEnquiries, 5000, "Notion enquiry delivery"),
     loop(() => refreshMaltIfDue(), 60_000, "Malt refresh"),
+    loop(
+      // Local workers would push production URLs from a non-production ledger.
+      async () => {
+        if (!isDev()) await syncIndexNow(indexNowStore());
+      },
+      5 * 60_000,
+      "IndexNow sync",
+    ),
     loop(
       async () => {
         await syncWebsiteContent();
