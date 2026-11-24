@@ -31,6 +31,29 @@ test("product similarity gives use cases and formats equal weight and ignores na
   assert.ok(result.dimensions > 0);
 });
 
+test("product similarity gives API and MCP Server half the weight of other formats", () => {
+  const rows = [
+    p("a", 1, { productTypes: ["Web app", "API"] }),
+    p("b", 1, { productTypes: ["Hardware", "API"] }),
+    p("c", 1, { productTypes: ["API"] }),
+    p("d", 1, { productTypes: ["MCP Server"] }),
+  ];
+  // Identical use cases carry no information, so only formats are compared.
+  const { similarities } = structuredInputs(rows, "product");
+  // Shared API: 0.5² / (1² + 0.5²) = 0.2, where equal weights would give 0.5.
+  assert.ok(Math.abs(similarities[0][1] - 0.2) < 1e-9);
+  assert.equal(similarities[2][3], 0);
+  const apiOnly = structuredInputs(
+    [rows[0], rows[2], { ...rows[2], id: "e" }],
+    "product",
+  );
+  assert.deepEqual(
+    apiOnly.projects.map((row) => row.id),
+    ["a", "c", "e"],
+  );
+  assert.equal(apiOnly.similarities[1][2], 1);
+});
+
 test("contribution retains numeric ordering and refits team ranges on the supplied population", () => {
   const rows = [p("a", 1), p("b", 2), p("c", 10), p("d", 100)];
   const all = structuredInputs(rows, "practice");

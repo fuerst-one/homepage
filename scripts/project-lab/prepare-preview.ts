@@ -1,6 +1,7 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import type { CvProject } from "@homepage/content/models";
+import { publicBrandSpelling } from "@homepage/content/publicIdentity";
 import type { LabSnapshot } from "../../apps/web/src/components/ProjectLab/analysis";
 import { publicLabSnapshot } from "../../apps/web/src/components/ProjectLab/publicSnapshot";
 import { projectAtlasData } from "../../apps/web/src/components/ExperienceAtlas/model";
@@ -35,7 +36,10 @@ async function main() {
   );
   const output = resolve("apps/web/src/content/lab-preview.json");
   await mkdir(dirname(output), { recursive: true });
-  await writeFile(output, `${JSON.stringify({ snapshot, atlas, semantic })}\n`);
+  await writeFile(
+    output,
+    `${JSON.stringify(publicBrandSpelling({ snapshot, atlas, semantic }))}\n`,
+  );
   console.log(
     JSON.stringify({
       output,

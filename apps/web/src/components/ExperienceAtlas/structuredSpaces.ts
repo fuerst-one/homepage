@@ -6,8 +6,11 @@ import {
   fieldTerms,
   fieldValues,
 } from "./embeddingFields";
+import { SECONDARY_TAGS } from "./model";
 
-/** Equal field weights; team endpoints share a field's weight. Fit only on supplied rows. */
+const SECONDARY_WEIGHT = 0.5;
+
+/** Equal field weights; team endpoints share a field's weight; secondary product formats count half. Fit only on supplied rows. */
 export function structuredInputs(
   projects: LabProject[],
   recipe: "product" | "practice",
@@ -56,11 +59,19 @@ export function structuredInputs(
     const values = included.map((p) => fieldValues(p, field));
     if (new Set(values.map((row) => JSON.stringify(row))).size < 2) return [];
     dimensions += new Set(values.flat()).size;
+    const weight = (value: string) =>
+      field === "productTypes" && SECONDARY_TAGS.product.includes(value)
+        ? SECONDARY_WEIGHT ** 2
+        : 1;
+    const norm = (row: string[]) =>
+      row.reduce((sum, value) => sum + weight(value), 0);
     return [
       (i: number, j: number) =>
         1 -
-        values[i].filter((value) => values[j].includes(value)).length /
-          Math.sqrt(values[i].length * values[j].length),
+        values[i]
+          .filter((value) => values[j].includes(value))
+          .reduce((sum, value) => sum + weight(value), 0) /
+          Math.sqrt(norm(values[i]) * norm(values[j])),
     ];
   });
   return {

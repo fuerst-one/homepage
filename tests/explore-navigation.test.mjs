@@ -48,7 +48,7 @@ for (const [locale, slug, title, author] of [
       (html.match(new RegExp(`aria-label="${prefix}:`, "g")) ?? []).length,
       3,
     );
-    for (const name of ["Conversion Y", "Bags’n Boxes Chatbot", "Seabo"])
+    for (const name of ["Conversion Y", "Bags’n Boxes Chatbot", "RoadTrippin"])
       assert.ok(html.includes(`aria-label="${prefix}: ${name}`));
   });
   for (const path of [

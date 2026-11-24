@@ -26,9 +26,9 @@ node --import tsx scripts/project-lab/prepare-preview.ts \
   data/project-lab/semantic-embeddings.json
 ```
 
-This command makes no network calls. It refuses an empty population and reports missing or stale embeddings per lens. Review that report and the generated data before committing a refresh. Changes to embedded fields require explicitly regenerating the affected local cache entries first; metadata-only updates do not require new embeddings.
+This command makes no network calls. It refuses an empty population and reports missing or stale embeddings per lens. Review that report and the generated data before committing a refresh. Changes to embedded fields require explicitly regenerating the affected local cache entries first; metadata-only updates do not require new embeddings. The script writes the brand as FUERST.ONE, because one artifact serves both locales; person names stay as recorded.
 
-The prepared artifact contains 49 projects from the 2026-11-18 publication: 49 product profiles, 48 engineering embeddings and 49 contribution profiles. The Research Lab no longer depends on the empty legacy mixed-text comparison corpus. Cross-lens leads require disjoint known tools and at least two shared client needs covering half the combined need labels; this is an exploratory rule, not a suitability score. See `docs/plans/2026-11-18-lab-consolidation.md` for the temporary checkpoint and history-cleanup reminder.
+The prepared artifact contains 49 projects from the 2026-11-20 publication: 49 product profiles, 49 engineering embeddings and 49 contribution profiles. In product profiles, API and MCP Server count half as much as other formats, because many projects record them next to a more telling format. The Research Lab no longer depends on the empty legacy mixed-text comparison corpus. Cross-lens leads require disjoint known tools and at least two shared client needs covering half the combined need labels; this is an exploratory rule, not a suitability score. See `docs/plans/2026-11-18-lab-consolidation.md` for the temporary checkpoint and history-cleanup reminder.
 
 ## Vercel preview
 

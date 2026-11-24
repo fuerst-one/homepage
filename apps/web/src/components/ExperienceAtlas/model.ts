@@ -108,18 +108,13 @@ const GROUPS: Record<AtlasLens, GroupDefinition[]> = {
       id: "interactive",
       label: "Interactive products",
       color: "#b2a8da",
-      tags: [
-        "Configurator",
-        "Game",
-        "Interactive experience",
-        "Educational app",
-      ],
+      tags: ["Game", "Interactive experience"],
     },
     {
-      id: "research",
-      label: "Research & optimization",
+      id: "prototypes",
+      label: "Concepts & prototypes",
       color: "#e5b183",
-      tags: ["CRO Consulting", "A/B-Testing", "Concept", "Clickdummy"],
+      tags: ["Concept", "Clickdummy"],
     },
     {
       id: "integrations",
@@ -137,13 +132,13 @@ const GROUPS: Record<AtlasLens, GroupDefinition[]> = {
       id: "websites",
       label: "Websites & shops",
       color: "#c6dc96",
-      tags: ["Website", "E-commerce"],
+      tags: ["Website"],
     },
     {
       id: "apps",
       label: "Apps & platforms",
       color: "#80c5bd",
-      tags: ["SaaS", "Web app", "Mobile app"],
+      tags: ["Web app", "Mobile app"],
     },
   ],
 };
@@ -159,6 +154,13 @@ type Classifiable = {
   productTypes?: string[];
 };
 
+// Recorded on many projects alongside a more telling value, so they only lead when alone.
+export const SECONDARY_TAGS: Record<AtlasLens, string[]> = {
+  challenge: ["Work in a team", "Maintain and evolve a product"],
+  industry: [],
+  product: ["API", "MCP Server"],
+};
+
 /** Categorical placement, not a similarity projection. Keep secondary memberships. */
 export function atlasMemberships(
   project: Classifiable,
@@ -170,16 +172,21 @@ export function atlasMemberships(
       : lens === "industry"
         ? (project.industries ?? [])
         : (project.productTypes ?? []);
-  const matches =
+  const isSecondary = (tag: string) => SECONDARY_TAGS[lens].includes(tag);
+  const matchesFor = (subset: string[]) =>
     lens === "product"
       ? GROUPS[lens]
-          .filter((group) => group.tags.some((tag) => tags.includes(tag)))
+          .filter((group) => group.tags.some((tag) => subset.includes(tag)))
           .map((group) => group.id)
-      : tags.flatMap((tag) =>
+      : subset.flatMap((tag) =>
           GROUPS[lens]
             .filter((group) => group.tags.includes(tag))
             .map((group) => group.id),
         );
+  const matches = [
+    ...matchesFor(tags.filter((tag) => !isSecondary(tag))),
+    ...matchesFor(tags.filter(isSecondary)),
+  ];
   return [...new Set(matches.length ? matches : [UNMAPPED.id])];
 }
 

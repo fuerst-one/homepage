@@ -68,13 +68,53 @@ test("primary maps conserve project identities and retain unknowns and overlappi
   assert.deepEqual(atlasGroups([a, b, c], "challenge"), groups);
 });
 
-test("specific product tags place a configurator ahead of its generic web-app infrastructure", () => {
+test("specific product tags place a game ahead of its generic web-app infrastructure", () => {
   assert.equal(
     atlasMemberships(
-      project("a", { productTypes: ["SaaS", "Web app", "Configurator"] }),
+      project("a", { productTypes: ["Web app", "Game"] }),
       "product",
     )[0],
     "interactive",
+  );
+});
+
+test("generic client needs only decide the primary group when nothing more specific is recorded", () => {
+  const needs = (buyerNeeds) =>
+    project("a", { matching: { ...project("a").matching, buyerNeeds } });
+  assert.deepEqual(
+    atlasMemberships(
+      needs(["Work in a team", "Improve conversion", "Make data actionable"]),
+      "challenge",
+    ),
+    ["growth", "data", "systems"],
+  );
+  assert.deepEqual(
+    atlasMemberships(
+      needs(["Maintain and evolve a product", "Work in a team"]),
+      "challenge",
+    ),
+    ["systems"],
+  );
+});
+
+test("API and MCP Server only decide the product group when no other format is recorded", () => {
+  assert.deepEqual(
+    atlasMemberships(
+      project("a", { productTypes: ["Web app", "MCP Server", "API"] }),
+      "product",
+    ),
+    ["apps", "integrations"],
+  );
+  assert.equal(
+    atlasMemberships(project("b", { productTypes: ["API"] }), "product")[0],
+    "integrations",
+  );
+  assert.equal(
+    atlasMemberships(
+      project("c", { productTypes: ["Web app", "API", "Developer tool"] }),
+      "product",
+    )[0],
+    "integrations",
   );
 });
 

@@ -167,3 +167,28 @@ test("published identity copy normalizes branding and names without changing lin
     },
   );
 });
+
+test("locale-independent copy gets the brand spelling but keeps person names and links", () => {
+  const { publicBrandSpelling } = loadTs(
+    new URL("../packages/content/src/publicIdentity.ts", import.meta.url),
+  );
+  assert.deepEqual(
+    publicBrandSpelling({
+      names: ["Fuerst.one Homepage", "Alexander Fuerst"],
+      url: "https://Fuerst.one/de",
+    }),
+    {
+      names: ["FUERST.ONE Homepage", "Alexander Fuerst"],
+      url: "https://Fuerst.one/de",
+    },
+  );
+});
+
+test("the Explorer snapshot is published with the brand spelling", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const preview = await readFile(
+    new URL("../apps/web/src/content/lab-preview.json", import.meta.url),
+    "utf8",
+  );
+  assert.ok(!preview.includes("Fuerst.one"));
+});
