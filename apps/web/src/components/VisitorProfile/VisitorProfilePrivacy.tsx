@@ -1,6 +1,12 @@
 import type { Locale } from "@homepage/content/i18n";
 
-export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
+export function VisitorProfilePrivacy({
+  locale,
+  analyticsEnabled,
+}: {
+  locale: Locale;
+  analyticsEnabled: boolean;
+}) {
   return locale === "de" ? (
     <>
       <p>
@@ -55,6 +61,8 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
         welche Inhalte zu Anfragen führen und wo unsere Annahmen über Interessen
         korrigiert werden. Vorschlagsanzeigen werden als solche erfasst;
         Zusammenhänge belegen keine Ursache.
+        {analyticsEnabled &&
+          " Zusätzlich zählen wir geteilte Signale ohne Browserkennung und ohne Bezug zu anderen Ereignissen anonym in der unten beschriebenen Besucherstatistik."}
       </p>
       <p>
         Geteilte Ereignisse werden 30 Tage berücksichtigt und bei der nächsten
@@ -119,6 +127,8 @@ export function VisitorProfilePrivacy({ locale }: { locale: Locale }) {
         us understand which content accompanies enquiries and where visitors
         correct our interest assumptions. Recommendation impressions are
         identified separately; associations do not establish causation.
+        {analyticsEnabled &&
+          " Shared signals are also counted anonymously, without the browser key and unlinked to any other event, in the visitor statistics described below."}
       </p>
       <p>
         Shared events are considered for 30 days and erased by the next daily

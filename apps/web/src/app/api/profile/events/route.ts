@@ -1,7 +1,9 @@
-import { NextRequest } from "next/server";
+import { randomUUID } from "node:crypto";
+import { after, NextRequest } from "next/server";
 import {
   parseProfileEventBatch,
   validProfileToken,
+  type SharedProfileEvent,
 } from "@homepage/content/visitorProfile";
 import {
   deleteProfileEvents,
@@ -10,10 +12,34 @@ import {
 } from "@homepage/database/visitorProfile";
 import { getProfileCatalog } from "../../../../server/content/getProfileCatalog";
 import { checkRateLimit } from "../../../../server/api/rateLimit";
+import { buildProfileSignalEvents } from "../../../../server/analytics/profileSignals";
+import {
+  getAnalyticsConfig,
+  sendToUmami,
+} from "../../../../server/analytics/umami";
 
 export const runtime = "nodejs";
 const reply = (body: unknown, status = 200) =>
   Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
+function countSharedSignals(
+  request: NextRequest,
+  events: SharedProfileEvent[],
+) {
+  const analytics = getAnalyticsConfig();
+  const userAgent = request.headers.get("user-agent");
+  if (!analytics || !userAgent || request.headers.get("sec-gpc") === "1")
+    return;
+  const sends = buildProfileSignalEvents(
+    events,
+    {
+      websiteId: analytics.websiteId,
+      hostname: request.nextUrl.hostname,
+      userAgent,
+    },
+    randomUUID(),
+  );
+  after(() => Promise.all(sends.map((send) => sendToUmami(analytics, send))));
+}
 async function readInput(request: NextRequest) {
   const reader = request.body?.getReader();
   if (!reader) throw new Error("body");
@@ -73,6 +99,7 @@ async function handle(request: NextRequest, remove: boolean) {
       batch.consentAt,
     );
     if (!accepted) return reply({ error: "session_closed" }, 409);
+    countSharedSignals(request, batch.events);
     await pruneProfileEvents();
     return reply({ accepted: batch.events.length });
   } catch {

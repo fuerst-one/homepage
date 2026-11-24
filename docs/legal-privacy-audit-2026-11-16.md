@@ -211,6 +211,17 @@ collection. In particular, the current truthful statements “no visitor analyti
 answers” (EN line 208; DE line 221) must change with the feature release, not
 in anticipation of functionality that does not yet exist.
 
+## Update 2026-11-24: server-side page-view statistics
+
+Alex decided to record page views without consent, server-side, instead of the
+analytics opt-in proposed above. The browser runs no script and stores nothing;
+the web app sends path, campaign tags, referrer host, language, user-agent and
+country to a self-hosted Umami on Hetzner, with a daily keyed hash instead of an
+IP. Basis Art. 6(1)(f) GDPR; Global Privacy Control is honoured; data are kept
+13 months. Clicks and other client events still need the opt-in described
+above. Shared profile signals are additionally counted without the browser key.
+Design: [server-side analytics](plans/2026-11-24-server-side-analytics-design.md).
+
 ## Verification and limits
 
 - Ran the existing knowledge privacy, history, request-cancellation and playground

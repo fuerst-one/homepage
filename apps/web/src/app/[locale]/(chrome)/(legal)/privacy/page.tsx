@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
-  const { assistantEnabled } = getSiteFeatures();
+  const { assistantEnabled, analyticsEnabled } = getSiteFeatures();
   return (
     <>
       <h1 className="text-2xl font-semibold tracking-tight text-white">
         Privacy Policy
       </h1>
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
-        Last updated: 18 November 2026
+        Last updated: 24 November 2026
       </p>
       <p>
         This policy explains how personal data is processed when you visit
@@ -110,8 +110,10 @@ export default function PrivacyPage() {
         We do not use advertising pixels, session replay or tracking cookies.
         The website does not set application cookies. Interest profiling and
         first-party insights are optional, as described below.
+        {analyticsEnabled &&
+          " Visitor statistics are recorded on our server without cookies or browser storage."}
       </p>
-      <VisitorProfilePrivacy locale="en" />
+      <VisitorProfilePrivacy locale="en" analyticsEnabled={analyticsEnabled} />
       <p>
         The Plasma playground keeps its settings in page memory by default. If
         you switch on “Remember settings and Ripples pieces on this device” (the
@@ -123,6 +125,40 @@ export default function PrivacyPage() {
         Switching it off removes the saved data; the playground continues to
         work.
       </p>
+      {analyticsEnabled && (
+        <>
+          <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
+            Visitor statistics
+          </h2>
+          <p>
+            To understand which pages are used and how visitors find this
+            website, our server records page views in Umami, a self-hosted
+            statistics tool on our server at Hetzner Online GmbH in Nuremberg,
+            Germany. Your browser loads no statistics script and nothing is
+            stored on your device. For each page view we record the page address
+            with any campaign parameters (utm_*) but no other parameters, the
+            domain of the referring website, your preferred language, the
+            browser, operating system and device type derived from the
+            user-agent string, and the country our hosting provider derives from
+            your IP address. Your IP address is not passed to Umami.
+          </p>
+          <p>
+            To count visitors per day, our server forms a keyed hash from your
+            IP address, user-agent string and the current date. Umami stores
+            only a session identifier derived from it. The hash changes every
+            day, so visits on different days cannot be linked. We do not build
+            profiles of individual visitors and do not combine these statistics
+            with enquiries or other data.
+          </p>
+          <p>
+            Statistics are deleted after 13 months. The legal basis is our
+            legitimate interest in understanding and improving the use of our
+            website under Art. 6(1)(f) GDPR. You can object at any time, as
+            described under your rights below. If your browser sends a Global
+            Privacy Control signal, your visits are not counted.
+          </p>
+        </>
+      )}
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Camera, sound and recordings
       </h2>

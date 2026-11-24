@@ -18,12 +18,12 @@ export type RateLimitResult = {
   retryAfterSeconds: number;
 };
 
-const getClientIp = (request: NextRequest): string => {
-  const forwardedFor = request.headers.get("x-forwarded-for");
+export const getClientIp = ({ headers }: Pick<Request, "headers">): string => {
+  const forwardedFor = headers.get("x-forwarded-for");
   if (forwardedFor) {
     return forwardedFor.split(",")[0]!.trim();
   }
-  return request.headers.get("x-real-ip") ?? "unknown";
+  return headers.get("x-real-ip") ?? "unknown";
 };
 
 const evaluate = (ip: string): RateLimitResult => {

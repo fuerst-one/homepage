@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 };
 
 export default function DatenschutzPage() {
-  const { assistantEnabled } = getSiteFeatures();
+  const { assistantEnabled, analyticsEnabled } = getSiteFeatures();
   return (
     <>
       <h1 className="text-2xl font-semibold tracking-tight text-white">
         Datenschutzerklärung
       </h1>
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
-        Stand: 18. November 2026
+        Stand: 24. November 2026
       </p>
       <p>
         Diese Erklärung beschreibt, wie personenbezogene Daten beim Besuch von
@@ -115,8 +115,10 @@ export default function DatenschutzPage() {
         Tracking-Cookies. Die Website setzt selbst keine Cookies.
         Interessenprofil und eigene Besucheranalyse sind freiwillig und werden
         nachfolgend beschrieben.
+        {analyticsEnabled &&
+          " Die Besucherstatistik wird auf unserem Server ohne Cookies oder Browserspeicher erfasst."}
       </p>
-      <VisitorProfilePrivacy locale="de" />
+      <VisitorProfilePrivacy locale="de" analyticsEnabled={analyticsEnabled} />
       <p>
         Der Plasma-Spielplatz hält Einstellungen zunächst nur im Arbeitsspeicher
         der Seite. Erst wenn Sie „Einstellungen und Ripples-Stücke auf diesem
@@ -128,6 +130,43 @@ export default function DatenschutzPage() {
         löschen Sie die Website-Daten im Browser, werden die gespeicherten Daten
         entfernt. Der Spielplatz bleibt ohne Speicherung nutzbar.
       </p>
+      {analyticsEnabled && (
+        <>
+          <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
+            Besucherstatistik
+          </h2>
+          <p>
+            Um zu verstehen, welche Seiten genutzt werden und wie Besucher diese
+            Website finden, erfasst unser Server Seitenaufrufe in Umami, einem
+            selbst betriebenen Statistikwerkzeug auf unserem Server bei der
+            Hetzner Online GmbH in Nürnberg, Deutschland. Ihr Browser lädt dafür
+            kein Statistikskript, und auf Ihrem Gerät wird nichts gespeichert.
+            Je Seitenaufruf erfassen wir die Seitenadresse mit etwaigen
+            Kampagnenparametern (utm_*), aber ohne weitere Parameter, die Domain
+            der verweisenden Website, Ihre bevorzugte Sprache, Browser,
+            Betriebssystem und Gerätetyp aus der User-Agent-Kennung sowie das
+            Land, das unser Hosting-Anbieter aus Ihrer IP-Adresse ableitet. Ihre
+            IP-Adresse wird nicht an Umami übermittelt.
+          </p>
+          <p>
+            Um Besucher pro Tag zu zählen, bildet unser Server aus IP-Adresse,
+            User-Agent-Kennung und aktuellem Datum einen schlüsselbasierten
+            Hash. Umami speichert nur eine daraus abgeleitete Sitzungskennung.
+            Der Hash wechselt täglich, sodass Besuche an verschiedenen Tagen
+            nicht verknüpft werden können. Wir bilden keine Profile einzelner
+            Besucher und verknüpfen die Statistik nicht mit Anfragen oder
+            anderen Daten.
+          </p>
+          <p>
+            Statistikdaten werden nach 13 Monaten gelöscht. Rechtsgrundlage ist
+            unser berechtigtes Interesse, die Nutzung unserer Website zu
+            verstehen und zu verbessern, nach Art. 6 Abs. 1 lit. f DSGVO. Sie
+            können jederzeit widersprechen, wie unten unter Ihren Rechten
+            beschrieben. Sendet Ihr Browser das Signal Global Privacy Control,
+            werden Ihre Besuche nicht gezählt.
+          </p>
+        </>
+      )}
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Kamera, Ton und Aufnahmen
       </h2>
