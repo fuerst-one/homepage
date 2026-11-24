@@ -38,10 +38,15 @@ export default function ImpressumPage() {
       </p>
 
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
+        Umsatzsteuer-ID
+      </h2>
+      <p>Umsatzsteuer-Identifikationsnummer nach § 27a UStG: DE349759427</p>
+
+      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Kontakt
       </h2>
       <p>
-        Telefon: 015255244840
+        Telefon: 0152 55244840
         <br />
         E-Mail:{" "}
         <a
@@ -53,74 +58,44 @@ export default function ImpressumPage() {
       </p>
 
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
-        Streitschlichtung
+        Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
       </h2>
       <p>
-        Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren
-        vor einer Verbraucherschlichtungsstelle teilzunehmen.
+        Alexander Fürst
+        <br />
+        Grombühlstraße 37
+        <br />
+        97080 Würzburg
       </p>
 
-      <h3 className="mt-8 text-sm font-semibold uppercase tracking-[0.15em] text-neutral-100">
-        Haftung für Inhalte
-      </h3>
+      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
+        Verbraucherstreitbeilegung
+      </h2>
       <p>
-        Für eigene Inhalte auf diesen Seiten sind wir nach den allgemeinen
-        Gesetzen verantwortlich.
-      </p>
-      <p>
-        Verpflichtungen zur Entfernung oder Sperrung der Nutzung von
-        Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.
-        Bei Bekanntwerden von Rechtsverletzungen werden wir die betroffenen
-        Inhalte prüfen und erforderlichenfalls entfernen.
+        Wir sind nicht bereit und nicht verpflichtet, an
+        Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
+        teilzunehmen.
       </p>
 
-      <h3 className="mt-8 text-sm font-semibold uppercase tracking-[0.15em] text-neutral-100">
-        Haftung für Links
-      </h3>
+      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
+        Inhalte und Links
+      </h2>
       <p>
-        Unser Angebot enthält Links zu externen Websites Dritter, auf deren
-        Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden
-        Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten
-        Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten
-        verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der
-        Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte
-        waren zum Zeitpunkt der Verlinkung nicht erkennbar.
-      </p>
-      <p>
-        Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch
-        ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei
-        Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend
-        entfernen.
+        Wir achten darauf, dass die Inhalte dieser Website richtig und aktuell
+        sind. Links zu anderen Websites prüfen wir, wenn wir sie setzen; für
+        deren Inhalte sind die jeweiligen Anbieter verantwortlich. Fällt Ihnen
+        ein Fehler, ein rechtswidriger Inhalt oder ein problematischer Link auf,
+        schreiben Sie uns bitte – wir kümmern uns umgehend darum.
       </p>
 
-      <h3 className="mt-8 text-sm font-semibold uppercase tracking-[0.15em] text-neutral-100">
+      <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Urheberrecht
-      </h3>
+      </h2>
       <p>
-        Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen
-        Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung,
-        Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der
-        Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des
-        jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite
-        sind nur für den privaten, nicht kommerziellen Gebrauch gestattet.
-      </p>
-      <p>
-        Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden,
-        werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte
-        Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine
-        Urheberrechtsverletzung aufmerksam werden, bitten wir um einen
-        entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden
-        wir derartige Inhalte umgehend entfernen.
-      </p>
-
-      <p className="text-xs text-neutral-500">
-        Quelle:{" "}
-        <a
-          className="underline underline-offset-4 hover:text-neutral-300"
-          href="https://www.e-recht24.de"
-        >
-          e-recht24.de
-        </a>
+        Texte, Bilder, Grafiken und das Logo auf dieser Website sind
+        urheberrechtlich geschützt. Gezeigte Kundenprojekte, Marken und Logos
+        gehören den jeweiligen Rechteinhabern. Eine Verwendung außerhalb der
+        gesetzlichen Schranken bitte nur nach Rücksprache.
       </p>
     </>
   );
