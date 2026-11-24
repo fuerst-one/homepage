@@ -67,8 +67,11 @@ export default function DatenschutzPage() {
       <p>
         Datenbank und Hintergrunddienste laufen auf unserem Server bei der
         Hetzner Online GmbH in Nürnberg, Deutschland. Coolify ist die Software,
-        mit der wir diesen Server verwalten. Gespeichert werden veröffentlichte
-        Website-Inhalte und gegebenenfalls eingereichte Anfragen
+        mit der wir diesen Server verwalten. Hetzner stellt Server und Netzwerk
+        bereit und verarbeitet die darauf liegenden Daten in unserem Auftrag;
+        mit Hetzner haben wir einen Vertrag zur Auftragsverarbeitung nach Art.
+        28 DSGVO geschlossen. Gespeichert werden veröffentlichte Website-Inhalte
+        und gegebenenfalls eingereichte Anfragen
         {assistantEnabled
           ? " sowie die unten beschriebenen KI-Nutzungsdaten."
           : "."}{" "}
@@ -438,9 +441,10 @@ export default function DatenschutzPage() {
         vorvertraglichen Maßnahmen ist die Rechtsgrundlage Art. 6 Abs. 1 lit. b
         DSGVO. Bei anderen Anfragen ist sie unser berechtigtes Interesse an der
         Beantwortung von Korrespondenz nach Art. 6 Abs. 1 lit. f DSGVO. An der
-        Übermittlung beteiligte E-Mail- und Telekommunikationsanbieter können
-        die Nachricht ebenfalls verarbeiten. Ihre Angaben sind freiwillig; für
-        eine gewünschte Antwort benötigen wir eine Kontaktmöglichkeit.
+        Übermittlung beteiligte E-Mail- und Telekommunikationsanbieter, darunter
+        unser E-Mail-Anbieter one.com, können die Nachricht ebenfalls
+        verarbeiten. Ihre Angaben sind freiwillig; für eine gewünschte Antwort
+        benötigen wir eine Kontaktmöglichkeit.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Speicherdauer

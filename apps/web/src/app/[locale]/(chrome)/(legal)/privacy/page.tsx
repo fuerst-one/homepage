@@ -65,7 +65,9 @@ export default function PrivacyPage() {
       <p>
         Database and background services run on our server at Hetzner Online
         GmbH in Nuremberg, Germany. Coolify is the software we use to manage
-        that server. The database stores published website content and, where
+        that server. Hetzner provides the server and network and processes the
+        data on it on our behalf under a data processing agreement pursuant to
+        Art. 28 GDPR. The database stores published website content and, where
         applicable, submitted enquiries
         {assistantEnabled
           ? " and the assistant usage data described below."
@@ -400,9 +402,10 @@ export default function PrivacyPage() {
         relating to a contract or steps before entering a contract, the legal
         basis is Art. 6(1)(b) GDPR. For other enquiries, it is our legitimate
         interest in answering correspondence under Art. 6(1)(f) GDPR. Email and
-        telecommunications providers involved in delivering your message may
-        also process it. Providing this information is voluntary, but we need a
-        way to respond if you request a reply.
+        telecommunications providers involved in delivering your message,
+        including our email provider one.com, may also process it. Providing
+        this information is voluntary, but we need a way to respond if you
+        request a reply.
       </p>
       <h2 className="mt-10 text-base font-semibold uppercase tracking-[0.2em] text-white">
         Retention
