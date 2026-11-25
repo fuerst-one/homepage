@@ -13,19 +13,21 @@ for (const locale of ["en", "de"]) {
         waitUntil: "networkidle2",
         timeout: 90000,
       });
-      await page.waitForSelector("main button[aria-pressed=true]");
+      await page.waitForSelector(
+        "main button[data-project-preset][aria-pressed=true]",
+      );
       const presetCount = await page.$$eval(
-        "main button[aria-pressed]",
+        "main button[data-project-preset]",
         (buttons) => buttons.length,
       );
       assert.equal(presetCount, 6);
       for (let index = 0; index < presetCount; index++) {
-        const presets = await page.$$("main button[aria-pressed]");
+        const presets = await page.$$("main button[data-project-preset]");
         await presets[index].click();
         await page.waitForFunction(
           (index) =>
             document
-              .querySelectorAll("main button[aria-pressed]")
+              .querySelectorAll("main button[data-project-preset]")
               [index]?.getAttribute("aria-pressed") === "true",
           {},
           index,
@@ -47,7 +49,7 @@ for (const locale of ["en", "de"]) {
       await page.waitForSelector(".filter-active-summary");
       assert.equal(
         await page.$$eval(
-          "main button[aria-pressed=true]",
+          "main button[data-project-preset][aria-pressed=true]",
           (buttons) => buttons.length,
         ),
         0,
@@ -63,13 +65,17 @@ for (const locale of ["en", "de"]) {
       await page.waitForFunction(
         () => !document.querySelector(".filter-active-summary"),
       );
-      assert.ok(await page.$("main button[aria-pressed=true]"));
+      assert.ok(
+        await page.$("main button[data-project-preset][aria-pressed=true]"),
+      );
       // Restoring this exact preset through the URL has the same compact state.
       await page.goto(`${base}/${locale}/projects?featured=true`, {
         waitUntil: "domcontentloaded",
         timeout: 90000,
       });
-      await page.waitForSelector("main button[aria-pressed=true]");
+      await page.waitForSelector(
+        "main button[data-project-preset][aria-pressed=true]",
+      );
       assert.equal(await page.$(".filter-active-summary"), null);
     } finally {
       await browser.close();

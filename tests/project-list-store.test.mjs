@@ -80,6 +80,25 @@ test("selecting a cluster drops the default featured filter, like any other filt
   assert.deepEqual(state().filters, {});
 });
 
+test("typing a search opens the full portfolio while preserving chosen filters", () => {
+  assert.deepEqual(state().filters, { featured: ["true"] });
+  state().setQuery("solar");
+  assert.deepEqual(state().filters, {});
+  state().setFilters({ industries: ["Energy"] });
+  state().setQuery("solar roofs");
+  assert.deepEqual(state().filters, { industries: ["Energy"] });
+});
+
+test("choosing a facet removes the featured default and includes non-featured matches", () => {
+  state().toggle("tools", "React");
+  assert.deepEqual(state().filters, { tools: ["React"] });
+  assert.deepEqual(ids({ filters: state().filters, query: "" }), [
+    "atlas",
+    "studio",
+    "meadow",
+  ]);
+});
+
 test("selecting a cluster keeps the facet filters a visitor chose", () => {
   state().setFilters({ tools: ["React"] });
   state().toggleCluster(webApps);

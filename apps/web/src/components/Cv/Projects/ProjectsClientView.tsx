@@ -127,6 +127,7 @@ export function ProjectsClientView({
           <FilterSqlConsole
             filterParams={filterParams}
             projects={projects}
+            searchScope={search.searchScope}
             resultsCount={filteredProjects.length}
           />
         </div>

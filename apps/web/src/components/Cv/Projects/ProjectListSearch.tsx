@@ -109,8 +109,8 @@ export function ProjectListSearch({
           className="mt-3 text-xs leading-relaxed text-neutral-400"
         >
           {de
-            ? "Suche nach einem Thema, einer Technologie oder beschreibe dein Vorhaben. Aktive Filter gelten weiterhin."
-            : "Search by topic, technology or describe what you need. Active filters still apply."}
+            ? "Suche im gesamten Portfolio nach einem Thema, einer Technologie oder deinem Vorhaben. Weitere gewählte Filter bleiben aktiv."
+            : "Search the full portfolio by topic, technology or describe what you need. Other selected filters still apply."}
           {semanticAllowed && (
             <>
               {" "}

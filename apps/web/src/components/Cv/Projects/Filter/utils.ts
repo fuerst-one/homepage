@@ -68,6 +68,30 @@ export const getFilterOptionCounts = (projects: CvProject[], key: FacetKey) => {
   }));
 };
 
+/** Count each value among projects that pass every other facet and the current search. */
+export const getScopedFilterOptionCounts = (
+  projects: CvProject[],
+  searchScope: CvProject[],
+  filters: FilterParams,
+  key: FacetKey,
+) => {
+  const otherFilters = { ...filters };
+  delete otherFilters[key as keyof FilterParams];
+  // A manual facet selection replaces Featured, so preview that selection's scope.
+  if (key !== "featured") delete otherFilters.featured;
+  const available = new Map(
+    getFilterOptionCounts(filterProjects(searchScope, otherFilters), key).map(
+      ({ itemKey, count }) => [itemKey, count],
+    ),
+  );
+  return getFilterOptionCounts(projects, key)
+    .map(({ itemKey }) => ({
+      itemKey,
+      count: available.get(itemKey) ?? 0,
+    }))
+    .sort((a, b) => b.count - a.count || a.itemKey.localeCompare(b.itemKey));
+};
+
 export const filterProjects = (
   projects: CvProject[],
   searchParams: FilterParams,

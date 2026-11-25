@@ -5,13 +5,12 @@ import { useLocale } from "../../../i18n/LocaleProvider";
 import { useProjectListStore } from "../projectListStore";
 import { recordVisitorInteraction } from "../../../VisitorProfile/profileStore";
 import clsx from "clsx";
-import { caseLabel } from "@homepage/content/projectCase";
-import {
-  sectorLabel,
-  projectDeliveryModels,
-} from "@homepage/content/projectTaxonomy";
 import { CvProject } from "@homepage/content/models";
-import { FilterParams } from "./utils";
+import {
+  facetValueLabel,
+  getScopedFilterOptionCounts,
+  type FilterParams,
+} from "./utils";
 import {
   CV_PRESETS,
   localizePreset,
@@ -41,6 +40,8 @@ const ARRAY_COLUMNS: (keyof FilterParams)[] = [
 ];
 
 type CliFilterKey =
+  | "buyerNeeds"
+  | "ownership"
   | "capabilities"
   | "methods"
   | "industries"
@@ -66,6 +67,10 @@ type CliFilterGroup = {
 };
 
 const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
+  { key: "buyerNeeds", label: "What do you need?" },
+  { key: "ownership", label: "My contribution" },
+  { key: "capabilities", label: "Expertise" },
+  { key: "industries", label: "Industries" },
   { key: "methods", label: "Methods & principles" },
   { key: "domains", label: "Use cases" },
   { key: "productTypes", label: "Product formats" },
@@ -75,14 +80,6 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
   {
     key: "featured",
     label: "Featured",
-  },
-  {
-    key: "capabilities",
-    label: "Expertise",
-  },
-  {
-    key: "industries",
-    label: "Industries",
   },
   {
     key: "projectType",
@@ -98,7 +95,16 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
   },
 ];
 
+const PRIMARY_FILTER_KEYS = new Set<CliFilterKey>([
+  "buyerNeeds",
+  "ownership",
+  "capabilities",
+  "industries",
+]);
+
 const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
+  buyerNeeds: "Was brauchst du?",
+  ownership: "Mein Beitrag",
   domains: "Anwendungsfälle",
   productTypes: "Produktformate",
   targetMarket: "Zielmarkt",
@@ -133,15 +139,18 @@ const CLI_FILTER_LABEL_LOOKUP = Object.fromEntries(
 export const FilterSqlConsole = ({
   filterParams,
   projects,
+  searchScope,
   resultsCount,
 }: {
   filterParams: FilterParams;
   projects: CvProject[];
+  searchScope: CvProject[];
   resultsCount: number;
 }) => {
   const locale = useLocale();
   const de = locale === "de";
   const setFilters = useProjectListStore((s) => s.setFilters);
+  const toggleFilter = useProjectListStore((s) => s.toggle);
   const resetFilters = useProjectListStore((s) => s.reset);
   const [searchQuery, setSearchQuery] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
@@ -159,38 +168,19 @@ export const FilterSqlConsole = ({
 
   const cliFilterGroups = useMemo(
     () =>
-      buildCliFilterGroups(projects).map((group) => ({
-        ...group,
-        label: de ? GROUP_LABELS_DE[group.key] : group.label,
-      })),
-    [projects, de],
+      buildCliFilterGroups(projects, searchScope, filterParams).map(
+        (group) => ({
+          ...group,
+          label: de ? GROUP_LABELS_DE[group.key] : group.label,
+        }),
+      ),
+    [projects, searchScope, filterParams, de],
   );
 
   const handleToggleValue = (key: CliFilterKey, optionValue: string) => {
-    const nextFilters: NormalizedFilters = Object.fromEntries(
-      Object.entries(normalizedFilters).map(([currentKey, values]) => [
-        currentKey,
-        [...values],
-      ]),
-    );
-
-    const currentValues = nextFilters[key] ?? [];
-    const isSelected = currentValues.includes(optionValue);
-
-    if (isSelected) {
-      nextFilters[key] = currentValues.filter((value) => value !== optionValue);
-      if (!nextFilters[key]?.length) {
-        delete nextFilters[key];
-      }
-    } else {
-      nextFilters[key] = Array.from(
-        new Set([...currentValues, optionValue]),
-      ).sort((a, b) => a.localeCompare(b));
-    }
-
-    if (!isSelected)
+    if (!normalizedFilters[key]?.includes(optionValue))
       recordVisitorInteraction("filter_selected", `${key}:${optionValue}`);
-    setFilters(nextFilters as FilterParams);
+    toggleFilter(key, optionValue);
   };
 
   const handleApplyPreset = (preset: CvPreset) => {
@@ -228,14 +218,107 @@ export const FilterSqlConsole = ({
                 : de
                   ? "Nein"
                   : "No"
-              : key === "industries"
-                ? sectorLabel(value, locale)
-                : caseLabel(value, locale),
+              : facetValueLabel(key as CliFilterKey, value, locale),
       })),
     );
   }, [normalizedFilters, de, locale, projects]);
 
+  const advancedFilterCount = activeFilters.filter(
+    ({ key }) =>
+      !PRIMARY_FILTER_KEYS.has(key as CliFilterKey) &&
+      !(key === "featured" && activePresetId === "featured"),
+  ).length;
+
   const loweredQuery = searchQuery.toLowerCase();
+  const optionLabel = (key: CliFilterKey, value: string) =>
+    key === "featured"
+      ? value === "true"
+        ? de
+          ? "Ja"
+          : "Yes"
+        : de
+          ? "Nein"
+          : "No"
+      : facetValueLabel(key, value, locale);
+  const renderGroup = ({ key, label, options }: CliFilterGroup) => {
+    const activeValues = new Set(normalizedFilters[key] ?? []);
+    const filteredOptions = options.filter(
+      (option) =>
+        !loweredQuery ||
+        activeValues.has(option.value) ||
+        [option.value, optionLabel(key, option.value)].some((value) =>
+          value.toLowerCase().includes(loweredQuery),
+        ),
+    );
+    const optionList = filteredOptions.length ? (
+      <ul className="flex max-h-48 flex-col gap-1 overflow-y-auto pr-1">
+        {filteredOptions.map((option) => {
+          const isSelected = activeValues.has(option.value);
+          return (
+            <li key={option.value}>
+              <button
+                type="button"
+                onClick={() => handleToggleValue(key, option.value)}
+                disabled={option.count === 0 && !isSelected}
+                aria-pressed={isSelected}
+                className={clsx(
+                  "flex min-h-11 w-full items-center justify-between gap-3 border px-3 py-2 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                  "border-white/20 bg-black text-neutral-100 hover:border-white",
+                  isSelected && "border-white bg-white/10 text-white",
+                  option.count === 0 &&
+                    !isSelected &&
+                    "cursor-not-allowed opacity-40 hover:border-white/20",
+                )}
+              >
+                <span className="min-w-0 break-words text-left">
+                  {optionLabel(key, option.value)}
+                </span>
+                <span className="shrink-0 text-xs tabular-nums text-neutral-400">
+                  {option.count}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <p className="text-xs text-neutral-400">
+        {de ? "Keine passenden Werte" : "No matching values"}
+      </p>
+    );
+    if (key === "capabilities" || key === "industries") {
+      return (
+        <details
+          key={key}
+          className="glass-panel min-w-0 border border-white/20 p-3"
+        >
+          <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-neutral-200 hover:text-white">
+            {label}
+            {activeValues.size > 0 && (
+              <span className="text-neutral-400">{activeValues.size}</span>
+            )}
+          </summary>
+          <div className="mt-2">{optionList}</div>
+        </details>
+      );
+    }
+    return (
+      <fieldset
+        key={key}
+        className="glass-panel min-w-0 border border-white/20 p-3"
+      >
+        <legend className="px-1 text-[0.7rem] uppercase tracking-[0.2em] text-neutral-200">
+          {label}
+        </legend>
+        {activeValues.size > 0 && (
+          <p className="mb-2 text-[0.65rem] text-neutral-400">
+            {activeValues.size} {de ? "ausgewählt" : "selected"}
+          </p>
+        )}
+        {optionList}
+      </fieldset>
+    );
+  };
 
   return (
     <div className="glass-panel border border-white/20 p-5">
@@ -247,6 +330,7 @@ export const FilterSqlConsole = ({
             <button
               key={id}
               type="button"
+              data-project-preset={id}
               onClick={() => handleApplyPreset(preset)}
               aria-pressed={isActive}
               title={preset.description}
@@ -268,8 +352,14 @@ export const FilterSqlConsole = ({
           aria-expanded={isExpanded}
           aria-controls={panelId}
         >
-          {isExpanded ? (de ? "Schließen" : "Close") : "Filter"}
-          {!!activeFilters.length && <span>({activeFilters.length})</span>}
+          {isExpanded
+            ? de
+              ? "Weniger Filter"
+              : "Fewer filters"
+            : de
+              ? "Weitere Filter"
+              : "More filters"}
+          {!!advancedFilterCount && <span>({advancedFilterCount})</span>}
           <span
             className={clsx(
               "transition-transform",
@@ -341,129 +431,59 @@ export const FilterSqlConsole = ({
           )}
         </div>
       )}
+      <div className="mt-5 border-t border-white/20 pt-4">
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+          <h3 className="text-xs uppercase tracking-[0.2em] text-neutral-200">
+            {de ? "Projekte eingrenzen" : "Narrow the projects"}
+          </h3>
+          <span className="text-xs text-neutral-400">
+            {resultsCount} {de ? "Ergebnisse" : "results"}
+          </span>
+        </div>
+        <p className="mb-3 text-xs leading-relaxed text-neutral-400">
+          {de
+            ? "Eine Auswahl öffnet das gesamte Portfolio. Die Zahlen berücksichtigen Suche und andere Filter."
+            : "Choose a filter to browse the full portfolio. Counts reflect your search and other filters."}
+        </p>
+        <div className="grid gap-3 md:grid-cols-2">
+          {cliFilterGroups
+            .filter(({ key }) => PRIMARY_FILTER_KEYS.has(key))
+            .map(renderGroup)}
+        </div>
+      </div>
       <div
         id={panelId}
         className={clsx(
-          "mt-3 border-t border-white/20 pt-3",
+          "mt-5 border-t border-white/20 pt-4",
           !isExpanded && "hidden",
         )}
         aria-hidden={!isExpanded}
       >
         {isExpanded && (
           <>
-            <div className="flex items-center justify-between gap-4">
-              <h3 className="text-xs uppercase tracking-[0.2em] text-neutral-300">
-                {de ? "Projekte filtern" : "Project query console"}
-              </h3>
-              <div className="flex items-center gap-2">
-                <span className="bg-black px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200">
-                  {resultsCount} {de ? "Ergebnisse" : "results"}
-                </span>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 border border-white/30 bg-black px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white"
-                  onClick={() => {
-                    resetFilters();
-                  }}
-                >
-                  {de ? "Filter zurücksetzen" : "Reset filters"}
-                </button>
-              </div>
-            </div>
-            <div className="glass-panel mt-4 border border-white/20 p-4 text-[0.8rem] leading-relaxed text-neutral-100">
-              <span className="mr-2 text-neutral-500">&gt;</span>
-              <pre className="inline whitespace-pre-wrap break-words text-neutral-100">
-                {sqlStatement}
-              </pre>
-            </div>
-            <label className="block text-[0.65rem] uppercase tracking-[0.2em] text-neutral-400">
-              {de ? "Datensatz durchsuchen" : "Search dataset"}
+            <label className="block text-xs text-neutral-300">
+              {de ? "Filterwerte finden" : "Find a filter value"}
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder={de ? "Filterwerte …" : "Filter values..."}
-                className="mt-2 w-full border border-white/20 bg-black px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-white"
+                className="mt-2 min-h-11 w-full border border-white/20 bg-black px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-white"
               />
             </label>
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              {cliFilterGroups.map(({ key, label, options }) => {
-                const activeValues = new Set(normalizedFilters[key] ?? []);
-                const filteredOptions = options.filter((option) => {
-                  if (!loweredQuery) {
-                    return true;
-                  }
-                  if (activeValues.has(option.value)) {
-                    return true;
-                  }
-                  const label =
-                    key === "industries"
-                      ? sectorLabel(option.value, locale)
-                      : caseLabel(option.value, locale);
-                  return [option.value, label].some((value) =>
-                    value.toLowerCase().includes(loweredQuery),
-                  );
-                });
-
-                return (
-                  <div
-                    key={key}
-                    className="glass-panel border border-white/20 p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between text-[0.7rem] uppercase tracking-[0.3em] text-neutral-300">
-                      <span>{label}</span>
-                      <span className="text-neutral-500">
-                        {activeValues.size > 0
-                          ? `${activeValues.size} ${de ? "ausgewählt" : "selected"}`
-                          : "--"}
-                      </span>
-                    </div>
-                    {filteredOptions.length ? (
-                      <ul className="flex max-h-48 flex-col gap-2 overflow-y-auto pr-1">
-                        {filteredOptions.map((option) => {
-                          const isSelected = activeValues.has(option.value);
-                          return (
-                            <li key={`${key}-${option.value}`}>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleToggleValue(key, option.value)
-                                }
-                                className={clsx(
-                                  "flex w-full items-center justify-between border px-3 py-2 text-sm transition",
-                                  "border-white/20 bg-black text-neutral-100 hover:border-white",
-                                  isSelected &&
-                                    "border-white bg-white/10 text-white",
-                                )}
-                                aria-pressed={isSelected}
-                              >
-                                <span className="flex items-center gap-2">
-                                  <span className="text-neutral-200">
-                                    {isSelected ? "▣" : "▢"}
-                                  </span>
-                                  <span className="whitespace-normal break-words text-left">
-                                    {key === "industries"
-                                      ? sectorLabel(option.value, locale)
-                                      : caseLabel(option.value, locale)}
-                                  </span>
-                                </span>
-                                <span className="text-[0.65rem] text-neutral-500">
-                                  {option.count}
-                                </span>
-                              </button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    ) : (
-                      <p className="text-[0.7rem] text-neutral-500">
-                        {de ? "Keine Treffer" : "No matches"}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {cliFilterGroups
+                .filter(({ key }) => !PRIMARY_FILTER_KEYS.has(key))
+                .map(renderGroup)}
             </div>
+            <details className="mt-4 text-xs text-neutral-400">
+              <summary className="min-h-11 cursor-pointer py-3 hover:text-white">
+                {de ? "Filterabfrage anzeigen" : "Show filter query"}
+              </summary>
+              <pre className="glass-panel whitespace-pre-wrap break-words border border-white/20 p-4 text-neutral-200">
+                {sqlStatement}
+              </pre>
+            </details>
           </>
         )}
       </div>
@@ -497,59 +517,21 @@ const buildSqlStatement = (filters: NormalizedFilters) => {
   return `SELECT *\nFROM projects\nWHERE ${whereClauses.join("\n  AND ")};`;
 };
 
-const buildCliFilterGroups = (projects: CvProject[]): CliFilterGroup[] => {
+const buildCliFilterGroups = (
+  projects: CvProject[],
+  searchScope: CvProject[],
+  filters: FilterParams,
+): CliFilterGroup[] => {
   return CLI_FILTER_GROUPS.map(({ key, label }) => ({
     key,
     label,
-    options: buildOptionsForKey(projects, key),
+    options: getScopedFilterOptionCounts(
+      projects,
+      searchScope,
+      filters,
+      key,
+    ).map(({ itemKey, count }) => ({ value: itemKey, count })),
   })).filter((group) => group.options.length > 0);
-};
-
-const buildOptionsForKey = (
-  projects: CvProject[],
-  key: CliFilterKey,
-): CliFilterOption[] => {
-  const counts = new Map<string, number>();
-
-  projects.forEach((project) => {
-    const value =
-      key === "domains"
-        ? project.matching?.domains
-        : key === "deliveryModel"
-          ? projectDeliveryModels(project)
-          : project[key];
-
-    if (Array.isArray(value)) {
-      [...new Set(value.filter(Boolean))].forEach((item) => {
-        const normalized = item.trim();
-        if (!normalized) {
-          return;
-        }
-        counts.set(normalized, (counts.get(normalized) ?? 0) + 1);
-      });
-      return;
-    }
-
-    if (typeof value === "boolean") {
-      const normalized = value.toString();
-      counts.set(normalized, (counts.get(normalized) ?? 0) + 1);
-      return;
-    }
-
-    if (typeof value === "string" && value.trim()) {
-      const normalized = value.trim();
-      counts.set(normalized, (counts.get(normalized) ?? 0) + 1);
-    }
-  });
-
-  return Array.from(counts.entries())
-    .map(([value, count]) => ({ value, count }))
-    .sort((a, b) => {
-      if (b.count === a.count) {
-        return a.value.localeCompare(b.value);
-      }
-      return b.count - a.count;
-    });
 };
 
 const formatColumnName = (column: string) => {

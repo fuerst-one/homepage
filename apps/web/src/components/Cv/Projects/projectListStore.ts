@@ -93,7 +93,15 @@ export const useProjectListStore = create<ProjectListState>((set, get) => ({
     set({ filters: next });
   },
   reset: () => set({ filters: {} }),
-  setQuery: (query) => set({ query, semantic: null, searchStatus: "idle" }),
+  setQuery: (query) =>
+    set((state) => ({
+      query,
+      semantic: null,
+      searchStatus: "idle",
+      filters: query.trim()
+        ? withoutDefaultFeatured(state.filters)
+        : state.filters,
+    })),
   setSemantic: (semantic) =>
     set({ semantic, searchStatus: semantic ? "complete" : "idle" }),
   setSearchStatus: (searchStatus) => set({ searchStatus }),

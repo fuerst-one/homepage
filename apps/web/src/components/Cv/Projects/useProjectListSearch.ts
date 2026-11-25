@@ -72,6 +72,19 @@ export function useProjectListSearch(
       }),
     [projects, filters, cluster, query, index, allowed, semantic],
   );
+  const searchScope = useMemo(
+    () =>
+      selectProjectResults({
+        projects,
+        index,
+        filters: {},
+        clusterIds: cluster?.ids,
+        query,
+        semanticIds:
+          allowed && semantic?.query === query.trim() ? semantic.ids : [],
+      }),
+    [projects, index, cluster, query, allowed, semantic],
+  );
   useEffect(() => {
     setResultIds(results.map((project) => project.id));
   }, [results, setResultIds]);
@@ -133,6 +146,7 @@ export function useProjectListSearch(
     query,
     setQuery,
     results,
+    searchScope,
     status,
     semanticEnabled,
     consent,
