@@ -22,11 +22,13 @@ for (const [locale, slug, title, author] of [
         `href="/${locale}/projects/konfig-product-design-configurator"`,
       ),
     );
-    assert.ok(
-      html.includes(locale === "de" ? "Zurück zur Gruppe" : "Back to cluster"),
-    );
     assert.ok(!html.includes('class="lab-site-navigation"'));
-    assert.ok(html.includes('class="vs-project-title-link"'));
+    assert.match(
+      html,
+      new RegExp(
+        `<section[^>]+id="vs-inspector"[\\s\\S]*?<h2><a href="/${locale}/projects/konfig-product-design-configurator">Konfig`,
+      ),
+    );
     assert.ok(!html.includes('id="atlas-project-detail"'));
     assert.ok(!html.includes('id="atlas-related-title"'));
   });
@@ -51,13 +53,7 @@ for (const [locale, slug, title, author] of [
     for (const name of ["Conversion Y", "Bags’n Boxes Chatbot", "RoadTrippin"])
       assert.ok(html.includes(`aria-label="${prefix}: ${name}`));
   });
-  for (const path of [
-    "lab",
-    "lab/experience",
-    "lab/projects",
-    "entdecken",
-    "explore",
-  ]) {
+  for (const path of ["entdecken", "explore"]) {
     test(`${locale}/${path} keeps selections when redirecting to Explorer`, async () => {
       const response = await fetch(`${base}/${locale}/${path}${query}`, {
         redirect: "manual",

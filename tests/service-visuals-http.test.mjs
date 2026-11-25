@@ -9,13 +9,23 @@ const get = async (path) => {
   assert.equal(response.status, 200, path);
   return response.text();
 };
-const gallery = async (id) =>
-  (await (await fetch(`${base}/api/projects/${id}`)).json()).screenshots.map(
-    (url) => {
-      const parsed = new URL(url, base);
-      return parsed.pathname + parsed.search;
-    },
-  );
+const galleries = new Map();
+const gallery = (id) => {
+  if (!galleries.has(id))
+    galleries.set(
+      id,
+      fetch(`${base}/api/projects/${id}`).then(async (response) => {
+        assert.equal(response.status, 200, `project gallery ${id}`);
+        const project = await response.json();
+        assert.ok(Array.isArray(project.screenshots), `screenshots for ${id}`);
+        return project.screenshots.map((url) => {
+          const parsed = new URL(url, base);
+          return parsed.pathname + parsed.search;
+        });
+      }),
+    );
+  return galleries.get(id);
+};
 const sources = (html, id) =>
   [...html.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/g)]
     .map((m) => m[1].replaceAll("&amp;", "&"))
