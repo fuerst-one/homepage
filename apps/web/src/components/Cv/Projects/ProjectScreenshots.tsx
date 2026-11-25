@@ -18,6 +18,7 @@ export const ProjectScreenshots = ({
   screenshots,
   projectName,
   projectId,
+  accentColor,
   initialDescriptions,
   locale: localeOverride,
   viewer = false,
@@ -30,6 +31,7 @@ export const ProjectScreenshots = ({
   screenshots: string[];
   projectName: string;
   projectId?: string;
+  accentColor?: string | null;
   initialDescriptions?: PublicImageDescription[];
   locale?: "en" | "de";
   viewer?: boolean;
@@ -120,12 +122,15 @@ export const ProjectScreenshots = ({
       <div
         className={cn(
           "relative overflow-hidden border border-white/20 bg-black",
+          accentColor && "p-3 sm:p-4",
           viewer && "min-h-0 flex-1",
         )}
+        style={accentColor ? { backgroundColor: accentColor } : undefined}
       >
         <div
           className={cn(
-            "relative w-full",
+            "relative w-full bg-black",
+            accentColor && "shadow-[0_8px_22px_#0007]",
             viewer
               ? "h-full"
               : fit === "contain"
@@ -201,6 +206,7 @@ export const ProjectScreenshots = ({
                 screenshots={sanitizedScreenshots}
                 projectName={projectName}
                 projectId={projectId}
+                accentColor={accentColor}
                 initialDescriptions={descriptions}
                 locale={locale}
                 imageDetails={imageDetails}

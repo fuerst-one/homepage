@@ -77,6 +77,7 @@ export const ProjectDetails = ({
             screenshots={screenshots}
             projectName={name}
             projectId={project.id}
+            accentColor={project.accentColor}
             locale={locale}
             initialDescriptions={initialDescriptions}
           />

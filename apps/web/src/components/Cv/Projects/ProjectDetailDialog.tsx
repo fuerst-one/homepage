@@ -96,6 +96,7 @@ export const ProjectDetailDialog = ({
                     screenshots={project.screenshots}
                     projectName={title}
                     projectId={project.id}
+                    accentColor={project.accentColor}
                     locale={locale}
                     viewer
                   />

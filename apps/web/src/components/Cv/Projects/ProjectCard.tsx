@@ -80,6 +80,7 @@ export const ProjectCard = ({
       <div className="pointer-events-none relative z-10 flex min-w-0 flex-col gap-3">
         <Thumbnail
           src={thumbnail}
+          accentColor={project.accentColor}
           projectName={name}
           locale={locale}
           onClick={openDialog}
@@ -181,12 +182,14 @@ export const ProjectCard = ({
 
 const Thumbnail = ({
   src,
+  accentColor,
   projectName,
   onClick,
   screenshotCount,
   locale,
 }: {
   src: string | undefined;
+  accentColor?: string | null;
   projectName: string;
   onClick: () => void;
   screenshotCount: number;
@@ -212,23 +215,28 @@ const Thumbnail = ({
           ? `Bilder von ${projectName} ansehen`
           : `View images for ${projectName}`
       }
-      className="group/thumb pointer-events-auto relative block aspect-video w-full overflow-hidden border border-white/20 bg-black transition hover:border-white focus-visible:border-white focus-visible:outline-none print:hidden"
+      className="group/thumb pointer-events-auto relative block aspect-video w-full overflow-hidden border border-white/20 bg-black transition hover:border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white print:hidden"
+      style={accentColor ? { backgroundColor: accentColor } : undefined}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={`${projectName} preview`}
-        loading="lazy"
-        className="h-full w-full object-cover transition duration-500 group-hover/thumb:scale-105"
-      />
-      <span className="absolute inset-0 flex items-center justify-center bg-black/60 text-[0.65rem] uppercase tracking-[0.3em] text-white opacity-0 transition group-hover/thumb:opacity-100">
-        {locale === "de" ? "Bilder ansehen" : "View images"}
-      </span>
-      {hasMultiple && (
-        <span className="absolute bottom-2 right-2 border border-white/30 bg-black/70 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.25em] text-neutral-200">
-          +{screenshotCount - 1}
+      <span
+        className={`absolute block overflow-hidden bg-black shadow-[0_8px_22px_#0007] ${accentColor ? "inset-[13px]" : "inset-0"}`}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={`${projectName} preview`}
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover/thumb:scale-105"
+        />
+        <span className="absolute inset-0 flex items-center justify-center bg-black/60 text-[0.65rem] uppercase tracking-[0.3em] text-white opacity-0 transition group-hover/thumb:opacity-100">
+          {locale === "de" ? "Bilder ansehen" : "View images"}
         </span>
-      )}
+        {hasMultiple && (
+          <span className="absolute bottom-2 right-2 border border-white/30 bg-black/70 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.25em] text-neutral-200">
+            +{screenshotCount - 1}
+          </span>
+        )}
+      </span>
     </button>
   );
 };
