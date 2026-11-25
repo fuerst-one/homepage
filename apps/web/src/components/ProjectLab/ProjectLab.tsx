@@ -340,11 +340,7 @@ export function ProjectLab({
                 ← Portfolio
               </Link>
               {" · "}
-              <Link
-                className="lab-back"
-                href="/lab/experience"
-                prefetch={false}
-              >
+              <Link className="lab-back" href="/explorer" prefetch={false}>
                 Experience atlas ↗
               </Link>
             </>
@@ -439,8 +435,8 @@ export function ProjectLab({
         ))}
       </section>
       <p className="lab-method">
-        <Link href="/en/lab/experience">Explore the Experience atlas ↗</Link>{" "}
-        for project maps, clusters and networks. Use this lab for coverage,
+        <Link href="/en/explorer">Explore the Experience atlas ↗</Link> for
+        project maps, clusters and networks. Use this lab for coverage,
         recurring skills, timelines and weighted comparisons.
       </p>
       <details className="lab-details">
@@ -973,7 +969,7 @@ export function ProjectLab({
               )}
               {publicView ? (
                 <Link
-                  href={`/en/lab/experience?project=${encodeURIComponent(project.id)}&lens=product#atlas-explore-title`}
+                  href={`/en/explorer?project=${encodeURIComponent(project.id)}&lens=product#atlas-explore-title`}
                 >
                   Explore this project in the atlas ↗
                 </Link>

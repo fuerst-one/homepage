@@ -312,8 +312,9 @@ export function atlasRelated(
 }
 
 export type AtlasProject = {
-  /** Published locale-specific copy. Never used by the analysis model. */
+  /** Published copy and visual metadata. Never used by the analysis model. */
   presentation?: {
+    accentColor?: string | null;
     description: string;
     locale: "en" | "de";
     projectHref: string | null;

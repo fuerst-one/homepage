@@ -4,24 +4,22 @@ const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 
 for (const locale of ["en", "de"]) {
   const explorePath = `/${locale}/explorer`;
-  test(`${locale} retired public lab redirects to Explorer`, async () => {
-    const response = await fetch(`${base}/${locale}/lab/projects`, {
-      redirect: "manual",
-      signal: AbortSignal.timeout(60000),
+  for (const path of [
+    "lab",
+    "lab/projects",
+    "lab/experience",
+    "explorer/connections-next",
+    "explorer/connections",
+  ]) {
+    test(`${locale} removed preview /${path} returns 404`, async () => {
+      const response = await fetch(`${base}/${locale}/${path}`, {
+        redirect: "manual",
+        signal: AbortSignal.timeout(60000),
+      });
+      assert.equal(response.status, 404);
+      assert.equal(response.headers.get("location"), null);
     });
-    // A layout can begin streaming before Next renders the redirecting page.
-    if (response.status === 307) {
-      assert.equal(response.headers.get("location"), explorePath);
-    } else {
-      assert.equal(response.status, 200);
-      assert.match(
-        await response.text(),
-        new RegExp(
-          `<meta[^>]+http-equiv="refresh"[^>]+content="1;url=${explorePath}"`,
-        ),
-      );
-    }
-  });
+  }
   test(`${locale} existing project page explains related work and keeps the case study`, async () => {
     const response = await fetch(
       `${base}/${locale}/projects/konfig-product-design-configurator`,

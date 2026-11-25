@@ -22,6 +22,8 @@ export function ScaleSpaceControls({
   result,
   pending,
   error,
+  methodNote,
+  inputLabel,
 }: {
   projects: AtlasProject[];
   activeProjects: AtlasProject[];
@@ -32,6 +34,8 @@ export function ScaleSpaceControls({
   result?: ReturnType<typeof buildScaleSpace>;
   pending: boolean;
   error?: string;
+  methodNote?: string;
+  inputLabel?: string;
 }) {
   const { t, term } = useAtlasCopy();
   const [open, setOpen] = useState(false);
@@ -39,7 +43,7 @@ export function ScaleSpaceControls({
   return (
     <div className="vs-playground">
       <div className="vs-input-strip">
-        <span>{t("NUMERIC DISTANCES · LOCAL")}</span>
+        <span>{inputLabel ?? t("NUMERIC DISTANCES · LOCAL")}</span>
         <span>
           {SCALE_FIELDS.filter((field) => fields.includes(field.id))
             .map((field) => t(field.label))
@@ -143,11 +147,13 @@ export function ScaleSpaceControls({
             </div>
           </fieldset>
           <p className="vs-experiment-status">
-            {t(
-              "Fields carry equal weight. Team and effort ranges keep both bounds; larger numeric ranges use a logarithmic scale. Missing means unrecorded or not comparable, never zero. Rebuild effort is an estimate, not historical time spent. ",
-            )}
+            {methodNote ??
+              t(
+                "Fields carry equal weight. Team and effort ranges keep both bounds; larger numeric ranges use a logarithmic scale. Missing means unrecorded or not comparable, never zero. Rebuild effort is an estimate, not historical time spent. ",
+              )}
           </p>
-          {result &&
+          {!methodNote &&
+            result &&
             result.constantFields.length > 0 &&
             result.space.ids.length > 1 && (
               <p className="vs-experiment-status">

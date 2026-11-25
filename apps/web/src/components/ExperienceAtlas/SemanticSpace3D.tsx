@@ -43,7 +43,7 @@ type Positions = RefObject<Map<string, MovingNode>>;
 const NO_IDS: string[] = [];
 
 /** Canvas labels avoid nested React DOM roots during WebGL view teardown. */
-function SpaceLabel({
+export function SpaceLabel({
   text,
   position,
   selected = false,

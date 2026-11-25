@@ -1,5 +1,7 @@
 # Portfolio Lab preview
 
+Historical preview documentation. As of 2026-11-25, the `/lab`, `/lab/projects`, and `/lab/experience` routes have been removed, including their redirects. Use `/explorer` for the current graph and `/explorer/classic` for the preserved original explorer.
+
 The preview branch `codex/portfolio-lab-preview` integrates two portfolio explorers:
 
 - `/en/lab/experience`: semantic 3D and 2D spaces, a spring network and a shared project detail section. Selecting a project updates its detail and the URL. Bubble area uses the published Wow Factor rating; perspective affects apparent 3D size. The earlier theme switch and grouped context maps have been removed.

@@ -5,7 +5,6 @@ import Link from "../i18n/LocalizedLink";
 import preview from "../../content/lab-preview.json";
 import { publishedExplorerData } from "./projectPresentation";
 import type { SemanticDataset } from "./spaceTypes";
-import { previewLenses } from "./spaceNodes";
 import { ResultsSyncedSpace3D } from "./ResultsSyncedSpace3D";
 
 export function ProjectExplorerPreview({
@@ -26,7 +25,9 @@ export function ProjectExplorerPreview({
       aria-label={locale === "de" ? "Projekt-Explorer" : "Project Explorer"}
     >
       <ResultsSyncedSpace3D
-        lenses={previewLenses(semanticData, projects, locale)}
+        projects={projects}
+        semanticData={semanticData}
+        locale={locale}
       />
       <Link
         href="/explorer"

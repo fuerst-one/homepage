@@ -2,14 +2,14 @@
 
 import dynamic from "next/dynamic";
 import type { ComponentProps } from "react";
-import type { ExperienceAtlas } from "../ExperienceAtlas/ExperienceAtlas";
+import type { ConnectionExplorerNext } from "../ExperienceAtlas/ConnectionExplorerNext";
 import { useLocale } from "../i18n/LocaleProvider";
 import { DeferredWorkView } from "./DeferredWorkView";
 
 const Explorer = dynamic(
   () =>
-    import("../ExperienceAtlas/ExperienceAtlas").then(
-      (module) => module.ExperienceAtlas,
+    import("../ExperienceAtlas/ConnectionExplorerNext").then(
+      (module) => module.ConnectionExplorerNext,
     ),
   { ssr: false, loading: ExplorerLoading },
 );
@@ -25,13 +25,14 @@ function ExplorerLoading() {
 
 export function DeferredExplorer(
   data: Pick<
-    ComponentProps<typeof ExperienceAtlas>,
+    ComponentProps<typeof ConnectionExplorerNext>,
     "projects" | "semanticData"
   >,
 ) {
+  const locale = useLocale();
   return (
     <DeferredWorkView fallback={<ExplorerLoading />}>
-      <Explorer {...data} embedded wheelZoomRequiresShift />
+      <Explorer {...data} locale={locale} variant="embedded" />
     </DeferredWorkView>
   );
 }

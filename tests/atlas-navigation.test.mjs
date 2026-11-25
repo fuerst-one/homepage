@@ -49,27 +49,27 @@ test("deep links restore project, lens and representation independently", () => 
 test("changing one control preserves the project, other controls and page anchor", () => {
   const url = updateAtlasUrl(
     new URL(
-      "https://example.com/en/lab/experience?project=konfig&lens=engineering&ref=home#atlas-explore-title",
+      "https://example.com/en/explorer?project=konfig&lens=engineering&ref=home#atlas-explore-title",
     ),
     { view: "network" },
   );
   assert.equal(
     url,
-    "/en/lab/experience?project=konfig&lens=engineering&ref=home&view=network#atlas-explore-title",
+    "/en/explorer?project=konfig&lens=engineering&ref=home&view=network#atlas-explore-title",
   );
 });
 
 test("clearing a project removes its URL parameter without losing the active tab", () => {
   const url = updateAtlasUrl(
     new URL(
-      "https://example.com/en/lab/experience?project=konfig&lens=scale&view=2d",
+      "https://example.com/en/explorer?project=konfig&lens=scale&view=2d",
     ),
     { project: "" },
   );
-  assert.equal(url, "/en/lab/experience?lens=scale&view=2d");
+  assert.equal(url, "/en/explorer?lens=scale&view=2d");
   const cleared = updateAtlasUrl(new URL(url, "https://example.com"), {
     lens: "product",
     view: "3d",
   });
-  assert.equal(cleared, "/en/lab/experience");
+  assert.equal(cleared, "/en/explorer");
 });

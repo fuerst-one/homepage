@@ -18,11 +18,11 @@ async function readyChart(page, path) {
     await embedded.evaluate((element) =>
       element.scrollIntoView({ block: "start" }),
     );
-  const chart = await page.waitForSelector(".vs-canvas", { timeout: 30000 });
+  const chart = await page.waitForSelector(".cg-canvas", { timeout: 30000 });
   await chart.evaluate((element) =>
     element.scrollIntoView({ block: "center" }),
   );
-  await page.waitForSelector(".vs-canvas canvas", { timeout: 30000 });
+  await page.waitForSelector(".cg-canvas canvas", { timeout: 30000 });
   await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 300)));
   await page.evaluate(() => {
     window.explorerWheelEvents = [];

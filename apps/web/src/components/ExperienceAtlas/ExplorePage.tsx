@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Layout } from "../Layout";
 import { ExperienceAtlas } from "./ExperienceAtlas";
+import { ConnectionExplorerNext } from "./ConnectionExplorerNext";
 import { publishedExplorerData } from "./projectPresentation";
 import { atlasText } from "./atlasCopy";
 import type { SemanticDataset } from "./spaceTypes";
@@ -31,7 +32,10 @@ export async function exploreMetadata({ params }: ExplorePageProps) {
   );
 }
 
-export async function ExplorePage({ params }: ExplorePageProps) {
+export async function ExplorePage({
+  params,
+  classic = false,
+}: ExplorePageProps & { classic?: boolean }) {
   // URL-selected projects must be present in the initial production render.
   await connection();
   const locale = await getLocale(params);
@@ -48,13 +52,21 @@ export async function ExplorePage({ params }: ExplorePageProps) {
   return (
     <Layout locale={locale} availableLocales={["en", "de"]} wide>
       <div className="explore-site">
-        <ExperienceAtlas
-          {...data}
-          experimentsEnabled={process.env.NODE_ENV === "development"}
-        />
+        {classic ? (
+          <ExperienceAtlas
+            {...data}
+            experimentsEnabled={process.env.NODE_ENV === "development"}
+          />
+        ) : (
+          <ConnectionExplorerNext {...data} locale={locale} variant="page" />
+        )}
       </div>
     </Layout>
   );
+}
+
+export function ClassicExplorePage(props: ExplorePageProps) {
+  return ExplorePage({ ...props, classic: true });
 }
 
 /** Redirect old bookmarks without losing the selected project, lens or view. */

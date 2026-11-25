@@ -149,3 +149,19 @@ test("an empty publication produces an empty Explorer rather than a stale previe
     assert.deepEqual(view.similarities, []);
   }
 });
+
+test("Explorer uses current published accent colors and clears stale snapshot colors", () => {
+  const source = snapshot();
+  source.atlas[0].presentation = { accentColor: "#FF0000" };
+  source.atlas[2].presentation = { accentColor: "#00FF00" };
+  const { projects } = subject.publishedExplorerData(
+    source,
+    [
+      { ...published("a"), accentColor: "#2A9D8F" },
+      { ...published("b"), accentColor: null },
+    ],
+    "en",
+  );
+  assert.equal(projects[0].presentation.accentColor, "#2A9D8F");
+  assert.equal(projects[1].presentation.accentColor, null);
+});

@@ -110,6 +110,7 @@ export function presentProject(
   return {
     ...project,
     presentation: {
+      accentColor: published?.accentColor ?? null,
       description:
         (published && flattenRichText(published.description)) ||
         project.subtitle ||
