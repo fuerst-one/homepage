@@ -30,6 +30,10 @@ const record = (value: unknown): Record<string, unknown> =>
     : {};
 const list = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
 const text = (value: unknown) => (typeof value === "string" ? value : "");
+const accentColor = (value: unknown): string | null => {
+  const color = text(value).trim();
+  return /^#[0-9a-f]{6}$/i.test(color) ? color.toUpperCase() : null;
+};
 const strings = (value: unknown) =>
   list(value).filter((item): item is string => typeof item === "string");
 const localImage = (value: unknown): string | null =>
@@ -228,6 +232,7 @@ export function preparePublication(value: unknown): PublicPublication {
         id: text(p.id),
         name: text(p.name),
         logo: images("Logo", p.logo),
+        accentColor: accentColor(p.accentColor),
         screenshots: images("Screenshots", p.screenshots),
         icon:
           typeof record(source.icons)[text(p.id)] === "string"

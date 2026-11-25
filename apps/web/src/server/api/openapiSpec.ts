@@ -194,6 +194,7 @@ export const buildOpenApiSpec = () => ({
           "id",
           "name",
           "icon",
+          "accentColor",
           "oneLineSummary",
           "tools",
           "industries",
@@ -221,6 +222,11 @@ export const buildOpenApiSpec = () => ({
           icon: {
             type: ["string", "null"],
             description: "3D icon name chosen in the Notion project record.",
+          },
+          accentColor: {
+            type: ["string", "null"],
+            pattern: "^#[0-9A-F]{6}$",
+            description: "Curated project accent color, or null when unset.",
           },
           matching: {
             type: "object",
@@ -278,6 +284,13 @@ export const buildOpenApiSpec = () => ({
         type: "object",
         description:
           "Full project record. description and kpis are Notion rich-text objects; use rich_text[].plain_text for plain text.",
+        properties: {
+          accentColor: {
+            type: ["string", "null"],
+            pattern: "^#[0-9A-F]{6}$",
+            description: "Curated project accent color, or null when unset.",
+          },
+        },
         additionalProperties: true,
       },
       CvOwnerPublic: {

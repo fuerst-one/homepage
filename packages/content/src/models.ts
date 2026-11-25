@@ -26,6 +26,7 @@ export type CvProject = ProjectTaxonomy & {
   id: string;
   name: string;
   logo: string[] | null;
+  accentColor: string | null;
   icon: string | null;
   screenshots: string[] | null;
   description: RichTextField;

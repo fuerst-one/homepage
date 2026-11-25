@@ -14,6 +14,7 @@ export type ProjectListItem = ProjectTaxonomy & {
   id: string;
   name: string;
   icon: string | null;
+  accentColor: string | null;
   oneLineSummary: string;
   tools: string[];
   industries: string[];
@@ -40,6 +41,7 @@ export const toProjectListItem = (
   id: project.id,
   name: project.name,
   icon: project.icon ?? null,
+  accentColor: project.accentColor ?? null,
   oneLineSummary: deriveOneLineSummary(project.description),
   tools: project.tools,
   industries: project.industries,

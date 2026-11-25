@@ -37,6 +37,7 @@ export type NotionProjectPropertiesRaw = {
   Featured: CheckBoxField;
   Name: TitleField;
   Logo: FilesField;
+  "Accent Color"?: RichTextField;
   "3D Icon"?: SelectField;
   Screenshots: FilesField;
   "Project Description": RichTextField;
@@ -69,6 +70,7 @@ export type NotionProject = ProjectTaxonomy & {
   id: string;
   name: string;
   logo: string[];
+  accentColor: string | null;
   icon: string | null;
   screenshots: string[];
   description: RichTextField;
@@ -106,6 +108,7 @@ const rawToInternalPropertiesMap: Record<
 > = {
   Name: "name",
   Logo: "logo",
+  "Accent Color": "accentColor",
   "3D Icon": "icon",
   Screenshots: "screenshots",
   "Project Description": "description",
@@ -186,6 +189,7 @@ export const fetchNotionProjectsDatabase = async (
       notionProject.name,
     );
     notionProject.capabilities ??= [];
+    notionProject.accentColor ??= null;
     notionProject.methods ??= [];
     notionProject.scale = readNotionProjectScale(projectRaw);
     Object.assign(notionProject, readNotionProjectTaxonomy(projectRaw));
