@@ -14,6 +14,19 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
+
+  .filter-count-fill {
+    background-color: hsl(var(--primary) / 0.09);
+    background-image: repeating-linear-gradient(
+      135deg,
+      transparent 0 7px,
+      hsl(var(--primary) / 0.13) 7px 9px
+    );
+  }
+
+  .filter-count-fill[data-selected="true"] {
+    background-color: hsl(var(--primary) / 0.18);
+  }
 }
 
 @layer base {

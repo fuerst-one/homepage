@@ -231,6 +231,7 @@ export const FilterSqlConsole = ({
       : facetValueLabel(key, value, locale);
   const renderGroup = ({ key, label, options }: CliFilterGroup) => {
     const activeValues = new Set(normalizedFilters[key] ?? []);
+    const maxCount = Math.max(1, ...options.map((option) => option.count));
     const filteredOptions = options.filter(
       (option) =>
         !loweredQuery ||
@@ -251,18 +252,26 @@ export const FilterSqlConsole = ({
                 disabled={option.count === 0 && !isSelected}
                 aria-pressed={isSelected}
                 className={clsx(
-                  "flex min-h-11 w-full items-center justify-between gap-3 border px-3 py-2 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                  "flex min-h-11 w-full items-stretch overflow-hidden border text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
                   "border-white/20 bg-black text-neutral-100 hover:border-white",
-                  isSelected && "border-white bg-white/10 text-white",
+                  isSelected && "border-white text-white",
                   option.count === 0 &&
                     !isSelected &&
                     "cursor-not-allowed opacity-40 hover:border-white/20",
                 )}
               >
-                <span className="min-w-0 break-words text-left">
-                  {optionLabel(key, option.value)}
+                <span className="relative flex min-w-0 flex-1 items-center px-3 py-2 text-left">
+                  <span
+                    aria-hidden="true"
+                    className="filter-count-fill absolute inset-y-0 left-0"
+                    data-selected={isSelected}
+                    style={{ width: `${(option.count / maxCount) * 100}%` }}
+                  />
+                  <span className="relative break-words">
+                    {optionLabel(key, option.value)}
+                  </span>
                 </span>
-                <span className="shrink-0 text-xs tabular-nums text-neutral-400">
+                <span className="flex min-w-11 shrink-0 items-center justify-center border-l border-white/20 bg-black px-2 text-xs tabular-nums text-neutral-400">
                   {option.count}
                 </span>
               </button>
@@ -275,26 +284,10 @@ export const FilterSqlConsole = ({
         {de ? "Keine passenden Werte" : "No matching values"}
       </p>
     );
-    if (key === "capabilities" || key === "industries") {
-      return (
-        <details
-          key={key}
-          className="glass-panel min-w-0 border border-white/20 p-3"
-        >
-          <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-neutral-200 hover:text-white">
-            {label}
-            {activeValues.size > 0 && (
-              <span className="text-neutral-400">{activeValues.size}</span>
-            )}
-          </summary>
-          <div className="mt-2">{optionList}</div>
-        </details>
-      );
-    }
     return (
       <fieldset
         key={key}
-        className="glass-panel min-w-0 border border-white/20 p-3"
+        className="glass-panel mb-3 min-w-0 break-inside-avoid border border-white/20 p-3"
       >
         <legend className="px-1 text-[0.7rem] uppercase tracking-[0.2em] text-neutral-200">
           {label}
@@ -453,7 +446,7 @@ export const FilterSqlConsole = ({
                 className="mt-2 min-h-11 w-full border border-white/20 bg-black px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-white"
               />
             </label>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="mt-4 columns-1 gap-3 md:columns-2">
               {cliFilterGroups.map(renderGroup)}
             </div>
             <details className="mt-4 text-xs text-neutral-400">

@@ -37,6 +37,24 @@ test("mobile projects show detailed filters only when requested", async () => {
       ),
       "true",
     );
+    assert.deepEqual(
+      await page.$eval("main", (main) =>
+        ["Expertise", "Industries"].map((label) => {
+          const group = [...main.querySelectorAll(".glass-panel")].find(
+            (panel) =>
+              panel
+                .querySelector(":scope > legend, :scope > summary")
+                ?.textContent.trim()
+                .startsWith(label),
+          );
+          return Boolean(
+            group?.querySelector("button")?.getClientRects().length,
+          );
+        }),
+      ),
+      [true, true],
+      "both groups expose their options as soon as detailed filters open",
+    );
     await page.click(
       'main button[aria-pressed="false"]:not([data-project-preset])',
     );
