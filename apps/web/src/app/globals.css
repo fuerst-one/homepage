@@ -16,16 +16,51 @@
   }
 
   .filter-count-fill {
-    background-color: hsl(var(--primary) / 0.09);
     background-image: repeating-linear-gradient(
       135deg,
-      transparent 0 7px,
-      hsl(var(--primary) / 0.13) 7px 9px
+      hsl(var(--primary) / 0.26) 0 1px,
+      transparent 1px 5px
     );
   }
 
-  .filter-count-fill[data-selected="true"] {
-    background-color: hsl(var(--primary) / 0.18);
+  .project-filter-toolbar {
+    container-type: inline-size;
+  }
+
+  .project-filter-toolbar-layout {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .project-filter-more {
+    min-height: 2.5rem;
+    width: 100%;
+  }
+
+  @container (min-width: 44rem) {
+    .project-filter-toolbar-layout[data-locale="en"] {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
+    .project-filter-toolbar-layout[data-locale="en"] .project-filter-more {
+      min-height: 0;
+      width: auto;
+      justify-self: end;
+    }
+  }
+
+  @container (min-width: 52rem) {
+    .project-filter-toolbar-layout[data-locale="de"] {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
+    .project-filter-toolbar-layout[data-locale="de"] .project-filter-more {
+      min-height: 0;
+      width: auto;
+      justify-self: end;
+    }
   }
 }
 

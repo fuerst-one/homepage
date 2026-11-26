@@ -55,6 +55,12 @@ test("mobile projects show detailed filters only when requested", async () => {
       [true, true],
       "both groups expose their options as soon as detailed filters open",
     );
+    assert.match(
+      await page.$eval("main fieldset button", (button) =>
+        button.querySelector(":scope > span:last-child")?.textContent.trim(),
+      ),
+      /^\d+$/,
+    );
     await page.click(
       'main button[aria-pressed="false"]:not([data-project-preset])',
     );
@@ -62,6 +68,17 @@ test("mobile projects show detailed filters only when requested", async () => {
       new URLSearchParams(location.search).has("buyerNeeds"),
     );
     assert.equal(new URL(page.url()).searchParams.has("featured"), false);
+    assert.deepEqual(
+      await page.$eval("main fieldset button", (button) => ({
+        pressed: button.getAttribute("aria-pressed"),
+        count: button
+          .querySelector(":scope > span:last-child")
+          ?.textContent.trim(),
+        hasCheck: Boolean(button.querySelector(":scope > span:last-child svg")),
+      })),
+      { pressed: "true", count: "", hasCheck: true },
+      "selected filters show a checkmark in place of their count",
+    );
   } finally {
     await browser.close();
   }

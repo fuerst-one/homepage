@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
+import { Check } from "lucide-react";
 import { useLocale } from "../../../i18n/LocaleProvider";
 import { useProjectListStore } from "../projectListStore";
 import { recordVisitorInteraction } from "../../../VisitorProfile/profileStore";
@@ -252,9 +253,10 @@ export const FilterSqlConsole = ({
                 disabled={option.count === 0 && !isSelected}
                 aria-pressed={isSelected}
                 className={clsx(
-                  "flex min-h-11 w-full items-stretch overflow-hidden border text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
-                  "border-white/20 bg-black text-neutral-100 hover:border-white",
-                  isSelected && "border-white text-white",
+                  "flex min-h-11 w-full items-stretch overflow-hidden border bg-black text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                  isSelected
+                    ? "border-primary text-primary"
+                    : "border-white/20 text-neutral-100 hover:border-white",
                   option.count === 0 &&
                     !isSelected &&
                     "cursor-not-allowed opacity-40 hover:border-white/20",
@@ -264,15 +266,25 @@ export const FilterSqlConsole = ({
                   <span
                     aria-hidden="true"
                     className="filter-count-fill absolute inset-y-0 left-0"
-                    data-selected={isSelected}
                     style={{ width: `${(option.count / maxCount) * 100}%` }}
                   />
                   <span className="relative break-words">
                     {optionLabel(key, option.value)}
                   </span>
                 </span>
-                <span className="flex min-w-11 shrink-0 items-center justify-center border-l border-white/20 bg-black px-2 text-xs tabular-nums text-neutral-400">
-                  {option.count}
+                <span
+                  className={clsx(
+                    "flex min-w-11 shrink-0 items-center justify-center border-l px-2 text-xs tabular-nums",
+                    isSelected
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-white/20 bg-black text-neutral-400",
+                  )}
+                >
+                  {isSelected ? (
+                    <Check size={18} strokeWidth={2.5} aria-hidden="true" />
+                  ) : (
+                    option.count
+                  )}
                 </span>
               </button>
             </li>
@@ -304,54 +316,58 @@ export const FilterSqlConsole = ({
 
   return (
     <div className="glass-panel border border-white/20 p-5">
-      <div className="flex flex-wrap items-center gap-2">
-        {CV_PRESET_ORDER.map((id) => {
-          const preset = localizePreset(CV_PRESETS[id], locale);
-          const isActive = activePresetId === id;
-          return (
-            <button
-              key={id}
-              type="button"
-              data-project-preset={id}
-              onClick={() => handleApplyPreset(preset)}
-              aria-pressed={isActive}
-              title={preset.description}
-              className={clsx(
-                "border px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] transition",
-                isActive
-                  ? "border-white bg-white/10 text-white"
-                  : "border-white/30 bg-black text-neutral-200 hover:border-white hover:text-white",
-              )}
-            >
-              {preset.label}
-            </button>
-          );
-        })}
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 border border-white/30 bg-black px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white"
-          onClick={() => setIsExpanded((prev) => !prev)}
-          aria-expanded={isExpanded}
-          aria-controls={panelId}
-        >
-          {isExpanded
-            ? de
-              ? "Weniger Filter"
-              : "Fewer filters"
-            : de
-              ? "Weitere Filter"
-              : "More filters"}
-          {!!hiddenFilterCount && <span>({hiddenFilterCount})</span>}
-          <span
-            className={clsx(
-              "transition-transform",
-              isExpanded ? "rotate-180" : "rotate-0",
-            )}
-            aria-hidden="true"
+      <div className="project-filter-toolbar">
+        <div className="project-filter-toolbar-layout" data-locale={locale}>
+          <div className="flex flex-wrap gap-2">
+            {CV_PRESET_ORDER.map((id) => {
+              const preset = localizePreset(CV_PRESETS[id], locale);
+              const isActive = activePresetId === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  data-project-preset={id}
+                  onClick={() => handleApplyPreset(preset)}
+                  aria-pressed={isActive}
+                  title={preset.description}
+                  className={clsx(
+                    "border px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] transition",
+                    isActive
+                      ? "border-white bg-white/10 text-white"
+                      : "border-white/30 bg-black text-neutral-200 hover:border-white hover:text-white",
+                  )}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            className="project-filter-more inline-flex items-center justify-center gap-2 border border-dashed border-white/30 bg-black px-3 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 transition hover:border-white hover:text-white"
+            onClick={() => setIsExpanded((prev) => !prev)}
+            aria-expanded={isExpanded}
+            aria-controls={panelId}
           >
-            ▾
-          </span>
-        </button>
+            {isExpanded
+              ? de
+                ? "Weniger Filter"
+                : "Fewer filters"
+              : de
+                ? "Weitere Filter"
+                : "More filters"}
+            {!!hiddenFilterCount && <span>({hiddenFilterCount})</span>}
+            <span
+              className={clsx(
+                "transition-transform",
+                isExpanded ? "rotate-180" : "rotate-0",
+              )}
+              aria-hidden="true"
+            >
+              ▾
+            </span>
+          </button>
+        </div>
       </div>
       <span
         className="sr-only"
