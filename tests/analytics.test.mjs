@@ -47,6 +47,7 @@ test("a document navigation becomes a minimal Umami page view", () => {
     url: "/en/projects?utm_source=newsletter",
     referrer: "https://www.google.com/",
     language: "de-DE",
+    data: view.payload.data,
     salt: view.payload.salt,
   });
   assert.match(view.payload.salt, /^[0-9a-f]{64}$/);
@@ -94,6 +95,44 @@ test("own-site and non-web referrers and odd languages are dropped", () => {
     day,
   );
   assert.equal(app.payload.referrer, undefined);
+});
+
+test("page views carry the browser's request-header fingerprint for bot diagnosis", () => {
+  const view = buildPageView(
+    request("/en", {
+      accept: "text/html,application/xhtml+xml",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "sec-ch-ua": `"Chromium";v="131", "Not_A Brand";v="24"`,
+      "sec-ch-ua-platform": '"macOS"',
+      "sec-fetch-site": "none",
+      "upgrade-insecure-requests": "1",
+      cookie: "session=private",
+      "x-real-ip": "203.0.113.7",
+      "x-vercel-ip-city": "Berlin",
+    }),
+    config,
+    day,
+  );
+  assert.deepEqual(view.payload.data, {
+    accept: "text/html,application/xhtml+xml",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "sec-ch-ua": `"Chromium";v="131", "Not_A Brand";v="24"`,
+    "sec-ch-ua-platform": '"macOS"',
+    "sec-fetch-dest": "document",
+    "sec-fetch-site": "none",
+    "upgrade-insecure-requests": "1",
+    "header-names":
+      "accept,accept-encoding,cookie,sec-ch-ua,sec-ch-ua-platform,sec-fetch-dest,sec-fetch-site,upgrade-insecure-requests,user-agent",
+  });
+});
+
+test("fingerprint values are cut to fit Umami's event data", () => {
+  const view = buildPageView(
+    request("/en", { accept: "a".repeat(600) }),
+    config,
+    day,
+  );
+  assert.equal(view.payload.data.accept.length, 200);
 });
 
 test("the visitor salt holds for a day and changes with the date and visitor", () => {
