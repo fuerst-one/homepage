@@ -143,3 +143,16 @@ test("clicks on outbound and download links become interactions", () => {
   assert.equal(click("mailto:hello@example.com"), null);
   assert.equal(click("https://fuerst.one/en", "no-extension"), null);
 });
+
+test("analytics beacons use their own rate-limit budget", () => {
+  const { checkRateLimit, RATE_LIMIT_PER_MINUTE } = loadTs(
+    new URL("../apps/web/src/server/api/rateLimit.ts", import.meta.url),
+  );
+  const visitor = {
+    headers: new Headers({ "x-forwarded-for": "198.51.100.9" }),
+  };
+  for (let i = 0; i < RATE_LIMIT_PER_MINUTE; i++)
+    checkRateLimit(visitor, "analytics");
+  assert.equal(checkRateLimit(visitor, "analytics").allowed, false);
+  assert.equal(checkRateLimit(visitor).allowed, true);
+});

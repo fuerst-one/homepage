@@ -74,8 +74,12 @@ const pruneIfNeeded = (now: number) => {
   }
 };
 
-export const checkRateLimit = (request: NextRequest): RateLimitResult => {
-  return evaluate(getClientIp(request));
+/** A named budget keeps high-volume callers from using up the shared API budget. */
+export const checkRateLimit = (
+  request: Pick<NextRequest, "headers">,
+  budget = "api",
+): RateLimitResult => {
+  return evaluate(`${budget}|${getClientIp(request)}`);
 };
 
 export const buildRateLimitedResponse = (
