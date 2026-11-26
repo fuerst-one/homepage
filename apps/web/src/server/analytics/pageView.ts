@@ -32,7 +32,7 @@ const FINGERPRINT_HEADERS = [
 const FINGERPRINT_VALUE_LENGTH = 200;
 
 function isPageNavigation({ method, nextUrl: url, headers }: PageRequest) {
-  if (method !== "GET" || !PAGE_PATH.test(url.pathname)) return false;
+  if (method !== "GET" || !isPagePath(url.pathname)) return false;
   if (
     headers.has("next-router-prefetch") ||
     headers.get("sec-purpose")?.includes("prefetch") ||
@@ -97,20 +97,51 @@ function dailyVisitorSalt(
     .digest("hex");
 }
 
+type VisitorRequest = Pick<Request, "headers">;
+type SaltConfig = Pick<AnalyticsConfig, "saltSecret">;
+
+export const isPagePath = (pathname: string) => PAGE_PATH.test(pathname);
+
+/**
+ * The daily salt and forwarded headers that put a visitor's page views and
+ * interactions into one Umami session. Null when the visit must not be counted.
+ */
+export function visitorIdentity(
+  request: VisitorRequest,
+  config: SaltConfig,
+  now: Date,
+): { salt: string; headers: Record<string, string> } | null {
+  const { headers } = request;
+  const userAgent = headers.get("user-agent");
+  if (!userAgent || headers.get("sec-gpc") === "1") return null;
+  const country = headers.get("x-vercel-ip-country");
+  return {
+    salt: dailyVisitorSalt(
+      config.saltSecret,
+      getClientIp(request),
+      userAgent,
+      now,
+    ),
+    headers: {
+      "user-agent": userAgent,
+      ...(country &&
+        COUNTRY.test(country) && { "x-vercel-ip-country": country }),
+    },
+  };
+}
+
 /** Returns null for anything that is not a counted page view. */
 export function buildPageView(
   request: PageRequest,
   config: Pick<AnalyticsConfig, "websiteId" | "saltSecret">,
   now = new Date(),
 ): UmamiSend | null {
-  const { nextUrl: url, headers } = request;
-  const userAgent = headers.get("user-agent");
-  if (!userAgent || headers.get("sec-gpc") === "1") return null;
-  if (!isPageNavigation(request)) return null;
+  const visitor = visitorIdentity(request, config, now);
+  if (!visitor || !isPageNavigation(request)) return null;
 
+  const { nextUrl: url, headers } = request;
   const referrer = externalReferrerOrigin(headers.get("referer"), url.host);
   const language = primaryLanguage(headers.get("accept-language"));
-  const country = headers.get("x-vercel-ip-country");
   return {
     payload: {
       website: config.websiteId,
@@ -119,17 +150,8 @@ export function buildPageView(
       ...(referrer && { referrer }),
       ...(language && { language }),
       data: headerFingerprint(headers),
-      salt: dailyVisitorSalt(
-        config.saltSecret,
-        getClientIp(request),
-        userAgent,
-        now,
-      ),
+      salt: visitor.salt,
     },
-    headers: {
-      "user-agent": userAgent,
-      ...(country &&
-        COUNTRY.test(country) && { "x-vercel-ip-country": country }),
-    },
+    headers: visitor.headers,
   };
 }

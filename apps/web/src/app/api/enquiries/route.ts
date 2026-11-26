@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import {
   parseEnquiry,
   ENQUIRY_MAX_BODY_BYTES,
@@ -6,11 +6,23 @@ import {
 import { submitEnquiry } from "@homepage/database/submitEnquiry";
 import { durableEnquiryStore } from "@homepage/database/durableEnquiryStore";
 import { checkRateLimit } from "../../../server/api/rateLimit";
+import { buildInteractionEvent } from "../../../server/analytics/interactionEvents";
+import {
+  getAnalyticsConfig,
+  sendToUmami,
+} from "../../../server/analytics/umami";
 
 export const runtime = "nodejs";
 const headers = { "Cache-Control": "no-store" };
 const respond = (body: unknown, status: number) =>
   NextResponse.json(body, { status, headers });
+
+function countEnquiry(request: NextRequest) {
+  const config = getAnalyticsConfig();
+  const send =
+    config && buildInteractionEvent(request, { name: "enquiry-sent" }, config);
+  if (config && send) after(() => sendToUmami(config, send));
+}
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin)
@@ -44,6 +56,7 @@ export async function POST(request: NextRequest) {
     return respond({ error: "invalid_brief", fields: parsed.fields }, 400);
   try {
     const saved = await submitEnquiry(parsed.value, durableEnquiryStore());
+    countEnquiry(request);
     return respond({ receipt: saved.receipt }, 201);
   } catch (error) {
     if (error instanceof Error && error.message === "enquiry_conflict")

@@ -143,13 +143,23 @@ export default function DatenschutzPage() {
             Website finden, erfasst unser Server Seitenaufrufe in Umami, einem
             selbst betriebenen Statistikwerkzeug auf unserem Server bei der
             Hetzner Online GmbH in Nürnberg, Deutschland. Ihr Browser lädt dafür
-            kein Statistikskript, und auf Ihrem Gerät wird nichts gespeichert.
-            Je Seitenaufruf erfassen wir die Seitenadresse mit etwaigen
-            Kampagnenparametern (utm_*), aber ohne weitere Parameter, die Domain
-            der verweisenden Website, Ihre bevorzugte Sprache, Browser,
-            Betriebssystem und Gerätetyp aus der User-Agent-Kennung sowie das
-            Land, das unser Hosting-Anbieter aus Ihrer IP-Adresse ableitet. Ihre
-            IP-Adresse wird nicht an Umami übermittelt.
+            kein Skript von Umami oder anderen Anbietern, und auf Ihrem Gerät
+            wird nichts gespeichert. Je Seitenaufruf erfassen wir die
+            Seitenadresse mit etwaigen Kampagnenparametern (utm_*), aber ohne
+            weitere Parameter, die Domain der verweisenden Website, Ihre
+            bevorzugte Sprache, Browser, Betriebssystem und Gerätetyp aus der
+            User-Agent-Kennung sowie das Land, das unser Hosting-Anbieter aus
+            Ihrer IP-Adresse ableitet. Ihre IP-Adresse wird nicht an Umami
+            übermittelt.
+          </p>
+          <p>
+            Unsere eigenen Seiten melden außerdem einige Interaktionen an
+            unseren Server, der sie auf dieselbe Weise an Umami weitergibt:
+            Klicks auf Links zu anderen Websites (die Zieladresse ohne
+            Parameter), Downloads aus dem Plasma-Playground (nur der Dateityp),
+            die erste Nutzung des Projekt-Explorers auf einer Seite und
+            erfolgreich gesendete Anfragen (nur, dass eine gesendet wurde, nicht
+            ihr Inhalt).
           </p>
           <p>
             Um Besucher pro Tag zu zählen, bildet unser Server aus IP-Adresse,

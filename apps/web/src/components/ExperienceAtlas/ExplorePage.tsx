@@ -51,7 +51,7 @@ export async function ExplorePage({
   );
   return (
     <Layout locale={locale} availableLocales={["en", "de"]} wide>
-      <div className="explore-site">
+      <div className="explore-site" data-analytics-demo="explorer">
         {classic ? (
           <ExperienceAtlas
             {...data}

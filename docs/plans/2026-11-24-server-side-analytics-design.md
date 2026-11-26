@@ -3,7 +3,8 @@
 Status: code implemented on `feat/umami-analytics`. Umami runs at
 `https://stats.fuerst.one` (Coolify service `umami-fuerst-one`, project Homepage),
 website "fuerst.one" `68ed8bd4-4f24-497a-a752-e6b9e8431d4a`, daily cleanup via
-`prune_raw_data(interval '13 months')` at 03:40. Vercel env vars not set yet. Alex asked on 2026-11-24 for Umami on
+`prune_raw_data(interval '13 months')` at 03:40. Live since 2026-11-24 (`9f6d144`); interaction
+events added 2026-11-26, see below and `docs/analytics.md`. Alex asked on 2026-11-24 for Umami on
 fuerst.one without a new opt-in, plus anonymous counts of shared visitor-profile signals.
 
 ## Decisions so far
@@ -14,7 +15,9 @@ fuerst.one without a new opt-in, plus anonymous counts of shared visitor-profile
   (Art. 6(1)(f) GDPR). This replaces the audit's proposed analytics opt-in
   ([legal-privacy-audit](../legal-privacy-audit-2026-11-16.md), "Future analytics")
   for page views only; a client script with click events would still need that
-  opt-in.
+  opt-in. **Superseded 2026-11-26:** Alex chose to count a few interactions
+  without opt-in too, like Homebears does, through our own first-party script
+  rather than Umami's (see "Interaction events").
 - **Profile signals, anonymous.** Events that visitors already share through
   "Share signals and corrections with Alexander" are also counted in Umami,
   without the browser key and unlinkable to page-view sessions. No new consent:
@@ -38,7 +41,8 @@ fuerst.one without a new opt-in, plus anonymous counts of shared visitor-profile
 | Daily visitor | Keyed hash of IP and user agent, see below                            | Session ID only (a hash)                         |
 
 Not recorded: raw IP, full referrer URL, other query parameters, screen size,
-page title, clicks, scroll or time on page, anything from forms, search or chat.
+page title, scroll or time on page, anything from forms, search or chat. Clicks
+only as the interaction events listed below.
 
 ### Daily visitor hash
 
@@ -97,6 +101,26 @@ shared storage (for example a row in the existing Postgres). See open question 3
   events as today; the Umami counts are anonymous and stay.
 - Limits stay as documented: only visitors who opted into profile and sharing,
   and events are browser-reported.
+
+## Interaction events (2026-11-26)
+
+- Client: `components/Analytics/InteractionTracker.tsx`, mounted in the locale
+  layout. It loads no Umami script; it posts to our own
+  `/api/analytics/events` with `fetch(..., { keepalive: true })` and stays off
+  when the browser sends Global Privacy Control.
+- Events: `outbound` (destination origin and path, no query or fragment),
+  `download` (file type only; the Plasma playground exports, CV downloads are
+  retired), `explorer-used` (first pointer or key use inside an element with
+  `data-analytics-demo="explorer"`, once per page). `enquiry-sent` is sent by
+  `api/enquiries` itself after a successful save and is never accepted from
+  the browser.
+- Server: `server/analytics/interactionEvents.ts` allowlists names and data,
+  takes the page from the same-host `Referer` (page paths only, query dropped)
+  and reuses the page view's daily salt and forwarded headers
+  (`visitorIdentity` in `pageView.ts`), so an event joins the visitor's
+  page-view session and funnels work within a UTC day.
+- The endpoint checks origin, rate limit, content type and a 1 KB body limit and
+  answers 204 whether or not analytics is configured.
 
 ## Privacy texts (EN and DE, same release)
 

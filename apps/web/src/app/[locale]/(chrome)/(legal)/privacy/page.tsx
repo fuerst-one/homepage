@@ -136,13 +136,21 @@ export default function PrivacyPage() {
             To understand which pages are used and how visitors find this
             website, our server records page views in Umami, a self-hosted
             statistics tool on our server at Hetzner Online GmbH in Nuremberg,
-            Germany. Your browser loads no statistics script and nothing is
-            stored on your device. For each page view we record the page address
-            with any campaign parameters (utm_*) but no other parameters, the
-            domain of the referring website, your preferred language, the
-            browser, operating system and device type derived from the
-            user-agent string, and the country our hosting provider derives from
-            your IP address. Your IP address is not passed to Umami.
+            Germany. Your browser loads no Umami or other third-party script,
+            and nothing is stored on your device. For each page view we record
+            the page address with any campaign parameters (utm_*) but no other
+            parameters, the domain of the referring website, your preferred
+            language, the browser, operating system and device type derived from
+            the user-agent string, and the country our hosting provider derives
+            from your IP address. Your IP address is not passed to Umami.
+          </p>
+          <p>
+            Our own pages also report a few interactions to our server, which
+            passes them to Umami in the same way: clicks on links to other
+            websites (the destination address without parameters), downloads
+            from the Plasma playground (the file type only), the first use of
+            the project explorer on a page, and successfully sent enquiries
+            (only that one was sent, not its content).
           </p>
           <p>
             To count visitors per day, our server forms a keyed hash from your

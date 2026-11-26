@@ -25,6 +25,7 @@ export function HomeExplorer({
       className="home-explorer explore-site"
       id="home-explorer"
       aria-labelledby="home-explorer-title"
+      data-analytics-demo="explorer"
     >
       <header className="home-explorer-heading">
         <div>
