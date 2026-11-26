@@ -3,6 +3,52 @@ import { test } from "node:test";
 import puppeteer from "puppeteer";
 const base = process.env.SEO_TEST_BASE_URL || "http://localhost:6888";
 
+test("mobile projects show detailed filters only when requested", async () => {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 390, height: 844 });
+    await page.goto(`${base}/en/projects`, {
+      waitUntil: "networkidle2",
+      timeout: 90000,
+    });
+    await page.waitForSelector('main button[data-project-preset="featured"]');
+
+    assert.equal(
+      await page.$eval("main", (element) =>
+        element.innerText.includes("WHAT DO YOU NEED?"),
+      ),
+      false,
+    );
+    assert.equal(
+      await page.$eval("main button[aria-controls]", (button) =>
+        button.getAttribute("aria-expanded"),
+      ),
+      "false",
+    );
+
+    await page.click("main button[aria-controls]");
+    await page.waitForFunction(() =>
+      document.querySelector("main")?.innerText.includes("WHAT DO YOU NEED?"),
+    );
+    assert.equal(
+      await page.$eval("main button[aria-controls]", (button) =>
+        button.getAttribute("aria-expanded"),
+      ),
+      "true",
+    );
+    await page.click(
+      'main button[aria-pressed="false"]:not([data-project-preset])',
+    );
+    await page.waitForFunction(() =>
+      new URLSearchParams(location.search).has("buyerNeeds"),
+    );
+    assert.equal(new URL(page.url()).searchParams.has("featured"), false);
+  } finally {
+    await browser.close();
+  }
+});
+
 for (const locale of ["en", "de"]) {
   test(`${locale}: exact presets hide the active-filter summary and custom filters restore it`, async () => {
     const browser = await puppeteer.launch({ headless: true });
@@ -183,7 +229,7 @@ test("named filters remain visible and removable with the filter console collaps
         ".filter-active-summary",
         (element) => element.textContent,
       ),
-      /Buyer need:.*Add AI capabilities/,
+      /What do you need\?:.*Add AI capabilities/,
     );
     await page.screenshot({ path: "/tmp/homepage-active-filters-desktop.png" });
     await page.setViewport({ width: 390, height: 844 });
@@ -198,7 +244,7 @@ test("named filters remain visible and removable with the filter console collaps
     );
     assert.ok(
       await page.$(
-        '.filter-active-summary button[aria-label="Entfernen Expertise: AI Engineering"]',
+        '.filter-active-summary button[aria-label="Entfernen Expertise: KI-Engineering"]',
       ),
     );
     assert.equal(

@@ -131,7 +131,7 @@ export function ProjectsClientView({
             resultsCount={filteredProjects.length}
           />
         </div>
-        <div className="mb-12 space-y-5">
+        <div className="mb-8 space-y-5 md:mb-12">
           {cluster && (
             <button
               type="button"
@@ -151,7 +151,7 @@ export function ProjectsClientView({
           <h2 className="text-xl font-medium leading-snug text-white">
             {headline}
           </h2>
-          <p className="max-w-2xl text-sm leading-relaxed text-neutral-400">
+          <p className="hidden max-w-2xl text-sm leading-relaxed text-neutral-400 md:block">
             {locale === "de"
               ? "Entdecke ausgewählte Projekte mit durchdachter Gestaltung und technischer Tiefe. Mit den Analysewerkzeugen kannst du Projekte filtern, vergleichen und die Zusammenarbeit, Technologien und Ergebnisse dahinter erkunden."
               : "Explore a curated collection of recent projects, each showcasing thoughtful design and technical depth. Use the analysis tools to filter, compare, and discover the collaborations, technologies, and results that drive real impact."}

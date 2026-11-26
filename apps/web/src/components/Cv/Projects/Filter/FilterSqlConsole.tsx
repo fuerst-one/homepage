@@ -95,13 +95,6 @@ const CLI_FILTER_GROUPS: Pick<CliFilterGroup, "key" | "label">[] = [
   },
 ];
 
-const PRIMARY_FILTER_KEYS = new Set<CliFilterKey>([
-  "buyerNeeds",
-  "ownership",
-  "capabilities",
-  "industries",
-]);
-
 const GROUP_LABELS_DE: Record<CliFilterKey, string> = {
   buyerNeeds: "Was brauchst du?",
   ownership: "Mein Beitrag",
@@ -223,11 +216,7 @@ export const FilterSqlConsole = ({
     );
   }, [normalizedFilters, de, locale, projects]);
 
-  const advancedFilterCount = activeFilters.filter(
-    ({ key }) =>
-      !PRIMARY_FILTER_KEYS.has(key as CliFilterKey) &&
-      !(key === "featured" && activePresetId === "featured"),
-  ).length;
+  const hiddenFilterCount = activePresetId === null ? activeFilters.length : 0;
 
   const loweredQuery = searchQuery.toLowerCase();
   const optionLabel = (key: CliFilterKey, value: string) =>
@@ -359,7 +348,7 @@ export const FilterSqlConsole = ({
             : de
               ? "Weitere Filter"
               : "More filters"}
-          {!!advancedFilterCount && <span>({advancedFilterCount})</span>}
+          {!!hiddenFilterCount && <span>({hiddenFilterCount})</span>}
           <span
             className={clsx(
               "transition-transform",
@@ -431,26 +420,6 @@ export const FilterSqlConsole = ({
           )}
         </div>
       )}
-      <div className="mt-5 border-t border-white/20 pt-4">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="text-xs uppercase tracking-[0.2em] text-neutral-200">
-            {de ? "Projekte eingrenzen" : "Narrow the projects"}
-          </h3>
-          <span className="text-xs text-neutral-400">
-            {resultsCount} {de ? "Ergebnisse" : "results"}
-          </span>
-        </div>
-        <p className="mb-3 text-xs leading-relaxed text-neutral-400">
-          {de
-            ? "Eine Auswahl öffnet das gesamte Portfolio. Die Zahlen berücksichtigen Suche und andere Filter."
-            : "Choose a filter to browse the full portfolio. Counts reflect your search and other filters."}
-        </p>
-        <div className="grid gap-3 md:grid-cols-2">
-          {cliFilterGroups
-            .filter(({ key }) => PRIMARY_FILTER_KEYS.has(key))
-            .map(renderGroup)}
-        </div>
-      </div>
       <div
         id={panelId}
         className={clsx(
@@ -461,6 +430,19 @@ export const FilterSqlConsole = ({
       >
         {isExpanded && (
           <>
+            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="text-xs uppercase tracking-[0.2em] text-neutral-200">
+                {de ? "Projekte eingrenzen" : "Narrow the projects"}
+              </h3>
+              <span className="text-xs text-neutral-400">
+                {resultsCount} {de ? "Ergebnisse" : "results"}
+              </span>
+            </div>
+            <p className="mb-3 text-xs leading-relaxed text-neutral-400">
+              {de
+                ? "Eine Auswahl öffnet das gesamte Portfolio. Die Zahlen berücksichtigen Suche und andere Filter."
+                : "Choose a filter to browse the full portfolio. Counts reflect your search and other filters."}
+            </p>
             <label className="block text-xs text-neutral-300">
               {de ? "Filterwerte finden" : "Find a filter value"}
               <input
@@ -472,9 +454,7 @@ export const FilterSqlConsole = ({
               />
             </label>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
-              {cliFilterGroups
-                .filter(({ key }) => !PRIMARY_FILTER_KEYS.has(key))
-                .map(renderGroup)}
+              {cliFilterGroups.map(renderGroup)}
             </div>
             <details className="mt-4 text-xs text-neutral-400">
               <summary className="min-h-11 cursor-pointer py-3 hover:text-white">
